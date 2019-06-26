@@ -1,0 +1,53 @@
+# /*********************************************************************
+# * Copyright (c) Intel Corporation 2019
+# * SPDX-License-Identifier: Apache-2.0
+# **********************************************************************/
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mps
+spec:
+  selector:
+    matchLabels:
+      app: mps
+  template:
+    metadata:
+      labels:
+        app: mps
+    spec:
+      containers:
+      - name: mps
+        image: intelrsdramuaksacr.azurecr.io/mps-microservice:v4
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 4433
+          name: webport
+          protocol: TCP
+        - containerPort: 3000
+          name: mpsport
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mps
+  labels:
+    app: mps
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+    kubernetes.io/name: "mps"
+spec:
+  selector:
+    app: mps
+  type: LoadBalancer
+  ports:
+  - port: 443
+    targetPort: 4433
+    name: tlsport
+  - port: 9300
+    targetPort: 3000
+    name: mpsport

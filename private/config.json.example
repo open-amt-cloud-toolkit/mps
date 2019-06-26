@@ -1,0 +1,17 @@
+{
+    "usewhitelist" : true,
+    "commonName": "Fully qualified domain name or ipaddress of your machine",
+    "mpsport": 4433,
+    "mpsusername": "standalone",
+    "mpspass": "P@ssw0rd",
+    "useglobalmpscredentials": true,
+    "country": "US",
+    "company": "NoCorp",
+    "debug": true,
+    "listenany": true,
+    "https": true,
+    "mpstlsoffload": false,
+    "webport" : 3000,
+    "generateCertificates": true,
+    "loggeroff":true
+}

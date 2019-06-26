@@ -1,0 +1,63 @@
+# Project information
+site_name: 'MPS Service'
+site_description: 'Management Presence Server (MPS) that will serve as the broker between the management console and the Intel® AMT clients'
+
+# Repository
+#repo_name: 'Danger-Bay/MPS_MicroService'
+#repo_url: 'https://github.impcloud.net/Danger-Bay/MPS_MicroService'
+
+# Copyright
+copyright: 'Copyright &copy; Intel Corporation 2019'
+
+# Configuration
+theme:
+  name: 'material'
+  language: 'en'
+  palette:
+    primary: 'Light Blue'
+    accent: 'Light Blue'
+  font:
+    text: 'Roboto'
+    code: 'Roboto Mono'
+    
+# Page tree
+nav:
+  - Getting started: index.md
+  - Activate AMT: activateAMT.md
+  - API: api.md
+  - Admin Methods: 
+    - All Devices: methods/alldevices.md
+    - Connected Devices: methods/connecteddevices.md
+    - Disconnect: methods/disconnect.md
+    - MEScript: methods/mescript.md
+    - MPS Root Certificate: methods/rootcertificate.md
+  - AMT Methods:
+    - Audit log: methods/auditlog.md
+    - Event log: methods/eventlog.md
+    - General settings: methods/generalsettings.md
+    - Hardware information: methods/hardwareinfo.md
+    - Power action: methods/poweraction.md
+    - Power capabilities: methods/powercapabilities.md
+    - Power state: methods/powerstate.md
+    - Version: methods/version.md
+  - Types: 
+    - Request body: https://pages.github.impcloud.net/Danger-Bay/MPS_MicroService/methods/types/#requestbody
+    - Response error body: https://pages.github.impcloud.net/Danger-Bay/MPS_MicroService/methods/types/#responseerrorbody
+    - Audit log: https://pages.github.impcloud.net/Danger-Bay/MPS_MicroService/methods/types/#audit-log
+    - Event log: https://pages.github.impcloud.net/Danger-Bay/MPS_MicroService/methods/types/#event-log
+    - General Settings: https://pages.github.impcloud.net/Danger-Bay/MPS_MicroService/methods/types/#general-settings
+    - Hardware information: https://pages.github.impcloud.net/Danger-Bay/MPS_MicroService/methods/types/#hardware-information
+    - Power action: https://pages.github.impcloud.net/Danger-Bay/MPS_MicroService/methods/types/#power-action
+    - Power capabilities: https://pages.github.impcloud.net/Danger-Bay/MPS_MicroService/methods/types/#power-capabilities
+    - Power state: https://pages.github.impcloud.net/Danger-Bay/MPS_MicroService/methods/types/#power-state
+    - Version: https://pages.github.impcloud.net/Danger-Bay/MPS_MicroService/methods/types/#version
+  - Release notes: release-notes.md
+  - License: license.md
+  
+# Extensions
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - toc:
+      permalink: true

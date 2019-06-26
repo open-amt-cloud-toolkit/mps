@@ -1,0 +1,32 @@
+{
+  "name": "mps-microservice",
+  "version": "0.0.1",
+  "description": "Containerized MPS service",
+  "scripts": {
+    "build": "tsc --w",
+    "compile": "tsc",
+    "start": "tsc && ts-node ./dist/index.js",
+    "test": "mocha -r ts-node/register test/**/*.spec.ts"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "express": "^4.16.4",
+    "express-ws": "^2.0.0",
+    "minimist": "^1.2.0",
+    "node-forge": "^0.7.6",
+    "winston": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/body-parser": "^1.17.0",
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^11.9.4",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "mocha": "^5.2.0",
+    "mochawesome": "^3.1.1",
+    "ts-node": "^8.1.0",
+    "typescript": "^3.3.3"
+  }
+}
