@@ -1,4 +1,4 @@
 
 # mps_microservice
 
-For detailed documentation , browse to [docs](https://pages.github.impcloud.net/Danger-Bay/MPS_MicroService)
+For detailed documentation , browse to [docs](https://pages.github.com/open-amt-cloud-toolkit/MPS)
