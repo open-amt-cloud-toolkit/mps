@@ -3,7 +3,7 @@ site_name: 'MPS Service'
 site_description: 'Management Presence Server (MPS) that will serve as the broker between the management console and the Intel® AMT clients'
 
 # Repository
-repo_name: 'Danger-Bay/MPS_MicroService'
+repo_name: 'open-amt-cloud-toolkit/MPS'
 repo_url: 'https://github.com/open-amt-cloud-toolkit/MPS'
 
 # Copyright
