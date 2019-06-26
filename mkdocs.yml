@@ -41,16 +41,16 @@ nav:
     - Power state: methods/powerstate.md
     - Version: methods/version.md
   - Types: 
-    - Request body: https://github.com/open-amt-cloud-toolkit/MPS/methods/types/#requestbody
-    - Response error body: https://github.com/open-amt-cloud-toolkit/MPS/methods/types/#responseerrorbody
-    - Audit log: https://github.com/open-amt-cloud-toolkit/MPS/methods/types/#audit-log
-    - Event log: https://github.com/open-amt-cloud-toolkit/MPS/methods/types/#event-log
-    - General Settings: https://github.com/open-amt-cloud-toolkit/MPS/methods/types/#general-settings
-    - Hardware information: https://github.com/open-amt-cloud-toolkit/MPS/methods/types/#hardware-information
-    - Power action: https://github.com/open-amt-cloud-toolkit/MPS/methods/types/#power-action
-    - Power capabilities: https://github.com/open-amt-cloud-toolkit/MPS/methods/types/#power-capabilities
-    - Power state: https://github.com/open-amt-cloud-toolkit/MPS/methods/types/#power-state
-    - Version: https://github.com/open-amt-cloud-toolkit/MPS/methods/types/#version
+    - Request body: https://pages.github.com/open-amt-cloud-toolkit/MPS/methods/types/#requestbody
+    - Response error body: https://pages.github.com/open-amt-cloud-toolkit/MPS/methods/types/#responseerrorbody
+    - Audit log: https://pages.github.com/open-amt-cloud-toolkit/MPS/methods/types/#audit-log
+    - Event log: https://pages.github.com/open-amt-cloud-toolkit/MPS/methods/types/#event-log
+    - General Settings: https://pages.github.com/open-amt-cloud-toolkit/MPS/methods/types/#general-settings
+    - Hardware information: https://pages.github.com/open-amt-cloud-toolkit/MPS/methods/types/#hardware-information
+    - Power action: https://pages.github.com/open-amt-cloud-toolkit/MPS/methods/types/#power-action
+    - Power capabilities: https://pages.github.com/open-amt-cloud-toolkit/MPS/methods/types/#power-capabilities
+    - Power state: https://pages.github.com/open-amt-cloud-toolkit/MPS/methods/types/#power-state
+    - Version: https://pages.github.com/open-amt-cloud-toolkit/MPS/methods/types/#version
   - Release notes: release-notes.md
   - License: license.md
   
