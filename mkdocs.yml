@@ -3,8 +3,8 @@ site_name: 'MPS Service'
 site_description: 'Management Presence Server (MPS) that will serve as the broker between the management console and the Intel® AMT clients'
 
 # Repository
-#repo_name: 'Danger-Bay/MPS_MicroService'
-#repo_url: 'https://github.impcloud.net/Danger-Bay/MPS_MicroService'
+repo_name: 'Danger-Bay/MPS_MicroService'
+repo_url: 'https://github.com/open-amt-cloud-toolkit/MPS'
 
 # Copyright
 copyright: 'Copyright &copy; Intel Corporation 2019'
@@ -41,16 +41,16 @@ nav:
     - Power state: methods/powerstate.md
     - Version: methods/version.md
   - Types: 
-    - Request body: https://pages.github.impcloud.net/Danger-Bay/MPS_MicroService/methods/types/#requestbody
-    - Response error body: https://pages.github.impcloud.net/Danger-Bay/MPS_MicroService/methods/types/#responseerrorbody
-    - Audit log: https://pages.github.impcloud.net/Danger-Bay/MPS_MicroService/methods/types/#audit-log
-    - Event log: https://pages.github.impcloud.net/Danger-Bay/MPS_MicroService/methods/types/#event-log
-    - General Settings: https://pages.github.impcloud.net/Danger-Bay/MPS_MicroService/methods/types/#general-settings
-    - Hardware information: https://pages.github.impcloud.net/Danger-Bay/MPS_MicroService/methods/types/#hardware-information
-    - Power action: https://pages.github.impcloud.net/Danger-Bay/MPS_MicroService/methods/types/#power-action
-    - Power capabilities: https://pages.github.impcloud.net/Danger-Bay/MPS_MicroService/methods/types/#power-capabilities
-    - Power state: https://pages.github.impcloud.net/Danger-Bay/MPS_MicroService/methods/types/#power-state
-    - Version: https://pages.github.impcloud.net/Danger-Bay/MPS_MicroService/methods/types/#version
+    - Request body: https://github.com/open-amt-cloud-toolkit/MPS/methods/types/#requestbody
+    - Response error body: https://github.com/open-amt-cloud-toolkit/MPS/methods/types/#responseerrorbody
+    - Audit log: https://github.com/open-amt-cloud-toolkit/MPS/methods/types/#audit-log
+    - Event log: https://github.com/open-amt-cloud-toolkit/MPS/methods/types/#event-log
+    - General Settings: https://github.com/open-amt-cloud-toolkit/MPS/methods/types/#general-settings
+    - Hardware information: https://github.com/open-amt-cloud-toolkit/MPS/methods/types/#hardware-information
+    - Power action: https://github.com/open-amt-cloud-toolkit/MPS/methods/types/#power-action
+    - Power capabilities: https://github.com/open-amt-cloud-toolkit/MPS/methods/types/#power-capabilities
+    - Power state: https://github.com/open-amt-cloud-toolkit/MPS/methods/types/#power-state
+    - Version: https://github.com/open-amt-cloud-toolkit/MPS/methods/types/#version
   - Release notes: release-notes.md
   - License: license.md
   
