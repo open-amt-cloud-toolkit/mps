@@ -10,8 +10,8 @@
 
 ### 1.Clone the repository
 ```
-git clone [PLACEHOLDER FOR GITHUB URL]
-cd MPS_MicroService
+git clone https://github.com/open-amt-cloud-toolkit/MPS.git
+cd MPS
 ```
 ### 2.Add/modify config.json
 
