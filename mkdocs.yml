@@ -52,7 +52,6 @@ nav:
     - Power state: https://open-amt-cloud-toolkit.github.io/MPS/methods/types/#power-state
     - Version: https://open-amt-cloud-toolkit.github.io/MPS/methods/types/#version
   - Release notes: release-notes.md
-  - License: license.md
   
 # Extensions
 markdown_extensions:
