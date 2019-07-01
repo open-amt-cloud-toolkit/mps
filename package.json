@@ -1,5 +1,5 @@
 {
-  "name": "mps-microservice",
+  "name": "mps",
   "version": "0.0.1",
   "description": "Containerized MPS service",
   "scripts": {
