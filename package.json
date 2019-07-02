@@ -1,6 +1,6 @@
 {
-  "name": "mps-microservice",
-  "version": "0.0.1",
+  "name": "mps",
+  "version": "1.0.0",
   "description": "Containerized MPS service",
   "scripts": {
     "build": "tsc --w",
