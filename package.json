@@ -11,8 +11,8 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "express": "^4.16.4",
-    "express-ws": "^2.0.0",
+    "express": "^4.17.0",
+    "express-ws": "^4.0.0",
     "minimist": "^1.2.0",
     "node-forge": "^0.7.6",
     "winston": "^3.0.0"

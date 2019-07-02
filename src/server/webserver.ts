@@ -19,9 +19,9 @@ import * as parser from "body-parser";
 import { configType, certificatesType } from "../models/Config";
 import { amtRoutes } from "../routes/amtRoutes";
 import { adminRoutes } from "../routes/adminRoutes";
-import {ErrorResponse} from "../utils/amtHelper";
+import { ErrorResponse } from "../utils/amtHelper";
 import { logger as log } from "../utils/logger";
-import {constants, UUIDRegex} from "../utils/constants";
+import { constants, UUIDRegex } from "../utils/constants";
 import { mpsMicroservice } from "../mpsMicroservice";
 
 const interceptor = require("../utils/interceptor.js");
@@ -66,7 +66,7 @@ export class webServer {
       //Handles the Bad JSON exceptions
       this.app.use(parser.json(), (err, req, res, next) => {
         if (err instanceof SyntaxError) {
-            return res.status(400).send(ErrorResponse(400));
+          return res.status(400).send(ErrorResponse(400));
         }
         next();
       });
@@ -77,24 +77,24 @@ export class webServer {
 
       // Validates GUID format
       this.app.use((req, res, next) => {
-         let method = req.body.method;
-         let payload = req.body.payload || {};
-         if(method){
-           if(payload && payload.guid !== undefined){
-             if(!UUIDRegex.test(payload.guid)){
+        let method = req.body.method;
+        let payload = req.body.payload || {};
+        if (method) {
+          if (payload && payload.guid !== undefined) {
+            if (!UUIDRegex.test(payload.guid)) {
               return res.status(404).send(ErrorResponse(404, null, "invalidGuid"));
-             }
-           }
-           next();
-         }else{
+            }
+          }
+          next();
+        } else {
           return res.status(404).send(ErrorResponse(404, null, "method"));
-         }
-       });
-  
+        }
+      });
+
       //Routes
       this.app.use("/amt", amt.router);
       this.app.use("/admin", admin.router);
-        
+
       // Start the ExpressJS web server
       var port = 3000;
       if (this.config.webport != null) {
@@ -109,7 +109,7 @@ export class webServer {
           this.serverHttps.listen(port, () => {
             log.info(
               `MPS Microservice running on https://${
-                this.config.commonName
+              this.config.commonName
               }:${port}.`
             );
           });
@@ -124,7 +124,7 @@ export class webServer {
           this.app.listen(port, () => {
             log.info(
               `MPS Microservice running on https://${
-                this.config.commonName
+              this.config.commonName
               }:${port}.`
             );
           });
@@ -177,7 +177,7 @@ export class webServer {
   //This is the same URL as IIS making things simple, we can use the same web application for both IIS and Node.
   webrelaySocket = async (ws, req) => {
     try {
-      ws.pause();
+      ws._socket.pause();
 
       // When data is received from the web socket, forward the data into the associated TCP connection.
       // If the TCP connection is pending, buffer up the data until it connects.
@@ -195,11 +195,9 @@ export class webServer {
       });
 
       // If the web socket is closed, close the associated TCP connection.
-      ws.on("close", req => {
+      ws.on("close", () => {
         log.debug(
-          `Closing web socket connection to  ${ws.upgradeReq.query.host}: ${
-            ws.upgradeReq.query.port
-          }.`
+          `Closing web socket connection to  ${req.query.host}: ${req.query.port}.`
         );
         if (ws.forwardclient) {
           if (ws.forwardclient.close) {
@@ -207,7 +205,7 @@ export class webServer {
           }
           try {
             ws.forwardclient.destroy();
-          } catch (e) {}
+          } catch (e) { }
         }
       });
 
@@ -247,6 +245,7 @@ export class webServer {
             ciraconn,
             req.query.port
           );
+
           ws.forwardclient.xtls = 0;
           ws.forwardclient.onData = (ciraconn, data) => {
             // Run data thru interceptor
@@ -255,7 +254,7 @@ export class webServer {
             }
             try {
               ws.send(data);
-            } catch (e) {}
+            } catch (e) { }
           };
 
           ws.forwardclient.onStateChange = (ciraconn, state) => {
@@ -264,10 +263,10 @@ export class webServer {
               try {
                 //console.log("Closing websocket.");
                 ws.close();
-              } catch (e) {}
+              } catch (e) { }
             }
           };
-          ws.resume();
+          ws._socket.resume();
         } else {
           ws.forwardclient = new net.Socket();
           ws.forwardclient.setEncoding("binary");
@@ -294,54 +293,59 @@ export class webServer {
           () => {
             // The TLS connection method is the same as TCP, but located a bit differently.
             log.debug(`TLS connected to ${req.query.host}: ${req.query.port}.`);
-            ws.resume();
+            ws._socket.resume();
           }
         );
         ws.forwardclient.setEncoding("binary");
         ws.forwardclient.forwardwsocket = ws;
       }
 
-      // When we receive data on the TCP connection, forward it back into the web socket connection.
-      ws.forwardclient.on("data", data => {
-        if (ws.interceptor) {
-          data = ws.interceptor.processAmtData(data);
-        } // Run data thru interceptor
-        try {
-          ws.send(data);
-        } catch (e) {}
-      });
+      //Add handlers to socket. 
+      if (ws.forwardclient instanceof net.Socket) {
+        // When we receive data on the TCP connection, forward it back into the web socket connection.
+        ws.forwardclient.on("data", data => {
+          if (ws.interceptor) {
+            data = ws.interceptor.processAmtData(data);
+          } // Run data thru interceptor
+          try {
+            ws.send(data);
+          } catch (e) { }
+        });
 
-      // If the TCP connection closes, disconnect the associated web socket.
-      ws.forwardclient.on("close", () => {
-        log.debug(
-          `TCP disconnected from ${req.query.host} : ${req.query.port}.`
-        );
-        try {
-          ws.close();
-        } catch (e) {}
-      });
+        // If the TCP connection closes, disconnect the associated web socket.
+        ws.forwardclient.on("close", () => {
+          log.debug(
+            `TCP disconnected from ${req.query.host} : ${req.query.port}.`
+          );
+          try {
+            ws.close();
+          } catch (e) { }
+        });
 
-      // If the TCP connection causes an error, disconnect the associated web socket.
-      ws.forwardclient.on("error", err => {
-        log.debug(
-          `TCP disconnected with error from ${req.query.host}:${
+        // If the TCP connection causes an error, disconnect the associated web socket.
+        ws.forwardclient.on("error", err => {
+          log.debug(
+            `TCP disconnected with error from ${req.query.host}:${
             req.query.port
-          }:${err.code},${req.url}`
-        );
-        try {
-          ws.close();
-        } catch (e) {}
-      });
+            }:${err.code},${req.url}`
+          );
+          try {
+            ws.close();
+          } catch (e) { }
+        });
+      }
 
       if (req.query.tls == 0) {
         if (!this.mpsService.mpsComputerList[req.query.host]) {
           // A TCP connection to Intel AMT just connected, send any pending data and start forwarding.
           ws.forwardclient.connect(req.query.port, req.query.host, () => {
             log.debug(`TCP connected to ${req.query.host}:${req.query.port}.`);
-            ws.resume();
+            ws._socket.resume();
           });
         }
       }
-    } catch (err) {}
+    } catch (err) {
+      console.log("Exception Caught: ", err.message);
+    }
   };
 }
