@@ -1,6 +1,6 @@
 # Getting started
 
-## Pre-requisite
+## Prerequisite
 
 * [git](https://git-scm.com/downloads)
 * [node.js v10](https://nodejs.org/dist/latest-v10.x/)
@@ -15,25 +15,26 @@ cd MPS
 ```
 ### 2.Add/modify config.json
 
-create config.json file in *private* folder under MPS_microservice. These following parameters can be configured.
+create config.json file in the *private* folder within MPS directory. These following parameters can be configured.
 
-* *usewhitelist* - set true to whitelist the GUIDs stored in guids.json.
-* *commonName* - used in self signed certificate can be either FQDN or IP address.
-* *useglobalmpscredentials* - set to true, such that any device using global *mpsusername* and  *mpspass* are allowed to connect. 
-* *https* - set to true to enable TLS. 
+* *usewhitelist* - set to true to whitelist AMT GUIDs stored in guids.json.
+* *commonName* - used in self signed certificate, can be either FQDN or IP address.
+* *useglobalmpscredentials* - When set to true, any device using *mpsusername* and  *mpspass* in config.json are allowed to connect. When set to false, MPS validates credentials sent by AMT device using credentials.json.
+* *https* - set to true to enable TLS on HTTP server. 
 * *mpstlsoffload* - set to true to run MPS without TLS. 
-* *generateCertificates* - Generates certificates automatically. SSL and Root cert are generated and stored in private folder when set to true.
-* *loggeroff* - Set to true to turnoff logs. By default, they are turnon.
+* *generateCertificates* - Generates certificates automatically. When set to true, SSL and Root cert are generated and stored in private folder.
+* *loggeroff* - set to true to disable logging. Logging is enabled by default.”.
+* *webport* - Port used by WebServer (or HTTP server)
 
 For example:
 ``` yaml
 
 	{
 		"usewhitelist" : false,
-		"commonName": "127.0.0.1",
+		"commonName": "iot-demosetup.lab.local.com",
 		"mpsport": 4433,
 		"mpsusername": "standalone", 
-		"mpspass": "P@ssw0rd", 
+		"mpspass": "G@ppm0ym", 
 		"useglobalmpscredentials": true,
 		"country": "US",
 		"company": "NoCorp",
@@ -49,11 +50,18 @@ For example:
 ```	
 ### 3.Add/modify credentials.json
 
-Create credentials.json file in *private* folder. This file is used to simulate credential storage.
+Create credentials.json file in *private* folder within MPS directory. This file is used to simulate credential storage.
 
-!!! info "Add new device"
+* *AMT GUID* - Each AMT device has a unique identifier (GUID) assigned to it by default. This GUID will be used as the reference to each device record.
+* *name* - AMT hostname or user friendly identifier
+* *mpsuser* - AMT Device uses this as the user name while connecting to MPS
+* *mpspass* - AMT Device uses this as the password while connecting to MPS
+* *amtuser* - MPS uses this as the AMT user name when making AMT API calls (WSMAN or Redirection)
+* *amtpass* - MPS uses this as the AMT password when making AMT API calls (WSMAN or Redirection)
+
+!!! info "AMT and MPS password security recommendation"
         
-		MPS user name and password are required to connect to MPS server. Where as, AMT user name and password are required whenever a request is made to ME.
+		Intel highly recommends that you don't use same password for MPS and AMT. An example strong password would contain at least one uppercase letter, one lowercase letter, one digit, one special character, and be at least eight characters.
 
 For example:
 ``` yaml
@@ -61,16 +69,16 @@ For example:
         "8dad96cb-c3db-11e6-9c43-bc0000d20000": { 
             "name": "Win7-machine", 
             "mpsuser": "standalone",
-            "mpspass": "P@ssw0rd", 
+            "mpspass": "G@ppm0ym", 
             "amtuser": "admin", 
-            "amtpass": "P@ssw0rd" 
+            "amtpass": "G@ppm0ym" 
         },
         "bf49cf00-9164-11e4-952b-b8aeed7ec594": {
             "name": "Ubuntu-machine",
             "mpsuser": "xenial",
-            "mpspass": "P@ssw0rd",
+            "mpspass": "G@ppm0ym",
             "amtuser": "admin",
-            "amtpass": "P@ssw0rd"
+            "amtpass": "G@ppm0ym"
         }
     }
 
@@ -78,7 +86,7 @@ For example:
 
 ### 4.Add/modify guids.json
 
-If *usewhitelist* is set to *true* in config.json file, add guids.json file in *private* folder to whitelist guids that are allowed to connect to MPS. This file is used to simulate whitelisting based on GUID's.
+If *usewhitelist* is set to *true* in config.json file, add guids.json file in *private* folder to whitelist AMT GUID's that are allowed to connect to MPS. Use guids.json.sample as an example to create the guids.json and populate it with guids for whitelisting. This file is used to simulate whitelisting based on AMT GUID's.
 
 For example:
 ``` yaml
@@ -88,14 +96,14 @@ For example:
 ```
 ### 5.Start the server
 
-Browse to MPS_microservice root folder
+Browse to MPS root folder
 
 ``` javascript
 npm install
 npm start
 ```
 
-This will install all the dependencies and start the server. Webserver runs on port 3000 by default and MPS Server listens on port 4433.
+This will install all the dependencies and start the server. Webserver (or HTTPS server) runs on port 3000 by default and MPS Server listens on port 4433.
 Certificates are generated and stored in private folder.
 
 [![mps](assets/images/MPS_npminstall.PNG)](assets/images/MPS_npminstall.PNG)
@@ -104,18 +112,22 @@ Certificates are generated and stored in private folder.
 
 *  Make sure the device is connected to internet.
 
-*  From the device browse to MPS server to Download MEScript.
-  	
+*  On the device, browse to MPS server (Example URL: https://iot-demosetup.lab.local.com:3000) and click on Download MESCRIPT. This will download cira_setup.mescript file.
+
+!!! info "MEScript"
+	MEScript files are used by MeshCMD to execute a series of actions on the AMT device. 
+
 [![mps](assets/images/MPS_DownloadMEScript.PNG)](assets/images/MPS_DownloadMEScript.PNG)
 
-*  Next, download MeshCmd from [site](https://www.meshcommander.com/meshcommander/meshcmd) appropriate to device platform.
+*  Next, download MeshCMD suitable to your device platform from [site](https://www.meshcommander.com/meshcommander/meshcmd).
 
 [![mps](assets/images/MPS_MeshCommander.PNG)](assets/images/MPS_MeshCommander.PNG)
 
-*  From the folder where MEScript and MeshCmd downloaded, open Cli, run the command the below command. This runs a script that does all the configuration required for CIRA setup.
-    1. Adds root certificate to trust MPS Server.
-    2. Sets periodic connection to MPS.
-    3. Enables environment detection.
+*  Browse to the folder where MEScript and MeshCMD are downloaded. Open Cli, run the below command. This runs a script that does all the configuration required for CIRA setup.
+    1. Specifies the root certificate that the Firmware (ME) should use for TLS negotiation.
+    2. Specifies the login credentials that the Firmware should use when connecting to MPS.
+    3. Specifies the periodic connection time the Firmware should use to maintain MPS connection.
+    4. Specifies the home domain suffix used to enable environment detection (When device is outside the home domain, AMT uses CIRA to connect to MPS).
     
 ``` yaml
     meshcmd.exe amtscript --script cira_setup.mescript --pass <amt password>
@@ -127,7 +139,4 @@ Certificates are generated and stored in private folder.
 	
 !!! info "Device credentials"
 
-    Make sure that AMT guid entry is present in credential file of server. Also in guids.json file if usewhitelist is set to true in config file.
-
-
-
+    Make sure that AMT guid entry is present in credential.json file. Also in guids.json file if *usewhitelist* is set to *true* in config.json file.
