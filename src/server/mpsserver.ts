@@ -710,8 +710,7 @@ export class mpsServer{
         var computerEntry = {
           name: undefined,
           host: undefined,
-          amtuser: undefined,
-          amtpass: undefined
+          amtuser: undefined
         };
         if (socket.tag.host === host) return; // Nothing to change
         this.debug(3, "Change hostname to ", host);
@@ -725,8 +724,7 @@ export class mpsServer{
           computerEntry = {
             name: host,
             host: socket.tag.nodeid,
-            amtuser: "admin",
-            amtpass: null
+            amtuser: "admin"
           };
     
           this.mpsService.mpsComputerList[socket.tag.nodeid] = computerEntry;

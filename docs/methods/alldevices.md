@@ -19,22 +19,18 @@ Click [here](types.md) for supported input and output types.
 ``` yaml
 [
     {
-        "name": "ubuntu",
+        "name": "Win7-machine",
         "mpsuser": "standalone",
-        "mpspass": "P@ssw0rd",
         "amtuser": "admin",
-        "amtpass": "P@ssw0rd",
-        "host": "aa745e97-6416-4495-9b34-54b2030b1193",
+        "host": "8dad96cb-c3db-11e6-9c43-bc0000d20000",
         "icon": 1,
-        "conn": 0
+        "conn": 1
     },
     {
-        "name": "Windows",
-        "mpsuser": "standalone",
-        "mpspass": "P@ssw0rd",
+        "name": "Ubuntu-machine",
+        "mpsuser": "xenial",
         "amtuser": "admin",
-        "amtpass": "P@ssw0rd",
-        "host": "4bac9510-04a6-4321-bae2-d45ddf07b684",
+        "host": "bf49cf00-9164-11e4-952b-b8aeed7ec594",
         "icon": 1,
         "conn": 0
     }
