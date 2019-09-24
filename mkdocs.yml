@@ -3,8 +3,8 @@ site_name: 'MPS Service'
 site_description: 'Management Presence Server (MPS) that will serve as the broker between the management console and the Intel® AMT clients'
 
 # Repository
-repo_name: 'open-amt-cloud-toolkit/MPS'
-repo_url: 'https://github.com/open-amt-cloud-toolkit/MPS'
+#repo_name: 'Danger-Bay/MPS_MicroService'
+#repo_url: 'https://github.impcloud.net/Danger-Bay/MPS_MicroService'
 
 # Copyright
 copyright: 'Copyright &copy; Intel Corporation 2019'
@@ -22,8 +22,8 @@ theme:
     
 # Page tree
 nav:
-  - Getting started: index.md
   - Activate AMT: activateAMT.md
+  - Getting started: index.md
   - API: api.md
   - Admin Methods: 
     - All Devices: methods/alldevices.md
@@ -41,17 +41,18 @@ nav:
     - Power state: methods/powerstate.md
     - Version: methods/version.md
   - Types: 
-    - Request body: https://open-amt-cloud-toolkit.github.io/MPS/methods/types/#requestbody
-    - Response error body: https://open-amt-cloud-toolkit.github.io/MPS/methods/types/#responseerrorbody
-    - Audit log: https://open-amt-cloud-toolkit.github.io/MPS/methods/types/#audit-log
-    - Event log: https://open-amt-cloud-toolkit.github.io/MPS/methods/types/#event-log
-    - General Settings: https://open-amt-cloud-toolkit.github.io/MPS/methods/types/#general-settings
-    - Hardware information: https://open-amt-cloud-toolkit.github.io/MPS/methods/types/#hardware-information
-    - Power action: https://open-amt-cloud-toolkit.github.io/MPS/methods/types/#power-action
-    - Power capabilities: https://open-amt-cloud-toolkit.github.io/MPS/methods/types/#power-capabilities
-    - Power state: https://open-amt-cloud-toolkit.github.io/MPS/methods/types/#power-state
-    - Version: https://open-amt-cloud-toolkit.github.io/MPS/methods/types/#version
+    - Request body: methods/types.md
+    - Response error body: methods/types.md
+    - Audit log: methods/types.md 
+    - Event log: methods/types.md
+    - General Settings: methods/types.md
+    - Hardware information: methods/types.md
+    - Power action: methods/types.md
+    - Power capabilities: methods/types.md
+    - Power state: methods/types.md
+    - Version: methods/types.md
   - Release notes: release-notes.md
+  - License: license.md
   
 # Extensions
 markdown_extensions:
