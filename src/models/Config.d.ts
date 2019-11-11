@@ -21,7 +21,11 @@ export type configType ={
     generateCertificates: boolean,
     mpsaliasport?: number,
     mpsdebug?: boolean,
-    loggeroff: boolean
+    loggeroff: boolean,
+    snowUrl: string,
+    snowAuthUsername: string,
+    snowAuthPassword: string
+    snowSecret: string
 }
 
 export type certificatesType = {

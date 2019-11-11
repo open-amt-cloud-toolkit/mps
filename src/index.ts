@@ -8,7 +8,9 @@ import * as path from "path";
 import { logger as log } from "./utils/logger";
 import { mpsMicroservice } from "./mpsMicroservice";
 import { configType, certificatesType } from "./models/Config";
-import { dataBase } from "./utils/db";
+import dataBase from "./utils/db/snow-db";
+import localDB from "./utils/db/local-db"
+import snowDB from "./utils/db/snow-db"
 import { certificates } from "./utils/certificates";
 import { tlsConfig } from "./utils/tlsConfiguration";
 
@@ -31,7 +33,12 @@ try {
   }
 
   // DB initialization
-  db = new dataBase(config, null);
+  if(config.snowUrl){
+    db = new snowDB(config, null);
+  } else{
+    db = new localDB(config, null);
+  }
+  
 
   //Certificate Configuration and Operations
   if (config.https || !config.mpstlsoffload) {

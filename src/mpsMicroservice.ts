@@ -7,7 +7,7 @@ import { configType, certificatesType} from "./models/Config";
 import {webServer } from './server/webserver';
 import {mpsServer} from './server/mpsserver';
 import { logger as log } from './utils/logger';
-import { dataBase } from "./utils/db";
+import { dataBase } from "./utils/db/db";
 
  
 export class mpsMicroservice {

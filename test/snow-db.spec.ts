@@ -5,7 +5,8 @@
 
 import 'mocha';
 import { expect } from 'chai';
-import { dataBase } from "../src/utils/db";
+import {dataBase}  from "../src/utils/db/db";
+import DB  from "../src/utils/db/snow-db";
 
 let  config = {
     "usewhitelist" : true,
@@ -26,8 +27,9 @@ let  config = {
 }
 
 describe("Use GUID whitelisting: ", () => {
-    config.usewhitelist =  true;
-    let db = new dataBase(config,null); 
+    let conf = JSON.parse(JSON.stringify(config))
+    conf.usewhitelist =  true;
+    let db = new DB(conf,null); 
     it('Test if listed GUID is allowed', () => {   
         db.IsGUIDApproved("12345678-9abc-def1-2345-123456789000", (ret) => { 
             expect(ret).to.equal(true);
@@ -47,8 +49,9 @@ describe("Use GUID whitelisting: ", () => {
 });
 
 describe("Do not use GUID whitelisting: ", () => {
-    config.usewhitelist =  false;
-    let db = new dataBase(config,null); 
+    let conf = JSON.parse(JSON.stringify(config))
+    conf.usewhitelist =  false;
+    let db = new DB(conf,null); 
     it('Test if listed GUID is allowed', () => {   
         db.IsGUIDApproved("12345678-9abc-def1-2345-123456789000", (ret) => { 
             expect(ret).to.equal(true);
@@ -60,6 +63,19 @@ describe("Do not use GUID whitelisting: ", () => {
             expect(ret).to.equal(true);
         });
     });
+});
 
+describe("Obtain password from SNOW: ", () => {
+    let conf = JSON.parse(JSON.stringify(config))
+    conf.snowUrl = ""
+    conf.snowAuthUsername = ""
+    conf.snowAuthPassword = ""
+    conf.snowSecret = ""
+
+    let db:dataBase = new DB(conf,null); 
+    it('Test if listed GUID is allowed', async () => {   
+        var result:string[] = await db.getAmtPassword("c46fb880-4ce4-11e7-b431-94c69110f19b");
+        expect(result[0]).to.equal("abcde");
+    });
 });
 
