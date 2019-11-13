@@ -2,12 +2,9 @@
 * Copyright (c) Intel Corporation 2019
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
+import {dataBase} from '../src/utils/db';
 
-import 'mocha';
-import { expect } from 'chai';
-import { dataBase } from "../src/utils/db";
-
-let  config = {
+let config = {
     "usewhitelist" : true,
     "commonName": "localhost",
     "mpsport": 4433,
@@ -30,7 +27,7 @@ describe("Use GUID whitelisting: ", () => {
     let db = new dataBase(config,null); 
     it('Test if listed GUID is allowed', () => {   
         db.IsGUIDApproved("12345678-9abc-def1-2345-123456789000", (ret) => { 
-            expect(ret).to.equal(true);
+            expect(ret).toBe(true);
         });
     });
     //ToDo:
@@ -38,10 +35,10 @@ describe("Use GUID whitelisting: ", () => {
     //       await db.IsGUIDApproved("12345678-9abc-def1-2345-123456789001", (ret) => {
     //         return ret;
     //       }).then((state) => {
-    //         expect(state).to.equal(false);
+    //         expect(state).toBe(false);
     //       })
     //       .catch((error) => {
-    //         expect(error).to.equal(false);
+    //         expect(error).toBe(false);
     //     });
     // });
 });
@@ -51,15 +48,14 @@ describe("Do not use GUID whitelisting: ", () => {
     let db = new dataBase(config,null); 
     it('Test if listed GUID is allowed', () => {   
         db.IsGUIDApproved("12345678-9abc-def1-2345-123456789000", (ret) => { 
-            expect(ret).to.equal(true);
+            expect(ret).toBe(true);
         });
     });
 
     it('Test if non listed GUID is still allowed', () => {
         db.IsGUIDApproved("12345678-9abc-def1-2345-123456789001", (ret) => {
-            expect(ret).to.equal(true);
+            expect(ret).toBe(true);
         });
     });
 
 });
-

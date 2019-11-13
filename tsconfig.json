@@ -4,9 +4,16 @@
         "moduleResolution": "node",
         "module": "commonjs",
         "allowJs": true,
-        "target":"es2015"
+        "target":"es2015",
+        "typeRoots": [
+            "node_modules/@types"
+        ]
     },
     "include":[
         "./src/**/*"
-    ]
- }
+    ],
+    "type":[
+        "@types/jest",
+        "@types/node"
+    ]   
+}

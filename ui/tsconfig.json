@@ -1,0 +1,17 @@
+{ 
+    "compilerOptions": {
+        "outDir": "./dist",
+        "sourceMap": true,
+        "noImplicitAny": false,
+        "moduleResolution": "node",
+        "allowJs": true,
+        "target":"es6",
+        "jsx": "react",
+        "esModuleInterop":true
+    },
+    "include":[
+        "./core/**/*",
+        "./test/**/*",
+        "./reactjs/**/*", "../setupTests.js"
+    ]
+ }

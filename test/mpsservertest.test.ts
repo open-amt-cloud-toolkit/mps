@@ -3,7 +3,6 @@
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
 
-import * as assert from 'assert';
 import * as tls from "tls";
 import * as net from "net";
 import * as fs from 'fs';
@@ -44,8 +43,8 @@ let mps: mpsServer;
 
 describe('MPS Server', function () {
     var server;
-    before(async function () {
-        this.timeout(60000);
+    beforeAll(async function () {
+        jest.setTimeout(60000);
         try {
             if(!fs.existsSync(certPath)) 
                 fs.mkdirSync(certPath, { recursive: true });
@@ -150,7 +149,7 @@ describe('MPS Server', function () {
     });
 
     it("Validate UserAuth for a valid MPS connection request", function (done) {
-        this.timeout(10000);
+        jest.setTimeout(10000);
         var obj : any = {};
         var args = {
             host: config.commonName,
@@ -172,7 +171,7 @@ describe('MPS Server', function () {
     });
 
     it("Validate APF USERAUTH_SERVICE_ACCEPT Message", function (done) {
-        this.timeout(10000);
+        jest.setTimeout(10000);
         var obj : any = {};
         var args = {
             host: config.commonName,
@@ -194,7 +193,7 @@ describe('MPS Server', function () {
     });
 
     it("Validate APF PFWD_SERVICE_ACCEPT Message", function (done) {
-        this.timeout(10000);
+        jest.setTimeout(10000);
         var obj:any = {};
         var args = {
             host: config.commonName,
@@ -216,7 +215,7 @@ describe('MPS Server', function () {
     });
 
     it("Validate APF GLOBAL_REQUEST_SUCCESS Message", function (done) {
-        this.timeout(10000);
+        jest.setTimeout(10000);
         var obj:any = {};
         var args = {
             host: config.commonName,
@@ -238,7 +237,7 @@ describe('MPS Server', function () {
     });
 
     it("Validate APF PROTOCOL_VERSION_SENT Message", function (done) {
-        this.timeout(5000);
+        jest.setTimeout(5000);
         var obj:any = {};
         var args = {
             host: config.commonName,
@@ -260,7 +259,7 @@ describe('MPS Server', function () {
     });
 
     it("Validate APF KEEPALIVE_REPLY Message", function (done) {
-        this.timeout(900000);
+        jest.setTimeout(90000);
         var obj:any = {};
         var args = {
             host: config.commonName,
@@ -282,7 +281,7 @@ describe('MPS Server', function () {
     });
 
     it("Validate APF USERAUTH_FAILURE Message (using wrong password)", function (done) {
-        this.timeout(10000);
+        jest.setTimeout(10000);
         var obj:any = {};
         var args = {
             host: config.commonName,
@@ -303,7 +302,7 @@ describe('MPS Server', function () {
         });
     });
 
-    after(function () {
+    afterAll(function () {
         console.log('closing server');
         mps.server.close();
     });
