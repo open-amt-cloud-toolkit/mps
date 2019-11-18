@@ -306,7 +306,7 @@
     // radio button change handler
     function radiochanged(param) {
         computerHash[param.value].checked = true;
-        Q('kvmtab').href = 'remote.htm?kvmonly=1&host=' + computerHash[param.value].host;
+        Q('kvmtab').href = 'sample/sampleKVM.htm?deviceId=' + computerHash[param.value].host + '&server=' + self.location.host;
         QH('dev_name', computerHash[param.value].name);
         QH('dev_guid', computerHash[param.value].host);
         QH('dev_musername', '*****');

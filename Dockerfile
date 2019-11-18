@@ -1,4 +1,4 @@
-FROM node:10-alpine
+FROM node:10.16
 WORKDIR /mps-microservice
 
 COPY package*.json ./
