@@ -21,7 +21,7 @@
     "filereader": "^0.10.3",
     "md5": "^2.2.1",
     "minimist": "^1.2.0",
-    "node-forge": "^0.7.6",
+    "node-forge": "^0.9.1",
     "react": "16.8.4",
     "react-dom": "^16.10.2",
     "recompose": "^0.30.0",
