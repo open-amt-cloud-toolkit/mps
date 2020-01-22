@@ -62,6 +62,7 @@ export class webServer {
       // Indicates to ExpressJS that the public folder should be used to serve static files.
       //Mesh Commander will be at "default.htm".
       this.app.use(express.static(path.join(__dirname, "../../public")));
+      this.app.use(express.static(path.join(__dirname, "../../ui")));
       
       //Handles the Bad JSON exceptions
       this.app.use(parser.json(), (err, req, res, next) => {
