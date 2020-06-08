@@ -8,12 +8,12 @@ import * as path from "path";
 import * as fs from "fs";
 
 import { logger as log } from "./logger";
-import { mpsConfigType, webConfigType } from "../models/Config";
+import { mpsConfigType, webConfigType, directConfigType } from "../models/Config";
 
 const constants = require("crypto").constants? require("crypto").constants: require("constants");
 const webTlsConfigPath = path.join(__dirname,"../../private/webtlsconfig.json");
 const mpsTlsConfigPath = path.join(__dirname,"../../private/mpstlsconfig.json");
-
+const directConnTlsConfigPath = path.join(__dirname, "../../private/directConntlsconfig.json");
 export class tlsConfig {
   static web(): webConfigType {
     try {
@@ -185,6 +185,51 @@ export class tlsConfig {
       return mpsConfig;
     } catch (ex) {
       log.error("Exception mpsTLSConfiguration:", ex.message);
+      process.exit();
+    }
+  }
+
+  static direct(): directConfigType{
+    try {
+      let directConnConfig: directConfigType;
+      //Parse MPS TLS Configuration json file
+      try {
+        if (fs.existsSync(directConnTlsConfigPath)) {
+          directConnConfig = JSON.parse(fs.readFileSync(directConnTlsConfigPath, "utf8"));
+        } else {
+          log.error(`directtls config file does not exists ${directConnTlsConfigPath}`);
+          return;
+        }
+      } catch (ex) {
+        log.error("Failed to parse json file. Exception:", ex.message);
+        process.exit();
+      }
+  
+      //Load SSL Cert and key
+      if (directConnConfig.key && directConnConfig.cert && directConnConfig.ca) {
+        if (!fs.existsSync(path.join(__dirname, directConnConfig.key)) || !fs.existsSync(path.join(__dirname, directConnConfig.cert))) {
+          log.error("Error: TLS cerficate or private key does not exist.");
+          process.exit();
+        } else {
+          directConnConfig.key = fs.readFileSync(path.join(__dirname, directConnConfig.key),"utf8");
+          directConnConfig.cert = fs.readFileSync(path.join(__dirname, directConnConfig.cert),"utf8");
+          directConnConfig.ca = fs.readFileSync(path.join(__dirname, directConnConfig.ca),"utf8");
+        }
+      } else {
+        log.error("Error: Direct Connection Configuration missing either TLS Cert or Private Key.");
+        process.exit();
+      }
+      if (directConnConfig.secureOptions) {
+        var optionArr = directConnConfig.secureOptions;
+        let secoption: any = constants[optionArr[0]] | constants[optionArr[1]];
+        for (let i: number = 2; i < optionArr.length; i++) {
+          secoption = secoption | constants[optionArr[i]];
+        }
+        directConnConfig.secureOptions = secoption;
+      }
+      return directConnConfig;
+    } catch (ex) {
+      log.error("Exception directTLSConfiguration:", ex.message);
       process.exit();
     }
   }

@@ -25,6 +25,12 @@
                 <li class="nav-item">
                     <a class="nav-link" style="color: #ffffff" href="#" onclick='fileDownload("MEScript","cira_setup.mescript"); return false;'>Download MESCRIPT</a>
                 </li>
+                <li class="nav-item">
+                   <div>|</div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" style="color: #ffffff" href="/logout" >Logout</a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -192,6 +198,7 @@
     var computerHash = {};
     var currentdevice = null;
 
+    
     function fileDownload(api, fileName) {
         let payload = {};
         if(api=="MeshCmd" && fileName=="MeshCmd"){
@@ -306,7 +313,7 @@
     // radio button change handler
     function radiochanged(param) {
         computerHash[param.value].checked = true;
-        Q('kvmtab').href = 'sample/sampleKVM.htm?deviceId=' + computerHash[param.value].host + '&server=' + self.location.host;
+        Q('kvmtab').href = 'sampleKVM.htm?deviceId=' + computerHash[param.value].host + '&server=' + self.location.host;
         QH('dev_name', computerHash[param.value].name);
         QH('dev_guid', computerHash[param.value].host);
         QH('dev_musername', '*****');
@@ -420,6 +427,9 @@
             console.log("Control channel closed, retying connection in 5 seconds.");
             retry_timer = setInterval(function () {
                 console.log("Retrying again.");
+                ctrl_ws.onopen = null
+                ctrl_ws.onmessage = null
+                ctrl_ws.onclose = null;
                 initControlChannel();
             }, 5000);
         }

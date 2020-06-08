@@ -14,7 +14,10 @@ import * as tls from "tls";
 import * as path from "path";
 import * as express from "express";
 import * as https from "https";
+import * as http from "http";
 import * as parser from "body-parser";
+
+import * as session from 'express-session';
 
 import { configType, certificatesType } from "../models/Config";
 import { amtRoutes } from "../routes/amtRoutes";
@@ -23,19 +26,24 @@ import { ErrorResponse } from "../utils/amtHelper";
 import { logger as log } from "../utils/logger";
 import { constants, UUIDRegex } from "../utils/constants";
 import { mpsMicroservice } from "../mpsMicroservice";
+import { IDbProvider } from "../models/IDbProvider";
+import { EnvReader } from "../utils/EnvReader";
 
 const interceptor = require("../utils/interceptor.js");
-const expressWs = require('express-ws');
+const WebSocket = require('ws');
+const URL = require('url').URL;
 
 export class webServer {
-  db: any;
+  db: IDbProvider;
   app: any;
   users: any = {};
-  serverHttps = null;
-  expressWs: any;
+  server = null;
+  notificationwss = null;
+  relaywss = null;
   mpsService: mpsMicroservice;
   config: configType;
   certs: certificatesType;
+  sessionParser: any;
 
   constructor(mpsService: mpsMicroservice) {
     try {
@@ -44,13 +52,16 @@ export class webServer {
       this.config = this.mpsService.config;
       this.certs = this.mpsService.certs;
       this.app = express();
-      this.expressWs = expressWs(this.app);
+      this.notificationwss = new WebSocket.Server({ 'noServer': true });
+      this.relaywss = new WebSocket.Server({ 'noServer': true });
       let amt = new amtRoutes(this.mpsService);
       let admin = new adminRoutes(this.mpsService);
 
+      //Create Server
       if (this.config.https) {
-        this.serverHttps = https.createServer(this.certs.webConfig, this.app);
-        this.expressWs = expressWs(this.app, this.serverHttps);
+        this.server = https.createServer(this.certs.webConfig, this.app);
+      } else {
+        this.server = http.createServer(this.app);
       }
 
       //Clickjacking defence
@@ -59,11 +70,31 @@ export class webServer {
         next();
       })
 
+      //Session Configuration
+      let sess = {
+        // Strongly recommended to change this key for Production thru ENV variable MPS_SESSION_ENCRYPTION_KEY
+        secret: this.config.sessionEncryptionKey || '<StrongRandomizedKey123!>',
+        resave: true,
+        saveUninitialized: true,
+        cookie: { secure: false } // by default false. use true for prod like below.
+      };
+
+      //express-session config for production 
+      if (this.app.get('env') === 'production') {
+        this.app.set('trust proxy', 1); // trust first proxy
+        sess.cookie.secure = true; // serve secure cookies
+        sess.cookie["maxAge"] = 24 * 60 * 60 * 1000 //limiting cookie age to a day.
+        sess.cookie["sameSite"] = true; //strictly same site
+      }
+
+      //Initialize session
+      this.sessionParser = session(sess);
+      this.app.use(this.sessionParser);
+
       // Indicates to ExpressJS that the public folder should be used to serve static files.
-      //Mesh Commander will be at "default.htm".
       this.app.use(express.static(path.join(__dirname, "../../public")));
-      this.app.use(express.static(path.join(__dirname, "../../ui")));
-      
+      this.app.use(parser.urlencoded({ extended: true }));
+
       //Handles the Bad JSON exceptions
       this.app.use(parser.json(), (err, req, res, next) => {
         if (err instanceof SyntaxError) {
@@ -72,9 +103,237 @@ export class webServer {
         next();
       });
 
-      this.app.get("/", this.default);
-      this.app.ws("/notifications/control.ashx", this.controlSocket);
-      this.app.ws("/relay/webrelay.ashx", this.webrelaySocket);
+      //Default and Authorization routes
+      this.app.get("/", this.isAuthenticated, this.default);
+      this.app.post('/authorize', function (request, response) {
+        var username = request.body.username;
+        var password = request.body.password;
+        if (username && password) {
+          // todo: implement a more advanced authentication system and RBAC
+          if (username === EnvReader.GlobalEnvConfig.webadminuser && password === EnvReader.GlobalEnvConfig.webadminpassword) {
+            request.session.loggedin = true;
+            request.session.username = username;
+            response.redirect('/index.htm');
+          } else {
+            response.send('Incorrect Username and/or Password!');
+          }
+          response.end();
+        } else {
+          response.send('Please enter Username and Password!');
+          response.end();
+        }
+      });
+      this.app.get("/logout", function (request, response) {
+        if (request.session) {
+          request.session.destroy();
+        }
+        response.redirect("/");
+      });
+
+      // Console connects to this websocket for a persistent connection
+      this.notificationwss.on('connection', async (ws, req) => {
+        this.users[ws] = ws;
+        // log.debug("New control websocket.");
+        ws.on("message", msg => {
+          log.debug(`Incoming control message from browser: ${msg}`);
+        });
+
+        ws.on("close", req => {
+          // log.debug("Closing control websocket.");
+          delete this.users[ws];
+        });
+      });
+
+      // Relay websocket. KVM & SOL use this websocket.
+      this.relaywss.on('connection', async (ws, req) => {
+        try {
+          var base = `${this.config.https ? 'https' : 'http'}://${this.config.commonName}:${this.config.webport}/`;
+          var req_query_url = new URL(req.url, base);
+          req.query = {
+            host: req_query_url.searchParams.get('host'), port: req_query_url.searchParams.get('port'),
+            p: req_query_url.searchParams.get('p'), tls: req_query_url.searchParams.get('tls'), tls1only: req_query_url.searchParams.get('tls1only')
+          }
+          ws._socket.pause();
+          //console.log('Socket paused', ws._socket);
+
+          // When data is received from the web socket, forward the data into the associated TCP connection.
+          // If the TCP connection is pending, buffer up the data until it connects.
+          ws.on("message", msg => {
+            // Convert a buffer into a string, "msg = msg.toString('ascii');" does not work
+            //var msg2 = "";
+            //for (var i = 0; i < msg.length; i++) { msg2 += String.fromCharCode(msg[i]); }
+            //msg = msg2;
+            msg = msg.toString("binary");
+
+            if (ws.interceptor) {
+              msg = ws.interceptor.processBrowserData(msg);
+            } // Run data thru interceptor
+            ws.forwardclient.write(msg); // Forward data to the associated TCP connection.
+          });
+
+          // If the web socket is closed, close the associated TCP connection.
+          ws.on("close", () => {
+            log.debug(
+              `Closing web socket connection to  ${req.query.host}: ${req.query.port}.`
+            );
+            if (ws.forwardclient) {
+              if (ws.forwardclient.close) {
+                ws.forwardclient.close();
+              }
+              try {
+                if (ws.forwardclient.destroy)
+                  ws.forwardclient.destroy();
+              } catch (e) {
+                log.error(`Exception while destroying AMT CIRA channel: ${e}`);
+              }
+            }
+          });
+
+          // We got a new web socket connection, initiate a TCP connection to the target Intel AMT host/port.
+          log.debug(
+            `Opening web socket connection to ${req.query.host}: ${req.query.port}.`
+          );
+
+          // Fetch Intel AMT credentials & Setup interceptor
+          let credentials = await this.db.getAmtPassword(req.query.host);
+          //obj.debug("Credential for " + req.query.host + " is " + JSON.stringify(credentials));
+
+          if (credentials != null) {
+            log.debug("Creating credential");
+            if (req.query.p == 1) {
+              ws.interceptor = interceptor.CreateHttpInterceptor({
+                host: req.query.host,
+                port: req.query.port,
+                user: credentials[0],
+                pass: credentials[1]
+              });
+            } else if (req.query.p == 2) {
+              ws.interceptor = interceptor.CreateRedirInterceptor({
+                user: credentials[0],
+                pass: credentials[1]
+              });
+            }
+          }
+
+          if (req.query.tls == 0) {
+            // If this is TCP (without TLS) set a normal TCP socket
+            // check if this is MPS connection
+            var uuid = req.query.host;
+            if (uuid && this.mpsService.mpsserver.ciraConnections[uuid]) {
+              var ciraconn = this.mpsService.mpsserver.ciraConnections[uuid];
+              ws.forwardclient = this.mpsService.mpsserver.SetupCiraChannel(
+                ciraconn,
+                req.query.port
+              );
+
+              ws.forwardclient.xtls = 0;
+              ws.forwardclient.onData = (ciraconn, data) => {
+                // Run data thru interceptor
+                if (ws.interceptor) {
+                  data = ws.interceptor.processAmtData(data);
+                }
+                try {
+                  ws.send(data);
+                } catch (e) {
+                  log.error(`Exception while forwarding data to client: ${e}`);
+                }
+              };
+
+              ws.forwardclient.onStateChange = (ciraconn, state) => {
+                //console.log('Relay CIRA state change:'+state);
+                if (state == 0) {
+                  try {
+                    //console.log("Closing websocket.");
+                    ws.close();
+                  } catch (e) {
+                    log.error(`Exception while closing client websocket connection: ${e}`);
+                  }
+                }
+              };
+              ws._socket.resume();
+            } else {
+              ws.forwardclient = new net.Socket();
+              ws.forwardclient.setEncoding("binary");
+              ws.forwardclient.forwardwsocket = ws;
+            }
+          } else {
+            // If TLS is going to be used, setup a TLS socket
+            log.info("TLS Enabled!");
+            var tlsoptions = {
+              secureProtocol:
+                req.query.tls1only == 1 ? "TLSv1_method" : "SSLv23_method",
+              ciphers: "RSA+AES:!aNULL:!MD5:!DSS",
+              secureOptions:
+                constants.SSL_OP_NO_SSLv2 |
+                constants.SSL_OP_NO_SSLv3 |
+                constants.SSL_OP_NO_COMPRESSION |
+                constants.SSL_OP_CIPHER_SERVER_PREFERENCE,
+              rejectUnauthorized: false
+            };
+            ws.forwardclient = tls.connect(
+              req.query.port,
+              req.query.host,
+              tlsoptions,
+              () => {
+                // The TLS connection method is the same as TCP, but located a bit differently.
+                log.debug(`TLS connected to ${req.query.host}: ${req.query.port}.`);
+                ws._socket.resume();
+              }
+            );
+            ws.forwardclient.setEncoding("binary");
+            ws.forwardclient.forwardwsocket = ws;
+          }
+
+          //Add handlers to socket. 
+          if (ws.forwardclient instanceof net.Socket) {
+            // When we receive data on the TCP connection, forward it back into the web socket connection.
+            ws.forwardclient.on("data", data => {
+              if (ws.interceptor) {
+                data = ws.interceptor.processAmtData(data);
+              } // Run data thru interceptor
+              try {
+                ws.send(data);
+              } catch (e) {
+                log.error(`Exception while forwarding data to client: ${e}`);
+              }
+            });
+
+            // If the TCP connection closes, disconnect the associated web socket.
+            ws.forwardclient.on("close", () => {
+              log.debug(
+                `TCP disconnected from ${req.query.host} : ${req.query.port}.`
+              );
+              try {
+                ws.close();
+              } catch (e) { }
+            });
+
+            // If the TCP connection causes an error, disconnect the associated web socket.
+            ws.forwardclient.on("error", err => {
+              log.debug(
+                `TCP disconnected with error from ${req.query.host}:${
+                req.query.port
+                }:${err.code},${req.url}`
+              );
+              try {
+                ws.close();
+              } catch (e) { }
+            });
+          }
+
+          if (req.query.tls == 0) {
+            if (!this.mpsService.mpsComputerList[req.query.host]) {
+              // A TCP connection to Intel AMT just connected, send any pending data and start forwarding.
+              ws.forwardclient.connect(req.query.port, req.query.host, () => {
+                log.debug(`TCP connected to ${req.query.host}:${req.query.port}.`);
+                ws._socket.resume();
+              });
+            }
+          }
+        } catch (err) {
+          log.error("Exception Caught: ", err);
+        }
+      });
 
       // Validates GUID format
       this.app.use((req, res, next) => {
@@ -93,10 +352,28 @@ export class webServer {
       });
 
       //Routes
-      this.app.use("/amt", amt.router);
-      this.app.use("/admin", admin.router);
+      this.app.use("/amt", this.isAuthenticated, amt.router);
+      this.app.use("/admin", this.isAuthenticated, admin.router);
 
-      // Start the ExpressJS web server
+      //Handle upgrade on websocket
+      this.server.on('upgrade', (request, socket, head) => {
+        this.sessionParser(request, {}, () => {
+          if (request.session && request.session.loggedin === true) { //Validate if the user session is active and valid. TODO: Add user validation if needed
+            this.handleUpgrade(request, socket, head)
+          }
+          // else if (request.headers['X-MPS-API-Key'] && //Validate REST API key
+          //   request.headers['X-MPS-API-Key'] === this.config.mpsxapikey) {
+          //   this.handleUpgrade(request, socket, head)
+          // }
+          else {//Auth failed
+            log.info('WebSocket authentication failed. Closing connection...');
+            socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+            socket.destroy();
+          }
+        })
+      });
+
+      //Validate port number
       var port = 3000;
       if (this.config.webport != null) {
         port = this.config.webport;
@@ -105,9 +382,10 @@ export class webServer {
         port = 3000;
       }
 
+      // Start the ExpressJS web server
       if (this.config.https) {
         if (this.config.listenany && this.config.listenany == true) {
-          this.serverHttps.listen(port, () => {
+          this.server.listen(port, () => {
             log.info(
               `MPS Microservice running on https://${
               this.config.commonName
@@ -116,22 +394,22 @@ export class webServer {
           });
         } else {
           //Only accept request from local host
-          this.serverHttps.listen(port, "127.0.0.1", () => {
+          this.server.listen(port, "127.0.0.1", () => {
             log.info(`MPS Microservice running on https://127.0.0.1:${port}.`);
           });
         }
       } else {
         if (this.config.listenany && this.config.listenany == true) {
-          this.app.listen(port, () => {
+          this.server.listen(port, () => {
             log.info(
-              `MPS Microservice running on https://${
+              `MPS Microservice running on http://${
               this.config.commonName
               }:${port}.`
             );
           });
         } else {
-          this.app.listen(port, "127.0.0.1", () => {
-            log.info(`MPS Microservice running on https://127.0.0.1:${port}.`);
+          this.server.listen(port, "127.0.0.1", () => {
+            log.info(`MPS Microservice running on http://127.0.0.1:${port}.`);
           });
         }
       }
@@ -140,6 +418,55 @@ export class webServer {
     }
   }
 
+  //Authentication for REST API and Web User login
+  isAuthenticated = (req, res, next) => {
+
+    if (req.session.loggedin) {
+      return next();
+    }
+
+    if (req.header('User-Agent').startsWith('Mozilla')) {
+      // all browser calls that are not authenticated
+      if (
+        // This is to handle REST API calls from browser.
+        req.method == "POST" &&
+        (req.originalUrl.indexOf("/amt") >= 0 || req.originalUrl.indexOf("/admin") >= 0)
+      ) {
+        res.status(401).end("Authentication failed or Login Expired. Please try logging in again.")
+        return;
+      }
+      res.redirect('/login.htm')
+      return;
+    }
+    // other api calls
+    if (req.header('X-MPS-API-Key') !== this.config.mpsxapikey) {
+      res.status(401).end("API key authentication failed. Please try again.")
+      return;
+    }
+    else
+      return next();
+  }
+
+  //Handle Upgrade - WebSocket
+  handleUpgrade(request, socket, head) {
+    var base = `${this.config.https ? 'https' : 'http'}://${this.config.commonName}:${this.config.webport}/`;
+    const pathname = (new URL(request.url, base)).pathname;
+    if (pathname === '/notifications/control.ashx') {
+      this.notificationwss.handleUpgrade(request, socket, head, (ws) => {
+        this.notificationwss.emit('connection', ws, request);
+      });
+    } else if (pathname === '/relay/webrelay.ashx') {
+      this.relaywss.handleUpgrade(request, socket, head, (ws) => {
+        this.relaywss.emit('connection', ws, request);
+      });
+    } else { //Invalid endpoint
+      log.info('Route does not exist. Closing connection...');
+      socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+      socket.destroy();
+    }
+  }
+
+  //Notify clients connected through browser web socket
   notifyUsers(msg) {
     for (var i in this.users) {
       try {
@@ -152,201 +479,15 @@ export class webServer {
 
   // Indicates that any request to "/" should be redirected to "/default.htm" which is the Mesh Commander web application.
   default = (req, res) => {
+    if (req.session.loggedin) {
+      res.redirect("/index.htm")
+      return;
+    }
     res.set({
       "Cache-Control": "no-cache, no-store, must-revalidate",
       Pragma: "no-cache",
       Expires: "0"
     });
-    res.redirect("/index.htm");
-  };
-
-  //Browser/Console connects to this websocket for a persistent connection
-  controlSocket = (ws, req) => {
-    this.users[ws] = ws;
-    // log.debug("New control websocket.");
-    ws.on("message", msg => {
-      log.debug(`Incoming control message from browser: ${msg}`);
-    });
-
-    ws.on("close", req => {
-      // log.debug("Closing control websocket.");
-      delete this.users[ws];
-    });
-  };
-
-  // Indicates to ExpressJS what we want to handle websocket requests on "/webrelay.ashx".
-  //This is the same URL as IIS making things simple, we can use the same web application for both IIS and Node.
-  webrelaySocket = async (ws, req) => {
-    try {
-      ws._socket.pause();
-
-      // When data is received from the web socket, forward the data into the associated TCP connection.
-      // If the TCP connection is pending, buffer up the data until it connects.
-      ws.on("message", msg => {
-        // Convert a buffer into a string, "msg = msg.toString('ascii');" does not work
-        //var msg2 = "";
-        //for (var i = 0; i < msg.length; i++) { msg2 += String.fromCharCode(msg[i]); }
-        //msg = msg2;
-        msg = msg.toString("binary");
-
-        if (ws.interceptor) {
-          msg = ws.interceptor.processBrowserData(msg);
-        } // Run data thru interceptor
-        ws.forwardclient.write(msg); // Forward data to the associated TCP connection.
-      });
-
-      // If the web socket is closed, close the associated TCP connection.
-      ws.on("close", () => {
-        log.debug(
-          `Closing web socket connection to  ${req.query.host}: ${req.query.port}.`
-        );
-        if (ws.forwardclient) {
-          if (ws.forwardclient.close) {
-            ws.forwardclient.close();
-          }
-          try {
-            ws.forwardclient.destroy();
-          } catch (e) { }
-        }
-      });
-
-      // We got a new web socket connection, initiate a TCP connection to the target Intel AMT host/port.
-      log.debug(
-        `Opening web socket connection to ${req.query.host}: ${req.query.port}.`
-      );
-
-      // Fetch Intel AMT credentials & Setup interceptor
-      let credentials = await this.db.getAmtPassword(req.query.host);
-      //obj.debug("Credential for " + req.query.host + " is " + JSON.stringify(credentials));
-
-      if (credentials != null) {
-        log.debug("Creating credential");
-        if (req.query.p == 1) {
-          ws.interceptor = interceptor.CreateHttpInterceptor({
-            host: req.query.host,
-            port: req.query.port,
-            user: credentials[0],
-            pass: credentials[1]
-          });
-        } else if (req.query.p == 2) {
-          ws.interceptor = interceptor.CreateRedirInterceptor({
-            user: credentials[0],
-            pass: credentials[1]
-          });
-        }
-      }
-
-      if (req.query.tls == 0) {
-        // If this is TCP (without TLS) set a normal TCP socket
-        // check if this is MPS connection
-        var uuid = req.query.host;
-        if (uuid && this.mpsService.mpsserver.ciraConnections[uuid]) {
-          var ciraconn = this.mpsService.mpsserver.ciraConnections[uuid];
-          ws.forwardclient = this.mpsService.mpsserver.SetupCiraChannel(
-            ciraconn,
-            req.query.port
-          );
-
-          ws.forwardclient.xtls = 0;
-          ws.forwardclient.onData = (ciraconn, data) => {
-            // Run data thru interceptor
-            if (ws.interceptor) {
-              data = ws.interceptor.processAmtData(data);
-            }
-            try {
-              ws.send(data);
-            } catch (e) { }
-          };
-
-          ws.forwardclient.onStateChange = (ciraconn, state) => {
-            //console.log('Relay CIRA state change:'+state);
-            if (state == 0) {
-              try {
-                //console.log("Closing websocket.");
-                ws.close();
-              } catch (e) { }
-            }
-          };
-          ws._socket.resume();
-        } else {
-          ws.forwardclient = new net.Socket();
-          ws.forwardclient.setEncoding("binary");
-          ws.forwardclient.forwardwsocket = ws;
-        }
-      } else {
-        // If TLS is going to be used, setup a TLS socket
-        log.info("TLS Enabled!");
-        var tlsoptions = {
-          secureProtocol:
-            req.query.tls1only == 1 ? "TLSv1_method" : "SSLv23_method",
-          ciphers: "RSA+AES:!aNULL:!MD5:!DSS",
-          secureOptions:
-            constants.SSL_OP_NO_SSLv2 |
-            constants.SSL_OP_NO_SSLv3 |
-            constants.SSL_OP_NO_COMPRESSION |
-            constants.SSL_OP_CIPHER_SERVER_PREFERENCE,
-          rejectUnauthorized: false
-        };
-        ws.forwardclient = tls.connect(
-          req.query.port,
-          req.query.host,
-          tlsoptions,
-          () => {
-            // The TLS connection method is the same as TCP, but located a bit differently.
-            log.debug(`TLS connected to ${req.query.host}: ${req.query.port}.`);
-            ws._socket.resume();
-          }
-        );
-        ws.forwardclient.setEncoding("binary");
-        ws.forwardclient.forwardwsocket = ws;
-      }
-
-      //Add handlers to socket. 
-      if (ws.forwardclient instanceof net.Socket) {
-        // When we receive data on the TCP connection, forward it back into the web socket connection.
-        ws.forwardclient.on("data", data => {
-          if (ws.interceptor) {
-            data = ws.interceptor.processAmtData(data);
-          } // Run data thru interceptor
-          try {
-            ws.send(data);
-          } catch (e) { }
-        });
-
-        // If the TCP connection closes, disconnect the associated web socket.
-        ws.forwardclient.on("close", () => {
-          log.debug(
-            `TCP disconnected from ${req.query.host} : ${req.query.port}.`
-          );
-          try {
-            ws.close();
-          } catch (e) { }
-        });
-
-        // If the TCP connection causes an error, disconnect the associated web socket.
-        ws.forwardclient.on("error", err => {
-          log.debug(
-            `TCP disconnected with error from ${req.query.host}:${
-            req.query.port
-            }:${err.code},${req.url}`
-          );
-          try {
-            ws.close();
-          } catch (e) { }
-        });
-      }
-
-      if (req.query.tls == 0) {
-        if (!this.mpsService.mpsComputerList[req.query.host]) {
-          // A TCP connection to Intel AMT just connected, send any pending data and start forwarding.
-          ws.forwardclient.connect(req.query.port, req.query.host, () => {
-            log.debug(`TCP connected to ${req.query.host}:${req.query.port}.`);
-            ws._socket.resume();
-          });
-        }
-      }
-    } catch (err) {
-      console.log("Exception Caught: ", err.message);
-    }
-  };
+    res.redirect("/login.htm");
+  }
 }

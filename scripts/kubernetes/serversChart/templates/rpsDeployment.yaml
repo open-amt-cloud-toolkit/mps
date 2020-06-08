@@ -1,0 +1,93 @@
+#/*********************************************************************
+# Copyright (c) Intel Corporation 2020
+# SPDX-License-Identifier: Apache-2.0
+#**********************************************************************/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azure-rcs
+spec:
+  replicas: {{ .Values.mps.replicaCount }}
+  selector:
+    matchLabels:
+      app: azure-rcs
+  template:
+    metadata:
+      labels:
+        app: azure-rcs
+    spec:
+      imagePullSecrets:
+        - name: {{ .Values.images.pullSecret }}
+      initContainers:
+      - name: check-db-ready
+        image: {{ .Values.images.postgresdb }}
+        command: ['sh', '-c', 
+          'until pg_isready -h postgres -p 5432; 
+          do echo waiting for database; sleep 2; done;']
+      containers:
+      - name: azure-rcs
+        image: {{ .Values.images.rps }}
+        env:
+          - name: "DEVELOPER_MODE"
+            value: "{{ .Values.rps.devmode }}"
+          - name: "USEVAULT"
+            value: "{{ .Values.rps.useVault }}"
+          - name: "NODE_ENV"
+            value: "{{ .Values.rps.nodeEnv }}"
+          - name: "HTTPS"
+            value: "{{ .Values.rps.https }}"
+          - name: "USE_DB_PROFILES"
+            value: "{{ .Values.rps.useDBProfiles }}"
+          - name: "DB_HOST"
+            value: "{{ .Values.rps.dbHost }}"
+          - name: "DB_NAME"
+            value: "{{ .Values.backenddb.dbName }}"
+          - name: "DB_PORT"
+            value: "{{ .Values.rps.dbPort }}"
+          - name: "DB_USER"
+            value: "{{ .Values.backenddb.dbUser }}"
+          - name: "DB_PASSWORD"
+            value: "{{ .Values.backenddb.dbPassword }}"
+          - name: "WEBSOCKETTLS"
+            value: "{{ .Values.rps.webSocketTLS }}"
+          - name: WEB_TLS_CERT
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.rpsSecretStoreNames.rpscerts }}
+                key: {{ .Values.rps.webcertpublic }}
+          - name: WEB_TLS_CERT_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.rpsSecretStoreNames.rpscerts }}
+                key: {{ .Values.rps.webcertkey }}
+          - name: ROOT_CA_CERT
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.rpsSecretStoreNames.rpscerts }}
+                key: {{ .Values.rps.rootcacert }}
+          - name: XAPIKEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.rpsSecretStoreNames.api }}
+                key: {{ .Values.rps.apikeyKeyName }}
+          - name: "VAULT_ADDR"
+            value : "{{ .Values.rps.vaultAddr }}"
+          - name: VAULT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.rpsSecretStoreNames.vault }}
+                key: {{ .Values.rps.vaultkey }}
+          - name: "SECRETS_PATH"
+            value: "{{ .Values.rps.secretsPath }}"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 784Mi
+        ports:
+        - containerPort: {{ .Values.rps.rcswsPort }}
+          name: rcs
+        - containerPort: {{ .Values.rps.rcswebPort }}
+          name: rcsweb

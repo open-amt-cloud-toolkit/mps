@@ -17,10 +17,11 @@ import * as util from "util";
 
 import { configType } from "../models/Config";
 import { logger as log } from "./logger";
+import { IDbProvider } from '../models/IDbProvider';
 
 const readFileAsync = util.promisify(fs.readFile);
 
-export class dataBase {
+export class dataBase implements IDbProvider {
   private config: configType;
   private datapath: string;
 
@@ -36,7 +37,7 @@ export class dataBase {
   // Mock up code, real deployment must use proper data providers
   async getAllGUIDS() {
     let guids = [];
-    let guidsFilePath = path.join(__dirname, "../../private/guids.json");
+    let guidsFilePath = path.join(this.datapath, this.config.guidspath);
     try {
       if (fs.existsSync(guidsFilePath)) {
         guids = JSON.parse(await readFileAsync(guidsFilePath, "utf8"));
@@ -52,7 +53,7 @@ export class dataBase {
   //Check: why orgs
   async getAllOrgs() {
     var guids = [];
-    let orgsFilePath = path.join(__dirname, "../../private/orgs.json");
+    let orgsFilePath = path.join(this.datapath, this.config.orgspath);
     try {
       if (fs.existsSync(orgsFilePath)) {
         guids = JSON.parse(await readFileAsync(orgsFilePath, "utf8"));
@@ -67,10 +68,7 @@ export class dataBase {
 
   async getAllCredentials() {
     var credentials = {};
-    let credentialsFilePath = path.join(
-      __dirname,
-      "../../private/credentials.json"
-    );
+    let credentialsFilePath = path.join(this.datapath,  this.config.credentialspath);
     try {
       if (fs.existsSync(credentialsFilePath)) {
         credentials = JSON.parse(
@@ -110,7 +108,7 @@ export class dataBase {
   }
 
   // check if a GUID is allowed to connect
-  async IsGUIDApproved(guid, func) {
+  async IsGUIDApproved(guid, cb) {
     try {
       var result = false;
       if (this.config && this.config.usewhitelist) {
@@ -121,8 +119,8 @@ export class dataBase {
       } else {
         result = true;
       }
-      if (func) {
-        func(result);
+      if (cb) {
+        cb(result);
       }
     } catch (error) {
         log.error(`Exception in IsGUIDApproved: ${error}`);
@@ -130,7 +128,7 @@ export class dataBase {
   }
 
   // check if a Organization is allowed to connect
-  async IsOrgApproved(org, func) {
+  async IsOrgApproved(org, cb) {
     try {
       var result = false;
       if (this.config && this.config.usewhitelist) {
@@ -141,8 +139,8 @@ export class dataBase {
       } else {
         result = true;
       }
-      if (func) {
-        func(result);
+      if (cb) {
+        cb(result);
       }
     } catch (error) {
         log.error(`Exception in IsOrgApproved: ${error}`);
@@ -156,7 +154,7 @@ export class dataBase {
       var cred = await this.getCredentialsForGuid(guid);
       if (cred && cred.mpsuser == username && cred.mpspass == password) {
         result = true;
-      } else if (this.config.useglobalmpscredentials) {
+      } else if (cred && this.config.useglobalmpscredentials) {
         if (this.config.mpsusername == username && this.config.mpspass == password) {
           result = true;
         }

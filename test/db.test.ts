@@ -2,10 +2,11 @@
 * Copyright (c) Intel Corporation 2019
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
-import {dataBase} from '../src/utils/db';
+import { dataBase } from '../src/utils/db';
+import { configType } from '../src/models/Config';
 
-let config = {
-    "usewhitelist" : true,
+let config: configType = {
+    "usewhitelist": true,
     "commonName": "localhost",
     "mpsport": 4433,
     "mpsusername": "standalone",
@@ -17,9 +18,18 @@ let config = {
     "listenany": true,
     "https": true,
     "mpstlsoffload": false,
-    "webport" : 3000,
+    "webport": 3000,
     "generateCertificates": true,
-    "loggeroff": true
+    "debugLevel": 2,
+    "loggeroff": false,
+    "credentialspath": "../../private/credentials.json",
+    "orgspath": "../../private/orgs.json",
+    "guidspath": "../../private/guids.json",
+    "developermode": true,
+    "webadminuser": "standalone",
+    "webadminpassword": "G@ppm0ym",
+    "mpsxapikey": "APIKEYFORMPS123!",
+    "sessionEncryptionKey": ""
 }
 
 describe("Use GUID whitelisting: ", () => {

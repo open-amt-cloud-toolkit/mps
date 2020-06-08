@@ -1,7 +1,7 @@
 # Release Notes
 
 ## MPS V1
-MPS server migrated to typescript project from traditional node js. All the REST API interfaces are changed to new interfaces. Now, there are four end points which are categarized based on the functionality.
+MPS server migrated to typescript project from traditional node js. All the REST API interfaces are changed to new interfaces.Now, there are four end points which are categarized based on the functionality.
 
 * /admin - for all the admin user operations like downloading mescript, root certificate, disconnected device etc.
 * /amt - for all AMT operations

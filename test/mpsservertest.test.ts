@@ -9,14 +9,14 @@ import * as fs from 'fs';
 import * as https from 'https';
 import * as forge from 'node-forge';
 import { certificates } from '../src/utils/certificates';
-import { certificatesType } from '../src/models/Config';
+import { certificatesType, configType } from '../src/models/Config';
 import * as path from 'path';
 import { dataBase } from "../src/utils/db";
 import { mpsMicroservice } from '../src/mpsMicroservice';
 import { mpsServer } from '../src/server/mpsserver';
 
 // Parsing configuration
-let config = {
+let config: configType = {
     "usewhitelist": false,
     "commonName": "localhost",
     "mpsport": 4433,
@@ -31,12 +31,22 @@ let config = {
     "mpstlsoffload": false,
     "webport": 3000,
     "generateCertificates": true,
-    "loggeroff": true
+    "debugLevel": 2,
+    "loggeroff": false,
+    "credentialspath": 'credentials.json',
+    "orgspath": 'orgs.json',
+    "guidspath": 'guids.json',
+    "developermode": true,
+    "webadminuser": "standalone",
+    "webadminpassword": "G@ppm0ym",
+    "mpsxapikey": "APIKEYFORMPS123!",
+    "sessionEncryptionKey": ""
 };
 
 let pki = forge.pki;
 let certs : certificatesType;
 let certPath = path.join(__dirname, 'private');
+let dbPath = path.join(__dirname, 'private');
 let db: dataBase;
 let mpsService: mpsMicroservice;
 let mps: mpsServer;
@@ -52,7 +62,7 @@ describe('MPS Server', function () {
             console.log(`Failed to create Cert path ${certPath}. Create if it doesnt exist`);
         }
         certs = await certificates.generateCertificates(config, certPath);
-        db = new dataBase(config, null);
+        db = new dataBase(config, dbPath);
         mpsService = new mpsMicroservice(config, db, certs);
         mps = new mpsServer(mpsService);
         

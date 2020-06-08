@@ -16,7 +16,7 @@ IF "%1"=="" goto :STABLE
 IF "%1"=="testing" goto :TESTING
 
 :STABLE
-  echo Starting MPS [%STABLE_VERSION%] ...
+  echo Starting Danger Bay [%STABLE_VERSION%] ...
   docker run -it -p 4433:4433 -p 3000:3000 %DOCKER_IMAGE%:%STABLE_VERSION%
   goto :END
 

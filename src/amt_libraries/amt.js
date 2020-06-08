@@ -581,10 +581,14 @@ function AmtStackCreateService(wsmanStack) {
         return "Unknown Sensor Type #" + eventSensorType;
     }
 
-// ###BEGIN###{AuditLog}
+    // ###BEGIN###{AuditLog}
 
     // Useful link: https://software.intel.com/sites/manageability/AMT_Implementation_and_Reference_Guide/default.htm?turl=WordDocuments%2Fsecurityadminevents.htm
-
+    var atob = require("atob");
+    function MakeToArray(v) { if (!v || v == null || typeof v == 'object') return v; return [v]; }
+    function ReadShort(v, p) { return (v.charCodeAt(p) << 8) + v.charCodeAt(p + 1); }
+    function ReadInt(v, p) { return (v.charCodeAt(p) * 0x1000000) + (v.charCodeAt(p + 1) << 16) + (v.charCodeAt(p + 2) << 8) + v.charCodeAt(p + 3); } 
+    function ReadIntX(v, p) { return (v[p + 3] * 0x1000000) + (v[p + 2] << 16) + (v[p + 1] << 8) + v[p]; }
     var _AmtAuditStringTable =
     {
         16: 'Security Admin',
@@ -697,48 +701,57 @@ function AmtStackCreateService(wsmanStack) {
     // TODO: Just put some of them here, but many more still need to be added, helpful link here:
     // https://software.intel.com/sites/manageability/AMT_Implementation_and_Reference_Guide/default.htm?turl=WordDocuments%2Fsecurityadminevents.htm
     obj.GetAuditLogExtendedDataStr = function (id, data) {
-        if ((id == 1602 || id == 1604) && data[0] == 0) { return data.splice(2, 2 + data[1]).toString(); } // ACL Entry Added/Removed (Digest)
-        if (id == 1603) { if (data[1] == 0) { return data.splice(3).toString(); } return null; } // ACL Entry Modified
-        if (id == 1605) { return ["Invalid ME access", "Invalid MEBx access"][data[0]]; } // ACL Access with Invalid Credentials
-        if (id == 1606) { var r = ["Disabled", "Enabled"][data[0]]; if (data[1] == 0) { r += ", " + data[3]; } return r; } // ACL Entry State
-        if (id == 1607) { return "Remote " + ["NoAuth", "ServerAuth", "MutualAuth"][data[0]] + ", Local " + ["NoAuth", "ServerAuth", "MutualAuth"][data[1]]; } // TLS State Changed
-        if (id == 1617) { return obj.RealmNames[ReadInt(data, 0)] + ", " + ["NoAuth", "Auth", "Disabled"][data[4]]; } // Set Realm Authentication Mode
-        if (id == 1619) { return ["BIOS", "MEBx", "Local MEI", "Local WSMAN", "Remote WSAMN"][data[0]]; } // Intel AMT Unprovisioning Started
+        if ((id == 1602 || id == 1604) && data.charCodeAt(0) == 0) { return data.substring(2, 2 + data.charCodeAt(1)); } // ACL Entry Added/Removed (Digest)
+        if (id == 1603) { if (data.charCodeAt(1) == 0) { return data.substring(3); } return null; } // ACL Entry Modified
+        if (id == 1605) { return ["Invalid ME access", "Invalid MEBx access"][data.charCodeAt(0)]; } // ACL Access with Invalid Credentials
+        if (id == 1606) { var r = ["Disabled", "Enabled"][data.charCodeAt(0)]; if (data.charCodeAt(1) == 0) { r += ", " + data.substring(3); } return r;} // ACL Entry State
+        if (id == 1607) { return "Remote " + ["NoAuth", "ServerAuth", "MutualAuth"][data.charCodeAt(0)] + ", Local " + ["NoAuth", "ServerAuth", "MutualAuth"][data.charCodeAt(1)]; } // TLS State Changed
+        if (id == 1617) { return obj.RealmNames[ReadInt(data, 0)] + ", " + ["NoAuth", "Auth", "Disabled"][data.charCodeAt(4)]; } // Set Realm Authentication Mode
+        if (id == 1619) { return ["BIOS", "MEBx", "Local MEI", "Local WSMAN", "Remote WSAMN"][data.charCodeAt(0)]; } // Intel AMT Unprovisioning Started
         if (id == 1900) { return "From " + ReadShort(data, 0) + "." + ReadShort(data, 2) + "." + ReadShort(data, 4) + "." + ReadShort(data, 6) + " to " + ReadShort(data, 8) + "." + ReadShort(data, 10) + "." + ReadShort(data, 12) + "." + ReadShort(data, 14); } // Firmware Updated
         if (id == 2100) { var t4 = new Date(); t4.setTime(ReadInt(data, 0) * 1000 + (new Date().getTimezoneOffset() * 60000)); return t4.toLocaleString(); } // Intel AMT Time Set
-        if (id == 3000) { return "From " + ["None", "KVM", "All"][data[0]] + " to " + ["None", "KVM", "All"][data[1]]; } // Opt-In Policy Change
-        if (id == 3001) { return ["Success", "Failed 3 times"][data[0]]; } // Send Consent Code Event
+        if (id == 3000) { return "From " + ["None", "KVM", "All"][data.charCodeAt(0)] + " to " + ["None", "KVM", "All"][data.charCodeAt(1)]; } // Opt-In Policy Change
+        if (id == 3001) { return ["Success", "Failed 3 times"][data.charCodeAt(0)]; } // Send Consent Code Event
         return null;
     }
 
-    obj.GetAuditLog = function (func) {
-        obj.AMT_AuditLog_ReadRecords(1, _GetAuditLog0, [func, []]);
+    obj.GetAuditLogChunks = function(startIndex,func){
+        if(startIndex > 0)
+            obj.AMT_AuditLog_ReadRecords(startIndex, _GetAuditLogOnIndex, [func, []]);
+        else
+            obj.AMT_AuditLog_ReadRecords(1, _GetAuditLogWithoutIndex, [func, []]);
     }
 
-    function MakeToArray(v) { if (!v || v == null || typeof v == 'object') return v; return [v]; }
-    function ReadShort(v, p) { return (v[p] << 8) + v[p + 1]; }
-    function ReadInt(v, p) { return (v[p] * 0x1000000) + (v[p + 1] << 16) + (v[p + 2] << 8) + v[p + 3]; } // We use "*0x1000000" instead of "<<24" because the shift converts the number to signed int32.
-    function ReadIntX(v, p) { return (v[p + 3] * 0x1000000) + (v[p + 2] << 16) + (v[p + 1] << 8) + v[p]; }
-    function btoa(x) { return Buffer.from(x).toString('base64'); }
-    function atob(x) { var z = null; try { z = Buffer.from(x, 'base64').toString(); } catch (e) { console.log(e); } return z; }
-
-    function _GetAuditLog0(stack, name, responses, status, tag) {
+    function _GetAuditLogWithoutIndex(stack, name, responses, status, tag) {
         if (status != 200) { tag[0](obj, [], status); return; }
-        var ptr, i, e, es, x, r = tag[1], t = new Date(), TimeStamp;
+        var res = {
+            totalCnt: responses.Body['TotalRecordCount'],
+            records: tag[1]
+        }
+        if(res.totalCnt > 10) {
+            obj.AMT_AuditLog_ReadRecords(res.totalCnt - 9, _GetAuditLogOnIndex, [tag[0], []]);
+        }else{
+            obj.AMT_AuditLog_ReadRecords(1, _GetAuditLogOnIndex, [func, []]);
+        }
+    }
 
+    function _GetAuditLogOnIndex(stack, name, responses, status, tag) {
+        var res = {
+            totalCnt: responses.Body['TotalRecordCount'],
+            records: tag[1]
+        }
+        var ptr, i, e, es, x, t = new Date(), TimeStamp;
         if (responses.Body['RecordsReturned'] > 0) {
             responses.Body['EventRecords'] = MakeToArray(responses.Body['EventRecords']);
 
             for (i in responses.Body['EventRecords']) {
                 e = null;
                 try {
-                    es = atob(responses.Body['EventRecords'][i]);
-                    e = new Buffer(es);
-                } catch (ex) {
-                    console.log(ex + " " + responses.Body['EventRecords'][i])
+                    e = atob(responses.Body['EventRecords'][i]);
+                } catch (e) {
+                    console.log(e + " " + responses.Body['EventRecords'][i])
                 }
-
-                x = { 'AuditAppID': ReadShort(e, 0), 'EventID': ReadShort(e, 2), 'InitiatorType': e[4] };
+                x = { 'AuditAppID': ReadShort(e, 0), 'EventID': ReadShort(e, 2), 'InitiatorType': e.charCodeAt(4) };
                 x['AuditApp'] = _AmtAuditStringTable[x['AuditAppID']];
                 x['Event'] = _AmtAuditStringTable[(x['AuditAppID'] * 100) + x['EventID']];
                 if (!x['Event']) x['Event'] = '#' + x['EventID'];
@@ -746,15 +759,15 @@ function AmtStackCreateService(wsmanStack) {
                 // Read and process the initiator
                 if (x['InitiatorType'] == 0) {
                     // HTTP digest
-                    var userlen = e[5];
-                    x['Initiator'] = e.slice(6, 6 + userlen).toString();
+                    var userlen = e.charCodeAt(5);
+                    x['Initiator'] = e.substring(6, 6 + userlen);
                     ptr = 6 + userlen;
                 }
                 if (x['InitiatorType'] == 1) {
                     // Kerberos
                     x['KerberosUserInDomain'] = ReadInt(e, 5);
-                    var userlen = e[9];
-                    x['Initiator'] = GetSidString(e.slice(10, 10 + userlen));
+                    var userlen = e.charCodeAt(9);
+                    x['Initiator'] = GetSidString(e.substring(10, 10 + userlen));
                     ptr = 10 + userlen;
                 }
                 if (x['InitiatorType'] == 2) {
@@ -767,22 +780,93 @@ function AmtStackCreateService(wsmanStack) {
                     x['Initiator'] = 'KVM Default Port';
                     ptr = 5;
                 }
-                
+
                 // Read timestamp
                 TimeStamp = ReadInt(e, ptr);
                 x['Time'] = new Date((TimeStamp + (t.getTimezoneOffset() * 60)) * 1000);
                 ptr += 4;
-                
-                // Read network access
-                x['MCLocationType'] = e[ptr++];
-                var netlen = e[ptr++];
 
-                x['NetAddress'] = e.slice(ptr, ptr + netlen).toString();
-                
+                // Read network access
+                x['MCLocationType'] = e.charCodeAt(ptr++);
+                var netlen = e.charCodeAt(ptr++);
+                x['NetAddress'] = e.substring(ptr, ptr + netlen).replace('0000:0000:0000:0000:0000:0000:0000:0001','::1');
+
                 // Read extended data
                 ptr += netlen;
-                var exlen = e[ptr++];
-                x['Ex'] = e.slice(ptr, ptr + exlen);
+                var exlen = e.charCodeAt(ptr++);
+                x['Ex'] = e.substring(ptr, ptr + exlen);
+                x['ExStr'] = obj.GetAuditLogExtendedDataStr((x['AuditAppID'] * 100) + x['EventID'], x['Ex']);
+                res.records.push(x);
+            }
+        }
+        tag[0](obj, res, status);
+    }
+    
+    obj.GetAuditLog = function (func) {
+        obj.AMT_AuditLog_ReadRecords(1, _GetAuditLog0, [func, []]);
+    }
+
+    function _GetAuditLog0(stack, name, responses, status, tag) {
+        if (status != 200) { tag[0](obj, [], status); return; }
+        var ptr, i, e, es, x, r = tag[1], t = new Date(), TimeStamp;
+
+        if (status != 200) { tag[0](obj, [], status); return; }
+        var ptr, i, e, es, x, r = tag[1], t = new Date(), TimeStamp;
+
+        if (responses.Body['RecordsReturned'] > 0) {
+            responses.Body['EventRecords'] = MakeToArray(responses.Body['EventRecords']);
+
+            for (i in responses.Body['EventRecords']) {
+                e = null;
+                try {
+                    e = atob(responses.Body['EventRecords'][i]);
+                } catch (e) {
+                    console.log(e + " " + responses.Body['EventRecords'][i])
+                }
+                x = { 'AuditAppID': ReadShort(e, 0), 'EventID': ReadShort(e, 2), 'InitiatorType': e.charCodeAt(4) };
+                x['AuditApp'] = _AmtAuditStringTable[x['AuditAppID']];
+                x['Event'] = _AmtAuditStringTable[(x['AuditAppID'] * 100) + x['EventID']];
+                if (!x['Event']) x['Event'] = '#' + x['EventID'];
+
+                // Read and process the initiator
+                if (x['InitiatorType'] == 0) {
+                    // HTTP digest
+                    var userlen = e.charCodeAt(5);
+                    x['Initiator'] = e.substring(6, 6 + userlen);
+                    ptr = 6 + userlen;
+                }
+                if (x['InitiatorType'] == 1) {
+                    // Kerberos
+                    x['KerberosUserInDomain'] = ReadInt(e, 5);
+                    var userlen = e.charCodeAt(9);
+                    x['Initiator'] = GetSidString(e.substring(10, 10 + userlen));
+                    ptr = 10 + userlen;
+                }
+                if (x['InitiatorType'] == 2) {
+                    // Local
+                    x['Initiator'] = 'Local';
+                    ptr = 5;
+                }
+                if (x['InitiatorType'] == 3) {
+                    // KVM Default Port
+                    x['Initiator'] = 'KVM Default Port';
+                    ptr = 5;
+                }
+
+                // Read timestamp
+                TimeStamp = ReadInt(e, ptr);
+                x['Time'] = new Date((TimeStamp + (t.getTimezoneOffset() * 60)) * 1000);
+                ptr += 4;
+
+                // Read network access
+                x['MCLocationType'] = e.charCodeAt(ptr++);
+                var netlen = e.charCodeAt(ptr++);
+                x['NetAddress'] = e.substring(ptr, ptr + netlen).replace('0000:0000:0000:0000:0000:0000:0000:0001','::1');
+
+                // Read extended data
+                ptr += netlen;
+                var exlen = e.charCodeAt(ptr++);
+                x['Ex'] = e.substring(ptr, ptr + exlen);
                 x['ExStr'] = obj.GetAuditLogExtendedDataStr((x['AuditAppID'] * 100) + x['EventID'], x['Ex']);
                 r.push(x);
             }
@@ -793,6 +877,12 @@ function AmtStackCreateService(wsmanStack) {
             tag[0](obj, r, status);
         }
     }
+
+    // function MakeToArray(v) { if (!v || v == null || typeof v == 'object') return v; return [v]; }
+    // function ReadShort(v, p) { return (v[p] << 8) + v[p + 1]; }
+    // function ReadInt(v, p) { return (v[p] * 0x1000000) + (v[p + 1] << 16) + (v[p + 2] << 8) + v[p + 3]; } // We use "*0x1000000" instead of "<<24" because the shift converts the number to signed int32.
+    // function btoa(x) { return Buffer.from(x).toString('base64'); }
+    // function atob(x) { var z = null; try { z = Buffer.from(x, 'base64').toString(); } catch (e) { console.log(e); } return z; }
 
     // ###END###{AuditLog}
 

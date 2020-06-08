@@ -26,6 +26,7 @@ import { configType, certificatesType} from "../models/Config";
 import { APFProtocol, APFChannelOpenFailureReasonCode } from '../models/Mps'
 import { logger as log} from "../utils/logger";
 import { mpsMicroservice } from '../mpsMicroservice';
+import { IDbProvider } from '../models/IDbProvider';
 
 const common = require('../utils/common.js');
 // 90 seconds max idle time, higher than the typical KEEP-ALIVE period of 60 seconds
@@ -33,7 +34,7 @@ const MAX_IDLE = 90000;
 
 export class mpsServer{
 
-    db: any;
+    db: IDbProvider;
     mpsService: mpsMicroservice;
     config: configType;
     certs: certificatesType;
@@ -74,7 +75,6 @@ export class mpsServer{
     }
     
     onConnection = (socket): void => {
-        
         if (this.config.mpstlsoffload) {
             socket.tag = { first: true, clientCert: null, accumulator: "", activetunnels: 0, boundPorts: [], socket: socket, host: null, nextchannelid: 4, channels: {}, nextsourceport: 0 };
         } else {
@@ -124,7 +124,7 @@ export class mpsServer{
                 // Setup this node with certificate authentication
                 if (socket.tag.clientCert && socket.tag.clientCert.subject && socket.tag.clientCert.subject.O) {
                     // This is a node where the organization is indicated within the CIRA certificate
-                    this.db.isOrgApproved(socket.tag.clientCert.subject.O, (allowed) => {
+                    this.db.IsOrgApproved(socket.tag.clientCert.subject.O, (allowed) => {
                         if (allowed) {
                             this.debug(1, 'CIRA connection for organization: ' + socket.tag.clientCert.subject.O);
                             socket.tag.certauth = true;
@@ -619,6 +619,13 @@ export class mpsServer{
           socket.write(Buffer.from(data, "binary"));
         // }
     }
+
+    
+    SetupCommunication = (host, port) =>{
+        var ciraconn =this.ciraConnections[host];
+        let socket = this.SetupCiraChannel(ciraconn, port);
+        return socket;
+    }
     
     //Setup CIRA Channel
     SetupCiraChannel(socket, targetport) {
@@ -653,11 +660,7 @@ export class mpsServer{
         // This function writes data to this CIRA channel
         cirachannel.write = (data) => {
           if (cirachannel.state == 0) return false;
-          if (
-            cirachannel.state == 1 ||
-            cirachannel.sendcredits == 0 ||
-            cirachannel.sendBuffer != undefined
-          ) {
+          if (cirachannel.state == 1 || cirachannel.sendcredits == 0 || cirachannel.sendBuffer != undefined) {
             if (cirachannel.sendBuffer == undefined) {
               cirachannel.sendBuffer = data;
             } else {

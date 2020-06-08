@@ -13,5 +13,17 @@
     "mpstlsoffload": false,
     "webport" : 3000,
     "generateCertificates": true,
-    "loggeroff":true
+    "loggeroff":false,
+    "credentialspath": "../private/credentials.json",
+    "orgspath": "../private/orgs.json",
+    "guidspath": "../private/guids.json",
+    "developermode": true,
+    "webadminuser": "standalone",
+    "webadminpassword": "G@ppm0ym",
+    "mpsxapikey": "APIKEYFORMPS123!",
+    "vaultaddress": "http://localhost:8200",
+    "vaulttoken": "myroot",
+    "usevault": true,
+    "secretsPath": "secret/data/",
+    "sessionEncryptionKey": "SessionKey123!"
 }

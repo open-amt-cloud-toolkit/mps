@@ -48,7 +48,8 @@ module.exports.CertificateOperations = function () {
                 emailCA: true,
                 objCA: true
             }, {
-                name: 'subjectKeyIdentifier'
+                name: 'subjectKeyIdentifier',
+                hash: true
             }]);
         cert.sign(keys.privateKey, obj.forge.md.sha384.create());
 

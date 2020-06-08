@@ -42,9 +42,9 @@ export class MEScriptHandler implements IAdminHandler {
           let scriptFile = JSON.parse(data);
 
           // Change a few things in the script
-          scriptFile.scriptBlocks[2].vars.CertBin.value = this.getRootCertBase64(
+          scriptFile.scriptBlocks[2].vars.CertBin.value = (process.env.ROOT_CA_CERT ? this.base64(process.env.ROOT_CA_CERT) : this.getRootCertBase64(
             path.join(__dirname, "../../../private/root-cert-public.crt")
-          ); // Set the root certificate
+          )); // Set the root certificate
           scriptFile.scriptBlocks[3].vars.FQDN.value = this.mps.config.commonName; // Set the server DNS name
           scriptFile.scriptBlocks[3].vars.Port.value = this.mps.config.mpsport; // Set the server MPS port
           scriptFile.scriptBlocks[3].vars.username.value = this.mps.config.mpsusername; // Set the username
@@ -72,19 +72,39 @@ export class MEScriptHandler implements IAdminHandler {
     }
   }
 
+  base64(rootcert) {
+    try {
+      //console.log(rootcert)
+      let i: number = rootcert.indexOf("-----BEGIN CERTIFICATE-----");
+      if(i >= 0 && rootcert.charAt(i+27) === '\r'){
+        //console.log('CRLF linefeed')
+        i = 27 + 2;
+      }
+      else if(i >= 0 && rootcert.charAt(i+27) === '\n'){
+        //console.log('LF linefeed')
+        i = 27 + 1;
+      }
+      if (i >= 0) {
+        rootcert = rootcert.substring(i);
+      }
+      i = rootcert.indexOf("-----END CERTIFICATE-----");
+      if (i >= 0) {
+        rootcert = rootcert.substring(i, 0);
+      }
+      //console.log(rootcert)
+      let result = Buffer.from(rootcert, "base64").toString("base64");
+      //console.log(result)
+      return result
+    } catch (error) {
+      log.error(`Exception in getRootCertBase64 : ${error}`);
+    }
+  }
+
   getRootCertBase64(path) {
     try {
       if (fs.existsSync(path)) {
         var rootcert = fs.readFileSync(path, "utf8");
-        let i: number = rootcert.indexOf("-----BEGIN CERTIFICATE-----\r\n");
-        if (i >= 0) {
-          rootcert = rootcert.substring(i + 29);
-        }
-        i = rootcert.indexOf("-----END CERTIFICATE-----");
-        if (i >= 0) {
-          rootcert = rootcert.substring(i, 0);
-        }
-        return Buffer.from(rootcert, "base64").toString("base64");
+        return this.base64(rootcert)
       }
       return;
     } catch (error) {
