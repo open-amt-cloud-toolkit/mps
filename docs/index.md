@@ -7,8 +7,7 @@ The instructions in this document offers the following guidance:
 * Connect to an activated AMT device
 
 ## Overview of the Management Presence Server (MPS)
-The Management Presence Server is a cloud agnostic micro-service that enables Intel&reg; AMT-based platforms connectng over the 
-The image below is a representation of using MPS server connected to an activated AMT device.
+MPS is cloud agnostic microservice that enables Intel AMT-based platforms connecting over the Internet to connect securely to manageability consoles. The image below is a representation of using MPS server connected to an activated AMT device.
 
 [![mps](assets/images/mpsdiagram_final.png)](assets/images/mpsdiagram_final.png)
 
