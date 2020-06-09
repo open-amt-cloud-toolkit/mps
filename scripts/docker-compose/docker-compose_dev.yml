@@ -1,0 +1,101 @@
+#/*********************************************************************
+# Copyright (c) Intel Corporation 2020
+# SPDX-License-Identifier: Apache-2.0
+#**********************************************************************/
+version: '3.3'
+services: 
+  rps:
+    image: node:10
+    ports: 
+      - "${WEBSOCKETPORT}:${WEBSOCKETPORT}"
+      - "${RPS_WEB_PORT}:${RPS_WEB_PORT}"
+    environment: 
+      USEVAULT: ${USEVAULT}
+      NODE_ENV: ${NODE_ENV}
+      HTTPS: ${RPS_HTTPS}
+      USE_DB_PROFILES: ${USE_DB_PROFILES}
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      WEBSOCKETTLS: ${WEBSOCKETTLS}
+      WEB_PORT: ${RPS_WEB_PORT}
+      WEBSOCKETPORT: ${WEBSOCKETPORT}
+      RPSXAPIKEY: ${RPSXAPIKEY}
+      VAULT_ADDR: ${VAULT_ADDR}
+      VAULT_TOKEN: ${VAULT_TOKEN}
+      SECRETS_PATH: ${SECRETS_PATH}
+      DEVELOPER_MODE: ${DEVELOPER_MODE}
+      CREDENTIALS_PATH: ${RPS_CREDENTIALS_PATH}
+      MPS_USER: ${MPS_USER}
+      MPS_PASSWORD: ${MPS_PASSWORD}
+      AMT_USER: ${AMT_USER}
+      WEB_TLS_CERT: ${WEB_TLS_CERT}
+      WEB_TLS_CERT_KEY: ${WEB_TLS_CERT_KEY}
+    volumes:
+      - ../../../RCS_MicroService:/RCS_MicroService
+      - app-volume:/config
+    working_dir: /RCS_MicroService
+    command: npm run watch
+  mps:
+    image: node:10
+    ports: 
+      - "${MPS_WEB_PORT}:${MPS_WEB_PORT}"
+      - "${MPS_PORT}:${MPS_PORT}"
+    environment: 
+      GENERATE_CERTS: ${GENERATE_CERTS}
+      CERT_COMMON_NAME: ${CERT_COMMON_NAME}
+      NODE_ENV: ${NODE_ENV}
+      USE_WHITELIST: ${USE_WHITELIST}
+      MPS_PORT: ${MPS_PORT}
+      WEB_PORT: ${MPS_WEB_PORT}
+      MPS_USER: ${MPS_USER}
+      MPS_PASSWORD: ${MPS_PASSWORD}
+      USE_GLOBAL_CREDENTIALS: ${USE_GLOBAL_CREDENTIALS}
+      ENABLE_LOGGING: ${ENABLE_LOGGING}
+      DEBUG: ${DEBUG}
+      USEVAULT: ${USEVAULT}
+      VAULT_ADDR: ${VAULT_ADDR}
+      VAULT_TOKEN: ${VAULT_TOKEN}
+      SECRETS_PATH: ${SECRETS_PATH}
+      WEB_ADMIN_USER: ${WEB_ADMIN_USER}
+      WEB_ADMIN_PASSWORD: ${WEB_ADMIN_PASSWORD}
+      HTTPS: ${MPS_HTTPS}
+      MPSXAPIKEY: ${MPSXAPIKEY}
+      DEVELOPER_MODE: ${DEVELOPER_MODE}
+      WEB_ADMIN_USER: ${WEB_ADMIN_USER}
+      WEB_ADMIN_PASSWORD: ${WEB_ADMIN_PASSWORD}
+      CREDENTIALS_PATH: ${CREDENTIALS_PATH}
+      GUIDS_PATH: ${GUIDS_PATH}
+      ORGS_PATH: ${ORGS_PATH}
+      LISTEN_ANY: ${LISTEN_ANY}
+      MPS_TLS_OFFLOAD: ${MPS_TLS_OFFLOAD}
+      MPS_SESSION_ENCRYPTION_KEY: ${MPS_SESSION_ENCRYPTION_KEY}
+    volumes:
+      - ../../.:/MPS_Microservice
+      - app-volume:/config
+    working_dir: /MPS_Microservice
+    command: npm run watch
+  rpsdb:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes: 
+      - ./data:/docker-entrypoint-initdb.d
+  vault:
+    image: "vault"
+    ports: 
+      - "8200:8200"
+    environment: 
+      VAULT_DEV_ROOT_TOKEN_ID: ${VAULT_TOKEN}
+      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+    cap_add: 
+      - IPC_LOCK
+volumes:
+    app-volume:

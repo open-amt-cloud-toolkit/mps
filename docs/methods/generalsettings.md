@@ -32,7 +32,7 @@ Click [here](types.md) for supported input and output types.
 			"dhcpv6ConfigurationTimeout": 0,
 			"digestRealm": "Digest:A4070000000000000000000000000000",
 			"elementName": "Intel(r) AMT: General Settings",
-			"hostName": "Hostname",
+			"hostName": "Madhavi",
 			"hostOSFQDN": "DESKTOP-1A99FM4",
 			"idleWakeTimeout": 65535,
 			"instanceID": "Intel(r) AMT: General Settings",

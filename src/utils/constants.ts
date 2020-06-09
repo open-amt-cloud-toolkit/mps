@@ -6,35 +6,37 @@
 export const common = require("./common.js");
 
 //WS-MAN libraries
+export const amtStackFactory = require('../amt_libraries/amt-connection-factory.js');
 export const wscomm = require("../amt_libraries/amt-wsman-cira.js");
 export const wsman = require("../amt_libraries/amt-wsman.js");
 export const amt = require("../amt_libraries/amt.js");
+export const amtPort = 16992;
 
 export const UUIDRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 
 //require('constants') is deprecated from Node 11.10, require('crypto').constants instead
-export const constants = require("crypto").constants? require("crypto").constants: require("constants");
+export const constants = require("crypto").constants ? require("crypto").constants : require("constants");
 
 //HTTP error codes
 export const httpErrorTable = {
-    200: 'OK',
-    400: 'Incorrect URI or Bad Request',
-    401: 'Authentication Error',
-    404: {
-      device:  'Device not found/connected. Please connect again using CIRA.',
-      method:  'Request does not contain method',
-      noMethod: 'Requested method does not exists',
-      payload: 'Request does not contain payload',
-      guid: 'GUID does not exist in the payload',
-      action: 'Power action type does not exist',
-      invalidGuid: 'GUID empty/invalid'
-    },
-    408: 'Timeout Error',
-    500: 'Internal Server Error',
-    601: 'WSMAN Parsing Error',
-    602: 'Unable to parse HTTP response header',
-    603: 'Unexpected HTTP enum response',
-    604: 'Unexpected HTTP pull response',
+  200: 'OK',
+  400: 'Incorrect URI or Bad Request',
+  401: 'Authentication Error',
+  404: {
+    device: 'Device not found/connected. Please connect again using CIRA.',
+    method: 'Request does not contain method',
+    noMethod: 'Requested method does not exists',
+    payload: 'Request does not contain payload',
+    guid: 'GUID does not exist in the payload',
+    action: 'Power action type does not exist',
+    invalidGuid: 'GUID empty/invalid'
+  },
+  408: 'Timeout Error',
+  500: 'Internal Server Error',
+  601: 'WSMAN Parsing Error',
+  602: 'Unable to parse HTTP response header',
+  603: 'Unexpected HTTP enum response',
+  604: 'Unexpected HTTP pull response',
 }
 
 

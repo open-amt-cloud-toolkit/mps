@@ -9,16 +9,18 @@ import { logger as log } from "../../utils/logger";
 import { IAmtHandler } from "../../models/IAmtHandler";
 import { mpsMicroservice } from "../../mpsMicroservice";
 
-import { wscomm, wsman, amt, DMTFPowerStates } from "../../utils/constants";
+import {amtStackFactory, DMTFPowerStates, amtPort } from "../../utils/constants";
 import { ErrorResponse } from "../../utils/amtHelper";
 
 export class PowerActionHandler implements IAmtHandler {
   mpsService: mpsMicroservice;
   name: string;
+  amtFactory: any;
 
   constructor(mpsService: mpsMicroservice) {
     this.name = "PowerAction";
     this.mpsService = mpsService;
+    this.amtFactory = new amtStackFactory(this.mpsService);
   }
 
   async AmtAction(req: Request, res: Response) {
@@ -30,8 +32,7 @@ export class PowerActionHandler implements IAmtHandler {
           if (!isNaN(payload.action) && DMTFPowerStates.includes(parseInt(payload.action))) {
             if (ciraconn && ciraconn.readyState == "open") {
               var cred = await this.mpsService.db.getAmtPassword(payload.guid);
-              var wsstack = new wsman(wscomm,payload.guid,16992,cred[0],cred[1],0,this.mpsService);
-              var amtstack = new amt(wsstack);
+              var amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0);
               this.getBootData(payload.guid, payload.action, amtstack, res);
             } else {
               return res.status(404).send(ErrorResponse(404, `guid : ${payload.guid}`, "device"));

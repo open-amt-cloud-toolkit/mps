@@ -11,7 +11,7 @@ const myFormat = printf(info => {
 });
 
 export const logger = winston.createLogger({
-  level: "debug",
+  level: process.env.MPS_LOG_LEVEL || "debug",
   format: combine(timestamp(), myFormat),
   transports: [
     new winston.transports.Console(),

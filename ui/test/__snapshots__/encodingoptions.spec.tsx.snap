@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Testing EncodingOptions Test render() in EncodingOptions with getConnectState() === 1 1`] = `ShallowWrapper {}`;
-
-exports[`Testing EncodingOptions Test render() in EncodingOptions with getConnectState() === 2 1`] = `ShallowWrapper {}`;

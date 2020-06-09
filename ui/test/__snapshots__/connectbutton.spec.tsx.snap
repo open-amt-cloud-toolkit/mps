@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Test ConnectButton Test render() in ConnectButton with kvmstate == 0 1`] = `ShallowWrapper {}`;
-
-exports[`Test ConnectButton Test render() in ConnectButton with kvmstate == 1 1`] = `ShallowWrapper {}`;
-
-exports[`Test ConnectButton Test render() in ConnectButton with kvmstate == 2 1`] = `ShallowWrapper {}`;

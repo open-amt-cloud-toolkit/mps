@@ -1,0 +1,84 @@
+#/*********************************************************************
+# Copyright (c) Intel Corporation 2020
+# SPDX-License-Identifier: Apache-2.0
+#**********************************************************************/
+# Default values for installServersChart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+images:
+  mps: "vprodemo/mps-microservice:v2"
+  rps: "vprodemo/rps-microservice:v2"
+  postgresdb: "postgres:10.4"
+  pullSecret: "regcred"
+backenddb:
+  dbName: "postgresdb"
+  dbUser: "postgresadmin"
+  dbPassword: "admin123"
+mpsSecretStoreNames:
+  web: "mpsweb"
+  api: "mpsapi"
+  certs: "mpscerts"
+  vault: "vaultaccess"
+  creds: "mpscreds"
+  session: "session"
+rpsSecretStoreNames:
+  web: "rpsweb"
+  api: "rpsapi"
+  rpscerts: "rpscerts"
+  vault: "vaultaccess"
+mps:
+  replicaCount: 1
+  https: "true"
+  generateCerts: "false"
+  nodeEnv: "prod"
+  certCommonName: "STATIC_IP_MPS"
+  serverDeploymentMode: "mps"
+  useWhiteList: "false"
+  mpsPort: "4433"
+  webPort: "3000"
+  mpsUser: "admin"
+  useGlobalCredentials: "true"
+  enableLogging: "true"
+  debug: "true"
+  useVault: "true"
+  vaultAddr: "http://VAULT_ADDR:8200"
+  secretsPath: "kv/data/rcs/"
+  debugLevel: "5"
+  webAdminUserKey: "adminusername"
+  webAdminPasswordKey: "adminuserpassword"
+  mpsPassword: "mpspassword"
+  apikeyKeyName: "x-api-key"
+  mpscertpublic: "mps_cert.crt"
+  mpscertkey: "mps_cert.key"
+  webcertpublic: "mps_cert.crt"
+  webcertkey: "mps_cert.key"
+  rootcacert: "rootCA_mps.crt"
+  vaultkey: "vault-token.txt"
+  staticIPAddress: "STATIC_IP_MPS"
+  resourceGroupName: "NODE_RESOURCE_GROUP"
+  devmode: "false"
+  sessionEncryptionKey: "session-key.txt"
+rps:
+  replicaCount: 1
+  https: "true"
+  nodeEnv: "prod"
+  useDBProfiles: "true"
+  dbHost: "postgres"
+  dbPort: "5432"
+  useVault: "true"
+  vaultAddr: "http://VAULT_ADDR:8200"
+  secretsPath: "kv/data/rcs/"
+  rcswsPort: 8080
+  rcswebPort: 8081
+  webAdminUserKey: "adminusername"
+  webAdminPasswordKey: "adminuserpassword"
+  apikeyKeyName: "x-api-key"
+  webcertpublic: "rps_cert.crt"
+  webcertkey: "rps_cert.key"
+  rootcacert: "rootCA_rps.crt"
+  vaultkey: "vault-token.txt"
+  webSocketTLS: "true"
+  staticIPAddress: "STATIC_IP_RPS"
+  resourceGroupName: "NODE_RESOURCE_GROUP"
+  devmode: "false"

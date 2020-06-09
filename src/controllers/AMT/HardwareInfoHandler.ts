@@ -8,17 +8,19 @@ import {Response, Request} from 'express'
 import { logger as log } from "../../utils/logger";
 import { IAmtHandler } from "../../models/IAmtHandler";
 import { mpsMicroservice } from "../../mpsMicroservice";
-import { wscomm, wsman, amt} from "../../utils/constants";
+import { amtStackFactory, amtPort } from "../../utils/constants";
 import {ErrorResponse} from "../../utils/amtHelper";
 
 export class HardwareInfoHandler implements IAmtHandler {
   
   mpsService: mpsMicroservice;
   name: string;
+  amtFactory: any;
 
   constructor(mpsService: mpsMicroservice) {
       this.name="HardwareInformation";
       this.mpsService =mpsService;
+      this.amtFactory = new amtStackFactory(this.mpsService);
   }
 
   async AmtAction(req: Request, res: Response){
@@ -28,8 +30,7 @@ export class HardwareInfoHandler implements IAmtHandler {
           let ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid];
           if(ciraconn && ciraconn.readyState == 'open'){
             var cred = await this.mpsService.db.getAmtPassword(payload.guid);
-            var wsstack = new wsman(wscomm, payload.guid, 16992, cred[0], cred[1], 0, this.mpsService);
-            var amtstack = new amt(wsstack);
+            var amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0);
                 amtstack.BatchEnum("", ["*CIM_ComputerSystemPackage",
                     "CIM_SystemPackaging", "*CIM_Chassis", "CIM_Chip", "*CIM_Card", "*CIM_BIOSElement",
                     "CIM_Processor", "CIM_PhysicalMemory", "CIM_MediaAccessDevice", "CIM_PhysicalPackage"],
