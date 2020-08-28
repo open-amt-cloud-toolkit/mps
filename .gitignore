@@ -1,16 +1,16 @@
 # private folder
-private/*.json
 private/*.crt
 private/*.key
 private/*.cer
 mochawesome-report/
-test/private/*.json
 test/private/*.cer
 test/private/*.crt
 test/private/*.key
+webui/src/**/*.css
 
 # build output folder
 dist/
+webui/build
 
 # Logs
 logs

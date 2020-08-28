@@ -8,7 +8,7 @@
         Functionality has been modified for standalone operation only (Meshcentral services will not work with this code)
     Parameters:
         parent (mpsMicroservice): parent service invoking this module (provides eventing and wiring services)
-        db: database for credential and whitelisting
+        db: database for credential and allowlisting
         config: settings pertaining to the behaviour of this service
         certificates: certificates to use for TLS server creation 
 */
@@ -47,25 +47,25 @@ export class mpsServer{
         this.config = mpsService.config;
         this.certs = mpsService.certs;
             
-        if (this.config.mpstlsoffload) {
+        if (this.config.tls_offload) {
             //Creates a new TCP server
             this.server = net.createServer((socket) => {
                 this.onConnection(socket);
             });
         } else {
             //Creates a TLS server for secure connection
-            this.server = tls.createServer(this.certs.mpsConfig, (socket) => {
+            this.server = tls.createServer(this.certs.mps_tls_config, (socket) => {
                 this.onConnection(socket);
             });
         }
         
-        this.server.listen(this.config.mpsport, () => {
-            let mpsaliasport  =  (typeof this.config.mpsaliasport === 'undefined') ? `${this.config.mpsport}` :  `${this.config.mpsport} alias port ${this.config.mpsaliasport}`;
-            log.info(`Intel(R) AMT server running on ${this.config.commonName}:${mpsaliasport}.`);
+        this.server.listen(this.config.port, () => {
+            let mpsaliasport  =  (typeof this.config.alias_port === 'undefined') ? `${this.config.port}` :  `${this.config.port} alias port ${this.config.alias_port}`;
+            log.info(`Intel(R) AMT server running on ${this.config.common_name}:${mpsaliasport}.`);
         });
 
         this.server.on('error', (err) => {
-            log.error(`ERROR: Intel(R) AMT server port ${this.config.mpsport} is not available.`);
+            log.error(`ERROR: Intel(R) AMT server port ${this.config.port} is not available.`);
             if(err)log.error(err);
             // if (this.config.exactports) {
             //     process.exit();
@@ -75,7 +75,7 @@ export class mpsServer{
     }
     
     onConnection = (socket): void => {
-        if (this.config.mpstlsoffload) {
+        if (this.config.tls_offload) {
             socket.tag = { first: true, clientCert: null, accumulator: "", activetunnels: 0, boundPorts: [], socket: socket, host: null, nextchannelid: 4, channels: {}, nextsourceport: 0 };
         } else {
             socket.tag = { first: true, clientCert: socket.getPeerCertificate(true), accumulator: "", activetunnels: 0, boundPorts: [], socket: socket, host: null, nextchannelid: 4, channels: {}, nextsourceport: 0 };
@@ -197,8 +197,8 @@ export class mpsServer{
                 socket.tag.MinorVersion = common.ReadInt(data, 5);
                 socket.tag.SystemId = this.guidToStr(common.rstr2hex(data.substring(13, 29))).toLowerCase();
                 this.debug(3, 'MPS:PROTOCOLVERSION', socket.tag.MajorVersion, socket.tag.MinorVersion, socket.tag.SystemId);
-                //Check if the device is whitelisted to connect. Only checked when 'usewhitelist' is set to true in config.json.
-                if (this.config.usewhitelist) {
+                //Check if the device is allowlisted to connect. Only checked when 'use_allowlist' is set to true in config.json.
+                if (this.config.use_allowlist) {
                     this.db.IsGUIDApproved(socket.tag.SystemId, (allowed) => {
                         socket.tag.nodeid = socket.tag.SystemId;
                         if (allowed) {

@@ -45,8 +45,8 @@ call az network public-ip show --resource-group %myDockerGroup% --name %myIPName
 
 set /p ipAddress=<ip
 
-xcopy /Y .env.sample .env
-@echo CERT_COMMON_NAME=%ipAddress% >> .env
+xcopy /Y .env.template .env
+@echo MPS_COMMON_NAME=%ipAddress% >> .env
 
 echo Updated ENV file with ip address
 
@@ -95,18 +95,18 @@ echo "Came out of timeout 120"
 
 
 
-call ssh -o "StrictHostKeyChecking no" azureuser@%ipAddress% sudo apt install --assume-yes docker-compose >nul 2>&1
-call ssh -o "StrictHostKeyChecking no" azureuser@%ipAddress% sudo apt install --assume-yes gnupg2 pass >nul 2>&1
+call ssh -o "StrictHostKeyChecking no" azureuser@%ipAddress% sudo apt install --assume-yes docker-compose 
+call ssh -o "StrictHostKeyChecking no" azureuser@%ipAddress% sudo apt install --assume-yes gnupg2 pass 
 
 echo "Installed docker-compose"
 
-call scp -r ./data azureuser@%ipAddress%:~/data/ >nul 2>&1
-call scp ./docker-compose.yml azureuser@%ipAddress%:~/docker-compose.yml >nul 2>&1
-call scp ./.env azureuser@%ipAddress%:~/.env >nul 2>&1
+call scp -r ./data azureuser@%ipAddress%:~/data/ 
+call scp ./docker-compose-azure.yml azureuser@%ipAddress%:~/docker-compose.yml 
+call scp ./.env azureuser@%ipAddress%:~/.env 
 
 echo "Copied docker-compose yml files"
-call ssh -o "StrictHostKeyChecking no" azureuser@%ipAddress% sudo docker login -u vprodemo -p %DOCKER_LOGIN_PASSWORD% >nul 2>&1
-call ssh -o "StrictHostKeyChecking no" azureuser@%ipAddress% sudo docker-compose up -d >nul 2>&1
+call ssh -o "StrictHostKeyChecking no" azureuser@%ipAddress% sudo docker login -u vprodemo -p %DOCKER_LOGIN_PASSWORD% 
+call ssh -o "StrictHostKeyChecking no" azureuser@%ipAddress% sudo docker-compose up -d 
 
 echo "Started MPS and RPS on remote server at: %ipAddress%"
 

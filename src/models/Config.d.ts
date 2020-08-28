@@ -5,41 +5,42 @@
 **********************************************************************/
 
 export type configType ={
-    usewhitelist: boolean,
-    commonName: string,
-    mpsport: number,
-    mpsusername: string,
-    mpspass: string,
-    useglobalmpscredentials: boolean,
+    use_allowlist: boolean,
+    common_name: string,
+    port: number,
+    username: string,
+    pass: string,
+    use_global_mps_credentials: boolean,
     country: string,
     company: string,
-    debug: boolean,
-    listenany: boolean,
+    listen_any: boolean,
     https: boolean,
-    mpstlsoffload: boolean,
-    webport : number,
-    generateCertificates: boolean,
-    mpsaliasport?: number,
-    mpsdebug?: boolean,
-    loggeroff: boolean,
-    secretsPath?: string,
-    usevault?: boolean,
-    vaultaddress?: string,
-    vaulttoken?: string,
-    debugLevel: number,
-    credentialspath: string,
-    orgspath: string,
-    guidspath: string,
-    developermode: boolean,
-    webadminuser: string,
-    webadminpassword: string,
-    sessionEncryptionKey: string,
-    mpsxapikey: string
+    tls_offload: boolean,
+    web_port : number,
+    generate_certificates: boolean,
+    alias_port?: number,
+    debug?: boolean,
+    logger_off: boolean,
+    secrets_path?: string,
+    data_path?: string,
+    cert_path: string,
+    cert_format: string,
+    use_vault?: boolean,
+    vault_address?: string,
+    vault_token?: string,
+    debug_level: number,
+    web_admin_user: string,
+    web_admin_password: string,
+    mps_tls_config: any,
+    web_tls_config: any,
+    session_encryption_key: string,
+    mpsxapikey: string,
+    auth_enabled?: boolean
 }
 
 export type certificatesType = {
-    mpsConfig: mpsConfigType, 
-    webConfig: webConfigType
+    mps_tls_config: mpsConfigType, 
+    web_tls_config: webConfigType
 }
 
 export type mpsConfigType = {
@@ -70,4 +71,9 @@ export type directConfigType = {
     ciphers: string,
     secureOptions?: any,
     rejectUnauthorized: boolean
+}
+
+export type apiResponseType ={
+    statuscode: number, 
+    payload: any
 }

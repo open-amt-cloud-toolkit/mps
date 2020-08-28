@@ -1,0 +1,39 @@
+// Copyright (c) Microsoft. All rights reserved.
+
+import { camelCaseReshape } from 'utilities';
+
+export const permissions = {
+  createDeviceGroups: 'CreateDeviceGroups',
+  deleteDeviceGroups: 'DeleteDeviceGroups',
+  updateDeviceGroups: 'UpdateDeviceGroups',
+
+  createDevices: 'CreateDevices',
+  deleteDevices: 'DeleteDevices',
+  updateDevices: 'UpdateDevices',
+
+  createRules: 'CreateRules',
+  deleteRules: 'DeleteRules',
+  updateRules: 'UpdateRules',
+
+  deleteAlarms: 'DeleteAlarms',
+  updateAlarms: 'UpdateAlarms',
+
+  createJobs: 'CreateJobs',
+
+  updateSIMManagement: 'UpdateSIMManagement'
+};
+
+export const toUserModel = (user = {}) => camelCaseReshape(user, {
+  'id': 'id',
+  'email': 'email',
+  'name': 'name',
+  'allowedActions': 'permissions'
+});
+
+//When authentication is disabled, this user has all permissions.
+export const authDisabledUser = {
+  id: 'AuthIsDisabled',
+  email: 'authdisabled@iot.auth',
+  name: 'Disabled Auth',
+  permissions: Object.values(permissions)
+};

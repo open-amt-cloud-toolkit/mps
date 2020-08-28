@@ -1,9 +1,0 @@
-{
-    "key": "../private/mpsserver-cert-private.key",
-    "cert": "../private/mpsserver-cert-public.crt",
-    "requestCert": true,
-    "rejectUnauthorized": false,
-    "minVersion": "TLSv1",
-    "ciphers": null,
-    "secureOptions": ["SSL_OP_NO_SSLv2", "SSL_OP_NO_SSLv3"]
-}

@@ -12,12 +12,12 @@
 import * as net from "net";
 import * as tls from "tls";
 import * as path from "path";
-import * as express from "express";
+import express from "express";
 import * as https from "https";
 import * as http from "http";
 import * as parser from "body-parser";
 
-import * as session from 'express-session';
+import session from 'express-session';
 
 import { configType, certificatesType } from "../models/Config";
 import { amtRoutes } from "../routes/amtRoutes";
@@ -27,11 +27,11 @@ import { logger as log } from "../utils/logger";
 import { constants, UUIDRegex } from "../utils/constants";
 import { mpsMicroservice } from "../mpsMicroservice";
 import { IDbProvider } from "../models/IDbProvider";
-import { EnvReader } from "../utils/EnvReader";
 
 const interceptor = require("../utils/interceptor.js");
 const WebSocket = require('ws');
 const URL = require('url').URL;
+
 
 export class webServer {
   db: IDbProvider;
@@ -58,22 +58,37 @@ export class webServer {
       let admin = new adminRoutes(this.mpsService);
 
       //Create Server
+      let appConfig = this.config;
       if (this.config.https) {
-        this.server = https.createServer(this.certs.webConfig, this.app);
+        this.server = https.createServer(this.certs.web_tls_config, this.app);
       } else {
         this.server = http.createServer(this.app);
       }
 
       //Clickjacking defence
-      this.app.use(function (req, res, next) {
-        res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-        next();
+      this.app.use((req, res, next) => {
+        if(this.config.auth_enabled){
+          res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+          next();
+        }
+        else {
+          // DO NOT SET AUTH_ENABLED=FALSE IN PROD
+          res.header('Access-Control-Allow-Origin', '*');
+          res.header('Access-Control-Allow-Headers','*');
+          if (req.method === 'OPTIONS') {
+            res.header('Access-Control-Allow-Methods', '*');
+            return res.status(200).json({});
+          }
+          next();
+        }
       })
 
       //Session Configuration
       let sess = {
         // Strongly recommended to change this key for Production thru ENV variable MPS_SESSION_ENCRYPTION_KEY
-        secret: this.config.sessionEncryptionKey || '<StrongRandomizedKey123!>',
+
+        secret: this.config.session_encryption_key || '<YourStrongRandomizedKey123!>',
+
         resave: true,
         saveUninitialized: true,
         cookie: { secure: false } // by default false. use true for prod like below.
@@ -86,15 +101,13 @@ export class webServer {
         sess.cookie["maxAge"] = 24 * 60 * 60 * 1000 //limiting cookie age to a day.
         sess.cookie["sameSite"] = true; //strictly same site
       }
-
       //Initialize session
       this.sessionParser = session(sess);
       this.app.use(this.sessionParser);
 
       // Indicates to ExpressJS that the public folder should be used to serve static files.
-      this.app.use(express.static(path.join(__dirname, "../../public")));
+      this.app.use(express.static(path.join(__dirname, '../../webui/build')))
       this.app.use(parser.urlencoded({ extended: true }));
-
       //Handles the Bad JSON exceptions
       this.app.use(parser.json(), (err, req, res, next) => {
         if (err instanceof SyntaxError) {
@@ -103,19 +116,25 @@ export class webServer {
         next();
       });
 
-      //Default and Authorization routes
-      this.app.get("/", this.isAuthenticated, this.default);
+      this.app.get('/', this.isAuthenticated, (req, res) => {
+        res.set({
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+          Expires: "0"
+        });
+        res.sendFile(path.join(__dirname, '../../webui/build', 'index.html'));
+      });
       this.app.post('/authorize', function (request, response) {
         var username = request.body.username;
         var password = request.body.password;
         if (username && password) {
           // todo: implement a more advanced authentication system and RBAC
-          if (username === EnvReader.GlobalEnvConfig.webadminuser && password === EnvReader.GlobalEnvConfig.webadminpassword) {
+          if (username === appConfig.web_admin_user && password === appConfig.web_admin_password) {
             request.session.loggedin = true;
             request.session.username = username;
-            response.redirect('/index.htm');
+            response.status(200).send();
           } else {
-            response.send('Incorrect Username and/or Password!');
+            response.status(403).send('Incorrect Username and/or Password!');
           }
           response.end();
         } else {
@@ -147,7 +166,7 @@ export class webServer {
       // Relay websocket. KVM & SOL use this websocket.
       this.relaywss.on('connection', async (ws, req) => {
         try {
-          var base = `${this.config.https ? 'https' : 'http'}://${this.config.commonName}:${this.config.webport}/`;
+          var base = `${this.config.https ? 'https' : 'http'}://${this.config.common_name}:${this.config.web_port}/`;
           var req_query_url = new URL(req.url, base);
           req.query = {
             host: req_query_url.searchParams.get('host'), port: req_query_url.searchParams.get('port'),
@@ -358,7 +377,7 @@ export class webServer {
       //Handle upgrade on websocket
       this.server.on('upgrade', (request, socket, head) => {
         this.sessionParser(request, {}, () => {
-          if (request.session && request.session.loggedin === true) { //Validate if the user session is active and valid. TODO: Add user validation if needed
+          if ( !this.config.auth_enabled || (request.session && request.session.loggedin === true)) { //Validate if the user session is active and valid. TODO: Add user validation if needed
             this.handleUpgrade(request, socket, head)
           }
           // else if (request.headers['X-MPS-API-Key'] && //Validate REST API key
@@ -366,7 +385,7 @@ export class webServer {
           //   this.handleUpgrade(request, socket, head)
           // }
           else {//Auth failed
-            log.info('WebSocket authentication failed. Closing connection...');
+            log.error('WebSocket authentication failed. Closing connection...');
             socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
             socket.destroy();
           }
@@ -375,8 +394,8 @@ export class webServer {
 
       //Validate port number
       var port = 3000;
-      if (this.config.webport != null) {
-        port = this.config.webport;
+      if (this.config.web_port != null) {
+        port = this.config.web_port;
       }
       if (isNaN(port) || port == null || typeof port != "number" || port < 0 || port > 65536) {
         port = 3000;
@@ -384,11 +403,11 @@ export class webServer {
 
       // Start the ExpressJS web server
       if (this.config.https) {
-        if (this.config.listenany && this.config.listenany == true) {
+        if (this.config.listen_any && this.config.listen_any == true) {
           this.server.listen(port, () => {
             log.info(
               `MPS Microservice running on https://${
-              this.config.commonName
+              this.config.common_name
               }:${port}.`
             );
           });
@@ -399,11 +418,11 @@ export class webServer {
           });
         }
       } else {
-        if (this.config.listenany && this.config.listenany == true) {
+        if (this.config.listen_any && this.config.listen_any == true) {
           this.server.listen(port, () => {
             log.info(
               `MPS Microservice running on http://${
-              this.config.commonName
+              this.config.common_name
               }:${port}.`
             );
           });
@@ -420,8 +439,7 @@ export class webServer {
 
   //Authentication for REST API and Web User login
   isAuthenticated = (req, res, next) => {
-
-    if (req.session.loggedin) {
+    if (!this.config.auth_enabled || req.session.loggedin) {
       return next();
     }
 
@@ -435,9 +453,10 @@ export class webServer {
         res.status(401).end("Authentication failed or Login Expired. Please try logging in again.")
         return;
       }
-      res.redirect('/login.htm')
+      res.redirect('/')
       return;
     }
+
     // other api calls
     if (req.header('X-MPS-API-Key') !== this.config.mpsxapikey) {
       res.status(401).end("API key authentication failed. Please try again.")
@@ -449,7 +468,7 @@ export class webServer {
 
   //Handle Upgrade - WebSocket
   handleUpgrade(request, socket, head) {
-    var base = `${this.config.https ? 'https' : 'http'}://${this.config.commonName}:${this.config.webport}/`;
+    var base = `${this.config.https ? 'https' : 'http'}://${this.config.common_name}:${this.config.web_port}/`;
     const pathname = (new URL(request.url, base)).pathname;
     if (pathname === '/notifications/control.ashx') {
       this.notificationwss.handleUpgrade(request, socket, head, (ws) => {
@@ -477,17 +496,4 @@ export class webServer {
     }
   }
 
-  // Indicates that any request to "/" should be redirected to "/default.htm" which is the Mesh Commander web application.
-  default = (req, res) => {
-    if (req.session.loggedin) {
-      res.redirect("/index.htm")
-      return;
-    }
-    res.set({
-      "Cache-Control": "no-cache, no-store, must-revalidate",
-      Pragma: "no-cache",
-      Expires: "0"
-    });
-    res.redirect("/login.htm");
-  }
 }

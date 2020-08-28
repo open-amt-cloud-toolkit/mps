@@ -9,7 +9,7 @@
 
 ``` shell
 cd scripts\docker-compose
-xcopy /Y .env.sample .env
+xcopy /Y .env.template .env
 docker-compose up -d
 ```
 

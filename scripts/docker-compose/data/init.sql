@@ -2,11 +2,26 @@
 * Copyright (c) Intel Corporation 2020
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
+
+CREATE TABLE IF NOT EXISTS ciraconfigs(
+      cira_config_name varchar(40),
+      mps_server_address varchar(256),
+      mps_port integer,
+      user_name varchar(40),
+      password varchar(63),
+      common_name varchar(256),
+      server_address_format integer, 
+      auth_method integer, 
+      mps_root_certificate text, 
+      proxydetails text,
+      CONSTRAINT configname UNIQUE(cira_config_name)
+    );
 CREATE TABLE IF NOT EXISTS profiles(
       profile_name varchar(40),
       activation varchar(20),
       amt_password varchar(40),
       configuration_script text,
+      cira_config_name varchar(40) REFERENCES ciraconfigs(cira_config_name),
       generate_random_password BOOLEAN,
       random_password_characters varchar(100),
       random_password_length integer,
@@ -24,3 +39,5 @@ CREATE TABLE IF NOT EXISTS domains(
       created_by varchar(40),
       CONSTRAINT domainname UNIQUE(name)
     );
+
+    

@@ -2,6 +2,7 @@
     "compilerOptions": {
         "outDir": "./dist",
         "moduleResolution": "node",
+        "esModuleInterop": true,
         "module": "commonjs",
         "allowJs": true,
         "target":"es2015",

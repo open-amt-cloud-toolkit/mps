@@ -1,14 +1,5 @@
 # Project information
-site_name: 'MPS Service'
-site_description: 'Management Presence Server (MPS) that will serve as the broker between the management console and the Intel® AMT clients'
-
-# Repository
-#repo_name: 'Danger-Bay/MPS_MicroService'
-#repo_url: 'https://github.impcloud.net/Danger-Bay/MPS_MicroService'
-
-# Copyright
-copyright: 'Copyright &copy; Intel Corporation 2019'
-
+site_name: ActivEdge
 # Configuration
 theme:
   name: 'material'
@@ -19,44 +10,47 @@ theme:
   font:
     text: 'Roboto'
     code: 'Roboto Mono'
-    
+
 # Page tree
 nav:
-  - Activate AMT: activateAMT.md
-  - Getting started: index.md
-  - API: api.md
-  - Admin Methods: 
-    - All Devices: methods/alldevices.md
-    - Connected Devices: methods/connecteddevices.md
-    - Disconnect: methods/disconnect.md
-    - MEScript: methods/mescript.md
-    - MPS Root Certificate: methods/rootcertificate.md
-  - AMT Methods:
-    - Audit log: methods/auditlog.md
-    - Event log: methods/eventlog.md
-    - General settings: methods/generalsettings.md
-    - Hardware information: methods/hardwareinfo.md
-    - Power action: methods/poweraction.md
-    - Power capabilities: methods/powercapabilities.md
-    - Power state: methods/powerstate.md
-    - Version: methods/version.md
-  - Types: 
-    - Request body: methods/types.md
-    - Response error body: methods/types.md
-    - Audit log: methods/types.md 
-    - Event log: methods/types.md
-    - General Settings: methods/types.md
-    - Hardware information: methods/types.md
-    - Power action: methods/types.md
-    - Power capabilities: methods/types.md
-    - Power state: methods/types.md
-    - Version: methods/types.md
+  - Home: index.md
+  - Get Started with Microservices Locally:
+    - Overview: Local/overview.md
+    - Install MPS Locally: Local/installMPS.md
+    - Install RPS Locally: Local/installRPS.md
+    - Configure RPS: Local/configureRPS.md
+    - Build RPC on a Managed Device: Local/buildRPC.md
+    - Manage Device: Local/manageDevice.md
+  - Deploy Microservices with Docker*:
+    - Overview: Docker/overview.md
+    - Build Docker* Images: Docker/dockerLocal.md
+    - Configure RPS: Local/configureRPS.md
+    - Build RPC on a Managed Device: Local/buildRPC.md
+    - Manage Device: Local/manageDevice.md
+  - Tutorials:
+    - Docker Images on the Cloud: Docker/dockerCloud.md
+    - Creating Consoles with the UI Toolkit: Tutorials/uitoolkit.md
+    - Activating in ACM Mode: Tutorials/acmActivation.md
+    - Adding a Database: Tutorials/addDatabase.md
+    - Adding Vault Storage: Tutorials/addVault.md
+    - Using a Whitelist: Tutorials/whitelist.md
+  - APIs:
+    - MPS Methods: APIs/indexMPS.md
+    - RPS Methods: APIs/indexRPS.md
+  - Topics:
+    - Static and Dynamic IPs: Topics/misc.md
+    - GUIDs in Intel AMT: Topics/guids.md
+    - MEBX: Topics/mebx.md
+    - Working with Proxies: Topics/proxies.md
+    - Security Information: Topics/security.md
   - Release notes: release-notes.md
   - License: license.md
-  
+
 # Extensions
 markdown_extensions:
   - admonition
+  - pymdownx.tabbed
+  - pymdownx.inlinehilite
   - codehilite:
       guess_lang: false
   - toc:

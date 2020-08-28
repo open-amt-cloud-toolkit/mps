@@ -25,6 +25,8 @@ import { VersionHandler } from "../controllers/AMT/VersionHandler";
 import { AuditLogHandler } from "../controllers/AMT/AuditLogHandler";
 import { EventLogHandler } from "../controllers/AMT/EventLogHandler";
 import { PowerActionHandler } from "../controllers/AMT/PowerActionHandler";
+import { SetAMTFeaturesHandler } from "../controllers/AMT/SetAMTFeaturesHandler";
+import { GetAMTFeaturesHandler } from '../controllers/AMT/GetAMTFeaturesHandler';
 
 export class RootContainer {
 
@@ -66,5 +68,7 @@ export class RootContainer {
         this.addAmtHandler(new PowerStateHandler(this.mpsService));
         this.addAmtHandler(new AuditLogHandler(this.mpsService));
         this.addAmtHandler(new EventLogHandler(this.mpsService));
+        this.addAmtHandler(new SetAMTFeaturesHandler(this.mpsService));
+        this.addAmtHandler(new GetAMTFeaturesHandler(this.mpsService));
     }
 }

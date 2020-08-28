@@ -1,244 +1,88 @@
-# Get started
+# [Product Name] Overview
 
-The instructions in this document offers the following guidance:
+Intel<sup>®</sup> vPro™ Platforms offer hardware-enhanced security features and remote manageability, also known as out-of-band manageability, using Intel<sup>®</sup> Active Management Technology (Intel<sup>®</sup> AMT). With Intel<sup>®</sup> AMT, administrators manage, repair, and update network assets, such as systems and edge devices. In the event that a network asset is powered off or the operating system is unavailable, administrators can power on the asset. 
 
-* Set up the Management Presence Server
-* Modify json configuration sample files
-* Connect to an activated AMT device
+The [Product Name] provides modular microservices and libraries for integration of hardware provisioning, out-of-band manageability, and other Intel<sup>®</sup> AMT features with both new and existing management consoles, software solutions, and more. As an open source implementation, the [Product Name] makes it easier for IT departments and ISVs to adopt, integrate, and customize out-of-band management solutions for Intel<sup>®</sup> vPro™ Platforms.
 
-## Overview of the Management Presence Server (MPS)
-MPS is cloud agnostic microservice that enables Intel AMT-based platforms connecting over the Internet to connect securely to manageability consoles. The image below is a representation of using MPS server connected to an activated AMT device.
+Read more about Intel<sup>®</sup> AMT features and capabilities [here](https://www.intel.com/content/www/us/en/architecture-and-technology/intel-active-management-technology.html).
 
-[![mps](assets/images/mpsdiagram_final.png)](assets/images/mpsdiagram_final.png)
+## Goals
 
-## Requirements for MPS Server
+By the end of this guide, you will have gained experience using these three core modules, shown in Figure 1:
 
-### Software Requirements
+1. **Management Presence Server (MPS)** - A microservice that utilizes an Intel<sup>®</sup> vPro™ feature, Client Initiated Remote Access (CIRA), for enabling edge, cloud devices to maintain a persistent connection for out-of-band manageability features such as power control or KVM control
+2. **Remote Provisioning Server (RPS)** - A microservice that activates Intel<sup>®</sup> AMT-based platforms using pre-defined profiles and connects them to the MPS for manageability use cases
+3. **Remote Provisioning Client (RPC)** - A thin, client application that communicates with the RPS server to activate Intel<sup>®</sup> AMT
 
-* [git](https://git-scm.com/downloads)
-* [node.js v10 or greater](https://nodejs.org/dist/latest-v10.x/)
+## Integration Paths
 
-### Hardware Requirements
+There are two [Product name] integration paths. If new to [Product name] and unsure about which to choose, consult the sections sections below. 
 
-* [Activated Device with Intel&reg; AMT](activateAMT.md)
-* Computer or device used to connect to MPS server
-* Computer or device to connect the client console
+For experienced or returning users, use these quick links:
 
-### Supported Platforms
-The MPS server can run on all platforms that support node.js. One consideration is exposing ports on the server used to run MPS. Typically, these are:
+- [Get Started with Microservices Locally](https://github.impcloud.net/Danger-Bay/OpenAMTCloudToolkit-Docs/blob/master/docs/Local/overview.md)
+- [Deploy Microservices with Docker*](https://github.impcloud.net/Danger-Bay/OpenAMTCloudToolkit-Docs/blob/master/docs/Docker/overview.md)
 
-* 3000
-* 4433 
+### Get Started with Microservices
 
-## MPS Server: Set Up
+Take this path to install MPS and RPS on a development system, with RPC installed on a managed device, as in Figure 1.
 
-The instructions below are performed on the MPS server. To begin, run a platform that supports nodejs. 
+<img src="./assets/images/HelloWorldLocal.png" alt="HelloWorldLocal" style="zoom:80%;" />
 
-Example:
+**Figure 1: Microservices deployed on a local development system.**
 
-* Virtual Machine with nodejs support
-* Dedicated Server with nodejs support
+This path includes documentation sections: 
 
-Once the software pre-requisites are met for the MPS, you can begin the rest of the set up of MPS. 
-### 1. Clone the repository
-```
-git clone https://github.com/open-amt-cloud-toolkit/MPS.git
-cd MPS
-```
+- Install MPS Locally
+- Install RPS Locally 
+- Configure RPS 
+- Build RPC on Managed Device
+- Manage Device
 
-### 2. Add/modify config.json
+[Start here.](https://github.impcloud.net/Danger-Bay/OpenAMTCloudToolkit-Docs/blob/master/docs/Local/overview.md)
 
-Navigate to the private directory within the MPS directory,
-```
-cd ~/MPS/private
-```
+#### Who Takes This Path
 
-Create a **config.json** file.
-     *Copy the example file in the directory.
+Administrators who:
 
-```
-cp config.json.example config.json
-```
+- Want to try the solution on a simple LAN to learn about the modular components
+- Don't want to set up a Docker account
+- Are unfamiliar with cloud-based service setup
 
-These following parameters can be configured.
+### Deploy Microservices with Docker*
 
-| Option       |  Description    |
-| :----------- | :-------------- |
-| **usewhitelist** | set to true to whitelist AMT GUIDs stored in guids.json |
-| **commonName** | used in self signed certificate, can be either FQDN or IP address |
-| **mpsport** | port |
-| **mpsusername** | new username for mpsusername set during this current process |
-| **mpspass** | new password for the user set during this current process
-| **useglobalmpscredentials** | When set to true, any device using **mpsusername** and  *mpspass* in config.json are allowed to connect. When set to false, MPS validates credentials sent by AMT device using credentials.json.
-| **country** | name of country |
-| **company** |  name of company |
-| **debug** | debug option set to true or false |
-| **listenany** | listen to any set to true or false |
-| **https** | set to true to enable TLS on HTTP server |
-| **mpstlsoffload** | set to true to run MPS without TLS |
-| **webport** | Port used by WebServer (or HTTP server) |
-| **generateCertificates** | Generates certificates automatically. When set to true, SSL and Root cert are generated and stored in private folder |
-| **loggeroff**: | Logging is enabled by default. Set to **true** to disable logging. |
+Take this path to install MPS and RPS as Docker images that will function as services on the cloud as in Figure 2.
 
-mpusername and mpspass can be set to whatever credentials you choose to set, at this time. This will math the mpsusername and mpspass in other config files edited during this process.
+<img src="./assets/images/HelloWorldDocker.png" alt="HelloWorldDocker" style="zoom:80%;" />
 
-For example:
+**Figure 2: Microservices deployed as Docker images**
 
-```
+This path includes documentation sections: 
+- Docker Images on a Local Development System 
+- Docker Images on the Cloud
 
-        {
-                "usewhitelist" : false,
-                "commonName": "iot-demosetup.lab.local.com",
-                "mpsport": 4433,
-                "mpsusername": "standalone",
-                "mpspass": "G@ppm0ym",
-                "useglobalmpscredentials": true,
-                "country": "US",
-                "company": "NoCorp",
-                "debug": true,
-                "listenany": true,
-                "https": true,
-                "mpstlsoffload": false,
-                "webport" : 3000,
-                "generateCertificates": true,
-                "loggeroff": true
-        }
+In addition, complete these sections from Get Started with Microservices: 
+- Configure RPS 
+- Manage Device
 
-```
+[Start here.](https://github.impcloud.net/Danger-Bay/OpenAMTCloudToolkit-Docs/blob/master/docs/Docker/overview.md)
 
-### 3. Add/modify credentials.json
+#### Who Takes This Path
 
-If not in the ~/MPS/private directory, navigate to the private directory within the MPS directory.
+Administrators who:
 
-```
-cp credentials.json.sample credentials.json
-```
+- Are familiar with Docker images, containers, and environment files
+- Want a fast way to deploy cloud-based services
+- Do not have a LAN on which to explore the product
 
-**AMT GUID**
+## Additional Intel<sup>®</sup> AMT Resources
 
-Each AMT device has a unique identifier (GUID) assigned to it by default. This GUID will be used as the reference to each device record. 
+For additional information about Intel<sup>®</sup> AMT, see the following links:
 
-To obtain the GUID on the AMT device, open a command prompt, navigate to where meshcmd.exe resides, and run ```meshcmd amtuuid```. The GUID will display.
+- [Intel<sup>®</sup> vPro Overview](https://software.intel.com/content/www/us/en/develop/topics/iot/hardware/vpro-platform-retail.html)
+- [Video Link](https://www.intel.com/content/www/us/en/support/articles/000026592/technologies.html)
+- [Detailed Setup document](https://software.intel.com/en-us/articles/getting-started-with-intel-active-management-technology-amt)
 
 
-| Option       |  Description    |
-| :----------- | :-------------- |
-| **name** | AMT hostname or user friendly identifier |
-| **mpsuser** | AMT Device uses this as the user name while connecting to MPS. This is set once by the developer |
-| **mpspass** | AMT Device uses this as the password while connecting to MPS. This is set once by the developer |
-| **amtuser** | MPS uses this as the AMT user name when making AMT API calls (WSMAN or Redirection). This is the username set in the AMT configuration |
-| **amtpass** | MPS uses this as the AMT password when making AMT API calls (WSMAN or Redirection). This is the password set during AMT configuration |
+Click the **Next** link at the bottom left of this page to continue on the "Get Started with Microservices Locally" path.
 
-!!! info "AMT and MPS password security recommendation"
-
-Intel highly recommends that you don't use same password for MPS AMT. An example strong password would contain:
-
-* at least eight characters
-* at least one uppercase letter
-* one lowercase letter
-* one digit
-* one special character
-
-
-For example:
-
-``` yaml
-
-        {
-        "8dad96cb-c3db-11e6-9c43-bc0000d20000": {
-            "name": "Win7-machine",
-            "mpsuser": "standalone",
-            "mpspass": "G@ppm0ym",
-            "amtuser": "admin",
-            "amtpass": "G@ppm0ym"
-        },
-        "bf49cf00-9164-11e4-952b-b8aeed7ec594": {
-            "name": "Ubuntu-machine",
-            "mpsuser": "xenial",
-            "mpspass": "G@ppm0ym",
-            "amtuser": "admin",
-            "amtpass": "G@ppm0ym"
-        }
-    }
-
-```
-
-### 4. Add/modify guids.json
-
-If *usewhitelist* is set to *true* in the config.json file, add a guids.json file in *private* directory to whitelist AMT GUIDs that are allowed to connect to MPS. 
-
-Use **guids.json.sample** as an reference to create the guids.json and populate it with guids for whitelisting. This file is used to simulate whitelisting based on AMT GUIDs.
-
-Navigate to the ~/MPS/private directory.
-
-```
-cd ~/MPS/private
-```
-
-Create the guids.json file.
-
-```
-cp credentials.json.sample credentials.json
-```
-
-Edit this file to include your GUID(s). The GUID can be found using meshcommander. On the device with AMT activated, change to the directory where meshcmd.exe was downloaded. For example 
-
-
-For example:
-
-```yaml
-
-["8dad96cb-c3db-11e6-9c43-bc0000d20000","12345678-9abc-def1-2345-123456789000"]
-```
-
-### 5. Start the server
-
-Navigate to the MPS directory. Run the following commands:
-
-``` javascript
-npm install
-npm start
-```
-
-This will install all the dependencies and start the server. Webserver (or HTTPS server) runs on port 3000 by default and MPS Server listens on port 4433.
-Certificates are generated and stored in private folder.
-
-[![mps](assets/images/MPS_npminstall.PNG)](assets/images/MPS_npminstall.PNG)
-
-### 6. Connect an AMT device
-
-*  Make sure the AMT device is connected to the internet.
-
-*  On the device, browse to the MPS server using the IP address or domain 
-	
-<strong>Example URL</strong>: https://MPS-IPaddress:3000
- 
-* Click <strong>Download MESCRIPT</strong>. 
-* This will download a <strong>cira_setup.mescript</strong> file.
-
-!!! info "MEScript"
-        MEScript files are used by MeshCMD to execute a series of actions on the AMT device.
-
-[![mps](assets/images/MPS_DownloadMEScript.PNG)](assets/images/MPS_DownloadMEScript.PNG)
-
-*  Next, locate the meshcommander.exe download previously.
-
-[![mps](assets/images/MPS_MeshCommander.PNG)](assets/images/MPS_MeshCommander.PNG)
-
-*  Browse to the folder where MEScript and MeshCMD are downloaded. Open an elevated or administrator command prompt or cli. Run the below command. This runs a script that does all the configuration required for CIRA setup.
-    1. Specifies the **root certificate** that the Firmware (ME) should use for TLS negotiation.
-    2. Specifies the **login credentials** that the Firmware should use when connecting to MPS.
-    3. Specifies the **periodic connection** time the Firmware should use to maintain MPS connection.
-    4. Specifies the **home domain suffix** used to enable environment detection (When device is outside the home domain, AMT uses CIRA to connect to MPS).
-
-``` yaml
-    meshcmd.exe amtscript --script cira_setup.mescript --pass <amt password>
-```
-
-*  The device will now connect to the MPS Server.
-
-[![mps](assets/images/MPS_DeviceOnline.PNG)](assets/images/MPS_DeviceOnline.PNG)
-
-!!! info "Device credentials"
-
-    Make sure that AMT guid entry is present in credential.json file. Also include the AMT guid in guids.json file if *usewhitelist* is set to *true* in config.json file.

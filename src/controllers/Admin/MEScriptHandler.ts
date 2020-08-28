@@ -45,12 +45,12 @@ export class MEScriptHandler implements IAdminHandler {
           scriptFile.scriptBlocks[2].vars.CertBin.value = (process.env.ROOT_CA_CERT ? this.base64(process.env.ROOT_CA_CERT) : this.getRootCertBase64(
             path.join(__dirname, "../../../private/root-cert-public.crt")
           )); // Set the root certificate
-          scriptFile.scriptBlocks[3].vars.FQDN.value = this.mps.config.commonName; // Set the server DNS name
-          scriptFile.scriptBlocks[3].vars.Port.value = this.mps.config.mpsport; // Set the server MPS port
-          scriptFile.scriptBlocks[3].vars.username.value = this.mps.config.mpsusername; // Set the username
-          scriptFile.scriptBlocks[3].vars.password.value = this.mps.config.mpspass; // Set the password
+          scriptFile.scriptBlocks[3].vars.FQDN.value = this.mps.config.common_name; // Set the server DNS name
+          scriptFile.scriptBlocks[3].vars.Port.value = this.mps.config.port; // Set the server MPS port
+          scriptFile.scriptBlocks[3].vars.username.value = this.mps.config.username; // Set the username
+          scriptFile.scriptBlocks[3].vars.password.value = this.mps.config.pass; // Set the password
           scriptFile.scriptBlocks[4].vars.AccessInfo1.value =
-            this.mps.config.commonName + ":" + this.mps.config.mpsport; // Set the primary server name:port to set periodic timer
+            this.mps.config.common_name + ":" + this.mps.config.port; // Set the primary server name:port to set periodic timer
           scriptFile.scriptBlocks[6].vars.DetectionStrings.value = "dummy.com"; // Set the environment detection local FQDN's
 
           // Compile the script

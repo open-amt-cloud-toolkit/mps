@@ -4,41 +4,78 @@
 **********************************************************************/
 import { dataBase } from '../src/utils/db';
 import { configType } from '../src/models/Config';
+import { join } from 'path';
 
-let config: configType = {
-    "usewhitelist": true,
-    "commonName": "localhost",
-    "mpsport": 4433,
-    "mpsusername": "standalone",
-    "mpspass": "P@ssw0rd",
-    "useglobalmpscredentials": true,
-    "country": "US",
-    "company": "NoCorp",
-    "debug": true,
-    "listenany": true,
-    "https": true,
-    "mpstlsoffload": false,
-    "webport": 3000,
-    "generateCertificates": true,
-    "debugLevel": 2,
-    "loggeroff": false,
-    "credentialspath": "../../private/credentials.json",
-    "orgspath": "../../private/orgs.json",
-    "guidspath": "../../private/guids.json",
-    "developermode": true,
-    "webadminuser": "standalone",
-    "webadminpassword": "G@ppm0ym",
-    "mpsxapikey": "APIKEYFORMPS123!",
-    "sessionEncryptionKey": ""
-}
 
-describe("Use GUID whitelisting: ", () => {
-    config.usewhitelist =  true;
-    let db = new dataBase(config,null); 
-    it('Test if listed GUID is allowed', () => {   
-        db.IsGUIDApproved("12345678-9abc-def1-2345-123456789000", (ret) => { 
-            expect(ret).toBe(true);
-        });
+
+describe("Use GUID allowlisting: ", () => {
+    let config: configType = {
+        "use_allowlist": true,
+        "common_name": "localhost",
+        "port": 4433,
+        "username": "standalone",
+        "pass": "P@ssw0rd",
+        "use_global_mps_credentials": true,
+        "country": "US",
+        "company": "NoCorp",
+        "debug": true,
+        "listen_any": true,
+        "https": true,
+        "tls_offload": false,
+        "web_port": 3000,
+        "generate_certificates": true,
+        "debug_level": 2,
+        "logger_off": false,
+        "data_path": join(__dirname, "private", "data.json"),
+        "cert_format": "file",
+        "cert_path": join(__dirname, "private"),
+        "session_encryption_key":"TestKey",
+        "web_admin_user": "standalone",
+        "web_admin_password": "G@ppm0ym",
+        "mpsxapikey": "testapikey",
+        "mps_tls_config" : {
+            "key": "../private/mpsserver-cert-private.key",
+            "cert": "../private/mpsserver-cert-public.crt",
+            "requestCert": true,
+            "rejectUnauthorized": false,
+            "minVersion": "TLSv1",
+            "ciphers": null,
+            "secureOptions": ["SSL_OP_NO_SSLv2", "SSL_OP_NO_SSLv3"]
+        },
+        "web_tls_config" : {
+            "key": "../private/mpsserver-cert-private.key",
+            "cert": "../private/mpsserver-cert-public.crt",
+            "ca": ["../private/root-cert-public.crt"],
+            "secureOptions": ["SSL_OP_NO_SSLv2", "SSL_OP_NO_SSLv3", "SSL_OP_NO_COMPRESSION" , "SSL_OP_CIPHER_SERVER_PREFERENCE", "SSL_OP_NO_TLSv1", "SSL_OP_NO_TLSv11"]
+        }
+    }
+    let db = new dataBase(config); 
+    //console.log(config)
+    //console.log(db.getAllGUIDS())
+    it('Test if listed GUID is allowed', (done) => {   
+        var callback = (ret) => { 
+            try {
+                //console.log('return value ', ret)
+                expect(ret).toBe(true);
+                done();
+            } catch (error) {
+                done(error)
+            };
+        }
+        db.IsGUIDApproved("12345678-9abc-def1-2345-123456789000", callback);
+    });
+
+    it('Test if listed GUID is not allowed', (done) => {   
+        var callback = (ret) => { 
+            try {
+                //console.log('return value ', ret)
+                expect(ret).toBe(false);
+                done();
+            } catch (error) {
+                done(error)
+            };
+        }
+        db.IsGUIDApproved("12345678-9abc-def1-2345-12345678900", callback);
     });
     //ToDo:
     // it('Test if non listed GUID is not allowed', async() => {
@@ -53,9 +90,48 @@ describe("Use GUID whitelisting: ", () => {
     // });
 });
 
-describe("Do not use GUID whitelisting: ", () => {
-    config.usewhitelist =  false;
-    let db = new dataBase(config,null); 
+describe("Do not use GUID allowlisting: ", () => {
+    let config: configType = {
+        "use_allowlist": false,
+        "common_name": "localhost",
+        "port": 4433,
+        "username": "standalone",
+        "pass": "P@ssw0rd",
+        "use_global_mps_credentials": true,
+        "country": "US",
+        "company": "NoCorp",
+        "debug": true,
+        "listen_any": true,
+        "https": true,
+        "tls_offload": false,
+        "web_port": 3000,
+        "generate_certificates": true,
+        "debug_level": 2,
+        "logger_off": false,
+        "data_path": join(__dirname, "private", "data.json"),
+        "cert_format": "file",
+        "cert_path": join(__dirname, "private"),
+        "session_encryption_key":"TestKey",
+        "web_admin_user": "standalone",
+        "web_admin_password": "G@ppm0ym",
+        "mpsxapikey": "testapikey",
+        "mps_tls_config" : {
+            "key": "../private/mpsserver-cert-private.key",
+            "cert": "../private/mpsserver-cert-public.crt",
+            "requestCert": true,
+            "rejectUnauthorized": false,
+            "minVersion": "TLSv1",
+            "ciphers": null,
+            "secureOptions": ["SSL_OP_NO_SSLv2", "SSL_OP_NO_SSLv3"]
+        },
+        "web_tls_config" : {
+            "key": "../private/mpsserver-cert-private.key",
+            "cert": "../private/mpsserver-cert-public.crt",
+            "ca": ["../private/root-cert-public.crt"],
+            "secureOptions": ["SSL_OP_NO_SSLv2", "SSL_OP_NO_SSLv3", "SSL_OP_NO_COMPRESSION" , "SSL_OP_CIPHER_SERVER_PREFERENCE", "SSL_OP_NO_TLSv1", "SSL_OP_NO_TLSv11"]
+        }
+    }
+    let db = new dataBase(config); 
     it('Test if listed GUID is allowed', () => {   
         db.IsGUIDApproved("12345678-9abc-def1-2345-123456789000", (ret) => { 
             expect(ret).toBe(true);

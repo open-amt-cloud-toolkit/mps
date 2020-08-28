@@ -24,8 +24,8 @@ export class SecretManagerService implements ISecretManagerService {
 
     var options : NodeVault.VaultOptions = {
       apiVersion: 'v1', // default
-      endpoint: config.vaultaddress, // default
-      token: config.vaulttoken // optional client token; can be fetched after valid initialization of the server
+      endpoint: config.vault_address, // default
+      token: config.vault_token // optional client token; can be fetched after valid initialization of the server
     };
 
     this.vaultClient = NodeVault(options);
