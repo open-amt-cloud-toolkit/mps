@@ -15,7 +15,7 @@
     "i18next-xhr-backend": "^3.2.2",
     "immutability-helper": "2.5.1",
     "moment": "2.22.1",
-    "mps-ui-toolkit": "git+https://github.com/open-amt-cloud-toolkit/ui-toolkit.git#ActivEdge",
+    "mps-ui-toolkit": "git+https://github.com/open-amt-cloud-toolkit/ui-toolkit.git#q3-dx_assessment",
     "node-sass": "^4.13.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

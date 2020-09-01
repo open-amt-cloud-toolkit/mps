@@ -9,7 +9,7 @@
     "start": "npm run build && node ./dist/index.js",
     "test": "jest & (cd webui && npm run test)",
     "dev": "set MPS_USE_VAULT=false&& set MPS_LOG_LEVEL=silly&&set MPS_AUTH_ENABLED=false&& npm start",
-    "devx": "MPS_USE_VAULT=false MPS_LOG_LEVEL=silly MPS_AUTH_ENABLED=true npm start"
+    "devx": "MPS_USE_VAULT=false MPS_LOG_LEVEL=silly MPS_AUTH_ENABLED=false npm start"
   },
   "author": "",
   "license": "Apache-2.0",
