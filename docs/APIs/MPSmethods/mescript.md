@@ -8,7 +8,6 @@ Click [here](types.md) for supported input and output types.
 
 ``` yaml
 {  
-   "apiKey":"string",
    "method":"MEScript",
    "payload":{}
 }
@@ -44,3 +43,5 @@ error: function(error){
 
 
 ```
+
+Return to [MPS Methods](../indexMPS.md)

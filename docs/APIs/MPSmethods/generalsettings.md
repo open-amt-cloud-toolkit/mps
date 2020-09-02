@@ -9,7 +9,6 @@ Click [here](types.md) for supported input and output types.
 ``` yaml
 
 {  
-   "apiKey":"string",
    "method":"GeneralSettings",
    "payload":{  
       "guid":"038d0240-045c-05f4-7706-980700080009"
@@ -51,3 +50,5 @@ Click [here](types.md) for supported input and output types.
 	}
 
 ```
+
+Return to [MPS Methods](../indexMPS.md)

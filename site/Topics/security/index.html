@@ -1,0 +1,805 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.5.12">
+    
+    
+      
+        <title>Security Information - ActivEdge: Smart Building Blocks for Remote Edge Management</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.4dd2dd8d.min.css">
+      
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.6a5ad368.min.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#02a6f2">
+      
+    
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="light-blue" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#securityhardening-considerations" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="../.." title="ActivEdge: Smart Building Blocks for Remote Edge Management" class="md-header-nav__button md-logo" aria-label="ActivEdge: Smart Building Blocks for Remote Edge Management">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            ActivEdge: Smart Building Blocks for Remote Edge Management
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Security Information
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="ActivEdge: Smart Building Blocks for Remote Edge Management" class="md-nav__button md-logo" aria-label="ActivEdge: Smart Building Blocks for Remote Edge Management">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    ActivEdge: Smart Building Blocks for Remote Edge Management
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      Get Started with Microservices Locally
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Get Started with Microservices Locally" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        <span class="md-nav__icon md-icon"></span>
+        Get Started with Microservices Locally
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Local/overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Local/installMPS/" title="Install MPS Locally" class="md-nav__link">
+      Install MPS Locally
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Local/installRPS/" title="Install RPS Locally" class="md-nav__link">
+      Install RPS Locally
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Local/configureRPS/" title="Configure RPS" class="md-nav__link">
+      Configure RPS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Local/buildRPC/" title="Build RPC on a Managed Device" class="md-nav__link">
+      Build RPC on a Managed Device
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Local/manageDevice/" title="Manage Device" class="md-nav__link">
+      Manage Device
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Deploy Microservices with Docker*
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Deploy Microservices with Docker*" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon"></span>
+        Deploy Microservices with Docker*
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Docker/overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Docker/dockerLocal/" title="Build Docker* Images" class="md-nav__link">
+      Build Docker* Images
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Local/configureRPS/" title="Configure RPS" class="md-nav__link">
+      Configure RPS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Local/buildRPC/" title="Build RPC on a Managed Device" class="md-nav__link">
+      Build RPC on a Managed Device
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Local/manageDevice/" title="Manage Device" class="md-nav__link">
+      Manage Device
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Tutorials
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        <span class="md-nav__icon md-icon"></span>
+        Tutorials
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Docker/dockerCloud/" title="Docker Images on the Cloud" class="md-nav__link">
+      Docker Images on the Cloud
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Tutorials/uitoolkit/" title="Creating Consoles with the UI Toolkit" class="md-nav__link">
+      Creating Consoles with the UI Toolkit
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Tutorials/acmActivation/" title="Activating in ACM Mode" class="md-nav__link">
+      Activating in ACM Mode
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Tutorials/addDatabase/" title="Adding a Database" class="md-nav__link">
+      Adding a Database
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Tutorials/addVault/" title="Adding Vault Storage" class="md-nav__link">
+      Adding Vault Storage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Tutorials/allowlist/" title="Using an Allowlist" class="md-nav__link">
+      Using an Allowlist
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      APIs
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="APIs" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon"></span>
+        APIs
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../APIs/indexMPS/" title="MPS Methods" class="md-nav__link">
+      MPS Methods
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../APIs/indexRPS/" title="RPS Methods" class="md-nav__link">
+      RPS Methods
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" checked>
+    
+    <label class="md-nav__link" for="nav-6">
+      Topics
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Topics" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        <span class="md-nav__icon md-icon"></span>
+        Topics
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../misc/" title="Static and Dynamic IPs" class="md-nav__link">
+      Static and Dynamic IPs
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../guids/" title="GUIDs in Intel AMT" class="md-nav__link">
+      GUIDs in Intel AMT
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../mebx/" title="MEBX" class="md-nav__link">
+      MEBX
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../proxies/" title="Working with Proxies" class="md-nav__link">
+      Working with Proxies
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+    <a href="./" title="Security Information" class="md-nav__link md-nav__link--active">
+      Security Information
+    </a>
+    
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../release-notes/" title="Release notes" class="md-nav__link">
+      Release notes
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../license/" title="License" class="md-nav__link">
+      License
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  
+                
+                
+                <h1 id="securityhardening-considerations">Security/Hardening Considerations<a class="headerlink" href="#securityhardening-considerations" title="Permanent link">&para;</a></h1>
+<p>Points to specific relevant areas in other procedures.</p>
+<p>For example, in the <a href="./NextSteps.md#docker">Docker</a> section.</p>
+<p><br></p>
+<h1 id="mps-security-considerations">MPS Security Considerations<a class="headerlink" href="#mps-security-considerations" title="Permanent link">&para;</a></h1>
+<p>Management Presence Server (MPS) is a cloud agnostic micro-service that enables Intel&reg; AMT-based platforms connecting over the internet to connect securely to manageability consoles. In order for a client to securely perform actions on Intel&amp;reg AMT devices using REST APIs, MPS uses secrets. There are six key assets that must be protected:
+* Intel&reg; AMT credentials
+* Intel&reg; MPS credentials
+* Device Whitelisting (List of UUIDs)
+* APIKey
+* Server Configuration
+* Web User Credentials</p>
+<p>In addition to the above assets, there are best practices that are recommened to help secure these assets as they are used within the system.  The following sections will cover each asset and the recommended practices to use to protect the assets.</p>
+<h2 id="security-assets">Security Assets<a class="headerlink" href="#security-assets" title="Permanent link">&para;</a></h2>
+<h3 id="1-intel-amt-credentials">1. Intel&reg; AMT credentials<a class="headerlink" href="#1-intel-amt-credentials" title="Permanent link">&para;</a></h3>
+<p>AMT credentials allows a user to remotely control Intel&reg; AMT device and these credentials are configured in AMT Firmware. When user performs an action on the device using REST API, MPS then fetches corresponding credentials of that device from Vault/Database and uses it as part of digest authentication. It is highly recommended to use strong password (as per AMT password requirements) and also, unique passwords per device to make it more secure.</p>
+<h3 id="2-intel-mps-credentials">2. Intel&reg; MPS credentials<a class="headerlink" href="#2-intel-mps-credentials" title="Permanent link">&para;</a></h3>
+<p>Every Intel&reg; device needs to be authenticated prior to successful connection to MPS. MPS credentials are used to authenticate every Intel&reg; device. After establishing TLS connection with MPS, device sends it's username and password, which will then be used to authenticate. It is highly recommended that every device use a unique username and password.</p>
+<h3 id="3-device-whitelisting-list-of-uuids">3. Device Whitelisting (List of UUIDs)<a class="headerlink" href="#3-device-whitelisting-list-of-uuids" title="Permanent link">&para;</a></h3>
+<p>Each Intel&reg; AMT device has a unique identifier (UUID) assigned to it and this UUID is assigned by Original Equipment Manufacturer (OEM). As discussed above, devices are authenticated by MPS using MPS credentials. But even before validating credentials, only whitelisted Intel&reg; AMT devices can be allowed to connect to make it more secure and this is being done using whitlisting UUID.</p>
+<h3 id="4-apikey">4. APIKey<a class="headerlink" href="#4-apikey" title="Permanent link">&para;</a></h3>
+<p>Every client/user needs to be authenticated before allowing them to perform an action using REST API call. APIKey will be used by MPS to authenticate a client/user.</p>
+<h3 id="5-server-configuration">5. Server Configuration<a class="headerlink" href="#5-server-configuration" title="Permanent link">&para;</a></h3>
+<p>In order for MPS to use secure protocols, we will have to configure certificates, and the keys for these certificates need to be securely stored. If the keys are compromised then the attacker will be able to decrypt all the messages.</p>
+<h3 id="6-web-user-credentials">6. Web User Credentials<a class="headerlink" href="#6-web-user-credentials" title="Permanent link">&para;</a></h3>
+<p>Primary way of authenticating a user who intends to perform an action is using APIKey but MPS also provides a sample Web-based User Interface. This Web Interface shows how to make REST API calls using AJAX. Only authenticated users should be allowed to make REST API calls using Web UI and the authentication will be done using Web user credentials.</p>
+<h2 id="best-known-security-methods">Best Known Security Methods<a class="headerlink" href="#best-known-security-methods" title="Permanent link">&para;</a></h2>
+<h3 id="1-enable-tls-on-network-connections">1. Enable TLS on network connections<a class="headerlink" href="#1-enable-tls-on-network-connections" title="Permanent link">&para;</a></h3>
+<p>There are three potential places where TLS should be enabled to protect the security assets:
+* HTTP/WS connection between client and MPS
+* Connection between MPS and Vault/Database
+* Connection between MPS and Intel&reg; AMT device</p>
+<p>Encrypting these communication will help prevent network based attacks attempting to control Intel&reg; AMT device. It is recommended that the most modern version of TLS be used to protect these connections.</p>
+<h3 id="2-secure-and-isolate-execution-environment">2. Secure and isolate execution environment<a class="headerlink" href="#2-secure-and-isolate-execution-environment" title="Permanent link">&para;</a></h3>
+<p>MPS holds the described security assets in memory during execution.  In order to protect these assets while in memory of MPS, it is recommended that MPS be run in a secure execution environment such as a dedicated VM or container. Deploying into a hardened execution environment eases the burden of individually securing the assets.</p>
+<h3 id="3-utilize-vault-for-storing-credentials">3. Utilize Vault for storing Credentials<a class="headerlink" href="#3-utilize-vault-for-storing-credentials" title="Permanent link">&para;</a></h3>
+<p>Vault is a tool used to secure, store and tightly control access to secrets. Utilizing Vault to store passwords used by MPS will greatly increase the security of these assets.</p>
+<h3 id="4-utilize-kubernetes-secrets-for-storing-dynamic-configuration-values-like-environment-variables">4. Utilize Kubernetes Secrets for storing dynamic configuration values (like environment variables)<a class="headerlink" href="#4-utilize-kubernetes-secrets-for-storing-dynamic-configuration-values-like-environment-variables" title="Permanent link">&para;</a></h3>
+<p>Kubernetes Secrets help you to store and manage sensitive information like Tokens. Use Kubernetes secrets for storing environment variables required for configuring MPS rather than putting them in the image/pod. Vault token, Session secret key, and Server configuration assets required for MPS should be stored in Kubernetes secrets.</p>
+<p><br></p>
+<h1 id="rps-security-considerations">RPS Security Considerations<a class="headerlink" href="#rps-security-considerations" title="Permanent link">&para;</a></h1>
+<p>Remote Provision Service (RPS) is built to be a microservice that plays a component role in a larger set of services that makes up the device management software suite.  In this role, RPS uses and creates secrets that are required to be able to successfully activate and use Intel&reg; AMT.  There are four key assets that must be protected:
+* Remote admin password for Intel&reg; AMT
+* Provisioning Certificate for each supported domain
+* Password used to encrypt each Provisioning Certificate
+* Device configuration information sent to Intel&reg; AMT device</p>
+<p>In addition to the above assets, there are best practices that are recommened to help secure these assets as they are used within the system.  The following sections will cover each asset and the recommended practices to use to protect the assets.</p>
+<hr />
+<h2 id="security-assets_1">Security Assets<a class="headerlink" href="#security-assets_1" title="Permanent link">&para;</a></h2>
+<h3 id="1-remote-admin-password">1 Remote Admin Password<a class="headerlink" href="#1-remote-admin-password" title="Permanent link">&para;</a></h3>
+<p>This password is what is configured in the Intel&reg; AMT firmware that allows a remote user to remotely control the Intel&reg; AMT device (power actions, remote desktop, remote terminal, etc).  When RPS activates an Intel&reg; AMT device, it sets this password in the Intel&reg; AMT firmware.  This password can either be statically set or can be randomly generated based on the profile defined by the user setting up RPS (covered in AMTConfigurations section).  It is highly recommended to use randomly generated passwords as this will make each Intel&reg; AMT device more secure by using unique passwords per device.
+RPS will only ever save the Remote Admin Password to a configured database connection.  If a database connection is not configured, RPS will not use profiles that specify a randomly generated password.</p>
+<h3 id="2-provisioning-certificate">2 Provisioning Certificate<a class="headerlink" href="#2-provisioning-certificate" title="Permanent link">&para;</a></h3>
+<p>This certificate is unique per owned domain that has Intel&reg; AMT devices located and RPS needs to provision.  This certificate must be derived from a root certificate whose hash matches one of the trusted provisioning root certificate hashes that is listed in the Intel&reg; AMT device firmware.  Generally, the provisioning certificate is purchased from a trusted certificate authority (VeriSign, GoDaddy, Comodo, etc).  The full list of supported CAs based on Intel&reg; AMT version are listed here: https://software.intel.com/sites/manageability/AMT_Implementation_and_Reference_Guide/WordDocuments/rootcertificatehashes.htm.  This certificate must contain the leaf certificate, root certificate, and all of the intermediate certificates to form a complete certificate chain.  Additionally, the certificate file must also include the private key for the certificate (.pfx format).  The leaf certificate for the provisioning certificate must match the domain suffix that the Intel&reg; AMT device is connected as specified by DHCP option 15 or the Truted DNS Suffix in the Management BIOS Extentions (MEBx).  Matching this is one of the ways in which the Intel&reg; AMT firmware establishes trust with RPS.<br />
+RPS reads the location of the Provisioning Certificate from the configuration file and will then fetch the certificate when it is needed to activate an Intel&reg; AMT device.  RPS doesn't ever save or export the Provisioning Certificate anywhere.</p>
+<h3 id="3-password-used-to-encrypt-provisioning-certificate">3 Password used to encrypt Provisioning Certificate<a class="headerlink" href="#3-password-used-to-encrypt-provisioning-certificate" title="Permanent link">&para;</a></h3>
+<p>This is the password that is used to encrypt the provisioning certificate .pfx file that is discussed above.  RPS uses this password to decrypt the provisioning certificate so that it can use the certificate components and the private key to activate Intel&reg; AMT devices.<br />
+RPS reads the password from the configuration file and will use it when it is needed to decrypt a provisioning certificate.  RPS doesn't ever save or export the Provisioning Certficiate Password anywhere.</p>
+<h3 id="4-device-configuration-information-sent-to-intel-amt-device">4 Device configuration information sent to Intel&reg; AMT device<a class="headerlink" href="#4-device-configuration-information-sent-to-intel-amt-device" title="Permanent link">&para;</a></h3>
+<p>This data is a set of information that Intel&reg; AMT firmware will use to establish trust and then activate the Intel&reg; AMT device.  Contained in this information is the hashed remote admin password.  It is important to protect this set of information while it is being used by RPS and while in transit to the Intel&reg; AMT device.  This set of information is not replayable and is specific for a given Intel&reg; AMT device.</p>
+<hr />
+<h2 id="best-known-security-methods_1">Best Known Security Methods<a class="headerlink" href="#best-known-security-methods_1" title="Permanent link">&para;</a></h2>
+<h3 id="1-enable-tls-on-network-connections_1">1 Enable TLS on network connections<a class="headerlink" href="#1-enable-tls-on-network-connections_1" title="Permanent link">&para;</a></h3>
+<p>There are two potential places where TLS should be enable to protect the security assets:
+* WebSocket connection between RPS and Intel&reg; AMT client
+* Database connection between RPS and storage database</p>
+<p>Encrypting these communication transports will help prevent network based attacks attempting to discover the Remote Admin Password for the Intel&reg; AMT device.  It is recommended that the most modern version of TLS be used to protect these connections.</p>
+<h3 id="2-secure-and-isolate-execution-environment_1">2 Secure and isolate execution environment<a class="headerlink" href="#2-secure-and-isolate-execution-environment_1" title="Permanent link">&para;</a></h3>
+<p>RPS holds the described security assets in memory during execution.  In order to protect these assets while in memory of RPS, it is recommended that RPS be run in a secure execution environment such as a dedicated VM or container.  Deploying into a hardened execution environment eases the burden of individually securing the configuration files and provisioning certificates</p>
+<h3 id="3-utilize-a-vault-implementation-to-encrypt-passwords">3 Utilize a Vault implementation to encrypt passwords<a class="headerlink" href="#3-utilize-a-vault-implementation-to-encrypt-passwords" title="Permanent link">&para;</a></h3>
+<p>Utilizing an encryption Vault to encrypt the passwords either created by or used by RPS will greatly increase the security of these assets.  By only having the hash value stored in the RPS configuration file ensures that these assets are protected while at rest.  Additionally, RPS can encrypt the static or randomly generated Remote Admin Password prior to sending this information to the database, protecting this asset while at rest in an unencrypted database.</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../proxies/" title="Working with Proxies" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Working with Proxies
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../../release-notes/" title="Release notes" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Release notes
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.3636a4ec.min.js"></script>
+      <script src="../../assets/javascripts/bundle.e9fe3281.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: [],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.5eca75d3.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

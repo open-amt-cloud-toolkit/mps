@@ -8,7 +8,6 @@ Click [here](types.md) for supported input and output types.
 
 ``` yaml
 {  
-   "apiKey":"string",
    "method":"MPSRootCertificate",
    "payload":{}
 }
@@ -18,3 +17,4 @@ Click [here](types.md) for supported input and output types.
 
 Downloads MPS root certificate.
 
+Return to [MPS Methods](../indexMPS.md)

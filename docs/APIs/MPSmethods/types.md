@@ -5,7 +5,6 @@
 ``` yaml
 
 	requestBody {
-        apiKey: string;
         method: string;
         payload: any;
     }
@@ -447,3 +446,5 @@ module versionInfo {
         IDER: boolean
     }
 ```
+
+Return to [MPS Methods](../indexMPS.md)

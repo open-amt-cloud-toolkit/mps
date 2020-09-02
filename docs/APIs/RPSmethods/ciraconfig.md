@@ -12,7 +12,9 @@ In production mode, all profiles and CIRA configurations are written to the data
 
 The inputs below for both CIRA Config and AMT Profile creation will work in either Developer or Prod mode.
 
-## Input for Creating the CIRA Configuration REST API
+<br>
+
+## Create a CIRA Configuration
 
 ONLY proxyDetails is optional. 
 
@@ -47,21 +49,7 @@ Duplicate Failure:
 CIRA Config insertion failed for config1. CIRA Config already exists.
 ```
 
-
-## New Input for Creating the AMT Profile Rest API
-
-```
-{
-    "payload": {
-        "profileName": "profile1",
-        "amtPassword":"P@ssw0rd",
-        "generateRandomPassword": false,
-        "passwordLength": 8,
-        "activation": "acmactivate",
-				"ciraConfigName": "config2"
-    }
-}
-```
+<br>
 
 ## Get all CIRA configurations
 
@@ -100,7 +88,9 @@ Sample Response:
 ]
 ```
 
-## Get a CIRA configuration by name
+<br>
+
+## Get a CIRA configuration
 
 * Endpoint: */api/v1/ciraconfigs/{ciraconfigname}*
 * Method Type: GET
@@ -123,7 +113,9 @@ Sample Response:
 }
 ```
 
-## Delete a CIRA configuration by name
+<br>
+
+## Delete a CIRA configuration
 
 * Endpoint: */api/v1/ciraconfigs/{ciraconfigname}*
 * Method Type: DELETE
@@ -140,3 +132,6 @@ Constraint Failure (if an AMT profile is using this CIRA configuration)
 Deletion failed for CIRA Config: config1. Profile associated with this Config.
 ```
 
+<br>
+
+Return to [RPS Methods](../indexRPS.md)

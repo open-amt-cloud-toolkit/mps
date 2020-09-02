@@ -1,0 +1,1197 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="shortcut icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.5.12">
+    
+    
+      
+        <title>Types - ActivEdge: Smart Building Blocks for Remote Edge Management</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.4dd2dd8d.min.css">
+      
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.6a5ad368.min.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#02a6f2">
+      
+    
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="light-blue" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#types" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="../../.." title="ActivEdge: Smart Building Blocks for Remote Edge Management" class="md-header-nav__button md-logo" aria-label="ActivEdge: Smart Building Blocks for Remote Edge Management">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            ActivEdge: Smart Building Blocks for Remote Edge Management
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Types
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="ActivEdge: Smart Building Blocks for Remote Edge Management" class="md-nav__button md-logo" aria-label="ActivEdge: Smart Building Blocks for Remote Edge Management">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    ActivEdge: Smart Building Blocks for Remote Edge Management
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../.." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      Get Started with Microservices Locally
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Get Started with Microservices Locally" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        <span class="md-nav__icon md-icon"></span>
+        Get Started with Microservices Locally
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Local/overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Local/installMPS/" title="Install MPS Locally" class="md-nav__link">
+      Install MPS Locally
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Local/installRPS/" title="Install RPS Locally" class="md-nav__link">
+      Install RPS Locally
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Local/configureRPS/" title="Configure RPS" class="md-nav__link">
+      Configure RPS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Local/buildRPC/" title="Build RPC on a Managed Device" class="md-nav__link">
+      Build RPC on a Managed Device
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Local/manageDevice/" title="Manage Device" class="md-nav__link">
+      Manage Device
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Deploy Microservices with Docker*
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Deploy Microservices with Docker*" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon"></span>
+        Deploy Microservices with Docker*
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Docker/overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Docker/dockerLocal/" title="Build Docker* Images" class="md-nav__link">
+      Build Docker* Images
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Local/configureRPS/" title="Configure RPS" class="md-nav__link">
+      Configure RPS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Local/buildRPC/" title="Build RPC on a Managed Device" class="md-nav__link">
+      Build RPC on a Managed Device
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Local/manageDevice/" title="Manage Device" class="md-nav__link">
+      Manage Device
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Tutorials
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        <span class="md-nav__icon md-icon"></span>
+        Tutorials
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Docker/dockerCloud/" title="Docker Images on the Cloud" class="md-nav__link">
+      Docker Images on the Cloud
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Tutorials/uitoolkit/" title="Creating Consoles with the UI Toolkit" class="md-nav__link">
+      Creating Consoles with the UI Toolkit
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Tutorials/acmActivation/" title="Activating in ACM Mode" class="md-nav__link">
+      Activating in ACM Mode
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Tutorials/addDatabase/" title="Adding a Database" class="md-nav__link">
+      Adding a Database
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Tutorials/addVault/" title="Adding Vault Storage" class="md-nav__link">
+      Adding Vault Storage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Tutorials/allowlist/" title="Using an Allowlist" class="md-nav__link">
+      Using an Allowlist
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      APIs
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="APIs" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon"></span>
+        APIs
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../indexMPS/" title="MPS Methods" class="md-nav__link">
+      MPS Methods
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../indexRPS/" title="RPS Methods" class="md-nav__link">
+      RPS Methods
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Topics
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Topics" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        <span class="md-nav__icon md-icon"></span>
+        Topics
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Topics/misc/" title="Static and Dynamic IPs" class="md-nav__link">
+      Static and Dynamic IPs
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Topics/guids/" title="GUIDs in Intel AMT" class="md-nav__link">
+      GUIDs in Intel AMT
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Topics/mebx/" title="MEBX" class="md-nav__link">
+      MEBX
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Topics/proxies/" title="Working with Proxies" class="md-nav__link">
+      Working with Proxies
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Topics/security/" title="Security Information" class="md-nav__link">
+      Security Information
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../release-notes/" title="Release notes" class="md-nav__link">
+      Release notes
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../license/" title="License" class="md-nav__link">
+      License
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#request-body" class="md-nav__link">
+    Request body
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#response-error-body" class="md-nav__link">
+    Response error body
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#all-devices" class="md-nav__link">
+    All Devices
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#audit-log" class="md-nav__link">
+    Audit log
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#event-log" class="md-nav__link">
+    Event log
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#general-settings" class="md-nav__link">
+    General settings
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hardware-information" class="md-nav__link">
+    Hardware information
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#power-action" class="md-nav__link">
+    Power action
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#power-capabilities" class="md-nav__link">
+    Power capabilities
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#power-state" class="md-nav__link">
+    Power state
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#version" class="md-nav__link">
+    Version
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-amt-features" class="md-nav__link">
+    Get AMT Features
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  
+                
+                
+                <h1 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h1>
+<h2 id="request-body">Request body<a class="headerlink" href="#request-body" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code>    <span class="l l-Scalar l-Scalar-Plain">requestBody {</span>
+        <span class="l l-Scalar l-Scalar-Plain">method</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">payload</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">any;</span>
+    <span class="err">}</span>
+</code></pre></div>
+
+
+<h2 id="response-error-body">Response error body<a class="headerlink" href="#response-error-body" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code>    responseErrorBody {
+        status: number;
+        error: string;
+    }
+</code></pre></div>
+
+
+<h2 id="all-devices">All Devices<a class="headerlink" href="#all-devices" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code>    <span class="l l-Scalar l-Scalar-Plain">interface devices {</span>
+        <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">mpsuser</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">mpspass</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">amtuser</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">amtpass</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">host</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">icon</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">conn</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+    <span class="err">}</span>
+</code></pre></div>
+
+
+<h2 id="audit-log">Audit log<a class="headerlink" href="#audit-log" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code>    <span class="l l-Scalar l-Scalar-Plain">auditLog {</span>
+        <span class="l l-Scalar l-Scalar-Plain">auditAppID</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">eventID</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">initiatorType</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">auditApp</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">event</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">initiator</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">time</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Date;</span>
+        <span class="l l-Scalar l-Scalar-Plain">mcLocationType</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">netAddress</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">ex</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span>
+<span class="nt">            type</span><span class="p">:</span> <span class="nv">string;</span>
+            <span class="nv">data</span><span class="p p-Indicator">:</span> <span class="nv">number</span><span class="p p-Indicator">[]</span><span class="nv">;</span>
+        <span class="p p-Indicator">}</span><span class="l l-Scalar l-Scalar-Plain">;</span>
+        <span class="l l-Scalar l-Scalar-Plain">exStr</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+    <span class="err">}</span>
+</code></pre></div>
+
+
+<h2 id="event-log">Event log<a class="headerlink" href="#event-log" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code>    <span class="l l-Scalar l-Scalar-Plain">eventLog {</span>
+        <span class="l l-Scalar l-Scalar-Plain">deviceAddress</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">eventSensorType</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">eventType</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">eventOffset</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">eventSourceType</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">eventSeverity</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">sensorNumber</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">entity</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">entityInstance</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">eventData</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number[];</span>
+        <span class="l l-Scalar l-Scalar-Plain">time</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Date;</span>
+        <span class="l l-Scalar l-Scalar-Plain">entityStr</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">desc</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+    <span class="err">}</span>
+</code></pre></div>
+
+
+<h2 id="general-settings">General settings<a class="headerlink" href="#general-settings" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code>    <span class="l l-Scalar l-Scalar-Plain">generalSettings {</span>
+        <span class="l l-Scalar l-Scalar-Plain">amtNetworkEnabled</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">ddnsPeriodicUpdateInterval</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">ddnsTTL</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">ddnsUpdateByDHCPServerEnabled</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">boolean;</span>
+        <span class="l l-Scalar l-Scalar-Plain">ddnsUpdateEnabled</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">boolean;</span>
+        <span class="l l-Scalar l-Scalar-Plain">dhcpv6ConfigurationTimeout</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">digestRealm</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">elementName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">hostName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">hostOSFQDN</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">idleWakeTimeout</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">instanceID</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">networkInterfaceEnabled</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">boolean;</span>
+        <span class="l l-Scalar l-Scalar-Plain">pingResponseEnabled</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">boolean;</span>
+        <span class="l l-Scalar l-Scalar-Plain">powerSource</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">preferredAddressFamily</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">presenceNotificationInterval</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">privacyLevel</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">rmcpPingResponseEnabled</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">boolean;</span>
+        <span class="l l-Scalar l-Scalar-Plain">sharedFQDN</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">boolean;</span>
+        <span class="l l-Scalar l-Scalar-Plain">wsmanOnlyMode</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">boolean;</span>
+    <span class="err">}</span>
+</code></pre></div>
+
+
+<h2 id="hardware-information">Hardware information<a class="headerlink" href="#hardware-information" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">module hardwareDetails {</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">selector {</span>
+        <span class="l l-Scalar l-Scalar-Plain">value</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">@name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">selectorSet {</span>
+        <span class="l l-Scalar l-Scalar-Plain">selector</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">selector[];</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">referenceParameters {</span>
+        <span class="l l-Scalar l-Scalar-Plain">resourceURI</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">selectorSet</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">selectorSet;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">antecedent {</span>
+        <span class="l l-Scalar l-Scalar-Plain">address</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">referenceParameters</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">referenceParameters;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">dependent {</span>
+        <span class="l l-Scalar l-Scalar-Plain">address</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">referenceParameters</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">referenceParameters;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">response {</span>
+        <span class="l l-Scalar l-Scalar-Plain">antecedent</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">antecedent;</span>
+        <span class="l l-Scalar l-Scalar-Plain">dependent</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">dependent;</span>
+        <span class="l l-Scalar l-Scalar-Plain">platformGUID</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">cimComputerSystemPackage {</span>
+        <span class="l l-Scalar l-Scalar-Plain">response</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">response;</span>
+        <span class="l l-Scalar l-Scalar-Plain">status</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">cimSystemPackagingResponses {</span>
+        <span class="l l-Scalar l-Scalar-Plain">antecedent</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">antecedent;</span>
+        <span class="l l-Scalar l-Scalar-Plain">dependent</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">dependent;</span>
+        <span class="l l-Scalar l-Scalar-Plain">platformGUID</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">cimSystemPackaging {</span>
+        <span class="l l-Scalar l-Scalar-Plain">responses</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cimSystemPackagingResponses[];</span>
+        <span class="l l-Scalar l-Scalar-Plain">status</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">cimChassisResponse {</span>
+        <span class="l l-Scalar l-Scalar-Plain">chassisPackageType</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">creationClassName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">elementName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">manufacturer</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">model</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">operationalStatus</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">packageType</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">serialNumber</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">tag</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">version</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">cimChassis {</span>
+        <span class="l l-Scalar l-Scalar-Plain">response</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cimChassisResponse;</span>
+        <span class="l l-Scalar l-Scalar-Plain">status</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">cimChipRespons {</span>
+        <span class="l l-Scalar l-Scalar-Plain">canBeFRUed</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">boolean;</span>
+        <span class="l l-Scalar l-Scalar-Plain">creationClassName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">elementName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">manufacturer</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">operationalStatus</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">tag</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">any;</span>
+        <span class="l l-Scalar l-Scalar-Plain">version</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">bankLabel</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">capacity?</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">formFactor?</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">memoryType?</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">partNumber</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">serialNumber</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">speed?</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">cimChip {</span>
+        <span class="l l-Scalar l-Scalar-Plain">responses</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cimChipRespons[];</span>
+        <span class="l l-Scalar l-Scalar-Plain">status</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">cimCardResponse {</span>
+        <span class="l l-Scalar l-Scalar-Plain">canBeFRUed</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">boolean;</span>
+        <span class="l l-Scalar l-Scalar-Plain">creationClassName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">elementName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">manufacturer</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">model</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">operationalStatus</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">packageType</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">serialNumber</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">tag</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">version</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">cimCard {</span>
+        <span class="l l-Scalar l-Scalar-Plain">response</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cimCardResponse;</span>
+        <span class="l l-Scalar l-Scalar-Plain">status</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">cimBIOSElementResponse {</span>
+        <span class="l l-Scalar l-Scalar-Plain">elementName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">manufacturer</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">operationalStatus</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">primaryBIOS</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">boolean;</span>
+        <span class="l l-Scalar l-Scalar-Plain">releaseDate</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span>
+<span class="nt">        datetime</span><span class="p">:</span> <span class="nv">Date;</span>
+        <span class="p p-Indicator">}</span><span class="l l-Scalar l-Scalar-Plain">;</span>
+        <span class="l l-Scalar l-Scalar-Plain">softwareElementID</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">softwareElementState</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">targetOperatingSystem</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">version</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">cimBIOSElement {</span>
+        <span class="l l-Scalar l-Scalar-Plain">response</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cimBIOSElementResponse;</span>
+        <span class="l l-Scalar l-Scalar-Plain">status</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">cimProcessorResponses {</span>
+        <span class="l l-Scalar l-Scalar-Plain">cpuStatus</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">creationClassName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">currentClockSpeed</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">deviceID</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">elementName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">enabledState</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">externalBusClockSpeed</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">family</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">healthState</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">maxClockSpeed</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">operationalStatus</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">requestedState</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">role</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">stepping</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">systemCreationClassName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">systemName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">upgradeMethod</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">cimProcessor {</span>
+        <span class="l l-Scalar l-Scalar-Plain">responses</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cimProcessorResponses[];</span>
+        <span class="l l-Scalar l-Scalar-Plain">status</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">cimPhysicalMemoryResponses {</span>
+        <span class="l l-Scalar l-Scalar-Plain">bankLabel</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">capacity</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">any;</span>
+        <span class="l l-Scalar l-Scalar-Plain">creationClassName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">elementName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">formFactor</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">manufacturer</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">memoryType</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">partNumber</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">serialNumber</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">speed</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">tag</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">any;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">cimPhysicalMemory {</span>
+        <span class="l l-Scalar l-Scalar-Plain">responses</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cimPhysicalMemoryResponses[];</span>
+        <span class="l l-Scalar l-Scalar-Plain">status</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">cimMediaAccessDeviceResponses {</span>
+        <span class="l l-Scalar l-Scalar-Plain">capabilities</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number[];</span>
+        <span class="l l-Scalar l-Scalar-Plain">creationClassName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">deviceID</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">elementName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">enabledDefault</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">enabledState</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">maxMediaSize</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">operationalStatus</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">requestedState</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">security</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">systemCreationClassName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">systemName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">cimMediaAccessDevice {</span>
+        <span class="l l-Scalar l-Scalar-Plain">responses</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cimMediaAccessDeviceResponses[];</span>
+        <span class="l l-Scalar l-Scalar-Plain">status</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">cimPhysicalPackageResponses {</span>
+        <span class="l l-Scalar l-Scalar-Plain">canBeFRUed</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">boolean;</span>
+        <span class="l l-Scalar l-Scalar-Plain">creationClassName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">elementName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">manufacturer</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">model</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">operationalStatus</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">packageType</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">serialNumber</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">tag</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">version</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">chassisPackageType?</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">cimPhysicalPackage {</span>
+        <span class="l l-Scalar l-Scalar-Plain">responses</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cimPhysicalPackageResponses[];</span>
+        <span class="l l-Scalar l-Scalar-Plain">status</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">hardwareinfo {</span>
+        <span class="l l-Scalar l-Scalar-Plain">CIM_ComputerSystemPackage</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cimComputerSystemPackage;</span>
+        <span class="l l-Scalar l-Scalar-Plain">CIM_SystemPackaging</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cimSystemPackaging;</span>
+        <span class="l l-Scalar l-Scalar-Plain">CIM_Chassis</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cimChassis;</span>
+        <span class="l l-Scalar l-Scalar-Plain">CIM_Chip</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cimChip;</span>
+        <span class="l l-Scalar l-Scalar-Plain">CIM_Card</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cimCard;</span>
+        <span class="l l-Scalar l-Scalar-Plain">CIM_BIOSElement</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cimBIOSElement;</span>
+        <span class="l l-Scalar l-Scalar-Plain">CIM_Processor</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cimProcessor;</span>
+        <span class="l l-Scalar l-Scalar-Plain">CIM_PhysicalMemory</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cimPhysicalMemory;</span>
+        <span class="l l-Scalar l-Scalar-Plain">CIM_MediaAccessDevice</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cimMediaAccessDevice;</span>
+        <span class="l l-Scalar l-Scalar-Plain">CIM_PhysicalPackage</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cimPhysicalPackage;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+<span class="err">}</span>
+</code></pre></div>
+
+
+<h2 id="power-action">Power action<a class="headerlink" href="#power-action" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code>    <span class="l l-Scalar l-Scalar-Plain">powerAction {</span>
+        <span class="l l-Scalar l-Scalar-Plain">returnValue</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">returnValueStr</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+    <span class="err">}</span>
+</code></pre></div>
+
+
+<h2 id="power-capabilities">Power capabilities<a class="headerlink" href="#power-capabilities" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code>    <span class="l l-Scalar l-Scalar-Plain">powerCapabilities {</span>
+        <span class="l l-Scalar l-Scalar-Plain">powerUp</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">powerCycle</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">powerDown</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">reset</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">softOff</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">softReset</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">sleep</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">hibernate</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">powerUpToBIOS</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">resetToBIOS</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">resetToSecureErase</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">resetToIDE-RFloppy</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">powerOnToIDE-RFloppy</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">resetToIDE-RCDROM</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">powerOnToIDE-RCDROM</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">resetToPXE</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">powerOnToPXE</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+    <span class="err">}</span>
+</code></pre></div>
+
+
+<h2 id="power-state">Power state<a class="headerlink" href="#power-state" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code>    <span class="l l-Scalar l-Scalar-Plain">powerState {</span>
+        <span class="l l-Scalar l-Scalar-Plain">powerState</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+    <span class="err">}</span>
+</code></pre></div>
+
+
+<h2 id="version">Version<a class="headerlink" href="#version" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">module versionInfo {</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">cimSoftwareIdentityResponses {</span>
+        <span class="l l-Scalar l-Scalar-Plain">instanceID</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">isEntity</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">boolean;</span>
+        <span class="l l-Scalar l-Scalar-Plain">versionString</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">any;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">cimSoftwareIdentity {</span>
+        <span class="l l-Scalar l-Scalar-Plain">responses</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cimSoftwareIdentityResponses[];</span>
+        <span class="l l-Scalar l-Scalar-Plain">status</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">amtSetupAndConfigurationServiceResponse {</span>
+        <span class="l l-Scalar l-Scalar-Plain">creationClassName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">elementName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">enabledState</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">passwordModel</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">provisioningMode</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">provisioningServerOTP</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">provisioningState</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">requestedState</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+        <span class="l l-Scalar l-Scalar-Plain">systemCreationClassName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">systemName</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">string;</span>
+        <span class="l l-Scalar l-Scalar-Plain">zeroTouchConfigurationEnabled</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">boolean;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">amtSetupAndConfigurationService {</span>
+        <span class="l l-Scalar l-Scalar-Plain">response</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">amtSetupAndConfigurationServiceResponse;</span>
+        <span class="l l-Scalar l-Scalar-Plain">status</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">number;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+    <span class="l l-Scalar l-Scalar-Plain">version {</span>
+        <span class="l l-Scalar l-Scalar-Plain">CIM_SoftwareIdentity</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cimSoftwareIdentity;</span>
+        <span class="l l-Scalar l-Scalar-Plain">AMT_SetupAndConfigurationService</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">amtSetupAndConfigurationServiceResponse;</span>
+    <span class="l l-Scalar l-Scalar-Plain">}</span>
+
+<span class="err">}</span>
+</code></pre></div>
+
+
+<h2 id="get-amt-features">Get AMT Features<a class="headerlink" href="#get-amt-features" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code>    <span class="p p-Indicator">{</span>
+        <span class="nv">userConsent&quot;</span><span class="p p-Indicator">:</span> <span class="nv">string</span><span class="p p-Indicator">,</span>
+<span class="nt">        redirection</span><span class="p">:</span> <span class="nv">boolean</span><span class="p p-Indicator">,</span>
+<span class="nt">        KVM</span><span class="p">:</span> <span class="nv">boolean</span><span class="p p-Indicator">,</span>
+<span class="nt">        SOL</span><span class="p">:</span> <span class="nv">boolean</span><span class="p p-Indicator">,</span>
+<span class="nt">        IDER</span><span class="p">:</span> <span class="nv">boolean</span>
+    <span class="p p-Indicator">}</span>
+</code></pre></div>
+
+
+<p>Return to <a href="../../indexMPS/">MPS Methods</a></p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../../assets/javascripts/vendor.3636a4ec.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.e9fe3281.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../../..",
+          features: [],
+          search: Object.assign({
+            worker: "../../../assets/javascripts/worker/search.5eca75d3.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

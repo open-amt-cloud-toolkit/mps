@@ -1,12 +1,12 @@
-# Install MPS Locally
+## Install MPS Locally
 
-The Management Presence Server is a cloud-agnostic microservice that enables Intel<sup>®</sup> AMT-based platforms to be managed over the internet. In this section, you'll set the MPS up on your development device.
+The Management Presence Server is a cloud-agnostic microservice that enables platforms featuring Intel&reg; AMT to be managed over the internet. This section details how to set up the MPS on a development device.
 
-The image below is a representation of how MPS connects to an Intel<sup>®</sup> AMT device for remote management.
+The image below illustrates how MPS connects to an Intel&reg; AMT device for remote management.
 
 [![MPS](../assets/images/MPS_Overview.png)](../assets/images/MPS_Overview.png)
 
-## Clone the Repository
+### Clone the Repository
 
 1\. Clone the MPS repository and navigate to it with the following commands:
 
@@ -15,15 +15,7 @@ git clone https://github.com/open-amt-cloud-toolkit/mps.git
 cd mps
 ```
 
-**8/3 BW, For Internal:**
-
-```
-git clone https://github.impcloud.net/Danger-Bay/MPS_MicroService.git mps
-cd mps
-git checkout merge-all-branches
-```
-
-## Modify MPS Configuration File
+### Modify MPS Configuration File
 
 1\. Open the `.mpsrc` file, within the mps directory, using a text editor of your choice to configure settings.
 
@@ -31,7 +23,7 @@ git checkout merge-all-branches
 
 | Field       |  Change to    | Description |
 | :----------- | :-------------- | :- |
-| **use_whitelist** | false | Set to True to whitelist Intel&reg; AMT GUIDs stored in guids.json |
+| **use_allowlist** | false | Set to True to allowlist Intel&reg; AMT GUIDs stored in guids.json |
 | **commonName** | Your development device's IP address | Used in self-signed certificate, can IP address or FQDN in real world deployment|
 
 *Optional fields*:
@@ -51,7 +43,7 @@ Example .mpsrc file:
 
 ```json hl_lines="2 3"
   {
-      "use_whitelist" : false,
+      "use_allowlist" : false,
       "common_name": "192.168.0.8",
       "port": 4433,
       "username": "standalone",
@@ -95,20 +87,7 @@ Example .mpsrc file:
 
 ```
 
-## Start the MPS Server
-
-**For Internal:**
-
-
->**Note:** Depending on your environment, you may or may not have to have your GithuPersonal access token ready for npm install, due to the UI-Toolkit clone.  Ifails without prompting you to enter it, edit package.json as follows:
-
-```
-cd webui
-notepad package.json
-"mps-ui-toolkit": "git+https://[your-access-token]@github.impcloud.net/Danger-Bay/MPS_UI_ToolKit.git" //Update your access token 
-```
-
-<br>
+### Start the MPS Server
 
 1\. Navigate to the `src` directory in .\mps\webui\src\
 
@@ -151,10 +130,12 @@ npm install
 npm run dev
 ```
 
->**Note:** Keep track of your device's IP Address. We will use it to connect to the web server.
+>**Note:** The device's IP Address will be used to connect to the web server.
 
 [![mps](../assets/images/MPS_npmrundev.png)](../assets/images/MPS_npmrundev.png)
 
 >**Note:** Because the *generateCertificates* field was set to True in the .mpsrc file, certificates will be generated and stored in the ../mps/private directory.
 
-Click the **Next** link at the bottom right of the page to install RPS locally.
+<br>
+
+Next up: [Install RPS Locally](installRPS.md)

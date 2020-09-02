@@ -1,7 +1,6 @@
+# Intel AMT Profiles
 
-# Creating an AMT Profile
-
-## Input for creating an AMT Profile REST API
+## Create a Profile
 
 
 * Endpoint: **/api/v1/admin/profiles/create*
@@ -56,6 +55,9 @@ On Failure: (CIRA Config associated doesnt exist)
 Referenced CIRA Config testconfig58 doesn't exist.
 ```
 
+<br>
+
+## Get a Profile
 
 * Endpoint: **/api/v1/admin/profiles/{testprofile}*
 * Method Type: GET
@@ -88,7 +90,9 @@ On Failure: (profile doesnt exit)
 Profile testProfile1 not found
 ```
 
+<br>
 
+## Get All Profiles
 
 * Endpoint: **/api/v1/admin/profiles/*
 * Method Type: GET
@@ -126,7 +130,9 @@ On Failure: (profiles empty)
 No profiles found.
 ```
 
+<br>
 
+## Delete a Profile
 
 * Endpoint: **/api/v1/admin/profiles/profile1*
 * Method Type: DELETE
@@ -153,3 +159,7 @@ On Failure: (profiles not found)
 ```
 Profile not found.
 ```
+
+<br>
+
+Return to [RPS Methods](../indexRPS.md)

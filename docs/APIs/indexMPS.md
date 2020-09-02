@@ -1,20 +1,33 @@
 # API and Command Reference
 
-This section is a reference to the MPS API methods available in the Open AMT Cloud Toolkit, and to some commands it provides.
+This section is a reference to the MPS API methods available in ActivEdge, and to some commands it provides.
 
 ## How to Use the REST API
 
-TBD
+### Request URL
+
+The request URL is assembled using your MPS server's IP Address, the port, and the base path for the method you would like to run. The tables below explore what methods are accessible for each base path.
+
+```
+Example url: https://localhost:3000/amt
+```
+
+### Base path 
+
+``` yaml
+/amt/
+/admin/
+```
 
 ## API Calls
 
-The sections below list  methods for MPS. 
-
-### MPS API
+The sections below list methods for MPS. 
 
 The MPS API includes Admin and AMT methods.
 
-#### Admin Methods
+<br>
+
+### Admin Methods
   
    | Method       |  Description/Usage |
    | :----------- | :------------------------ |
@@ -25,7 +38,9 @@ The MPS API includes Admin and AMT methods.
    | **[MEScript](./MPSmethods/mescript.md)** | Downloads the cira_setup.mescript from MPS |
    | **[RootCertificate](./MPSmethods/rootcertificate.md)** | Download the MPS Root Certificate |
 
-#### AMT Methods
+<br>
+
+### AMT Methods
 
 **Note:** These methods are 1:1 device-specific.
 

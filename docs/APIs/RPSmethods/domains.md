@@ -1,8 +1,7 @@
-## Creating an AMT Domain
+# Intel AMT Domains
 
-### Input for creating a domain REST API
 
-**Create A Domain**
+## Create A Domain
 
 * Endpoint: **/api/v1/admin/domains/create*
 * Method Type: POST
@@ -47,7 +46,9 @@ On Failure: (Duplicate Domain)
 Duplicate Domain. Domain already exists.
 ```
 
-**Get a Domain**
+<br>
+
+## Get a Domain
 
 * Endpoint: **/api/v1/admin/domains/domain1*
 * Method Type: GET
@@ -77,7 +78,9 @@ On Failure: (Domain not found)
 Domain not found
 ```
 
-**Get ALL Domains**
+<br>
+
+## Get ALL Domains
 
 * Endpoint: **/api/v1/admin/domains/*
 * Method Type: GET
@@ -109,7 +112,9 @@ On Failure: (Domain empty)
 Domains not found
 ```
 
-**Delete a Domain**
+<br>
+
+# Delete a Domain
 
 
 
@@ -117,9 +122,6 @@ Domains not found
 * Method Type: DELETE
 * Headers: *X-RPS-API-Key*
 
-```
-NA
-```
 
 Example Input:
 
@@ -138,3 +140,7 @@ On Failure: (Domain not found)
 ```
 Domain not found.
 ```
+
+<br>
+
+Return to [RPS Methods](../indexRPS.md)

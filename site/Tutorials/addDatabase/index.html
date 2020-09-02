@@ -1,0 +1,909 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.5.12">
+    
+    
+      
+        <title>Adding a Database - ActivEdge: Smart Building Blocks for Remote Edge Management</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.4dd2dd8d.min.css">
+      
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.6a5ad368.min.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#02a6f2">
+      
+    
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="light-blue" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#attach-a-database-to-rps" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="../.." title="ActivEdge: Smart Building Blocks for Remote Edge Management" class="md-header-nav__button md-logo" aria-label="ActivEdge: Smart Building Blocks for Remote Edge Management">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            ActivEdge: Smart Building Blocks for Remote Edge Management
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Adding a Database
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="ActivEdge: Smart Building Blocks for Remote Edge Management" class="md-nav__button md-logo" aria-label="ActivEdge: Smart Building Blocks for Remote Edge Management">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    ActivEdge: Smart Building Blocks for Remote Edge Management
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      Get Started with Microservices Locally
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Get Started with Microservices Locally" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        <span class="md-nav__icon md-icon"></span>
+        Get Started with Microservices Locally
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Local/overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Local/installMPS/" title="Install MPS Locally" class="md-nav__link">
+      Install MPS Locally
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Local/installRPS/" title="Install RPS Locally" class="md-nav__link">
+      Install RPS Locally
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Local/configureRPS/" title="Configure RPS" class="md-nav__link">
+      Configure RPS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Local/buildRPC/" title="Build RPC on a Managed Device" class="md-nav__link">
+      Build RPC on a Managed Device
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Local/manageDevice/" title="Manage Device" class="md-nav__link">
+      Manage Device
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Deploy Microservices with Docker*
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Deploy Microservices with Docker*" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon"></span>
+        Deploy Microservices with Docker*
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Docker/overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Docker/dockerLocal/" title="Build Docker* Images" class="md-nav__link">
+      Build Docker* Images
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Local/configureRPS/" title="Configure RPS" class="md-nav__link">
+      Configure RPS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Local/buildRPC/" title="Build RPC on a Managed Device" class="md-nav__link">
+      Build RPC on a Managed Device
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Local/manageDevice/" title="Manage Device" class="md-nav__link">
+      Manage Device
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+    
+    <label class="md-nav__link" for="nav-4">
+      Tutorials
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        <span class="md-nav__icon md-icon"></span>
+        Tutorials
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Docker/dockerCloud/" title="Docker Images on the Cloud" class="md-nav__link">
+      Docker Images on the Cloud
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../uitoolkit/" title="Creating Consoles with the UI Toolkit" class="md-nav__link">
+      Creating Consoles with the UI Toolkit
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../acmActivation/" title="Activating in ACM Mode" class="md-nav__link">
+      Activating in ACM Mode
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Adding a Database
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" title="Adding a Database" class="md-nav__link md-nav__link--active">
+      Adding a Database
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#attach-a-database-to-rps" class="md-nav__link">
+    Attach a Database to RPS
+  </a>
+  
+    <nav class="md-nav" aria-label="Attach a Database to RPS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dbconfig-configure-the-database" class="md-nav__link">
+    DbConfig: Configure the Database
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../addVault/" title="Adding Vault Storage" class="md-nav__link">
+      Adding Vault Storage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../allowlist/" title="Using an Allowlist" class="md-nav__link">
+      Using an Allowlist
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      APIs
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="APIs" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon"></span>
+        APIs
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../APIs/indexMPS/" title="MPS Methods" class="md-nav__link">
+      MPS Methods
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../APIs/indexRPS/" title="RPS Methods" class="md-nav__link">
+      RPS Methods
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Topics
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Topics" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        <span class="md-nav__icon md-icon"></span>
+        Topics
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Topics/misc/" title="Static and Dynamic IPs" class="md-nav__link">
+      Static and Dynamic IPs
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Topics/guids/" title="GUIDs in Intel AMT" class="md-nav__link">
+      GUIDs in Intel AMT
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Topics/mebx/" title="MEBX" class="md-nav__link">
+      MEBX
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Topics/proxies/" title="Working with Proxies" class="md-nav__link">
+      Working with Proxies
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Topics/security/" title="Security Information" class="md-nav__link">
+      Security Information
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../release-notes/" title="Release notes" class="md-nav__link">
+      Release notes
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../license/" title="License" class="md-nav__link">
+      License
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#attach-a-database-to-rps" class="md-nav__link">
+    Attach a Database to RPS
+  </a>
+  
+    <nav class="md-nav" aria-label="Attach a Database to RPS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dbconfig-configure-the-database" class="md-nav__link">
+    DbConfig: Configure the Database
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  
+                
+                
+                  <h1>Adding a Database</h1>
+                
+                <h2 id="attach-a-database-to-rps">Attach a Database to RPS<a class="headerlink" href="#attach-a-database-to-rps" title="Permanent link">&para;</a></h2>
+<p><span style="color:yellow"> <strong>BW Comment</strong>: Has this changed with Q2/Q3 release? Boolean doesn't exist as part of iConfigurator and IF condition is no longer in index.ts</span></p>
+<p>RPS has the option to output device configuration information to a database so that other software components with access to this database can lookup and use the AMT credentials stored there.  Since there are many database options available, RPS takes a flexible approach that allows a developer to implement a simple module in RPS that will allow RPS to then send data to the database implementation of choice.</p>
+<p>The following example uses MongoDB as the example database, but the same concepts could be used for other database implementations.</p>
+<ol>
+<li>Create a file called AmtDeviceMongoDbRepository.ts in the \RPS_MicroServer\src\repositories folder</li>
+</ol>
+<p>This module will need to implement the MongoDB types from mongodb and ILogger, AMTDeviceDTO, and IAMTDeviceWriter from RPS.  Below is an example of how this could be implemented:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// we imported all types from mongodb driver, to use in code</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">MongoClient</span><span class="p">,</span> <span class="nx">Client</span><span class="p">,</span> <span class="nx">Collection</span><span class="p">,</span> <span class="nx">InsertOneWriteOpResult</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;mongodb&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">ILogger</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;../interfaces/ILogger&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">AMTDeviceDTO</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;./dto/AmtDeviceDTO&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">IAMTDeviceWriter</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;./interfaces/IAMTDeviceWriter&#39;</span><span class="p">;</span>
+
+<span class="c1">// that class only can be extended</span>
+<span class="kr">export</span> <span class="kr">class</span> <span class="nx">AmtDeviceMongoDbRepository</span> <span class="kr">implements</span> <span class="nx">IAMTDeviceWriter</span> <span class="p">{</span>
+    <span class="kr">private</span> <span class="nx">collection</span><span class="o">:</span> <span class="nx">Collection</span><span class="p">;</span>
+    <span class="kr">private</span> <span class="nx">client</span><span class="o">:</span> <span class="nx">Client</span><span class="p">;</span>
+    <span class="kr">private</span> <span class="nx">connectionString</span><span class="o">:</span> <span class="nx">string</span><span class="p">;</span>
+    <span class="kr">private</span> <span class="nx">databaseName</span><span class="o">:</span> <span class="nx">string</span><span class="p">;</span>
+    <span class="kr">private</span> <span class="nx">collectionName</span><span class="o">:</span> <span class="nx">string</span><span class="p">;</span>
+    <span class="kr">private</span> <span class="nx">logger</span><span class="o">:</span> <span class="nx">ILogger</span><span class="p">;</span>
+
+    <span class="nx">constructor</span><span class="p">(</span><span class="nx">logger</span><span class="o">:</span> <span class="nx">ILogger</span><span class="p">,</span> <span class="nx">connectionString</span><span class="o">:</span> <span class="nx">string</span><span class="p">,</span> <span class="nx">databaseName</span><span class="o">:</span> <span class="nx">string</span><span class="p">,</span> <span class="nx">collectionName</span><span class="o">:</span> <span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">connectionString</span> <span class="o">=</span> <span class="nx">connectionString</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">databaseName</span> <span class="o">=</span> <span class="nx">databaseName</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">collectionName</span> <span class="o">=</span> <span class="nx">collectionName</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">logger</span> <span class="o">=</span> <span class="nx">logger</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">async</span> <span class="nx">connect</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">let</span> <span class="nx">connection</span> <span class="o">=</span> <span class="nx">await</span> <span class="nx">MongoClient</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">connectionString</span><span class="p">,</span> <span class="p">{</span> <span class="nx">useNewUrlParser</span><span class="o">:</span> <span class="kc">true</span> <span class="p">});</span>
+        <span class="kd">let</span> <span class="nx">database</span> <span class="o">=</span> <span class="nx">connection</span><span class="p">.</span><span class="nx">db</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">databaseName</span><span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">collection</span> <span class="o">=</span> <span class="nx">database</span><span class="p">.</span><span class="nx">collection</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">collectionName</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">disconnect</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">client</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">client</span><span class="p">.</span><span class="nx">disconnect</span><span class="p">();</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kr">public</span> <span class="nx">async</span> <span class="nx">insert</span><span class="p">(</span><span class="nx">device</span><span class="o">:</span> <span class="nx">AMTDeviceDTO</span><span class="p">)</span><span class="o">:</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="kr">boolean</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="k">try</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">await</span> <span class="k">this</span><span class="p">.</span><span class="nx">connect</span><span class="p">();</span>
+            <span class="p">}</span>
+
+            <span class="kd">let</span> <span class="nx">result</span><span class="o">:</span> <span class="nx">InsertOneWriteOpResult</span> <span class="o">=</span> <span class="nx">await</span> <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">insertOne</span><span class="p">(</span><span class="nx">device</span><span class="p">);</span>
+            <span class="k">return</span> <span class="o">!!</span><span class="nx">result</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">ok</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">logger</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="sb">`exception inserting record: </span><span class="si">${</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+<ol>
+<li>Edit the file index.ts in \RPS_MicroServer\src\ and import the implementation of database module. For example:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code><span class="kr">import</span> <span class="p">{</span><span class="nx">AmtDeviceMongoDbRepository</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;./repositories/AmtDeviceMongoDbRepository&#39;</span><span class="p">;</span>
+</code></pre></div>
+
+
+<ol>
+<li>Edit the file index.ts in \RPS_MicroServer\src\ and set the amtDeviceWriter object to an instance of the repository (under configurator.isAMTDeviceWriterEnabled() located in line 35). For example:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code><span class="nx">amtDeviceWriter</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AmtDeviceMongoDbRepository</span><span class="p">(</span><span class="nx">Logger</span><span class="p">(</span><span class="s2">&quot;AmtDeviceMongoDbRepository&quot;</span><span class="p">),</span> <span class="nx">configurator</span><span class="p">.</span><span class="nx">DbConfig</span><span class="p">.</span><span class="nx">connectionString</span><span class="p">,</span> <span class="nx">configurator</span><span class="p">.</span><span class="nx">DbConfig</span><span class="p">.</span><span class="nx">databaseName</span> <span class="nx">configurator</span><span class="p">.</span><span class="nx">DbConfig</span><span class="p">.</span><span class="nx">collectionName</span><span class="p">);</span>
+</code></pre></div>
+
+
+<ol>
+<li>Edit the file package.json and add "mongodb": "^3.3.12" under dev dependencies.</li>
+</ol>
+<p><strong>Ed comment:</strong> Add/copy app.config.dev.json DbConfig content here?</p>
+<ol>
+<li>Edit app.config.dev.json database info</li>
+</ol>
+<p><span style="color:yellow"> <strong>BW Comment</strong>: Need to update table fields to match JSON file</span></p>
+<h4 id="dbconfig-configure-the-database">DbConfig: Configure the Database<a class="headerlink" href="#dbconfig-configure-the-database" title="Permanent link">&para;</a></h4>
+<p>The DbConfig section configures how RPS connects to a database, which we're not doing for this exercise. Set DbEnabled to <em>false</em>, if it isn't already.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Option</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><strong>DbEnabled</strong></td>
+<td align="left">Set to <span style="color:green"><b>true</b></span> to enable database integration. To use GenerateRandomPassword for an Intel&reg; AMT profile, DbEnabled must be set to true.</td>
+</tr>
+<tr>
+<td align="left"><strong>connectionString</strong></td>
+<td align="left">Specifies how RPS should connect to the database. If DbEnabled is set to <em>true</em>, this is required.</td>
+</tr>
+<tr>
+<td align="left"><strong>databaseName</strong></td>
+<td align="left">Specifies the name of the database that RPS should use. If DbEnabled is set to <em>true</em>, this is required.</td>
+</tr>
+<tr>
+<td align="left"><strong>collectionName</strong></td>
+<td align="left">Specifies the collection in the database that RPS should use. If DbEnabled is set to <em>true</em>, this is required.</td>
+</tr>
+</tbody>
+</table>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../acmActivation/" title="Activating in ACM Mode" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Activating in ACM Mode
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../addVault/" title="Adding Vault Storage" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Adding Vault Storage
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.3636a4ec.min.js"></script>
+      <script src="../../assets/javascripts/bundle.e9fe3281.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: [],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.5eca75d3.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

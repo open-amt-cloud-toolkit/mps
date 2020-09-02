@@ -6,7 +6,6 @@ Use this AMT method to enable or disable Intel&reg; AMT features such as KVM, SO
 
 ``` yaml
 {  
-   "apiKey":"string",
    "method":"SetAMTFeatures",
    "payload":{  
       "guid":"038d0240-045c-05f4-7706-980700080009",
@@ -27,3 +26,5 @@ Use this AMT method to enable or disable Intel&reg; AMT features such as KVM, SO
     }
 
 ```
+
+Return to [MPS Methods](../indexMPS.md)

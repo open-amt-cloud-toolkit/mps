@@ -1,6 +1,6 @@
-# Manage the Intel<sup>®</sup> AMT Device Using MPS
+## Manage the Intel&reg; AMT Device using MPS
 
-1\. On your development device, browse to the web server using the development device's IP address.
+1\. On your development device, browse to the web server using the development device's IP Address.
 	
 **Example URL:** https://[Development-IP-Address]:3000
 
@@ -23,8 +23,15 @@
 
 6\. Select an action to perform from the options on the right.
 
->**Note:** The KVM feature will not function at this point, since the device was activated  in Client Control Mode (CCM). To use KVM, follow the [ACM Activation Tutorial](../Tutorials/acmActivation.md) to see how to configure a device into Admin Control Mode and remotely KVM using out-of-band capabilities.
+>**Note:** The KVM feature will not function at this point, since the device was activated the device in Client Control Mode(CCM). To use KVM, follow the [ACM Activation Tutorial](../Tutorials/acmActivation.md) to see how to configure a device into Admin Control Mode and remotely KVM using out-of-band capabilities.
 
 [![mps](../assets/images/MPS_ManageDevice.png)](../assets/images/MPS_ManageDevice.png)
 
-Click the **Next** link at the bottom right of the page to deploy microservices with Docker&ast;.
+<br>
+
+Next steps: 
+- Find out about the ActivEdge UI Toolkit, vault storage, ACM activation, and more in [tutorials](../Tutorials).
+- Read about security and other out-of-band ActivEdge [topics](../Topics).
+
+<br>
+

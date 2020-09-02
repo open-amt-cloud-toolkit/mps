@@ -1,0 +1,1009 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="shortcut icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.5.12">
+    
+    
+      
+        <title>Webpack Configuration - ActivEdge: Smart Building Blocks for Remote Edge Management</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.4dd2dd8d.min.css">
+      
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.6a5ad368.min.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#02a6f2">
+      
+    
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="light-blue" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#entry" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="../../.." title="ActivEdge: Smart Building Blocks for Remote Edge Management" class="md-header-nav__button md-logo" aria-label="ActivEdge: Smart Building Blocks for Remote Edge Management">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            ActivEdge: Smart Building Blocks for Remote Edge Management
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Webpack Configuration
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="ActivEdge: Smart Building Blocks for Remote Edge Management" class="md-nav__button md-logo" aria-label="ActivEdge: Smart Building Blocks for Remote Edge Management">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    ActivEdge: Smart Building Blocks for Remote Edge Management
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../.." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      Get Started with Microservices Locally
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Get Started with Microservices Locally" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        <span class="md-nav__icon md-icon"></span>
+        Get Started with Microservices Locally
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Local/overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Local/installMPS/" title="Install MPS Locally" class="md-nav__link">
+      Install MPS Locally
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Local/installRPS/" title="Install RPS Locally" class="md-nav__link">
+      Install RPS Locally
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Local/configureRPS/" title="Configure RPS" class="md-nav__link">
+      Configure RPS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Local/buildRPC/" title="Build RPC on a Managed Device" class="md-nav__link">
+      Build RPC on a Managed Device
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Local/manageDevice/" title="Manage Device" class="md-nav__link">
+      Manage Device
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Deploy Microservices with Docker*
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Deploy Microservices with Docker*" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon"></span>
+        Deploy Microservices with Docker*
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Docker/overview/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Docker/dockerLocal/" title="Build Docker* Images" class="md-nav__link">
+      Build Docker* Images
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Local/configureRPS/" title="Configure RPS" class="md-nav__link">
+      Configure RPS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Local/buildRPC/" title="Build RPC on a Managed Device" class="md-nav__link">
+      Build RPC on a Managed Device
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Local/manageDevice/" title="Manage Device" class="md-nav__link">
+      Manage Device
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Tutorials
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        <span class="md-nav__icon md-icon"></span>
+        Tutorials
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Docker/dockerCloud/" title="Docker Images on the Cloud" class="md-nav__link">
+      Docker Images on the Cloud
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../uitoolkit/" title="Creating Consoles with the UI Toolkit" class="md-nav__link">
+      Creating Consoles with the UI Toolkit
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../acmActivation/" title="Activating in ACM Mode" class="md-nav__link">
+      Activating in ACM Mode
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../addDatabase/" title="Adding a Database" class="md-nav__link">
+      Adding a Database
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../addVault/" title="Adding Vault Storage" class="md-nav__link">
+      Adding Vault Storage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../allowlist/" title="Using an Allowlist" class="md-nav__link">
+      Using an Allowlist
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      APIs
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="APIs" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon"></span>
+        APIs
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../APIs/indexMPS/" title="MPS Methods" class="md-nav__link">
+      MPS Methods
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../APIs/indexRPS/" title="RPS Methods" class="md-nav__link">
+      RPS Methods
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Topics
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Topics" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        <span class="md-nav__icon md-icon"></span>
+        Topics
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Topics/misc/" title="Static and Dynamic IPs" class="md-nav__link">
+      Static and Dynamic IPs
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Topics/guids/" title="GUIDs in Intel AMT" class="md-nav__link">
+      GUIDs in Intel AMT
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Topics/mebx/" title="MEBX" class="md-nav__link">
+      MEBX
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Topics/proxies/" title="Working with Proxies" class="md-nav__link">
+      Working with Proxies
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Topics/security/" title="Security Information" class="md-nav__link">
+      Security Information
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../release-notes/" title="Release notes" class="md-nav__link">
+      Release notes
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../license/" title="License" class="md-nav__link">
+      License
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#entry" class="md-nav__link">
+    Entry:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#output" class="md-nav__link">
+    Output:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#loaders" class="md-nav__link">
+    Loaders:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plugins" class="md-nav__link">
+    Plugins:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installing-webpack" class="md-nav__link">
+    Installing Webpack:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-webpack-for-development-enviroment" class="md-nav__link">
+    Configuring Webpack for development enviroment :
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-typescript" class="md-nav__link">
+    Adding Typescript:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#add-typescript-configuration-to-webpack" class="md-nav__link">
+    Add Typescript configuration to Webpack:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#add-styles" class="md-nav__link">
+    Add Styles :
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-html" class="md-nav__link">
+    Adding HTML:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-api-keys-as-environmental-variables" class="md-nav__link">
+    Adding API keys as Environmental variables:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development-server" class="md-nav__link">
+    Development Server:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#update-packagejson" class="md-nav__link">
+    update Package.json
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-webpack-for-production-enviroment" class="md-nav__link">
+    Configuring Webpack for production enviroment :
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#update-packagejson_1" class="md-nav__link">
+    update Package.json
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-webpack-for-external-enviroment" class="md-nav__link">
+    Configuring Webpack for external enviroment :
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#add-webpack-node-externals" class="md-nav__link">
+    Add webpack-node-externals :
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#update-packagejson_2" class="md-nav__link">
+    update Package.json
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  
+                
+                
+                  <h1>Webpack Configuration</h1>
+                
+                <p>As stated in the documentation getting started is quite easy, as you only need to understand its core concepts — Entry, Output, Loaders, and plugins.</p>
+<h2 id="entry">Entry:<a class="headerlink" href="#entry" title="Permanent link">&para;</a></h2>
+<p>The entry point such as /src/index.js which is the default for Webpack 4 is what Webpack will use to start building out/resolving its dependencies.</p>
+<h2 id="output">Output:<a class="headerlink" href="#output" title="Permanent link">&para;</a></h2>
+<p>Output: The output property such as ./dist (default for Webpack 4) tells Webpack where to output the bundles it creates and how to name them.</p>
+<h2 id="loaders">Loaders:<a class="headerlink" href="#loaders" title="Permanent link">&para;</a></h2>
+<p>Since Webpack only understands native Javascript code, these loaders enable it to process different types of imported files and convert them into valid modules when it encounters a specific type of file. Loaders have 2 properties in the configuration file
+The test property which identifies which file or files should be transformed
+The use property which indicates which loader can be used to do the transforming</p>
+<h2 id="plugins">Plugins:<a class="headerlink" href="#plugins" title="Permanent link">&para;</a></h2>
+<p>This allows you to extend Webpack capabilities to perform a wider range of tasks like bundle optimization, asset management and injection of environment variables. You can check out some of the plugins provided by Webpack here.</p>
+<h2 id="installing-webpack">Installing Webpack:<a class="headerlink" href="#installing-webpack" title="Permanent link">&para;</a></h2>
+<p>install webpack and webpack cli as dev dependencies.</p>
+<p>npm i webpack webpack-cli -D webpack-dev-server.</p>
+<h2 id="configuring-webpack-for-development-enviroment">Configuring Webpack for development enviroment :<a class="headerlink" href="#configuring-webpack-for-development-enviroment" title="Permanent link">&para;</a></h2>
+<p>Create a Webpack config file webpack.config.dev.js in the root of our project folder.</p>
+<p>const path = require('path');
+module.exports = {
+     mode: "development",
+     entry: './src/reactjs/components/DeviceGrid/index.tsx', // entry points can be multiple</p>
+<p>}</p>
+<h2 id="adding-typescript">Adding Typescript:<a class="headerlink" href="#adding-typescript" title="Permanent link">&para;</a></h2>
+<p>Install Typescript’s dependencies.</p>
+<p>npm i awesome-typescript-loader -D</p>
+<h2 id="add-typescript-configuration-to-webpack">Add Typescript configuration to Webpack:<a class="headerlink" href="#add-typescript-configuration-to-webpack" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code>const path = require(&#39;path&#39;);
+module.exports = {
+ ....
+resolve: {
+    extensions: [&quot;.tsx&quot;, &quot;.ts&quot;, &quot;.js&quot;]
+  },
+  module: {
+    rules: [
+      { 
+        test: /\.tsx?$/, 
+        loader: &#39;awesome-typescript-loader&#39;
+      }
+    ]
+  }
+}
+</code></pre></div>
+
+
+<p>Here we are telling Webpack to:
+Resolve file extensions with .tsx, .ts and .js
+All files with the extension .tsx or .ts should be processed by awesome-typescript-loader</p>
+<h2 id="add-styles">Add Styles :<a class="headerlink" href="#add-styles" title="Permanent link">&para;</a></h2>
+<p>Install Styles dependencies.</p>
+<p>npm i style-loader css-loader sass-loader -D</p>
+<p>update the webpack config file:</p>
+<div class="codehilite"><pre><span></span><code>module.exports = {
+ ....
+
+  module: {
+    rules: [
+        ...
+       {
+        test: /\.(sc|sa|c)ss$/,
+        use: [&#39;style-loader&#39;, &#39;css-loader&#39;, &#39;sass-loader&#39;],
+      }
+    ]
+  }
+}
+</code></pre></div>
+
+
+<h2 id="adding-html">Adding HTML:<a class="headerlink" href="#adding-html" title="Permanent link">&para;</a></h2>
+<p>we need to use a Webpack plugin html-webpack-plugin which helps simplifies the creation of HTML files to help serve our Webpack bundles.</p>
+<p>npm i html-webpack-plugin -D.</p>
+<p>Update the Webpack config file:</p>
+<div class="codehilite"><pre><span></span><code>const path = require(&#39;path&#39;);
+const HtmlWebpackPlugin = require(&#39;html-webpack-plugin&#39;);
+
+module.exports = {
+ ....
+  plugins: [
+   new HtmlWebpackPlugin({
+      filename: &#39;device.htm&#39;,
+      template: &#39;./src/sample/sampleDG.htm&#39;,
+      inject: true,
+      chunks: [&quot;device&quot;]
+    }),
+  ]
+}
+</code></pre></div>
+
+
+<h2 id="adding-api-keys-as-environmental-variables">Adding API keys as Environmental variables:<a class="headerlink" href="#adding-api-keys-as-environmental-variables" title="Permanent link">&para;</a></h2>
+<p>Environmental variables can be setup using the DefinePlugin option in webpack.</p>
+<div class="codehilite"><pre><span></span><code>  const path = require(&#39;path&#39;);
+  const webpack = require(&#39;webpack&#39;);
+
+  module.exports = {
+    ...
+    plugins: [
+      new webpack.DefinePlugin({
+      &#39;process.env&#39;: {
+        &#39;API_KEY_RPS&#39;: JSON.stringify(&#39;&lt;Provide RPS api key&gt;&#39;),
+        &#39;API_KEY_MPS&#39;: JSON.stringify(&#39;&lt;Provide MPS api key&gt;&#39;)
+      }
+    })
+    ]
+  }
+</code></pre></div>
+
+
+<p>These environmental variables can be used inside the code as below,</p>
+<div class="codehilite"><pre><span></span><code>const data = {
+  rpsKey: process.env.API_KEY_RPS,
+  mpsKey: process.env.API_KEY_MPS
+}
+</code></pre></div>
+
+
+<h2 id="development-server">Development Server:<a class="headerlink" href="#development-server" title="Permanent link">&para;</a></h2>
+<p>we are going to set up a development server using the webpack-dev-server which will open up a default browser when we do npm start and also provide us with live reloading on the fly.</p>
+<p>npm i webpack-dev-server --D</p>
+<h2 id="update-packagejson">update Package.json<a class="headerlink" href="#update-packagejson" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code>&quot;scripts&quot;: { 
+  &quot;start&quot;: &quot;webpack-dev-server --config webpack.config.dev.js&quot;
+}
+</code></pre></div>
+
+
+<p>Sample usage :</p>
+<div class="codehilite"><pre><span></span><code>    1)open command prompt
+    2)Run npm start command
+</code></pre></div>
+
+
+<h2 id="configuring-webpack-for-production-enviroment">Configuring Webpack for production enviroment :<a class="headerlink" href="#configuring-webpack-for-production-enviroment" title="Permanent link">&para;</a></h2>
+<p>Create a Webpack config file webpack.config.prod.js in the root of our project folder.</p>
+<div class="codehilite"><pre><span></span><code>const path = require(&#39;path&#39;);
+
+module.exports = {
+     mode: &quot;production&quot;,
+     entry: &#39;./src/reactjs/components/DeviceGrid/index.tsx&#39;, // entry points can be multiple
+    output: {
+        filename: &quot;[name].core.min.js&quot;,
+        path: path.resolve(__dirname, &quot;./dist&quot;)
+    },
+  ....
+}
+</code></pre></div>
+
+
+<h2 id="update-packagejson_1">update Package.json<a class="headerlink" href="#update-packagejson_1" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code>&quot;scripts&quot;: { 
+ &quot;build&quot;: &quot;webpack --config webpack.config.prod.js&quot;,
+}
+</code></pre></div>
+
+
+<p>Sample usage:</p>
+<div class="codehilite"><pre><span></span><code>1)open command prompt
+2)Run npm run build command
+</code></pre></div>
+
+
+<h2 id="configuring-webpack-for-external-enviroment">Configuring Webpack for external enviroment :<a class="headerlink" href="#configuring-webpack-for-external-enviroment" title="Permanent link">&para;</a></h2>
+<p>Create a Webpack config file webpack.config.externals.js in the root of our project folder.</p>
+<h2 id="add-webpack-node-externals">Add webpack-node-externals :<a class="headerlink" href="#add-webpack-node-externals" title="Permanent link">&para;</a></h2>
+<p>Install webpack-node-externals dependencies.</p>
+<p>npm install webpack-node-externals -D</p>
+<p>webpack-node-externals library creates an externals function that ignores node_modules when bundling in Webpack.</p>
+<div class="codehilite"><pre><span></span><code> const path = require(&quot;path&quot;); //No ES6 in webpack config 
+ const nodeExternals = require(&#39;webpack-node-externals&#39;);
+
+module.exports = {
+   ....
+  externals: [nodeExternals()],
+
+};
+</code></pre></div>
+
+
+<h2 id="update-packagejson_2">update Package.json<a class="headerlink" href="#update-packagejson_2" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code>&quot;scripts&quot;: { 
+ &quot;build-ext&quot;: &quot;webpack --config webpack.config.externals.js&quot;,
+}
+</code></pre></div>
+
+
+<p>Sample usage:</p>
+<div class="codehilite"><pre><span></span><code>1)open command prompt
+2)Run npm run build-ext command
+</code></pre></div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../../assets/javascripts/vendor.3636a4ec.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.e9fe3281.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../../..",
+          features: [],
+          search: Object.assign({
+            worker: "../../../assets/javascripts/worker/search.5eca75d3.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

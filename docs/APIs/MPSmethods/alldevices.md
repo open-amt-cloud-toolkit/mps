@@ -8,7 +8,6 @@ Click [here](types.md) for supported input and output types.
 
 ``` yaml
 {  
-   "apiKey":"string",
    "method":"AllDevices",
    "payload":{}
 }

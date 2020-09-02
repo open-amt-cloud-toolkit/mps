@@ -15,8 +15,10 @@ The following tools and application must be installed on your development machin
 - [Node.js](https://nodejs.org/)
 - [MPS](https://github.com/open-amt-cloud-toolkit/MPS), the Management Presence Server
 - [RPS](https://github.com/open-amt-cloud-toolkit/RCS), the Remote Provisioning Server
-- Intel&reg; AMT device, configured and connected to MPS; see [MPS](https://github.com/open-amt-cloud-toolkit/MPS) for instructions.
+- Intel&reg; AMT device, configured and connected to MPS
 - Chrome* browser
+
+[![UI Toolkit](../assets/images/HelloWorld.png)](../assets/images/HelloWorld.png)
 
 ## Create a New React App
 

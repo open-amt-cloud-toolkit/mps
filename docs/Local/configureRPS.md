@@ -1,6 +1,6 @@
-# Configure RPS
+## Configure RPS
 
-## Logging in to the HTTPS Web Server
+### Logging in to the HTTPS Web Server
 
 1\. Open Chrome* and navigate to the web server using your development device's IP address on port 3000.
 
@@ -8,9 +8,9 @@
 https://[Your-IP-Address]:3000
 ```
 
->**Note:** You must use an IP address to connect to the web server. Using *localhost* will not work.
+>**Note:** You must use an IP-Address to connect to the web server. Using *localhost* will not work.
 
-2\. Log in with the *web_admin_user* and *web_admin_password* values set in the .mpsrc file. If you changed these parameters, enter your customized login, or use the defaults provided below.
+2\. Log in with the *web_admin_user* and *web_admin_password* set in the .mpsrc file. If you changed these parameters, enter your customized login, or use the defaults provided below.
 
 **Default credentials:**
 
@@ -21,12 +21,12 @@ https://[Your-IP-Address]:3000
 
 3\. Select Remote Provisioning Server.
 
->**Note:** Until an Intel<sup>®</sup> AMT device connects to the MPS, the number of devices shown on the Management Presence Serveroption will remain at 0. When you configure a device, you will see a new, 'Disconnected' device.  Once you successfully activateand connect the device (using CIRA), you'll see it listed as a 'Connected' device.
+>**Note:** Until an Intel&reg; AMT device connects to the MPS, the number of devices shown on the Management Presence Serveroption will remain at 0. When you configure a device, you will see a new, 'Disconnected' device.  Once you successfully activateand connect the device (using CIRA), you'll see it listed as a 'Connected' device.
 
 
-## Add CIRA Configuration and Profile to RPS
+### Adding CIRA Configuration and Profiles to RPS
 
-### Create a CIRA Config
+#### Creating a CIRA Config
 
 CIRA stands for Client Initiated Request Access.  It allows a CIRA-capable edge device to reach out and establish a persistent connection to the MPS server rather than the MPS server reaching to the edge device.  This enables access to edge devices that might be harder to reach behind things such as proxies/firewalls/etc.
 
@@ -67,7 +67,7 @@ Example CIRA Config:
 
 <br>
 
-### Create a Profile
+#### Creating a Profile
 
 Profiles provide configuration information to the AMT Firmware during the activation process with the Remote Provisioning Client (RPC).  It sets the AMT Password, used to access the Intel MEBX (Management Engine BIOS Extension) on the device and during the AMT deactivation process.
 
@@ -80,7 +80,7 @@ Profiles also distinguish between activating a device in Client Control Mode (CC
 
 1\. Select the Profiles tab from the menu on the left.
 
-2\. Under the Profiles tab, click New in the top, right corner to create a profile.
+2\. Under the Profiles tab, click New in the top-right corner to create a profile.
 
 3\. Specify a Profile Name of your choice.
 
@@ -90,11 +90,11 @@ Profiles also distinguish between activating a device in Client Control Mode (CC
     
 >**Note:** This password must meet standard, 'strong' password requirements:    
 >> - 8 to 32 characters
->> - One uppercase, one lowercase, one numerical digit, and one special character
+>> - One uppercase, one lowercase, one numerical digit, one special character
 
 6\. Select the name of the CIRA Config you created previously from the drop-down menu.
 
-7\. Under Activation, select 'ccmactivate' from the drop-down menu.
+7\. Under Activation, select 'ccmactivate' from the dropdown menu.
 
 >**Note:** If you'd prefer to activate the device into ACM mode, click [here](../Tutorials/acmActivation.md)
 
@@ -104,4 +104,6 @@ Example Profile:
 
 [![RPS](../assets/images/RPS_CreateProfile.png)](../assets/images/RPS_CreateProfile.png)
 
-Click the **Next** link at the bottom right of the page to build RPC on a managed device.
+<br>
+
+Next up: [Build RPC on a Managed Device](buildRPC.md)
