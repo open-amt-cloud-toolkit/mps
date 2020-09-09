@@ -1,6 +1,4 @@
-## Install RPS Locally
-
-The Remote Provisioning Service is a node-based microservice that works with the Remote Provisioning Client (RPC) to activate Intel&reg; AMT platforms using a pre-defined profile.
+The Remote Provisioning Service is a Node.js-based microservice that works with the Remote Provisioning Client (RPC) to activate Intel&reg; AMT platforms using a pre-defined profile.
 
 The image below illustrates how RPS activates an Intel&reg; AMT device for remote management.
 
@@ -14,6 +12,12 @@ The image below illustrates how RPS activates an Intel&reg; AMT device for remot
 
 ```
 git clone https://github.com/open-amt-cloud-toolkit/rps.git
+```
+
+3\. Checkout the ActivEdge branch
+
+```
+git checkout ActivEdge
 ```
 
 The directory structure should look like this:
@@ -50,4 +54,4 @@ Example Output:
 
 <br>
 
-Next up: [Configure RPS](configureRPS.md)
+Next up: [Configure RPS](../General/configureRPS.md)

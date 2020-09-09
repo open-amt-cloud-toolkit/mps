@@ -14,19 +14,17 @@ theme:
 # Page tree
 nav:
   - Home: index.md
-  - Get Started with Microservices Locally:
+  - Build and Deploy Microservices Locally:
     - Overview: Local/overview.md
     - Install MPS Locally: Local/installMPS.md
     - Install RPS Locally: Local/installRPS.md
-    - Configure RPS: Local/configureRPS.md
-    - Build RPC on a Managed Device: Local/buildRPC.md
-    - Manage Device: Local/manageDevice.md
-  - Deploy Microservices with Docker*:
+  - Build and Deploy Microservices with Local Docker* Images:
     - Overview: Docker/overview.md
     - Build Docker* Images: Docker/dockerLocal.md
-    - Configure RPS: Local/configureRPS.md
-    - Build RPC on a Managed Device: Local/buildRPC.md
-    - Manage Device: Local/manageDevice.md
+  - Configure RPS and Manage a Device with MPS:
+    - Configure RPS: General/configureRPS.md
+    - Build RPC on a Managed Device: General/buildRPC.md
+    - Manage Device: General/manageDevice.md
   - Tutorials:
     - Docker Images on the Cloud: Docker/dockerCloud.md
     - Creating Consoles with the UI Toolkit: Tutorials/uitoolkit.md
@@ -40,7 +38,7 @@ nav:
   - Topics:
     - Static and Dynamic IPs: Topics/misc.md
     - GUIDs in Intel AMT: Topics/guids.md
-    - MEBX: Topics/mebx.md
+    - Manual Configuring Unprovisioning: Topics/mebx.md
     - Working with Proxies: Topics/proxies.md
     - Security Information: Topics/security.md
   - Release notes: release-notes.md

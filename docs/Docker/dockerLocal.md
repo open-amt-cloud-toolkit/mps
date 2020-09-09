@@ -82,7 +82,7 @@ docker build . -t rps:v1
 ![Image of RPS Build Completion](../assets/images/RPSBuild.png) 
    
 ### Set the Environment Variables  
-3\. After building the new MPS and RPS images, navigate to mps\scripts\docker-compose folder and copy the .env.template file to .env. 
+3\. After building the new MPS and RPS images, navigate to the mps\scripts\docker-compose folder and copy the .env.template file to .env. 
 
 ```
 cd ..
@@ -146,13 +146,13 @@ The environment file .env now contains the MPS and RPS environment variables to 
 
 1\. Navigate to the the `mps/scripts/docker-compose` directory. 
 
-2\. Run the `docker-compose up` command, which starts the containers.  This will take approximately 2-3 minutes to start the containers.
+2\. Run the `docker-compose up` command, which starts the containers. approximately 2-3 minutes to start the containers.
 
 ```
 docker-compose up
 ```
 
-3\. **Important**: While the `docker-compose up` command is running, you may see a pop-up ask for permission for Docker Desktop Filesharing. You must select **Share It** for the `docker-compose up` command to execute successfully.  If the pop-up expires and `docker-compose up` fails.  You must run `docker-compose down` and then rerun `docker-compose up` to successfully start the containers.
+3\. **Important**: While the `docker-compose up` command is running, you may see a pop-up ask for permission for Docker Desktop Filesharing. You must select **Share It** for the `docker-compose up` command to execute successfully.  If the pop-up expires,`docker-compose up` will fail.  You must run `docker-compose down` and then rerun `docker-compose up` to successfully start the containers.
 
 ![Image of filesharing](../assets/images/DockerFileSharing.png)
 
@@ -164,15 +164,14 @@ Successful Output:
 
 
 ## Check Logs
-Alternatively, you can run `docker-compose up -d` to start the containers in the background.  To view the logs in a separate window, follow the steps below.
+Alternatively, run `docker-compose up -d` to start the containers in the background.  To view the logs in a separate window, follow the steps below.
 
 Check the logs to ensure the MPS and RPS services are properly handling the traffic from end devices. 
 
-1. Open a new command line windows see the log files for mps and rps to enable the services already started to continue running.
-
+1. Allow the previous command line window for mps and rps to continue to run. Open a new command line window to run the **docker-compose logs** command. 
 2. Navigate to the docker-compose folder
 
-3. Use the **docker-compose logs** command.
+3. Type the **docker-compose logs** command.
 
    docker-compose logs [name of service]
 
@@ -184,4 +183,4 @@ Check the logs to ensure the MPS and RPS services are properly handling the traf
 
 <br>
 
-Next up: [Configure RPS](../Local/configureRPS.md)
+Next up: [Configure RPS](../General/configureRPS.md)

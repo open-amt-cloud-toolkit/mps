@@ -1,20 +1,14 @@
-# Get Started with ActivEdge Using Local Docker* Images
-This section outlines the setup of the ActivEdge's microservices and client application. It also lists prerequisites and the expected network configuration. Take this path to install MPS and RPS as Docker images that will function as services on a local system or the cloud as in Figure 1.
+# Build and Deploy Microservices with Local Docker* Images
 
-If new to the software, please perform the preparation work below.
+## Overview
 
-Return users can start [here.](dockerLocal.md)
+This section outlines the setup of the ActivEdge's microservices and client application. Take this path to install MPS and RPS as Docker images that will function as services on a local system or the cloud as in Figure 1.
 
-<img src="../assets/images/HelloWorldDocker.png" alt="Hello World Docker" style="zoom:80%;" />
+[![Docker Local Overview](../assets/images/HelloWorldDocker.png)](../assets/images/HelloWorldDocker.png)
+
 
 **Figure 1: Microservices deployed as Docker images**
 
-## Who Takes This Path
-
-Administrators who:
-
-- Are familiar with Docker images, containers, and environment files
-- Want a fast way to deploy cloud-based services
 
 ## What You'll Need
 
@@ -27,49 +21,46 @@ At minimum, to install and use the ActivEdge, a network configuration must inclu
 
 Both systems must be on the same network. Instructions assume wired connections.
 
-**Software for Local Deployment**
+**Software**
 
-Install additional software on the **development PC** for a local Docker deployment:
+- The **development PC** hosts Management Presence Server (MPS) and Remote Provisioning Server (RPS) and requires the following software:
 
-- [Docker Desktop on Windows*](https://docs.docker.com/docker-for-windows/install/)
+    - [Docker Desktop on Windows*](https://docs.docker.com/docker-for-windows/install/) or [Docker Desktop on Linux*](https://docs.docker.com/docker-for-mac/install/)
 
-- [Docker Desktop on Linux*](https://docs.docker.com/docker-for-mac/install/)
+        Docker Configuration Details:
 
-  Docker Configuration Details
+        - The Docker for Windows installer defaults to enable all the required settings for this tutorial.
+        - After successful installation, the Docker icon (whale), will appear on the task bar.
+        - To troubleshoot the installation, [see the troubleshooting guide](https://docs.docker.com/docker-for-windows/troubleshoot/).
 
-  - The Docker for Windows installer defaults to enabling and running all the required settings necessary for this tutorial.
-  - Install before attempting the tutorial.
-  - After successful installation, the Docker icon (whale), appears on the task bar.
-  - To troubleshoot the installation, [see the troubleshooting guide](https://docs.docker.com/docker-for-windows/troubleshoot/).
+    - [Chrome* Browser](https://www.google.com/chrome)
 
-- [Chrome](https://www.google.com/chrome)
+    - [git](https://git-scm.com/downloads)
 
-- [git](https://git-scm.com/downloads)
+- The **managed device (test client), with Intel® vPro** runs the Remote Provisioning Client (RPC) and requires the following software:
 
-Install additional software on the **managed device**: 
+      - [git](https://git-scm.com/downloads)
 
-- [git](https://git-scm.com/downloads)
+      - [Microsoft* Visual Studio](https://visualstudio.microsoft.com/), 2017 or newer version 
+    
+      >Note: Microsoft* Visual Studio on the managed devices is not typical for production environments. This is for demonstration purposes.
+      >
 
-- [Microsoft* Visual Studio](https://visualstudio.microsoft.com/), 2017 or newer version 
-
->**Important Note:** This software is required to build the software in the Get Started Guides but would not be installed in a production environment. 
-
-## What You'll Do for Local Installation
+## What You'll Do
 
 Follow the steps in these sections sequentially to deploy Docker* images on a local development system: 
 
-- Build and Deploy Docker* Images MPS and RPS Locally -- [**Start here.**](dockerLocal.md)
+- Build and Deploy Docker* ImagesLocally
 - Configure RPS
 - Build RPC on Managed Device
 - Manage Device
 
-Run instructions in these sections in Microsoft Windows* or Linux* environments. The instructions refer to the terminal window. The terminal may be A) the Windows Command Prompt in Administrator mode or B) the Linux* bash shell. 
+Run instructions in these sections can use Microsoft Windows* or Linux* environments. The terminal may be A) the Windows Command Prompt in Administrator mode or B) the Linux* shell/terminal. 
 
-Estimated completion time:** 30 minutes
+Estimated completion time:** 60 minutes
 
->**Important Note:** In this guide, we will activate devices into Client Control Mode (CCM).  Certain Intel AMT features, such as Keyboard, Video, Mouse (KVM), will require User Consent (a 6-digit code on the AMT Device's display) rather than immediate control.
->
->Alternatively, you may activate devices in Admin Control Mode (ACM). ACM mode does not require User Consent.  However, activating into ACM **requires** a Provisioning Certificate from a Certificate Provider. More information on the differences between ACM and CCM and acquiring certificates can be found [here](../Tutorials/acmActivation.md).
+Next up: [Build Docker* Images](dockerLocal.md)
+
 
 <br><br>
 

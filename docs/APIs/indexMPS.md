@@ -50,7 +50,7 @@ The MPS API includes Admin and AMT methods.
    | **[GeneralSettings](./MPSmethods/generalsettings.md)** | View general network settings |
    | **[GetAMTFeatures](./MPSmethods/getamtfeatures.md)** | View what AMT out-of-band features are enabled/disabled |
    | **[HardwareInfo](./MPSmethods/hardwareinfo.md)** | Retrieve hardware information such as processor or storage  |
-   | **[PowerAction](./MPSmethods/poweraction.md)** | Perform an OOB power action. **BW Comment:** We need a mapping table for input to which power action. **Ed Comment:** Added a table [here](./MPSmethods/poweraction.md), but should we just tell them to check PowerCapabilities for the list?|
+   | **[PowerAction](./MPSmethods/poweraction.md)** | Perform an OOB power action |
    | **[PowerCapabilities](./MPSmethods/powercapabilities.md)** | View what OOB power actions are available for that device |
    | **[PowerState](./MPSmethods/powerstate.md)** | Retrieve current state of AMT device, returns a number that maps to the [PowerActions](./MPSmethods/poweraction.md) table |
    | **[SetAMTFeatures](./MPSmethods/setamtfeatures.md)** | Enable/Disable AMT features such as KVM, SOL, and IDE-R |

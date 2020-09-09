@@ -35,3 +35,5 @@ Click [here](types.md) for supported input and output types.
     }
 ]
 ```
+
+Return to [MPS Methods](../indexMPS.md)

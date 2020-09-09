@@ -1,8 +1,6 @@
-## Install MPS Locally
-
 The Management Presence Server is a cloud-agnostic microservice that enables platforms featuring Intel&reg; AMT to be managed over the internet. This section details how to set up the MPS on a development device.
 
-The image below illustrates how MPS connects to an Intel&reg; AMT device for remote management.
+The image below illustrates how the Intel&reg; AMT device connects to MPS for remote management.
 
 [![MPS](../assets/images/MPS_Overview.png)](../assets/images/MPS_Overview.png)
 
@@ -15,16 +13,22 @@ git clone https://github.com/open-amt-cloud-toolkit/mps.git
 cd mps
 ```
 
+2\. Checkout the ActivEdge branch
+
+```
+git checkout ActivEdge
+```
+
 ### Modify MPS Configuration File
 
-1\. Open the `.mpsrc` file, within the mps directory, using a text editor of your choice to configure settings.
+1\. Open the `.mpsrc` file, within the mps directory, using a text editor of your choice to configure settings, such as Notepad on Windows or Text Edtior on Linux.
 
 2\. Configure the following settings:
 
 | Field       |  Change to    | Description |
 | :----------- | :-------------- | :- |
-| **use_allowlist** | false | Set to True to allowlist Intel&reg; AMT GUIDs stored in guids.json |
-| **commonName** | Your development device's IP address | Used in self-signed certificate, can IP address or FQDN in real world deployment|
+| **use_allowlist** | false |A value of false disables the allowlist functionaliy. For information about allowlist, see the allowlist [tutorial.](../Tutorials/allowlist.md) |
+| **commonName** | Development device's IP address | This address will be used in self-signed certificate. It may be an IP address or FQDN in real world deployment|
 
 *Optional fields*:
 
@@ -87,7 +91,7 @@ Example .mpsrc file:
 
 ```
 
-### Start the MPS Server
+### Configure the WebUI
 
 1\. Navigate to the `src` directory in .\mps\webui\src\
 
@@ -115,7 +119,7 @@ cd webui/src
 4\. Navigate back to the MPS root directory.
 
 ```
-cd [Your_FilePath]/mps
+cd ../../mps
 ```
 
 5\. Run the install commands to install all required dependencies.
@@ -123,8 +127,8 @@ cd [Your_FilePath]/mps
 ```
 npm install
 ```
-
-6\. Start the MPS server. The web server runs on port 3000 by default, and the MPS Server listens on port 4433. It will take approximately 2–3 minutes to start.
+### Start the MPS Server
+Start the MPS server. The web server runs on port 3000 by default, and the MPS Server listens on port 4433. It will take approximately 2–3 minutes to start.
     
 ```
 npm run dev

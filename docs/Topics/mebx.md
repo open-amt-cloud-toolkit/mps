@@ -1,6 +1,6 @@
 ## Manageability Engine BIOS Extensions (MEBX)
 
-Intel MEBX allows for configuration of the Intel Manageability Engine (ME) platform. Through this interface, you can provision AMT and customize a variety of settings.
+Intel MEBX allows for configuration of the Intel Manageability Engine (ME) platform. Through this interface, you can provision AMT and customize a variety of settings manually.
 
 ### Set a DNS Suffix through MEBX
 If DHCP option15 is not set, the following needs to be set manually through MEBX if you want to re-activate the device remotely at a later time.
@@ -20,13 +20,13 @@ If DHCP option15 is not set, the following needs to be set manually through MEBX
 
 7\. Provide a DNS suffix name and press enter 
 
-8\. Press Esc (three times) to reach the main menu
+8\. Press Esc three times to reach the main menu
 
 9\. Select ‘MEBX Exit’, and then press 'y' to confirm the exit 
 
 <br>
 
-### How to Unprovision an AMT Device Through MEBX
+### Unprovision an AMT Device Through MEBX
 
 1. Restart or power on the device 
 
@@ -41,7 +41,7 @@ If DHCP option15 is not set, the following needs to be set manually through MEBX
 
 6. Select ‘Full unprovision’, and then press 'y' to continue 
 
-7. It 30 seconds to a minute to unprovision the device. While it is unprovisioning, the up/down arrow keys will not work.
+7. It takes 30 seconds to a minute to unprovision the device. While it is unprovisioning, the up/down arrow keys will not work.
 
 
 

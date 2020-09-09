@@ -32,9 +32,9 @@ cd my-app
 npm start
 ```
 
->**Note**: By default, React apps run on port 3000. If port 3000 is already used by the MPS server or any other app, you'll beprompted to use another port. If this happens, enter 'Y'
+>**Note**: By default, React apps run on port 3000. If port 3000 is already used by the MPS server or any other app, you'll be prompted to use another port. If this happens, enter 'Y'
 >
->Output like the following should appear in the terminal window. By default, React launches in your machine's default browser.
+>Output like the following should appear in the terminal window. By default, React launches in your machine's default browser. However for best experience, use a Chrome web browser.
 
 ```
 You can now view my-app in the browser.
@@ -48,16 +48,16 @@ On Your Network: http://172.16.17.4:3001
 
 1\. To access UI controls in the React app, add the following line to dependencies section in **my-app/package.json**:
 
-   ```
-   "ui-toolkit": "git+https://github.com/open-amt-cloud-toolkit/ui-toolkit.git"
-   ```
+```
+"ui-toolkit": "git+https://github.com/open-amt-cloud-toolkit/ui-toolkit.git#AcivEdge"
+```
 
 2\. At a command prompt, navigate to the root directory of the React app, and run the following commands to install ui-toolkit to node-modules and run the web UI locally:
 
-   ```
-   npm install
-   npm start
-   ```
+```
+npm install
+npm start
+```
 
 ### Add KVM Control
 
@@ -65,12 +65,12 @@ The code snippet below adds KVM control to the React application. Open **src/App
 
 >**Note:** Change the **deviceId** value to your device GUID, and the **mpsServer** value to your MPS server address and appropriate web port.
 
-```
+``` javascript hl_lines="13 14"
 import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import { KVM, MpsProvider } from "ui-toolkit";
-import '../node_modules/mps-ui-toolkit/i18n.ts';
+import '../node_modules/ui-toolkit/i18n.ts';
 function App() {
   const data = {
     mpsKey: '<MPS API key>'
@@ -98,7 +98,7 @@ Open **src/App.js**, add the following code as show below:
 
 > **Note:** Change **deviceId** value to your device GUID **mpsServer** value to your MPS server address and appropriate webport.
 
-```
+``` javascript hl_lines="14 15"
 import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
@@ -129,10 +129,10 @@ Open **src/App.js**, add the following code as show below:
 
 > **Note:** Change **mpsServer** value to your MPS server address and appropriate webport.
 
-```
+```javascript hl_lines="13"
 import React from "react";
 import { DeviceGrid, MpsProvider } from "ui-toolkit";
-import '../node_modules/mps-ui-toolkit/i18n.ts'
+import '../node_modules/ui-toolkit/i18n.ts'
 
 function App() {
   const data = {
@@ -158,10 +158,10 @@ Open **src/App.js**, add the following code as show below:
 
 > **Note:** Change **deviceId** value to your device GUID **mpsServer** value to your MPS server address and appropriate webport.
 
-```
+```javascript hl_lines="12 13"
 import React from "react";
 import { SOL, MpsProvider } from "ui-toolkit";
-import '../node_modules/mps-ui-toolkit/i18n.ts'
+import '../node_modules/ui-toolkit/i18n.ts'
 
 function App() {
   const data = {
@@ -186,7 +186,7 @@ Open **src/App.js**, add the following code as show below:
 
 > **Note:** Change **rpsServer** value to your RPS server address and appropriate webport.
 
-```
+```javascript hl_lines="13"
 import React from "react";
 import { Profile, RpsProvider } from "ui-toolkit";
 import '../node_modules/ui-toolkit/i18n.ts'
@@ -215,7 +215,7 @@ Open **src/App.js**, add the following code as show below:
 
 > **Note:** Change **rpsServer** value to your RPS server address and appropriate webport.
 
-```
+```javascript hl_lines="13"
 import React from "react";
 import { CiraEditor, RpsProvider } from "ui-toolkit";
 import '../node_modules/ui-toolkit/i18n.ts'
@@ -244,7 +244,7 @@ Open **src/App.js**, add the following code as show below:
 
 > **Note:** Change **rpsServer** value to your RPS server address and appropriate webport.
 
-```
+```javascript hl_lines="13"
 import React from "react";
 import { DomainEditor, RpsProvider } from "ui-toolkit";
 import '../node_modules/ui-toolkit/i18n.ts'
@@ -279,7 +279,7 @@ Go to the chrome browser, ensure controls shows up correctly.
 
 You will see the errors in the following scenario's:
 
-- compilation errors if mps-ui-toolkit has not downloaded and installed to your react app.
+- compilation errors if ui-toolkit has not downloaded and installed to your react app.
 - MPS server not running
 - MPS server running and device not connected.
 - If your browser is IE / Edge, there might be some compatibility issues.
@@ -297,7 +297,7 @@ To display UI controls on local react Web UI for **testing**, make the following
 
 Search for **X-Frame-Options** and update the code as shown below
 
-```
+```javascript
 
 //Clickjacking defence
 this.app.use((req, res, next) => {
@@ -315,7 +315,7 @@ this.app.use((req, res, next) => {
 
 Search for **isAuthenticated** and comment the code as shown below
 
-```
+```javascript
 
 isAuthenticated(req, res, next) {
 

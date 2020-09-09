@@ -12,7 +12,7 @@ For example, in the [Docker](./NextSteps.md#docker) section.
 Management Presence Server (MPS) is a cloud agnostic micro-service that enables Intel&reg; AMT-based platforms connecting over the internet to connect securely to manageability consoles. In order for a client to securely perform actions on Intel&reg AMT devices using REST APIs, MPS uses secrets. There are six key assets that must be protected:
 * Intel&reg; AMT credentials
 * Intel&reg; MPS credentials
-* Device Whitelisting (List of UUIDs)
+* Device Allowlisting (List of UUIDs)
 * APIKey
 * Server Configuration
 * Web User Credentials
@@ -28,8 +28,8 @@ AMT credentials allows a user to remotely control Intel&reg; AMT device and thes
 ### 2. Intel&reg; MPS credentials
 Every Intel&reg; device needs to be authenticated prior to successful connection to MPS. MPS credentials are used to authenticate every Intel&reg; device. After establishing TLS connection with MPS, device sends it's username and password, which will then be used to authenticate. It is highly recommended that every device use a unique username and password.
 
-### 3. Device Whitelisting (List of UUIDs)
-Each Intel&reg; AMT device has a unique identifier (UUID) assigned to it and this UUID is assigned by Original Equipment Manufacturer (OEM). As discussed above, devices are authenticated by MPS using MPS credentials. But even before validating credentials, only whitelisted Intel&reg; AMT devices can be allowed to connect to make it more secure and this is being done using whitlisting UUID.
+### 3. Device Allowlisting (List of UUIDs)
+Each Intel&reg; AMT device has a unique identifier (UUID) assigned to it and this UUID is assigned by Original Equipment Manufacturer (OEM). As discussed above, devices are authenticated by MPS using MPS credentials. But even before validating credentials, only allowlisted Intel&reg; AMT devices can be allowed to connect to make it more secure and this is being done using the allowlisted UUID.
 
 ### 4. APIKey
 Every client/user needs to be authenticated before allowing them to perform an action using REST API call. APIKey will be used by MPS to authenticate a client/user.
