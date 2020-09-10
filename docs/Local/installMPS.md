@@ -6,6 +6,8 @@ The image below illustrates how the Intel&reg; AMT device connects to MPS for re
 
 ### Clone the Repository
 
+Navigate to a directory of your choice for development.
+
 1\. Clone the MPS repository and navigate to it with the following commands:
 
 ```
@@ -13,7 +15,7 @@ git clone https://github.com/open-amt-cloud-toolkit/mps.git
 cd mps
 ```
 
-2\. Checkout the ActivEdge branch
+2\. Checkout the ActivEdge branch.
 
 ```
 git checkout ActivEdge
@@ -28,16 +30,8 @@ git checkout ActivEdge
 | Field       |  Change to    | Description |
 | :----------- | :-------------- | :- |
 | **use_allowlist** | false |A value of false disables the allowlist functionaliy. For information about allowlist, see the allowlist [tutorial.](../Tutorials/allowlist.md) |
-| **commonName** | Development device's IP address | This address will be used in self-signed certificate. It may be an IP address or FQDN in real world deployment|
+| **commonName** | Development device's IP address. For this guide, you **cannot** use localhost | This address will be used in self-signed certificate. It may be an IP address or FQDN in real world deployment|
 
-*Optional fields*:
-
-| Field       |  Change to    | Description |
-| :----------- | :-------------- | :- |
-| **web_admin_user**| Username of your choice; **if changed, save for later** | Username for Web server login |
-| **web_admin_password**| Password of your choice; **if changed, save for later**. | Password for Web server login |
-
-<br>
 
 3\. Save and close the file.
 
@@ -62,8 +56,8 @@ Example .mpsrc file:
       "web_port" : 3000,
       "generate_certificates": true,
       "logger_off":false,
-      "web_admin_user": "admin",
-      "web_admin_password": "P@ssw0rd",
+      "web_admin_user": "standalone",
+      "web_admin_password": "G@ppm0ym",
       "vault_address": "http://localhost:8200",
       "vault_token": "myroot",
       "use_vault": true,
@@ -101,7 +95,9 @@ cd webui/src
 
 2\. Open the app.config.js file using a text editor to configure IP Address settings.
 
-3\. Set the *rpsServerIP* and *serverIP* to your device's IP address. Save and close the file.
+3\. Set the *rpsServerIP* and *serverIP* to your development device's IP Address. Save and close the file.
+
+Example:
 
 ``` javascript hl_lines="4 5"
   const validExtensions = ['.png', '.jpeg', '.jpg', '.svg'];
@@ -127,6 +123,7 @@ cd ../../mps
 ```
 npm install
 ```
+
 ### Start the MPS Server
 Start the MPS server. The web server runs on port 3000 by default, and the MPS Server listens on port 4433. It will take approximately 2–3 minutes to start.
     
@@ -134,7 +131,7 @@ Start the MPS server. The web server runs on port 3000 by default, and the MPS S
 npm run dev
 ```
 
->**Note:** The device's IP Address will be used to connect to the web server.
+>**Note:** The development device's IP Address will be used to connect to the web server.
 
 [![mps](../assets/images/MPS_npmrundev.png)](../assets/images/MPS_npmrundev.png)
 

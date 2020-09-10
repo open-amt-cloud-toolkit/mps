@@ -4,7 +4,7 @@ Intel® vPro™ Platforms offer hardware-enhanced security features and remote m
 
 ActivEdge provides modular microservices and libraries for integration of hardware provisioning, out-of-band manageability, and other Intel&reg; AMT features with both new and existing management consoles, software solutions, and more. As an open source implementation, ActivEdge makes it easier for IT departments and ISVs to adopt, integrate, and customize out-of-band management solutions for Intel® vPro™ Platforms.
 
-Read more about Intel&reg; AMT features and capabilities [here](https://www.intel.com/content/www/us/en/architecture-and-technology/intel-active-management-technology.html).
+Read more about Intel&reg; AMT features and capabilities [here](https://software.intel.com/content/www/us/en/develop/topics/iot/hardware/vpro-platform-retail.html).
 
 ## Goals
 
@@ -23,7 +23,7 @@ By the end of this guide, you will have gained experience using these three core
 - [Build and Deploy Microservices Locally](Local/overview.md): If unfamiliar with Docker, choose this setup option to accomplish a manual, local installation of microservices. 
 - [Build and Deploy Microservices as Local Docker* Images](Docker/overview.md): If familiar with Docker, choose this setup option to install microservices as local Docker images. This option is an especially good choice for development systems with Docker already installed.
 
-Estimated completion time: Approximately 60 minutes
+Estimated completion time: Approximately 15 minutes
 
 Both build-and-deploy options install microservices locally on a development system and the client application on a managed device. Experienced Docker users may choose to deploy microservices straight to the [cloud](Docker/dockerCloud.md).
  

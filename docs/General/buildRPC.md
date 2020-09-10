@@ -1,13 +1,22 @@
+Estimated completion time:
+
+- 30 minutes on Windows 10 devices (20-25 minutes are required installation time estimates)
+- 15 minutes on Linux devices
+
+## Remote Provisioning Client
+
 The Remote Provisioning Client (RPC) communicates with the Managability Engine Interface (MEI) and RPS interfaces. The MEI uses the ME Driver to talk to Intel AMT. By running RPC, we will activate Intel AMT into Client Control Mode (CCM), or ACM based on the created profile, as well as configure the CIRA connection of the AMT device to the MPS. After successfully running, the AMT device will be ready to be managed remotely using the web server!
 
 !!! note "Production Environment"
-        In a production environment, RPC would be built on a development device. From there, a software distribution tool, such as Microsoft\* SCCM, would distribute the thin application to the fleet of AMT devices.  After running, it does **not** have to remain on the AMT device to maintain the connection.
+        In a production environment, RPC would be built on a development device. From there, RPC can be deployed with an in-band manageability agent to distrubute it to the fleet of AMT devices.  The in-band managebility agent can invoke RPC to run and activate the AMT devices.
 
 [![RPC](../assets/images/RPC_Overview.png)](../assets/images/RPC_Overview.png)
 
 ### Windows*
 
 **Important: Perform the following steps on the Intel&reg; AMT device. Enter the commands in the following sections to create RPC on Windows.**
+
+Navigate to a directory of your choice to clone and build RPC.
 
 #### Clone the Repository
 
@@ -27,7 +36,7 @@ git clone https://github.com/open-amt-cloud-toolkit/rpc.git
 cd rpc
 ```
 
-4\. Checkout the ActivEdge branch
+4\. Checkout the ActivEdge branch.
 
 ```
 git checkout ActivEdge
@@ -57,7 +66,7 @@ vcpkg integrate install
 
 #### Build CPPRestSDK
 
-4\. Make sure you are still in the ~/vcpkg directory.
+4\. Make sure you are still in the ../vcpkg directory.
 
 5\. Install the C++ REST SDK package using Vcpkg. C++ REST SDK is a library for cloud-based client-server communication with modern API design.  Find out more about it [here](https://github.com/microsoft/cpprestsdk).
 
@@ -82,14 +91,14 @@ mkdir build
 cd build
 ```
 
-8\. Build rpc.exe using CMake.  The toolchain file allows us to use Vcpkg with CMake outside of an IDE.
+8\. Build rpc.exe using CMake.
 
 ```
 cmake .. -DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake
 cmake --build . --config Debug
 ```
 
-9\. Navigate to the Release directory. In this directory, you should see rpc.exe.
+9\. Navigate to the Debug directory. In this directory, you should see rpc.exe.
 
 ```
 cd Debug
@@ -106,6 +115,9 @@ cd Debug
 rpc.exe -u wss://[Development-IP-Address]:8080 -c "-t activate --profile [profile-name]"
 ```
 
+!!! note "Production Environment"
+        In a production environment, an in-band agent would invoke this command with the parameters rather than a manual command.
+
 <br>
 
 >Note: If you do not remember your created profile's name, you can navigate to the *Profiles* tab on the web server hosted at `https://[Development-IP-Address]:3000`
@@ -114,8 +126,8 @@ rpc.exe -u wss://[Development-IP-Address]:8080 -c "-t activate --profile [profil
 >
 >| Field       |  Value    |
 >| :----------- | :-------------- |
->| **web_admin_user**| standalone |
->| **web_admin_password**| G@ppm0ym |
+>| **Username**| standalone |
+>| **Password**| G@ppm0ym |
 
 
 <br>
@@ -126,7 +138,7 @@ Follow these instructions to create RPC on Linux&ast;.
 
 #### Clone the Repository
 
-1\. On the Intel&reg; AMT device, open an elevated command line.
+1\. On the Intel&reg; AMT device, open a terminal.
 
 2\. Clone the RPC Repository.
 
@@ -181,6 +193,9 @@ cmake --build .
 sudo ./rpc -u wss://[Development-IP-Address]:8080 -c "-t activate --profile [profile-name]
 ```
 
+!!! note "Production Environment"
+        In a production environment, an in-band agent would invoke this command with the parameters rather than a manual command.
+        
 <br>
 
 >Note: If you do not remember your created profile's name, you can navigate to the *Profiles* tab on the web server hosted at `https://[Development-IP-Address]:3000`
@@ -189,8 +204,8 @@ sudo ./rpc -u wss://[Development-IP-Address]:8080 -c "-t activate --profile [pro
 >
 >| Field       |  Value    |
 >| :----------- | :-------------- |
->| **web_admin_user**| standalone |
->| **web_admin_password**| G@ppm0ym |
+>| **Username**| standalone |
+>| **Password**| G@ppm0ym |
 
 
 <br>

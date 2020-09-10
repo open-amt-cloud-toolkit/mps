@@ -15,26 +15,37 @@ This section describes how to deploy MPS and RPS as Docker* images on the develo
 3. Set the environment variables.
 4. Run the tool [docker-compose](https://docs.docker.com/compose/) tool on a sample configuration file to define and enable a multi-container environment. 
 
-For information about MPS and RPS, see [Install MPS](../Local/installMPS.md) and [Install RPS.](../Local/installRPS.md)
 
 ## Clone the MPS and RPS Repositories
 
-Clone the MPS and RPS repositories if they are not already on the development system. 
+Navigate to a directory of your choice for development.
 
 ### Clone MPS
 
-Clone the MPS repository.
+1\.Clone the MPS repository.
 
 ```
 git clone https://github.com/open-amt-cloud-toolkit/mps.git mps
 ```
 
+2\. Checkout the ActivEdge branch.
+
+```
+git checkout ActivEdge
+```
+
 ### Clone RPS
 
-Clone the RPS repository.
+1\.Clone the RPS repository.
 
 ```
 git clone https://github.com/open-amt-cloud-toolkit/rps.git rps
+```
+
+2\. Checkout the ActivEdge branch.
+
+```
+git checkout ActivEdge
 ```
 
 After the `git clone` commands complete, the parent directory will contain an MPS and RPS folder.
@@ -163,7 +174,7 @@ Successful Output:
 ![Image of docker compose command](../assets/images/DockerCompose.png)
 
 
-## Check Logs
+<!-- ## Check Logs
 Alternatively, run `docker-compose up -d` to start the containers in the background.  To view the logs in a separate window, follow the steps below.
 
 Check the logs to ensure the MPS and RPS services are properly handling the traffic from end devices. 
@@ -179,7 +190,7 @@ Check the logs to ensure the MPS and RPS services are properly handling the traf
    docker-compose logs mps
    ```
    ![Image of Docker Log Output](../assets/images/DockerLogFile.png) 
-   A log file may provide information for troubleshooting these problems:
+   A log file may provide information for troubleshooting these problems: -->
 
 <br>
 

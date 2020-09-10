@@ -1,20 +1,21 @@
 The Remote Provisioning Service is a Node.js-based microservice that works with the Remote Provisioning Client (RPC) to activate Intel&reg; AMT platforms using a pre-defined profile.
 
-The image below illustrates how RPS activates an Intel&reg; AMT device for remote management.
+The image below illustrates how RPS activates an Intel&reg; AMT device for remote management. In this section, we will see how to deploy number two, RPS.
 
 [![RPS](../assets/images/RPS_Overview.png)](../assets/images/RPS_Overview.png)
 
 ### Clone the Repository
 
-1\. Open a new Command Prompt or Terminal with Administrator or elevated privileges.
+1\. Open a new Command Prompt as Administrator or a Terminal.
 
 2\. Clone the RPS repository to the same parent directory where the mps directory is located. Enter the following command:
 
 ```
 git clone https://github.com/open-amt-cloud-toolkit/rps.git
+cd rps
 ```
 
-3\. Checkout the ActivEdge branch
+3\. Checkout the ActivEdge branch.
 
 ```
 git checkout ActivEdge
@@ -30,23 +31,19 @@ The directory structure should look like this:
 
 ### Start the RPS Server
 
-1\. Navigate to the RPS directory.
-
-```
-cd rps
-```
-
-2\. Run the install command to install all required dependencies. 
+1\. In the rps directory, run the install command to install all required dependencies. 
 
 ```
 npm install
 ```
 
-3\. Then, start the server. The websocket server listens on the port specified in the file app.config.dev.json. By default, this is port 8080.
+2\. Then, start the server. By default, the RPS web port is 8080.
 
 ```
 npm run dev
 ```
+
+>**Note:** Warning messages are okay and expected for optional dependencies.
 
 Example Output:
 

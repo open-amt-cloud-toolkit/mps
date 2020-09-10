@@ -2,6 +2,7 @@
 
 This section is a reference to the RPS API methods available in ActivEdge, and to some commands it provides.
 
+RPS APIs allow you to get, create, and delete things such as CIRA Configs, Domains, and Profiles that are used in the remote configuration of Intel AMT devices.
 
 ### RPS API
 

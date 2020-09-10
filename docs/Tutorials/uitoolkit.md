@@ -1,28 +1,44 @@
-# Quickstart: Add MPS UI Toolkit controls to WebUI
+# Add MPS UI Toolkit controls to a WebUI
 
-This document shows how to integrate controls from the MPS UI Toolkit into a React.js app for testing or development.
+This document shows how to integrate controls from the MPS UI Toolkit into a React.js app for testing or development.  This guide walks through how to specifically implement the Keyboard, Video, Mouse (KVM) control. Example code for other manageability features are found below.
 
-- How to create a new React app
-- How to add UI controls to the React app
-- How to create bundles for each UI control
+## What You'll Need
 
-## Prerequisites
+**Hardware**
 
-The following tools and application must be installed on your development machine for this task:
+At minimum, to install and utilize the ActivEdge microservices, a network configuration must include:
 
-- [Git](https://git-scm.com/)
-- [Visual Studio Code](https://code.visualstudio.com/) or any other IDE
-- [Node.js](https://nodejs.org/)
+-  A development PC with Windows 10 or Ubuntu 18.04 or newer
+-  At least one Intel® vPro device
+
+**Software** 
+
 - [MPS](https://github.com/open-amt-cloud-toolkit/MPS), the Management Presence Server
 - [RPS](https://github.com/open-amt-cloud-toolkit/RCS), the Remote Provisioning Server
-- Intel&reg; AMT device, configured and connected to MPS
-- Chrome* browser
+- Intel&reg; vPro device, configured and connected to MPS
+
+>**Note:** Instructions on how to set up the MPS and RPS servers to connect a vPro device can be followed in the [Local](../Local/overview.md) or [Local Docker](../Docker/overview.md) Build and Deploy Guides.
+
+- The **development PC** requires the following software:
+    - [Chrome* Browser](https://www.google.com/chrome)
+    - [git](https://git-scm.com/)
+    - [Visual Studio Code](https://code.visualstudio.com/) or any other IDE
+    - [Node.js](https://nodejs.org/)
+  
+
+## What You'll Do
+Follow the steps in these sections sequentially: 
+
+- Create a new React app
+- Add UI controls to the React app
+
+
 
 [![UI Toolkit](../assets/images/HelloWorld.png)](../assets/images/HelloWorld.png)
 
 ## Create a New React App
 
-1\. At a command prompt, go to your preferred development directory.
+1\. In a Command Prompt or Terminal, go to your preferred development directory.
 
 2\. Run the following commands to create sample React app named **my-app**.
 
@@ -32,9 +48,9 @@ cd my-app
 npm start
 ```
 
->**Note**: By default, React apps run on port 3000. If port 3000 is already used by the MPS server or any other app, you'll be prompted to use another port. If this happens, enter 'Y'
->
->Output like the following should appear in the terminal window. By default, React launches in your machine's default browser. However for best experience, use a Chrome web browser.
+3\. By default, React apps run on port 3000. If port 3000 is already used by the MPS server or any other app, you'll be prompted to use another port. If this happens, enter 'Y'
+
+Sample Output:
 
 ```
 You can now view my-app in the browser.
@@ -42,28 +58,56 @@ Local: http://localhost:3001
 On Your Network: http://172.16.17.4:3001
 ```
 
-3\. Press **Ctrl + C** in the terminal window to exit the application.
+4\. By default, React launches in your machine's default browser. However for best experience, navigate to the page using a Chrome web browser.
+
+5\. Now that we know it is working, press **Ctrl + C** in the terminal window to exit the application.
+
+<br>
 
 ## Add UI Toolkit
 
 1\. To access UI controls in the React app, add the following line to dependencies section in **my-app/package.json**:
 
 ```
-"ui-toolkit": "git+https://github.com/open-amt-cloud-toolkit/ui-toolkit.git#AcivEdge"
+"ui-toolkit": "git+https://github.com/open-amt-cloud-toolkit/ui-toolkit.git#ActivEdge"
 ```
 
-2\. At a command prompt, navigate to the root directory of the React app, and run the following commands to install ui-toolkit to node-modules and run the web UI locally:
+2\. In a Command Prompt or Terminal, navigate to the root directory of the React app, **./my-app**.
+
+3\. Run the following commands to install the ui-toolkit to node-modules and run the web UI locally:
 
 ```
 npm install
 npm start
 ```
 
-### Add KVM Control
+Sample Output:
 
-The code snippet below adds KVM control to the React application. Open **src/App.js** and add it.
+```
+You can now view my-app in the browser.
+Local: http://localhost:3001
+On Your Network: http://172.16.17.4:3001
+```
 
->**Note:** Change the **deviceId** value to your device GUID, and the **mpsServer** value to your MPS server address and appropriate web port.
+3\. Now that we know it is still working, press **Ctrl + C** in the terminal window to exit the application.
+
+<br>
+
+## Add a Control (Keyboard, Video, Mouse Redirection)
+
+The code snippet below adds KVM control to the React application. 
+
+1\. Open **./my-app/src/App.js** in a text editor or IDE of choice, such as Visual Studio Code or Notepad.
+
+2\. Delete the current code and replace with the code snippet below.
+
+3\. Change the following values:
+
+| Field       |  Value   |
+| :----------- | :-------------- |
+| **deviceId** | Replace the example deviceId value with the GUID of the Intel AMT device activated and connected to your MPS server. Information on obtaining a GUID can be found [here](../Topics/guids.md). |
+| **mpsServer** | Replace the *localhost* with the IP Address of your MPS Server |
+
 
 ``` javascript hl_lines="13 14"
 import React from "react";
@@ -79,7 +123,7 @@ function App() {
     <div className="App">
       <MpsProvider data={data}>
         <KVM deviceId="038d0240-045c-05f4-7706-980700080009"
-        mpsServer="localhost:9300/relay"
+        mpsServer="localhost:3000/relay"
         mouseDebounceTime="200"
         canvasHeight="100%"
         canvasWidth="100%"></KVM>
@@ -90,6 +134,36 @@ function App() {
 
 export default App;
 ```
+
+<br>
+
+4\. Save and close the file.
+
+5\. Navigate back to the root directory of the React app, **./my-app**.
+
+6\. Start the React app:
+
+```
+npm start
+```
+
+Sample Output:
+
+```
+You can now view my-app in the browser.
+Local: http://localhost:3001
+On Your Network: http://172.16.17.4:3001
+```
+
+7\. If the React app does not pop-up in a Chrome browser, open Chrome and navigate to the given URLs from your successful output.
+
+<br>
+
+You are now able to remotely control your Intel AMT device. Other controls such as device audit logs or profiles for RPS have example code below to test with.
+
+<br>
+
+## Add Other Controls
 
 ### Add Audit Log Control
 
@@ -113,7 +187,7 @@ function App() {
       <MpsProvider data={data}>
         <AuditLog
         deviceId="038d0240-045c-05f4-7706-980700080009"
-        mpsServer="localhost:9300"></AuditLog>
+        mpsServer="localhost:3000"></AuditLog>
       </MpsProvider>
     </div>
   );
@@ -142,7 +216,7 @@ function App() {
     <div>
       <MpsProvider data={data}>
         <DeviceGrid
-          mpsServer="localhost:9300"></DeviceGrid>
+          mpsServer="localhost:3000"></DeviceGrid>
       </MpsProvider>
     </div>
   );
@@ -171,7 +245,7 @@ function App() {
     <div>
       <MpsProvider data={data}>
         <SOL deviceId="038d0240-045c-05f4-7706-980700080009"
-        mpsServer="localhost:9300"></SOL>
+        mpsServer="localhost:3000"></SOL>
       </MpsProvider>
     </div>
   );

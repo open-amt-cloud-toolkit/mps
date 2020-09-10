@@ -1,6 +1,11 @@
 # API and Command Reference
 
-This section is a reference to the MPS API methods available in ActivEdge, and to some commands it provides.
+This section is a reference to the MPS API methods available in ActivEdge, and to some commands it provides. 
+
+There are two types of methods for the MPS Server:
+
+- AMT methods - Allow you to send device-specific calls for things such as power actions or audit logs
+- Admin methods - Allow you to send calls for info for all devices or some MPS configuration information.
 
 ## How to Use the REST API
 
@@ -32,7 +37,6 @@ The MPS API includes Admin and AMT methods.
    | Method       |  Description/Usage |
    | :----------- | :------------------------ |
    | **[AllDevices](./MPSmethods/alldevices.md)** | Lists all devices known to MPS, regardless of connected status |
-   | **[AuditLog](./MPSmethods/auditlog.md)** | Returns a requested amount or time range of Intel® AMT Audit Log data for a specified guid |
    | **[ConnectedDevices](./MPSmethods/connecteddevices.md)** | Lists all devices currently connected to MPS |
    | **[Disconnect](./MPSmethods/disconnect.md)** | Disconnects the CIRA connection for a specified guid |
    | **[MEScript](./MPSmethods/mescript.md)** | Downloads the cira_setup.mescript from MPS |
@@ -46,6 +50,7 @@ The MPS API includes Admin and AMT methods.
 
    | Method       |  Description/Usage |
    | :----------- | :------------------------ |   
+   | **[AuditLog](./MPSmethods/auditlog.md)** | Returns a requested amount or time range of Intel® AMT Audit Log data for a specified guid |
    | **[EventLog](./MPSmethods/eventlog.md)** | Return sensor and hardware event data |
    | **[GeneralSettings](./MPSmethods/generalsettings.md)** | View general network settings |
    | **[GetAMTFeatures](./MPSmethods/getamtfeatures.md)** | View what AMT out-of-band features are enabled/disabled |

@@ -1,4 +1,6 @@
-### Logging in to the Web Server
+Estimated completion time: 15 minutes
+
+## Log in to the Web Server
 
 1\. Open Chrome* browser and navigate to the web server using your development device's IP address on port 3000.
 
@@ -10,24 +12,25 @@ https://[Development-IP-Address]:3000
 
 2\. Because we are using self-signed certificates, we will be prompted by a warning screen. Click Advanced, then Proceed to continue to connect to the webserver.
 
-3\. Log in with the *web_admin_user* and *web_admin_password* set in the [.mpsrc file](../Local/installMPS.md). If you changed these parameters, enter your customized login, or use the defaults provided below.
+3\. Log in to the web portal with the credentials below.
 
-**Default credentials from MPS:**
+**Default credentials:**
 
 | Field       |  Value    |
 | :----------- | :-------------- |
-| **web_admin_user**| standalone |
-| **web_admin_password**| G@ppm0ym |
+| **Username**| standalone |
+| **Password**| G@ppm0ym |
 
 4\. Select Remote Provisioning Server on the web portal.
 
+[![WebUI](../assets/images/WebUI_HomeRPS.png)](../assets/images/WebUI_HomeRPS.png)
+
 <br>
 
-### Adding CIRA Configuration and Profiles to RPS
 
-#### Creating a CIRA Config
+### Create a CIRA Config
 
-CIRA stands for Client Initiated Remote Access.  It allows a CIRA-capable edge device to reach out and establish a persistent connection to the MPS server rather than the MPS server reaching to the edge device.  This enables access to edge devices that might be harder to reach behind things such as proxies/firewalls/etc.
+CIRA stands for Client Initiated Remote Access.  It allows a CIRA-capable edge device to reach out and establish a persistent connection to the MPS server rather than the MPS server reaching to the edge device.  This enables access to edge devices that might be harder to reach behind things such as firewalls/NATs/etc.
 
 A CIRA Configuration provides the Remote Provisioning Client (RPC) the required info to establish the edge device's CIRA connection to the MPS Server during the activation process.  
 
@@ -52,13 +55,14 @@ A CIRA Configuration provides the Remote Provisioning Client (RPC) the required 
 | **User Name**| standalone |
 | **Password**| G@ppm0ym |
     
->**Note:** For this guide, we are using the default values above. The User Name and Password fields in the CIRA Config must match the *mpsuser* and *mpspass* values set in the `.mpsrc` file in .\mps during the setup and installation of MPS.
 
-7\. Provide your Development Device's IP address as the Common Name to generate the self-sign certificate by the MPS server.
+7\. Provide your Development Device's IP address as the Common Name to generate the self-signed certificate by the MPS server.
 
-8\. Click Load under MPS Root Certificate.
+8\. Leave Mps root certificate format to the default, Auto Load.
 
-9\. Click Create.
+9\. Click Load under MPS Root Certificate.
+
+10\. Click Create.
 
 Example CIRA Config:
     
@@ -66,7 +70,7 @@ Example CIRA Config:
 
 <br>
 
-#### Creating a Profile
+### Create a Profile
 
 Profiles provide configuration information to the AMT Firmware during the activation process with the Remote Provisioning Client (RPC).
 
@@ -86,7 +90,7 @@ Profiles also distinguish between activating a device in **Client Control Mode**
 4\. Uncheck Generate Random Password.
 
 !!! note "Production Environment"
-        In a production environment, passwords are typically randomly generated to create stronger, more secure passwords.
+        In a production environment, you typically generate a random password for each AMT device to create a stronger, more secure AMT environment.
 
 5\. Provide a strong AMT Password. 
     

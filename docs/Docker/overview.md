@@ -17,7 +17,7 @@ This section outlines the setup of the ActivEdge's microservices and client appl
 At minimum, to install and use the ActivEdge, a network configuration must include:
 
 -  A development PC 
--  At least one Intel® AMT device
+-  At least one Intel® vPro device
 
 Both systems must be on the same network. Instructions assume wired connections.
 
@@ -25,7 +25,7 @@ Both systems must be on the same network. Instructions assume wired connections.
 
 - The **development PC** hosts Management Presence Server (MPS) and Remote Provisioning Server (RPS) and requires the following software:
 
-    - [Docker Desktop on Windows*](https://docs.docker.com/docker-for-windows/install/) or [Docker Desktop on Linux*](https://docs.docker.com/docker-for-mac/install/)
+    - [Docker Desktop](https://www.docker.com/products/docker-desktop) for Windows* or Linux*
 
         Docker Configuration Details:
 
@@ -50,14 +50,14 @@ Both systems must be on the same network. Instructions assume wired connections.
 
 Follow the steps in these sections sequentially to deploy Docker* images on a local development system: 
 
-- Build and Deploy Docker* ImagesLocally
+- Build and Deploy Docker* Images Locally
 - Configure RPS
 - Build RPC on Managed Device
 - Manage Device
 
 Run instructions in these sections can use Microsoft Windows* or Linux* environments. The terminal may be A) the Windows Command Prompt in Administrator mode or B) the Linux* shell/terminal. 
 
-Estimated completion time:** 60 minutes
+Estimated completion time:** 15 minutes
 
 Next up: [Build Docker* Images](dockerLocal.md)
 
