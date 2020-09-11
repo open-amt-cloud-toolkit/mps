@@ -43,6 +43,9 @@ export class AMTFeatures {
                 ider = payload.enableIDER;
                 isRedirectionChanged = true;
             }
+            if((sol || ider) && !redir){
+                isRedirectionChanged = true;
+            }
 
             kvm = ((kvmRedirResponse[AMTFeaturesConst.AMT_KVM_ENABLED_STATE] == 6 && kvmRedirResponse[AMTFeaturesConst.AMT_KVM_REQUESTED_STATE] == 2) ||
                 kvmRedirResponse[AMTFeaturesConst.AMT_KVM_ENABLED_STATE] == 2 || kvmRedirResponse[AMTFeaturesConst.AMT_KVM_ENABLED_STATE] == 6);

@@ -39,6 +39,7 @@ export class SetAMTFeaturesHandler implements IAmtHandler {
                     var cred = await this.mpsService.db.getAmtPassword(payload.guid);
                     var amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0);
                     await AMTFeatures.setAMTFeatures(amtstack, payload);
+                    amtstack.wsman.comm.socket.sendchannelclose();
                     let response: apiResponseType = {statuscode: 200, payload: {status: "Updated AMT Features"}};
                     res.status(200).send(JSON.stringify(response));
                 } else {

@@ -1,4 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
+/*********************************************************************
+* Copyright (c) Intel Corporation 2020
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
 
 import React from 'react'
 
@@ -15,21 +19,6 @@ export const ResultRenderer = ({ value, context: { t } }) => {
       { value ? null : <Svg path={svgs.disabled} className='pcs-renderer-icon' /> }
       <div className='pcs-renderer-text'>
         { value.statusCode === '200' ? t('devices.grid.resultSuccess') : value === 'inprogress' ? t('devices.grid.Inprogress') : t('devices.grid.resultFailure') }
-      </div>
-    </div>
-  )
-}
-export const ExecutionResultsLinkRenderer = ({ value, context: { t } }) => {
-  const cellClasses = `pcs-renderer-cell ${value ? 'highlight' : ''}`
-  console.log(value)
-  return (
-    <div className={cellClasses}>
-      <div className='pcs-renderer-text'>
-      {
-        value.executionResultsLink && value.statusCode === '200' ?
-        <a target="_blank" href={value.executionResultsLink}>{t('devices.grid.ViewResults')}</a>
-        : `---`
-      }
       </div>
     </div>
   )

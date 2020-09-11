@@ -35,6 +35,7 @@ export class HardwareInfoHandler implements IAmtHandler {
                     "CIM_SystemPackaging", "*CIM_Chassis", "CIM_Chip", "*CIM_Card", "*CIM_BIOSElement",
                     "CIM_Processor", "CIM_PhysicalMemory", "CIM_MediaAccessDevice", "CIM_PhysicalPackage"],
                     (stack, name, responses, status) => {
+                      stack.wsman.comm.socket.sendchannelclose();
                         if (status != 200) {
                             log.error(`Request failed during AMTHardware Information BatchEnum Exec for guid : ${payload.guid}.`);
                             return res.status(status).send(ErrorResponse(status, `Request failed during AMTHardware Information BatchEnum Exec for guid : ${payload.guid}.`));

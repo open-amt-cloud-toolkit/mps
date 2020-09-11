@@ -162,11 +162,11 @@
       "sol": "SOL"
     },
     "messages": {
-      "kvmNotEnabledAndNotPoweredUp": "Power on remote computer and enable KVM",
+      "kvmNotEnabledAndNotPoweredUp": "Power on remote computer and check the KVM enable to connect to KVM",
       "notPoweredUp": "Remote computer is not powered on.",
-      "kvmNotEnabled": "KVM is not enabled ",
-      "solNotEnabledAndNotPoweredUp": "Power on remote computer and enable SOL",
-      "solNotEnabled": "SOL is not enabled",
+      "kvmNotEnabled": "Check the KVM enable to connect to KVM",
+      "solNotEnabledAndNotPoweredUp": "Power on remote computer and check the SOL enable to connect to SOL",
+      "solNotEnabled": "Check the SOL enable to connect to SOL",
       "failedToFetch": "Failed to fetch the {{translate.feature}} feature status",
       "featureSuccess": "{{translate.feature}} has been {{translate.featureText}}",
       "updateFailed": "Failed to update the {{translate.feature}} status!",
@@ -175,9 +175,9 @@
       "failedSolFetch": "Unable to fetch SOL features",
       "failedSolFetchAndNotPoweredUp": "Unable to fetch SOL features and device is not powered on",
       "failedSolFetchAndFailedPowerFetch": "Unable to fetch SOL features and device power status",
-      "solNotEnabledAndFailedPowerFetch": "SOL is not enabled and failed to fetch power status",
+      "solNotEnabledAndFailedPowerFetch": "Check the SOL enable to connect to SOL and failed to fetch power status",
       "failedKvmFetchAndFailedPowerFetch": "Unable to fetch KVM features and device power status",
-      "kvmNotEnabledAndFailedPowerFetch": "KVM is not enabled and failed to fetch power status",
+      "kvmNotEnabledAndFailedPowerFetch": "Check the KVM enable to connect to KVM and failed to fetch power status",
       "failedPowerFetch": "Failed to fetch the power status"
     }
   },

@@ -408,6 +408,7 @@ export class mpsServer{
                 this.debug(3, 'MPS:CHANNEL_CLOSE', RecipientChannel);
                 var cirachannel = socket.tag.channels[RecipientChannel];
                 if (cirachannel == undefined) { log.debug("MPS Error in CHANNEL_CLOSE: Unable to find channelid " + RecipientChannel); return 5; }
+                this.SendChannelClose(cirachannel.socket, cirachannel.amtchannelid);
                 socket.tag.activetunnels--;
                 if (cirachannel.state > 0) {
                     cirachannel.state = 0;
@@ -558,6 +559,7 @@ export class mpsServer{
     }
     
     SendChannelClose(socket, channelid) {
+        this.debug(2, 'MPS:SendChannelClose', channelid);
         this.Write(
           socket,
           String.fromCharCode(APFProtocol.CHANNEL_CLOSE) +
@@ -631,20 +633,21 @@ export class mpsServer{
     SetupCiraChannel(socket, targetport) {
         var sourceport = (socket.tag.nextsourceport++ % 30000) + 1024;
         var cirachannel = {
-          targetport: targetport,
-          channelid: socket.tag.nextchannelid++,
-          socket: socket,
-          state: 1,
-          sendcredits: 0,
-          amtpendingcredits: 0,
-          amtCiraWindow: 0,
-          ciraWindow: 32768,
-          write: undefined,
-          sendBuffer: undefined,
-          amtchannelid: undefined,
-          close: undefined,
-          closing: undefined,
-          onStateChange: undefined
+            targetport: targetport,
+            channelid: socket.tag.nextchannelid++,
+            socket: socket,
+            state: 1,
+            sendcredits: 0,
+            amtpendingcredits: 0,
+            amtCiraWindow: 0,
+            ciraWindow: 32768,
+            write: undefined,
+            sendBuffer: undefined,
+            amtchannelid: undefined,
+            close: undefined,
+            closing: undefined,
+            onStateChange: undefined,
+            sendchannelclose: undefined
         };
         this.SendChannelOpen(
           socket,
@@ -704,7 +707,11 @@ export class mpsServer{
             cirachannel.onStateChange(cirachannel, cirachannel.state);
           }
         };
-    
+
+        cirachannel.sendchannelclose = () => {
+            this.SendChannelClose(cirachannel.socket, cirachannel.amtchannelid);
+        }
+
         socket.tag.channels[cirachannel.channelid] = cirachannel;
         return cirachannel;
     }

@@ -33,6 +33,7 @@ export class VersionHandler implements IAmtHandler {
             var amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0);
             amtstack.BatchEnum("", ["CIM_SoftwareIdentity", "*AMT_SetupAndConfigurationService"],
                 (stack, name, responses, status) => {
+		                stack.wsman.comm.socket.sendchannelclose();
                     if (status == 200) {  
                         return res.send(responses);
                     }

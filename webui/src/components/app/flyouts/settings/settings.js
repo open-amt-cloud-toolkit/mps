@@ -1,4 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
+/*********************************************************************
+* Copyright (c) Intel Corporation 2020
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
 
 import React from 'react';
 
@@ -115,12 +119,6 @@ export class Settings extends LinkedComponent {
             <Flyout.CloseBtn onClick={onClose} />
           </Flyout.Header>
           <Flyout.Content className="settings-workflow-container">
-            <Section.Container collapsable={false} className="app-version">
-              <Section.Header>{t('settingsFlyout.version', { version })}</Section.Header>
-              <Section.Content className="release-notes">
-                <a href={releaseNotesUrl} target="_blank">{t('settingsFlyout.viewRelNotes')}</a>
-              </Section.Content>
-            </Section.Container>
             <Section.Container className="simulation-toggle-container">
               <Section.Header>{t('settingsFlyout.simulationData')} </Section.Header>
               <Section.Content className="simulation-description">

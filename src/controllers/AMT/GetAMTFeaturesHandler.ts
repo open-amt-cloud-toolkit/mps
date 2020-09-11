@@ -38,6 +38,7 @@ export class GetAMTFeaturesHandler implements IAmtHandler {
                     var cred = await this.mpsService.db.getAmtPassword(payload.guid);
                     var amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0);
                     let wsmanResponse = await AMTFeatures.getAMTFeatures(amtstack, payload);
+                    amtstack.wsman.comm.socket.sendchannelclose();
                     if (wsmanResponse[AMTFeaturesConst.AMT_REDIR_SERVICE] &&
                         wsmanResponse[AMTFeaturesConst.AMT_KVM_REDIR] &&
                         wsmanResponse[AMTFeaturesConst.AMT_OPTIN_SERVICE]) {

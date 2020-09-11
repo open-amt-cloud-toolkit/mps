@@ -219,6 +219,7 @@ export class PowerActionHandler implements IAmtHandler {
     amtstack.RequestPowerStateChange(
       action,
       (stack, name, response, status) => {
+        stack.wsman.comm.socket.sendchannelclose();
         if (status == 200) {
           // log.info(`Power state change request successful for guid : ${uuid}`);
           return res.send(response);

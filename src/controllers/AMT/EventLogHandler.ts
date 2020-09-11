@@ -33,6 +33,7 @@ export class EventLogHandler implements IAmtHandler {
             var cred = await this.mpsService.db.getAmtPassword(payload.guid);
             var amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0);
             amtstack.GetMessageLog(function (stack, responses, tag, status) {
+		            stack.wsman.comm.socket.sendchannelclose();
                 if (status == 200) {
                   return res.send(responses);  
                 }else{

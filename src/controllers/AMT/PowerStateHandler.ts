@@ -32,6 +32,7 @@ export class PowerStateHandler implements IAmtHandler {
             var cred = await this.mpsService.db.getAmtPassword(payload.guid);
             var amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0);
             amtstack.Enum('CIM_ServiceAvailableToElement', (stack, name, responses, status) =>{
+		            stack.wsman.comm.socket.sendchannelclose();
                 if (status != 200) {
                   log.error(`Request failed during powerstate fetch for guid : ${payload.guid}.`);
                     return res.status(status).send(ErrorResponse(status, `Request failed during powerstate fetch for guid : ${payload.guid}.`));
