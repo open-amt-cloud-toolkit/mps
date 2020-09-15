@@ -30,6 +30,8 @@ Possible actions are listed in the following table:
 
 ## Example: Request Body
 
+>**Note:** The following code block is an example of what would be the data sent as part of the POST request. 
+
 ``` yaml
 
 {  

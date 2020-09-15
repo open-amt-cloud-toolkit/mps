@@ -28,6 +28,7 @@ nav:
   - Tutorials:
     - Docker Images on the Cloud: Docker/dockerCloud.md
     - Creating Consoles with the UI Toolkit: Tutorials/uitoolkit.md
+    - Construct a Rest API Call: Tutorials/apiTutorial.md
     - Activating in ACM Mode: Tutorials/acmActivation.md
     - Adding a Database: Tutorials/addDatabase.md
     - Adding Vault Storage: Tutorials/addVault.md
@@ -38,7 +39,7 @@ nav:
   - Topics:
     - Static and Dynamic IPs: Topics/misc.md
     - GUIDs in Intel AMT: Topics/guids.md
-    - Manual Configuring Unprovisioning: Topics/mebx.md
+    - Manual Configuring and Unprovisioning: Topics/mebx.md
     - Working with Proxies: Topics/proxies.md
     - Security Information: Topics/security.md
   - Release notes: release-notes.md
@@ -48,6 +49,7 @@ nav:
 markdown_extensions:
   - admonition
   - pymdownx.tabbed
+  - attr_list
   - pymdownx.inlinehilite
   - codehilite:
       guess_lang: false

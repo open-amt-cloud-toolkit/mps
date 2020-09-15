@@ -55,7 +55,7 @@ In addition to creating a CIRA Config and a Profile. A Domain **must** be create
 
 7\. Click Create.
 
-After successfully creating the domain, continue with the activation process by building and running the Remote Provisioning Client. For information and steps on how to build and run RPC, [continue here](../General/buildRPC).
+After successfully creating the domain, continue with the activation process by building and running the Remote Provisioning Client. For information and steps on how to build and run RPC, [continue here](../General/buildRPC.md).
 
 Example Domain:
     

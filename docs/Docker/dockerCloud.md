@@ -1,4 +1,4 @@
-# Build Docker* Images for MPS and RPS and Deploy to the Cloud
+# Build Docker* Containers for MPS and RPS and Deploy to the Cloud
 
 Management Presence Server (MPS) and Remote Provisioning Server (RPS)  provide support for deploying the services as Docker* images to the cloud.
 

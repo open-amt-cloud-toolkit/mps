@@ -31,6 +31,7 @@ git clone https://github.com/open-amt-cloud-toolkit/mps.git mps
 2\. Checkout the ActivEdge branch.
 
 ```
+cd mps
 git checkout ActivEdge
 ```
 
@@ -45,6 +46,7 @@ git clone https://github.com/open-amt-cloud-toolkit/rps.git rps
 2\. Checkout the ActivEdge branch.
 
 ```
+cd rps
 git checkout ActivEdge
 ```
 
@@ -74,7 +76,7 @@ Build the MPS and RPS Docker images from their respective directories with the *
 1\. Navigate to MPS folder and build the Docker image. 
 
 ```
-cd mps
+cd ../mps
 docker build . -t mps:v1
 ```
 ![Image of MPS Build Completion](../assets/images/MPSBuild.png) 
@@ -194,4 +196,5 @@ Check the logs to ensure the MPS and RPS services are properly handling the traf
 
 <br>
 
-Next up: [Configure RPS](../General/configureRPS.md)
+## Next up
+[Configure RPS](../General/configureRPS.md)

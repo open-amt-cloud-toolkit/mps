@@ -139,4 +139,5 @@ npm run dev
 
 <br>
 
-Next up: [Install RPS Locally](installRPS.md)
+## Next up
+[Install RPS Locally](installRPS.md)

@@ -51,4 +51,5 @@ Example Output:
 
 <br>
 
-Next up: [Configure RPS](../General/configureRPS.md)
+## Next up
+[Configure RPS](../General/configureRPS.md)

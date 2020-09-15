@@ -3,9 +3,11 @@ Estimated completion time:
 - 30 minutes on Windows 10 devices (20-25 minutes are required installation time estimates)
 - 15 minutes on Linux devices
 
+For prequisites to complete this section, see [Overview](overview.md).
+
 ## Remote Provisioning Client
 
-The Remote Provisioning Client (RPC) communicates with the Managability Engine Interface (MEI) and RPS interfaces. The MEI uses the ME Driver to talk to Intel AMT. By running RPC, we will activate Intel AMT into Client Control Mode (CCM), or ACM based on the created profile, as well as configure the CIRA connection of the AMT device to the MPS. After successfully running, the AMT device will be ready to be managed remotely using the web server!
+The Remote Provisioning Client (RPC) communicates with the Managability Engine Interface (MEI) and RPS interfaces. The MEI uses the ME Driver to talk to Intel AMT. By running RPC, we will activate Intel AMT into Client Control Mode (CCM), or ACM based on the created profile, as well as configure the CIRA connection of the AMT device to the MPS. After successfully running, the AMT device will be ready to be managed remotely using the web interface!
 
 !!! note "Production Environment"
         In a production environment, RPC would be built on a development device. From there, RPC can be deployed with an in-band manageability agent to distrubute it to the fleet of AMT devices.  The in-band managebility agent can invoke RPC to run and activate the AMT devices.
@@ -16,13 +18,14 @@ The Remote Provisioning Client (RPC) communicates with the Managability Engine I
 
 **Important: Perform the following steps on the Intel&reg; AMT device. Enter the commands in the following sections to create RPC on Windows.**
 
-Navigate to a directory of your choice to clone and build RPC.
 
 #### Clone the Repository
 
-1\. Open the 'X64 Native Tools command prompt for VS 20XX' as Administrator.
+1\. Open the 'x64 Native Tools Command Prompt for VS 20XX' as Administrator.
 
->**Note:** You can find this command prompt in the Start Menu or in the following directory path:```./Programs/Visual Studio 2019/Visual Studio Tools/VC```
+>**Note:** You can find this command prompt in the Start Menu by searching for 'x64 Native Tools Command Prompt for VS 20XX'
+
+Navigate to a directory of your choice to clone and build RPC.
 
 2\. Clone the RPC repository.
 
@@ -120,6 +123,8 @@ rpc.exe -u wss://[Development-IP-Address]:8080 -c "-t activate --profile [profil
 
 <br>
 
+>Note: Unable to connect to Websocket server? Try disabling firewalls on the development device.
+
 >Note: If you do not remember your created profile's name, you can navigate to the *Profiles* tab on the web server hosted at `https://[Development-IP-Address]:3000`
 >
 >**Default login credentials:**
@@ -198,6 +203,8 @@ sudo ./rpc -u wss://[Development-IP-Address]:8080 -c "-t activate --profile [pro
         
 <br>
 
+>Note: Unable to connect to Websocket server? Try disabling firewalls on the development device.
+
 >Note: If you do not remember your created profile's name, you can navigate to the *Profiles* tab on the web server hosted at `https://[Development-IP-Address]:3000`
 >
 >**Default login credentials:**
@@ -210,4 +217,5 @@ sudo ./rpc -u wss://[Development-IP-Address]:8080 -c "-t activate --profile [pro
 
 <br>
 
-Next up: [Manage Device](../General/manageDevice.md)
+## Next up
+[Manage Device](../General/manageDevice.md)

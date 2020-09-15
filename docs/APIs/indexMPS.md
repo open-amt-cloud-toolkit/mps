@@ -2,10 +2,12 @@
 
 This section is a reference to the MPS API methods available in ActivEdge, and to some commands it provides. 
 
-There are two types of methods for the MPS Server:
+There are two types of method paths for the MPS Server:
 
-- AMT methods - Allow you to send device-specific calls for things such as power actions or audit logs
-- Admin methods - Allow you to send calls for info for all devices or some MPS configuration information.
+- AMT path methods - Allow you to send device-specific calls for things such as power actions or audit logs. Utilize these methods by setting the path to **amt** in your API call.
+- Admin path methods - Allow you to send calls for info for all devices or for MPS configuration information. Utilize these methods by setting the path to **admin** in your API call.
+
+Steps on how to create your own Rest API call can be found in the [Construct a Rest API Call](../Tutorials/apiTutorial.md) tutorial.
 
 ## How to Use the REST API
 
@@ -17,7 +19,7 @@ The request URL is assembled using your MPS server's IP Address, the port, and t
 Example url: https://localhost:3000/amt
 ```
 
-### Base path 
+### Base paths
 
 ``` yaml
 /amt/

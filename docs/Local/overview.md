@@ -16,7 +16,7 @@ At minimum, to install and utilize the ActivEdge microservices, a network config
 -  A development PC with Windows 10 or Ubuntu 18.04 or newer
 -  At least one Intel® vPro device
 
-Both systems must be on the same network. Instructions assume wired connections.
+Both systems must use a wired (i.e., cable) connection on the same network.
 
 **Software** 
 
@@ -48,4 +48,5 @@ Estimated completion time:** 15 minutes
 
 <br>
 
-Next up: [Install MPS Locally](installMPS.md)
+## Next up
+[Install MPS Locally](installMPS.md)

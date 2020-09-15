@@ -19,7 +19,7 @@ At minimum, to install and use the ActivEdge, a network configuration must inclu
 -  A development PC 
 -  At least one Intel® vPro device
 
-Both systems must be on the same network. Instructions assume wired connections.
+Both systems must use a wired (i.e., cable) connection on the same network.
 
 **Software**
 
@@ -59,7 +59,8 @@ Run instructions in these sections can use Microsoft Windows* or Linux* environm
 
 Estimated completion time:** 15 minutes
 
-Next up: [Build Docker* Images](dockerLocal.md)
+## Next up
+[Build Docker* Images](dockerLocal.md)
 
 
 <br><br>

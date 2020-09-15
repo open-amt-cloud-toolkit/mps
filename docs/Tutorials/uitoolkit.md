@@ -1,6 +1,6 @@
-# Add MPS UI Toolkit controls to a WebUI
+# Add MPS UI Toolkit Controls to a WebUI
 
-This document shows how to integrate controls from the MPS UI Toolkit into a React.js app for testing or development.  This guide walks through how to specifically implement the Keyboard, Video, Mouse (KVM) control. Example code for other manageability features are found below.
+This tutorial shows how to integrate controls from the MPS UI Toolkit into a React.js app for testing or development.  This guide walks through how to specifically implement the Keyboard, Video, Mouse (KVM) control. Example code for other manageability features are found below.
 
 ## What You'll Need
 
@@ -38,7 +38,9 @@ Follow the steps in these sections sequentially:
 
 ## Create a New React App
 
-1\. In a Command Prompt or Terminal, go to your preferred development directory.
+The React app can be created in any preferred development directory. The MPS can continue to run while creating and running the app.
+
+1\. In a Command Prompt or Terminal, go to your preferred development directory. 
 
 2\. Run the following commands to create sample React app named **my-app**.
 
@@ -47,6 +49,7 @@ npx create-react-app my-app
 cd my-app
 npm start
 ```
+After the npx command above, the terminal message "Happy hacking!" indicates success.
 
 3\. By default, React apps run on port 3000. If port 3000 is already used by the MPS server or any other app, you'll be prompted to use another port. If this happens, enter 'Y'
 
@@ -66,7 +69,7 @@ On Your Network: http://172.16.17.4:3001
 
 ## Add UI Toolkit
 
-1\. To access UI controls in the React app, add the following line to dependencies section in **my-app/package.json**:
+1\. To access UI controls in the React app, modify the **may-app/package.json** file with a preferred editor, such as Visual Studio Code or Notepad. In dependencies, place a comma after the last line and add the following line:
 
 ```
 "ui-toolkit": "git+https://github.com/open-amt-cloud-toolkit/ui-toolkit.git#ActivEdge"
@@ -89,11 +92,14 @@ Local: http://localhost:3001
 On Your Network: http://172.16.17.4:3001
 ```
 
-3\. Now that we know it is still working, press **Ctrl + C** in the terminal window to exit the application.
-
 <br>
 
-## Add a Control (Keyboard, Video, Mouse Redirection)
+## Add a Sample Control
+The following sections outline how to add controls. To use the code snippets provided, replace what is in **App.js** file with the code snippet.
+
+Refresh the app after adding a control.
+
+### Add Keyboard, Video, Mouse (KVM) Redirection 
 
 The code snippet below adds KVM control to the React application. 
 
@@ -164,6 +170,9 @@ You are now able to remotely control your Intel AMT device. Other controls such 
 <br>
 
 ## Add Other Controls
+The following sections outline how to add controls. To use the code snippets provided, replace what is in **App.js** file with the code snippet.
+
+Refresh the app after adding a control.
 
 ### Add Audit Log Control
 
@@ -354,11 +363,11 @@ Go to the chrome browser, ensure controls shows up correctly.
 You will see the errors in the following scenario's:
 
 - compilation errors if ui-toolkit has not downloaded and installed to your react app.
-- MPS server not running
+- MPS/RPS server not running, appropriate controls fail to work.
 - MPS server running and device not connected.
 - If your browser is IE / Edge, there might be some compatibility issues.
 
-## By-pass CORS Security for testing
+<!-- ## By-pass CORS Security for testing
 
 ### MPS
 
@@ -422,9 +431,9 @@ return next();
 
 ```
 npm start
-```
+``` -->
 
-## Run RPS server in DEV mode
+<!-- ## Run RPS server in DEV mode
 
 To display UI controls on local react Web UI for **testing**, make the following changes.
 
@@ -443,7 +452,7 @@ Update the _xapikey_ value with below snippet
 
 ```
 npm run dev
-```
+``` -->
 
 ## Customize and create bundles
 

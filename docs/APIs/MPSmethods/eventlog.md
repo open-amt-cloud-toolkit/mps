@@ -5,6 +5,9 @@ This AMT method returns sensor and hardware event data for a specific guid.
 Click [here](types.md) for supported input and output types.
 
 ## Example: Request Body
+
+>**Note:** The following code block is an example of what would be the data sent as part of the POST request. 
+
 ``` yaml
 {  
    "method":"EventLog",

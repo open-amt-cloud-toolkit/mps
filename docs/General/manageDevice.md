@@ -23,7 +23,7 @@ Estimated completion time: 5 minutes
 
 4\. Click the devices tab from the menu on the left, or click *Connected* in the default homepage.
 
->**Note:** If the activated device is not listed or seen, restart the AMT device. After succesfully restarting, refresh the WebUI to see if the *Status* changes to *Connected* and turns green.
+>**Note:** If the activated device is not listed or if it is listed as unconnected, unplug the power of the AMT device and boot the machine. After succesfully restarting, refresh the WebUI to see if the *Status* changes to *Connected* and turns green.
 
 [![mps](../assets/images/MPS_ConnectedDevice.png)](../assets/images/MPS_ConnectedDevice.png)
 
@@ -31,7 +31,9 @@ Estimated completion time: 5 minutes
 
 6\. Select an action to perform from the options on the right.
 
->**Note:** Since the device was activated the device in Client Control Mode(CCM), the KVM feature will not function in this current release. To use KVM, follow the [ACM Activation Tutorial](../Tutorials/acmActivation.md) to see how to configure a device into Admin Control Mode and remotely KVM using out-of-band capabilities.
+>**Note:** Since the device was activated in Client Control Mode(CCM), the KVM feature will not function in this current release. To use KVM, follow the [ACM Activation Tutorial](../Tutorials/acmActivation.md) to see how to configure a device into Admin Control Mode.
+
+>**Note:** Activated in Admin Control Mode already? Try out the Keyboard, Video, Mouse (KVM) feature to remotely view and control the AMT device.  Issue a Reset to BIOS command and be able to view and make live changes to BIOS settings.
 
 [![mps](../assets/images/MPS_ManageDevice.png)](../assets/images/MPS_ManageDevice.png)
 
@@ -39,6 +41,7 @@ Estimated completion time: 5 minutes
 
 Next steps: 
 
+- Learn how to construct your own API call to manage a device [here](../Tutorials/apiTutorial.md)
 - Find out about the ActivEdge [UI Toolkit](../Tutorials/uitoolkit.md) and more under Tutorials.
 - Read about security recommendations and other ActivEdge features under Topics.
 
