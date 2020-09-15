@@ -3,7 +3,7 @@ Estimated completion time:
 - 30 minutes on Windows 10 devices (20-25 minutes are required installation time estimates)
 - 15 minutes on Linux devices
 
-For prequisites to complete this section, see [Overview](overview.md).
+For prequisites to complete this section, see [Overview](../Local/overview.md).
 
 ## Remote Provisioning Client
 
@@ -21,21 +21,16 @@ The Remote Provisioning Client (RPC) communicates with the Managability Engine I
 
 #### Clone the Repository
 
-1\. Open the 'x64 Native Tools Command Prompt for VS 20XX' as Administrator.
+1\. Open 'x64 Native Tools Command Prompt for VS 20XX' as Administrator.  **This is NOT a regular Windows Command Prompt.**
 
 >**Note:** You can find this command prompt in the Start Menu by searching for 'x64 Native Tools Command Prompt for VS 20XX'
 
-Navigate to a directory of your choice to clone and build RPC.
+2\.Navigate to a directory of your choice to clone and build RPC.
 
-2\. Clone the RPC repository.
+3\. Clone the RPC repository.
 
 ```
 git clone https://github.com/open-amt-cloud-toolkit/rpc.git
-```
-
-3\. Change to the rpc directory.
-
-```
 cd rpc
 ```
 
@@ -121,9 +116,6 @@ rpc.exe -u wss://[Development-IP-Address]:8080 -c "-t activate --profile [profil
 !!! note "Production Environment"
         In a production environment, an in-band agent would invoke this command with the parameters rather than a manual command.
 
-<br>
-
->Note: Unable to connect to Websocket server? Try disabling firewalls on the development device.
 
 >Note: If you do not remember your created profile's name, you can navigate to the *Profiles* tab on the web server hosted at `https://[Development-IP-Address]:3000`
 >
@@ -201,10 +193,6 @@ sudo ./rpc -u wss://[Development-IP-Address]:8080 -c "-t activate --profile [pro
 !!! note "Production Environment"
         In a production environment, an in-band agent would invoke this command with the parameters rather than a manual command.
         
-<br>
-
->Note: Unable to connect to Websocket server? Try disabling firewalls on the development device.
-
 >Note: If you do not remember your created profile's name, you can navigate to the *Profiles* tab on the web server hosted at `https://[Development-IP-Address]:3000`
 >
 >**Default login credentials:**

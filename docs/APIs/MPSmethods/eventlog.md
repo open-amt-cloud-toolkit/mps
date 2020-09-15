@@ -6,13 +6,15 @@ Click [here](types.md) for supported input and output types.
 
 ## Example: Request Body
 
+>**Important Note:** More information on obtaining an AMT device's GUID can be found [here](../../Topics/guids.md).
+
 >**Note:** The following code block is an example of what would be the data sent as part of the POST request. 
 
 ``` yaml
 {  
    "method":"EventLog",
    "payload":{  
-      "guid":"038d0240-045c-05f4-7706-980700080009",
+      "guid":"038d0240-045c-05f4-7706-980700080009", //Replace with an AMT Device's GUID
       "logsPerPage":10,
       "page":5,
       "startDate":"2019-04-11",

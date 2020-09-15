@@ -95,7 +95,7 @@ cd webui/src
 
 2\. Open the app.config.js file using a text editor to configure IP Address settings.
 
-3\. Set the *rpsServerIP* and *serverIP* to your development device's IP Address. Save and close the file.
+3\. Set both the *rpsServerIP* and *serverIP* to your development device's IP Address. Save and close the file.
 
 Example:
 
@@ -114,9 +114,6 @@ Example:
 
 4\. Navigate back to the MPS root directory.
 
-```
-cd ../../mps
-```
 
 5\. Run the install commands to install all required dependencies.
 

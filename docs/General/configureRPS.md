@@ -72,14 +72,15 @@ Example CIRA Config:
 
 ### Create a Profile
 
-Profiles provide configuration information to the AMT Firmware during the activation process with the Remote Provisioning Client (RPC).
+Profiles provide configuration information to the AMT Firmware during the activation process with the Remote Provisioning Client (RPC). Profiles also distinguish between activating a device in **Client Control Mode** (CCM) or **Admin Control Mode** (ACM). 
 
-Profiles also distinguish between activating a device in **Client Control Mode** (CCM) or **Admin Control Mode** (ACM). In this guide, we will activate into Client Control Mode. For more information on Admin Control Mode and the differences, [click here](../Tutorials/acmActivation.md).
 
 !!! note "Production Environment"
         In a production environment, devices are typically activated in ACM mode.  ACM mode enables KVM access to devices without user consent. In most IoT use cases, edge devices such as digital signage or kiosks may not have immediate access to it or employees nearby.  ACM mode proves immensely helpful in these scenarios.
 
 <br>
+
+To activate into Admin Control Mode, [click here](../Tutorials/acmActivation.md). In this guide, we will activate into Client Control Mode. 
 
 1\. Select the Profiles tab from the menu on the left.
 
@@ -112,4 +113,5 @@ Example Profile:
 
 <br>
 
-Next up: [Build RPC on a Managed Device](../General/buildRPC.md)
+## Next up:
+[Build RPC on a Managed Device](../General/buildRPC.md)

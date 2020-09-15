@@ -1,6 +1,7 @@
 # Add MPS UI Toolkit Controls to a WebUI
+The UI Toolkit allows developers to add manageability features to a console with prebuilt React components. The code snippets simplify the task of adding complex manageability UI controls, such as the Keyboard, Video, Mouse (KVM). A sample web application, based on React.js, is provided for test and development. 
 
-This tutorial shows how to integrate controls from the MPS UI Toolkit into a React.js app for testing or development.  This guide walks through how to specifically implement the Keyboard, Video, Mouse (KVM) control. Example code for other manageability features are found below.
+The tutorial outlines how to add various controls to the sample React web application provided. Developers can use the sample code below as a springboard for developing their own consoles.
 
 ## What You'll Need
 
@@ -63,7 +64,7 @@ On Your Network: http://172.16.17.4:3001
 
 4\. By default, React launches in your machine's default browser. However for best experience, navigate to the page using a Chrome web browser.
 
-5\. Now that we know it is working, press **Ctrl + C** in the terminal window to exit the application.
+5\. Now that we know it is working, press **Ctrl + C** twice and type 'Y' in the terminal window to exit the application.
 
 <br>
 
@@ -75,9 +76,11 @@ On Your Network: http://172.16.17.4:3001
 "ui-toolkit": "git+https://github.com/open-amt-cloud-toolkit/ui-toolkit.git#ActivEdge"
 ```
 
-2\. In a Command Prompt or Terminal, navigate to the root directory of the React app, **./my-app**.
+2\. Save and close the file.
 
-3\. Run the following commands to install the ui-toolkit to node-modules and run the web UI locally:
+3\. In a Command Prompt or Terminal, navigate to the root directory of the React app, **./my-app**.
+
+4\. Run the following commands to install the ui-toolkit to node-modules and run the web UI locally:
 
 ```
 npm install
@@ -92,12 +95,14 @@ Local: http://localhost:3001
 On Your Network: http://172.16.17.4:3001
 ```
 
+>**Note:** You do not need to stop the application again. It will update and refresh automatically as you make code changes.
+
 <br>
 
 ## Add a Sample Control
 The following sections outline how to add controls. To use the code snippets provided, replace what is in **App.js** file with the code snippet.
 
-Refresh the app after adding a control.
+Refresh the web browser after adding a control if it does not update automatically after a few seconds.
 
 ### Add Keyboard, Video, Mouse (KVM) Redirection 
 
@@ -112,7 +117,7 @@ The code snippet below adds KVM control to the React application.
 | Field       |  Value   |
 | :----------- | :-------------- |
 | **deviceId** | Replace the example deviceId value with the GUID of the Intel AMT device activated and connected to your MPS server. Information on obtaining a GUID can be found [here](../Topics/guids.md). |
-| **mpsServer** | Replace the *localhost* with the IP Address of your MPS Server |
+| **mpsServer** | Replace the *localhost* with the IP Address of your Development Device or MPS Server. Default MPS Server port is 3000. |
 
 
 ``` javascript hl_lines="13 14"

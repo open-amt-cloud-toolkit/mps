@@ -18,6 +18,8 @@ By the end of this guide, you will have gained experience using these three core
 2. **Remote Provisioning Server (RPS)** - A microservice that activates Intel&reg; AMT-based platforms using pre-defined profiles and connects them to the MPS for manageability use cases
 3. **Remote Provisioning Client (RPC)** - A lightweight client application that communicates with the RPS server to activate Intel&reg; AMT
 
+In addition to the three core modules, ActivEdge provides extras such as tutorials, including a UI Toolkit tutorial. The UI Toolkit allows developers to add manageability features to a console with prebuilt React components. 
+
 ## ActivEdge Setup
 
 ### Build and Deploy Microservices Locally

@@ -1,4 +1,14 @@
-This tutorial shows how to construct an Admin method API call for [*AllDevices*](../APIs/MPSmethods/alldevices.md).  This guide walks through how to specifically implement it using Node.js.
+This tutorial shows how to construct an Admin method API call for [*ConnectedDevices*](../APIs/MPSmethods/connecteddevices.md). The ConnectedDevices method will retrieve a device's GUID and other information for all devices connected to the MPS server.
+
+This guide walks through how to specifically implement it using Node.js.
+
+This template can also be modified for other MPS Rest APIs by changing the following values:
+
+- method
+- payload
+- path 
+
+>**Note:** View all available MPS methods [here](../APIs/indexMPS.md).
 
 ## What You'll Need
 
@@ -40,18 +50,21 @@ Follow the steps in these sections sequentially:
 
 >**Note:** The AllDevices method uses the **admin** path (line 11). MPS methods use either **admin** or **amt** as the path. View the difference and all MPS methods [here](../APIs/indexMPS.md).
 
-``` javascript hl_lines="9"
+``` javascript hl_lines="12"
 const https = require('https')
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0
 let postData = {
-'method': 'AllDevices',
-'payload': {}
+'method': 'ConnectedDevices',
+'payload': {
+    //Some methods such as PowerAction require a payload. 
+    //This one does not as it just retrieves data of all connected devices.
+}
 }
 
 const options = {
-              hostname: '[MPS-Server-IP-Address]', //Your Development Device's IP or MPS Server IP
+              hostname: 'MPS-Server-IP-Address', //Your Development Device's IP or MPS Server IP
               port: '3000',
-              path: '/admin',
+              path: '/admin', //Supports admin and amt paths. See MPS API Docs for which to use for other different methods.
               method: 'POST',
               headers: {
               'Content-Type': 'application/json'
@@ -94,7 +107,7 @@ node SampleAPI.js
 
 Example Response:
 
->**Important Note:** This is one way to retrieve a device's GUID in the *host* field.  For **amt** path methods (i.e. Power Actions, Audit Logs, etc), the device GUID is **required** as part of the POST data. Other ways to retrieve a GUID can be found [here](../Topics/guids.md).
+**Important Note:** This is one way to retrieve a device's GUID in the *host* field.  **For *amt* path methods (i.e. Power Actions, Audit Logs, etc), the device GUID is *required* as part of the POST data.** Save this value if you want to try other MPS methods. Other ways to retrieve a GUID can be found [here](../Topics/guids.md).
 
 ``` json
 [{
@@ -104,20 +117,6 @@ Example Response:
              "icon": 1,
              "conn": 1,
              "name": "d12428be-9fa1-4226-9784-54b2038beab6"
-}, {
-             "name": "Win7-machine",
-             "mpsuser": "standalone",
-             "amtuser": "admin",
-             "host": "c8429e33-d032-49d3-80e7-d45ddf046fff",
-             "icon": 1,
-             "conn": 0
-}, {
-             "name": "Win7-machine",
-             "mpsuser": "standalone",
-             "amtuser": "admin",
-             "host": "12345678-9abc-def1-2345-123456789000",
-             "icon": 1,
-             "conn": 0
 }]
 ```
 
@@ -125,6 +124,6 @@ Example Response:
 
 The sample Node code snippet can be adapted for other MPS/RPS methods.  Find out what else you can do via the links below.
 
-- View other available MPS Methods [here](../APIs/indexMPS.md).
+- View other available MPS Methods to manage a device, [here](../APIs/indexMPS.md).
 
-- View other available RPS Methods [here](../APIs/indexRPS.md).
+- View other available RPS Methods for server configuration and provisioning, [here](../APIs/indexRPS.md).

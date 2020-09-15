@@ -25,7 +25,6 @@ This tutorial explains the steps to deploy Management Presence Server (MPS) and 
   - Create a subscription for Microsoft Azure. 
   - Download [Microsoft Azure Command Line Interface (CLI)](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?view=azure-cli-latest).
   - Test the Microsoft Azure [CLI login](https://docs.microsoft.com/en-us/cli/azure/get-started-with-azure-cli?view=azure-cli-latest).
-  - [BW: Do you have anything to add?]
 
 - [Docker Hub Account](https://hub.docker.com/signup/)
 

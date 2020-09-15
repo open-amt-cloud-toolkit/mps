@@ -1,5 +1,3 @@
-## ACM Activation
-
 Intel AMT&reg; devices are capable of being activated into two modes:
 
 - Client Control Mode: This mode limits some of Intel AMT functionality, reflecting the lower level of trust.
@@ -31,11 +29,50 @@ Intel AMT&reg; devices are capable of being activated into two modes:
 
 <br>
 
+>**Important Note:** This tutorial assumes both the MPS and RPS servers were successfully set up and running. If not, please refer to [Get Started with Local Microservices](../Local/overview.md) to begin.
+
+### Create a Profile
+
+Profiles provide configuration information to the AMT Firmware during the activation process with the Remote Provisioning Client (RPC).
+
+!!! note "Production Environment"
+        In a production environment, devices are typically activated in ACM mode.  ACM mode enables KVM access to devices without user consent. In most IoT use cases, edge devices such as digital signage or kiosks may not have immediate access to it or employees nearby.  ACM mode proves immensely helpful in these scenarios.
+
+<br>
+
+1\. Select the Profiles tab from the menu on the left.
+
+2\. Under the Profiles tab, click New in the top-right corner to create a profile.
+
+3\. Specify a Profile Name of your choice.
+
+4\. Uncheck Generate Random Password.
+
+!!! note "Production Environment"
+        In a production environment, you typically generate a random password for each AMT device to create a stronger, more secure AMT environment.
+
+5\. Provide a strong AMT Password. 
+    
+>**Note:** This password must meet standard, 'strong' password requirements:    
+>> - 8 to 32 characters
+>> - One uppercase, one lowercase, one numerical digit, one special character
+
+6\. Select the name of the CIRA Config you created previously from the drop-down menu.
+
+7\. Under Activation, select 'Admin Control Mode' from the dropdown menu.
+
+>**Note:** If you'd prefer to activate the device into Admin Control Mode (ACM), click [here](../Tutorials/acmActivation.md).
+
+8\. Click Create.
+
+
+[![RPS](../assets/images/RPS_CreateProfile_ACM.png)](../assets/images/RPS_CreateProfile_ACM.png)
+
+<br>
+
 ### Create a Domain
 
->**Important Note:** This tutorial assumes both the MPS and RPS servers were successfully set up and running. If not, please refer to [Get Started with Microservices Locally](../Local/overview.md) to begin.
-
-In addition to creating a CIRA Config and a Profile. A Domain **must** be created.
+In addition to creating a CIRA Config and a Profile. A Domain **must** be created to activate a device into Admin Control Mode.
 
 1\. Select the Domains tab from the left-hand menu.
 
@@ -55,8 +92,13 @@ In addition to creating a CIRA Config and a Profile. A Domain **must** be create
 
 7\. Click Create.
 
-After successfully creating the domain, continue with the activation process by building and running the Remote Provisioning Client. For information and steps on how to build and run RPC, [continue here](../General/buildRPC.md).
+After successfully creating the domain, continue with the activation process by building and running the Remote Provisioning Client.
 
 Example Domain:
     
 [![RPS Domain Creation](../assets/images/RPS_CreateDomain.png)](../assets/images/RPS_CreateDomain.png)
+
+<br>
+
+## Next Up
+[Build RPC on a Managed Device](../General/buildRPC.md)
