@@ -2,7 +2,7 @@
 
 Intel® vPro™ Platforms offer hardware-enhanced security features and remote manageability, also known as out-of-band manageability, using Intel® Active Management Technology (Intel&reg; AMT). With Intel&reg; AMT, administrators remotely manage, repair, and update network assets, such as systems and edge devices. In the event that a network asset is powered off or the operating system is unavailable, administrators can power on the asset. 
 
-ActivEdge provides modular microservices and libraries for integration of hardware provisioning, out-of-band manageability, and other Intel&reg; AMT features with both new and existing management consoles, software solutions, and more. As an open source implementation, ActivEdge makes it easier for IT departments and ISVs to adopt, integrate, and customize out-of-band management solutions for Intel® vPro™ Platforms.
+ActivEdge provides open-source, modular microservices and libraries for integration of hardware provisioning, out-of-band manageability, and other Intel&reg; AMT features with both new and existing management consoles, software solutions, and more. As an open source implementation, ActivEdge makes it easier for IT departments and ISVs to adopt, integrate, and customize out-of-band management solutions for Intel® vPro™ Platforms.
 
 Read more about Intel&reg; AMT features and capabilities [here](https://software.intel.com/content/www/us/en/develop/topics/iot/hardware/vpro-platform-retail.html).
 
@@ -10,7 +10,7 @@ Read more about Intel&reg; AMT features and capabilities [here](https://software
 
 By the end of this guide, you will have gained experience using these three core modules, shown in Figure 1:
 
-![ActivEdgeComponentsLarge.png](assets/images/ActivEdgeComponentsLarge.png)
+![assets/images/ActivEdgeComponentsLarge.png](assets/images/ActivEdgeComponentsLarge.png)
 
 **Figure 1: ActivEdge Components**
 
@@ -25,7 +25,9 @@ In addition to the three core modules, ActivEdge provides extras such as tutoria
 ### Build and Deploy Microservices Locally
 If unfamiliar with Docker, choose this setup option to accomplish a manual, local installation of microservices. 
 
-[Get Started with Local Microservices](Local/overview.md){: .md-button .md-button--primary }
+<!-- [Get Started with Local Microservices](Local/overview.md){: .md-button .md-button--primary } -->
+
+[![Local Get Started](assets/images/Local_Button.png)](Local/overview.md)
 
 **Estimated completion time:** Approximately 15 minutes
 
@@ -33,7 +35,9 @@ If unfamiliar with Docker, choose this setup option to accomplish a manual, loca
 
 If familiar with Docker, choose this setup option to install microservices as local Docker images. This option is an especially good choice for development systems with Docker already installed.
 
-[Get Started with Microservices as Docker Images](Docker/overview.md){: .md-button .md-button--primary }
+<!-- [Get Started with Microservices as Docker Images](Docker/overview.md){: .md-button .md-button--primary } -->
+
+[![Docker Get Started](assets/images/Docker_Button.png)](Docker/overview.md)
 
 **Estimated completion time**: Approximately 15 minutes
 

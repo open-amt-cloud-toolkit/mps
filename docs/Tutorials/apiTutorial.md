@@ -48,13 +48,16 @@ Follow the steps in these sections sequentially:
 
 4\. Replace *MPS-Server-IP-Address* with the IP Address of your development device or MPS server.
 
->**Note:** The AllDevices method uses the **admin** path (line 11). MPS methods use either **admin** or **amt** as the path. View the difference and all MPS methods [here](../APIs/indexMPS.md).
+>**Note:** The ConnectedDevices method uses the **admin** path. MPS methods use either **admin** or **amt** as the path. View the difference and all MPS methods [here](../APIs/indexMPS.md).
+
+!!! note "Production Environment"
+        By running MPS in dev mode, authentication is disabled for testing and demonstration purposes. In production, the MPS certificate should be signed by a CA. An API Key value should also be given in the headers of the API request.
 
 ``` javascript hl_lines="12"
 const https = require('https')
-process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0 //For testing with self-signed certs, remove for production
 let postData = {
-'method': 'ConnectedDevices',
+'method': 'ConnectedDevices', //Retrieve all Devices Connected to MPS
 'payload': {
     //Some methods such as PowerAction require a payload. 
     //This one does not as it just retrieves data of all connected devices.
@@ -67,7 +70,8 @@ const options = {
               path: '/admin', //Supports admin and amt paths. See MPS API Docs for which to use for other different methods.
               method: 'POST',
               headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              'X-MPS-API-KEY': 'APIKEYFORMPS123!'
               }
 }
 
@@ -110,17 +114,29 @@ Example Response:
 **Important Note:** This is one way to retrieve a device's GUID in the *host* field.  **For *amt* path methods (i.e. Power Actions, Audit Logs, etc), the device GUID is *required* as part of the POST data.** Save this value if you want to try other MPS methods. Other ways to retrieve a GUID can be found [here](../Topics/guids.md).
 
 ``` json
+
+//Command Prompt Output
+response :  [{"host":"d12428be-9fa1-4226-9784-54b2038beab6",
+"amtuser":"admin","mpsuser":"standalone","icon":1,"conn":1,
+"name":"d12428be-9fa1-4226-9784-54b2038beab6"}  ]
+
+
+
+//JSON Pretty Print Example 
 [{
-             "host": "d12428be-9fa1-4226-9784-54b2038beab6",
-             "amtuser": "admin",
-             "mpsuser": "standalone",
-             "icon": 1,
-             "conn": 1,
-             "name": "d12428be-9fa1-4226-9784-54b2038beab6"
+    "host": "d12428be-9fa1-4226-9784-54b2038beab6",
+    "amtuser": "admin",
+    "mpsuser": "standalone",
+    "icon": 1,
+    "conn": 1,
+    "name": "d12428be-9fa1-4226-9784-54b2038beab6"
 }]
+
 ```
 
 <br>
+
+## Other Methods
 
 The sample Node code snippet can be adapted for other MPS/RPS methods.  Find out what else you can do via the links below.
 

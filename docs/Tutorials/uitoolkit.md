@@ -48,29 +48,13 @@ The React app can be created in any preferred development directory. The MPS can
 ```
 npx create-react-app my-app
 cd my-app
-npm start
 ```
-After the npx command above, the terminal message "Happy hacking!" indicates success.
-
-3\. By default, React apps run on port 3000. If port 3000 is already used by the MPS server or any other app, you'll be prompted to use another port. If this happens, enter 'Y'
-
-Sample Output:
-
-```
-You can now view my-app in the browser.
-Local: http://localhost:3001
-On Your Network: http://172.16.17.4:3001
-```
-
-4\. By default, React launches in your machine's default browser. However for best experience, navigate to the page using a Chrome web browser.
-
-5\. Now that we know it is working, press **Ctrl + C** twice and type 'Y' in the terminal window to exit the application.
-
-<br>
 
 ## Add UI Toolkit
 
-1\. To access UI controls in the React app, modify the **may-app/package.json** file with a preferred editor, such as Visual Studio Code or Notepad. In dependencies, place a comma after the last line and add the following line:
+1\. To access UI controls in the React app, open the **./my-app/package.json** file with a preferred editor, such as Visual Studio Code or Notepad.
+
+2\. Modify the dependencies by placing a comma at the end of the last line (i.e.,"react-scripts": "3.4.3",) and add the following line:
 
 ```
 "ui-toolkit": "git+https://github.com/open-amt-cloud-toolkit/ui-toolkit.git#ActivEdge"
@@ -78,14 +62,14 @@ On Your Network: http://172.16.17.4:3001
 
 2\. Save and close the file.
 
-3\. In a Command Prompt or Terminal, navigate to the root directory of the React app, **./my-app**.
-
-4\. Run the following commands to install the ui-toolkit to node-modules and run the web UI locally:
+3\. Run the following commands to install the ui-toolkit to node-modules and run the web UI locally:
 
 ```
 npm install
 npm start
 ```
+
+4\. By default, React apps run on port 3000. If port 3000 is already used by the MPS server or any other application, you'll be prompted to use another port. If this happens, enter 'Y'.
 
 Sample Output:
 
@@ -95,7 +79,10 @@ Local: http://localhost:3001
 On Your Network: http://172.16.17.4:3001
 ```
 
+5\. By default, React launches in your machine's default browser. However for best experience, navigate to the page using a Chrome web browser.
+
 >**Note:** You do not need to stop the application again. It will update and refresh automatically as you make code changes.
+
 
 <br>
 
@@ -150,23 +137,7 @@ export default App;
 
 4\. Save and close the file.
 
-5\. Navigate back to the root directory of the React app, **./my-app**.
-
-6\. Start the React app:
-
-```
-npm start
-```
-
-Sample Output:
-
-```
-You can now view my-app in the browser.
-Local: http://localhost:3001
-On Your Network: http://172.16.17.4:3001
-```
-
-7\. If the React app does not pop-up in a Chrome browser, open Chrome and navigate to the given URLs from your successful output.
+5\. If the React app is still open in the browser and hasn't updated, refresh the page. If not already open, open Chrome and navigate to the given URLs from your successful output. By default it is `https://localhost:3001` if MPS is running on Port 3000 already.
 
 <br>
 

@@ -22,10 +22,10 @@ Navigate to a directory of your choice for development.
 
 ### Clone MPS
 
-1\.Clone the MPS repository.
+1\. Clone the MPS repository.
 
 ```
-git clone https://github.com/open-amt-cloud-toolkit/mps.git mps
+git clone https://github.com/open-amt-cloud-toolkit/mps.git
 ```
 
 2\. Checkout the ActivEdge branch.
@@ -37,17 +37,10 @@ git checkout ActivEdge
 
 ### Clone RPS
 
-1\.Clone the RPS repository.
+1\.Clone the RPS repository to the same parent directory as MPS.
 
 ```
-git clone https://github.com/open-amt-cloud-toolkit/rps.git rps
-```
-
-2\. Checkout the ActivEdge branch.
-
-```
-cd rps
-git checkout ActivEdge
+git clone https://github.com/open-amt-cloud-toolkit/rps.git
 ```
 
 After the `git clone` commands complete, the parent directory will contain an MPS and RPS folder.
@@ -57,6 +50,14 @@ After the `git clone` commands complete, the parent directory will contain an MP
  ┣ 📂mps
  ┗ 📂rps
 ```
+
+2\. Checkout the ActivEdge branch.
+
+```
+cd rps
+git checkout ActivEdge
+```
+
 
 <br>
 
@@ -197,4 +198,4 @@ Check the logs to ensure the MPS and RPS services are properly handling the traf
 <br>
 
 ## Next up
-[Configure RPS](../General/configureRPS.md)
+[Login to RPS](../General/loginToRPS.md)

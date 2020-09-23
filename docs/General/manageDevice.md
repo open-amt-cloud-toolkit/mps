@@ -15,7 +15,7 @@ Estimated completion time: 5 minutes
 | **Username**| standalone |
 | **Password**| G@ppm0ym |
 
-3\. After logging in, click on Management Presence Server.
+3\. After logging in, click on Management Presence Server. If already logged in, click the Home icon in the top left corner.
 
 [![WebUI](../assets/images/WebUI_HomeMPS.png)](../assets/images/WebUI_HomeMPS.png)
 
@@ -23,7 +23,7 @@ Estimated completion time: 5 minutes
 
 4\. Click the devices tab from the menu on the left, or click *Connected* in the default homepage.
 
->**Note:** If the activated device is not listed or if it is listed as unconnected, unplug the power of the AMT device and boot the machine. After succesfully restarting, refresh the WebUI to see if the *Status* changes to *Connected* and turns green.
+>**Note:** If the activated device is not listed or if it is listed as unconnected, unplug and then plug back in the power of the AMT device. After succesfully restarting the device, refresh the WebUI to see if the *Status* changes to *Connected* and turns green.
 
 [![mps](../assets/images/MPS_ConnectedDevice.png)](../assets/images/MPS_ConnectedDevice.png)
 
@@ -39,11 +39,13 @@ Estimated completion time: 5 minutes
 
 <br>
 
-Next steps: 
+## Next steps
 
-- Learn how to construct your own API call to manage a device [here](../Tutorials/apiTutorial.md)
-- Find out about the ActivEdge [UI Toolkit](../Tutorials/uitoolkit.md) and more under Tutorials.
-- Read about security recommendations and other ActivEdge features under Topics.
+Explore:
+
+- [REST API Calls to a Managed Device](../Tutorials/apiTutorial.md)
+- [The ActivEdge UI Toolkit](../Tutorials/uitoolkit.md) 
+- [Security and Hardening Considerations](../security.md)
 
 <br>
 

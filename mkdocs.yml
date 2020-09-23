@@ -14,34 +14,38 @@ theme:
 # Page tree
 nav:
   - Home: index.md
-  - Build and Deploy Microservices Locally:
+  - MPS & RPS Local Setup:
     - Overview: Local/overview.md
     - Install MPS Locally: Local/installMPS.md
     - Install RPS Locally: Local/installRPS.md
-  - Build and Deploy Microservices with Local Docker* Images:
+  - MPS & RPS Docker* Images:
     - Overview: Docker/overview.md
     - Build Docker* Images: Docker/dockerLocal.md
-  - Configure RPS and Manage a Device with MPS:
-    - Configure RPS: General/configureRPS.md
-    - Build RPC on a Managed Device: General/buildRPC.md
-    - Manage Device: General/manageDevice.md
+  - RPS Configuration:
+    - Login to RPS: General/loginToRPS.md
+    - Create a CIRA Config: General/createCIRAConfig.md
+    - Create a Profile with CCM: General/createProfileCCM.md
+    - Create a Profile with ACM: General/createProfileACM.md
+  - RPC on a Managed Device:
+    - Build & Run RPC: General/buildRPC.md
+  - MPS Device Management:
+    - See Connected Devices: General/manageDevice.md
   - Tutorials:
     - Docker Images on the Cloud: Docker/dockerCloud.md
     - Create Consoles with the UI Toolkit: Tutorials/uitoolkit.md
     - Construct a Rest API Call: Tutorials/apiTutorial.md
-    - Activate in ACM Mode: Tutorials/acmActivation.md
     - Add a Database: Tutorials/addDatabase.md
     - Add Vault Storage: Tutorials/addVault.md
     - Use an Allowlist: Tutorials/allowlist.md
   - APIs:
     - MPS Methods: APIs/indexMPS.md
     - RPS Methods: APIs/indexRPS.md
-  - Topics:
+  - Security: security.md
+  - ActivEdge Topics:
     - Static and Dynamic IPs: Topics/misc.md
     - GUIDs in Intel AMT: Topics/guids.md
     - Manually Configure and Unprovision: Topics/mebx.md
     - Proxies: Topics/proxies.md
-    - Security Information: Topics/security.md
   - Release notes: release-notes.md
   - License: license.md
 

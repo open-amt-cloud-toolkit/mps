@@ -1,6 +1,6 @@
 # PowerCapabilities
 
-This AMT method returns a list of out-of-band power actions are available for the specified device. You can invoke these actions with the [PowerAction](./APImethods/MPSmethods/poweraction.md) method.
+This AMT method returns a list of out-of-band power actions are available for the specified device. You can invoke these actions with the [PowerAction](../MPSmethods/poweraction.md) method.
 
 Click [here](types.md) for supported input and output types.
 
@@ -11,6 +11,8 @@ Click [here](types.md) for supported input and output types.
 >**Note:** The following code block is an example of what would be the data sent as part of the POST request. 
 
 ``` yaml
+//amt method
+
 {  
    "method":"PowerCapabilities",
    "payload":{  

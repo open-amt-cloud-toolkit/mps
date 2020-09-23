@@ -9,6 +9,8 @@ Use this AMT method to enable or disable Intel&reg; AMT features such as KVM, SO
 >**Note:** The following code block is an example of what would be the data sent as part of the POST request. 
 
 ``` yaml
+//amt method
+
 {  
    "method":"SetAMTFeatures",
    "payload":{  

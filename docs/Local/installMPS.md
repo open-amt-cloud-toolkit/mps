@@ -6,19 +6,13 @@ The image below illustrates how the Intel&reg; AMT device connects to MPS for re
 
 ### Clone the Repository
 
-Navigate to a directory of your choice for development.
+1\. Open a Command Prompt or Terminal and navigate to a directory of your choice for development.
 
-1\. Clone the MPS repository and navigate to it with the following commands:
+2\. Clone the MPS repository and navigate to it with the following commands:
 
 ```
-git clone https://github.com/open-amt-cloud-toolkit/mps.git
+git clone --branch ActivEdge https://github.com/open-amt-cloud-toolkit/mps.git
 cd mps
-```
-
-2\. Checkout the ActivEdge branch.
-
-```
-git checkout ActivEdge
 ```
 
 ### Modify MPS Configuration File
@@ -29,8 +23,8 @@ git checkout ActivEdge
 
 | Field       |  Change to    | Description |
 | :----------- | :-------------- | :- |
-| **use_allowlist** | false |A value of false disables the allowlist functionaliy. For information about allowlist, see the allowlist [tutorial.](../Tutorials/allowlist.md) |
-| **commonName** | Development device's IP address. For this guide, you **cannot** use localhost | This address will be used in self-signed certificate. It may be an IP address or FQDN in real world deployment|
+| **use_allowlist** | false |A value of false disables the allowlist functionaliy. For information about allowlist, see the allowlist [tutorial](../Tutorials/allowlist.md) |
+| **common_name** | Development device's IP address. <br> **Note:** For this guide, you **cannot** use localhost because the managed device would be unable to reach the MPS and RPS servers. | For this guide, the address will be used in a self-signed certificate. It may be an IP address or FQDN in real world deployment.|
 
 
 3\. Save and close the file.
@@ -95,7 +89,7 @@ cd webui/src
 
 2\. Open the app.config.js file using a text editor to configure IP Address settings.
 
-3\. Set both the *rpsServerIP* and *serverIP* to your development device's IP Address. Save and close the file.
+3\. Replace the localhost for both *rpsServerIP* and *serverIP* with your development device's IP Address. Save and close the file.
 
 Example:
 
@@ -112,7 +106,9 @@ Example:
 };
 ```
 
-4\. Navigate back to the MPS root directory.
+<br>
+
+4\. Navigate back to the `./mps` root directory.
 
 
 5\. Run the install commands to install all required dependencies.
@@ -132,7 +128,7 @@ npm run dev
 
 [![mps](../assets/images/MPS_npmrundev.png)](../assets/images/MPS_npmrundev.png)
 
->**Note:** Because the *generateCertificates* field was set to True in the .mpsrc file, certificates will be generated and stored in the ../mps/private directory.
+>**Note:** Because the *generateCertificates* field is set to true in the .mpsrc file, certificates will be generated and stored in the ../mps/private directory.
 
 <br>
 

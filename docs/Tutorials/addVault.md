@@ -1,9 +1,3 @@
-## Create Vault Storage
-
-<span style="color:yellow"> **BW Comment**: Do we walk through a local or a cloud vault deployment?</span>
-
-**Comment:** This example seemes to have a Kubernetes dependency; OK to position here? Also, add intro paragraph. I rewrote this slightly to be non-Windows specific.
-
 ### Install Vault
 
 1. Create a folder in a directory of your choice, and browse to it using a Command Prompt or terminal window (as Administrator, if on Windows).

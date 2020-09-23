@@ -14,33 +14,27 @@ The Remote Provisioning Client (RPC) communicates with the Managability Engine I
 
 [![RPC](../assets/images/RPC_Overview.png)](../assets/images/RPC_Overview.png)
 
-### Windows*
+## Windows*
 
-**Important: Perform the following steps on the Intel&reg; AMT device. Enter the commands in the following sections to create RPC on Windows.**
+**Important: Perform the following steps on the managed (Intel&reg; AMT) device. Enter the commands in the following sections to create RPC on Windows.**
 
 
-#### Clone the Repository
+### Clone the Repository
 
-1\. Open 'x64 Native Tools Command Prompt for VS 20XX' as Administrator.  **This is NOT a regular Windows Command Prompt.**
+1\. Open 'x64 Native Tools Command Prompt for VS 20XX' as Administrator on the managed device.  **This is NOT a regular Windows Command Prompt.**  This specific tool is used for compiling the RPC executable.
 
 >**Note:** You can find this command prompt in the Start Menu by searching for 'x64 Native Tools Command Prompt for VS 20XX'
 
-2\.Navigate to a directory of your choice to clone and build RPC.
+2\. Navigate to a directory of your choice to clone and build RPC.
 
 3\. Clone the RPC repository.
 
 ```
-git clone https://github.com/open-amt-cloud-toolkit/rpc.git
+git clone --branch ActivEdge https://github.com/open-amt-cloud-toolkit/rpc.git
 cd rpc
 ```
 
-4\. Checkout the ActivEdge branch.
-
-```
-git checkout ActivEdge
-```
-
-#### Build VCPKG
+### Build VCPKG
 
 
 1\. In the rpc directory, clone the Vcpkg repository. Vcpkg is a C/C++ Library Manager for Windows that was created by Microsoft.  Find out more about it [here](https://github.com/microsoft/vcpkg).
@@ -62,7 +56,7 @@ bootstrap-vcpkg.bat
 vcpkg integrate install
 ```
 
-#### Build CPPRestSDK
+### Build CPPRestSDK
 
 4\. Make sure you are still in the ../vcpkg directory.
 
@@ -74,7 +68,7 @@ vcpkg integrate install
 vcpkg install cpprestsdk:x64-windows-static
 ```
 
-#### Build RPC
+### Build RPC
 
 6\. Change to the rpc directory.
 
@@ -89,22 +83,27 @@ mkdir build
 cd build
 ```
 
-8\. Build rpc.exe using CMake.
+8\. Run the following commands to build rpc.exe.
 
 ```
 cmake .. -DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake
+```
+
+9\. Build rpc.exe using CMake.
+
+```
 cmake --build . --config Debug
 ```
 
-9\. Navigate to the Debug directory. In this directory, you should see rpc.exe.
+10\. Navigate to the Debug directory. In this directory, you should see rpc.exe.
 
 ```
 cd Debug
 ```
 
-#### Run RPC to Activate and Connect the AMT Device
+### Run RPC to Activate and Connect the AMT Device
 
-1\. Run RPC with the following command to activate and configure Intel&reg; AMT.
+1\. Run RPC with the following command to activate and configure Intel&reg; AMT. It will take 1-2 minutes to finish provisioning the device.
 
 - Replace [Development-IP-Address] with the development device's IP address, where the MPS and RPS servers are running
 - Replace [profile-name] with your created profile from the Web Server.
@@ -126,10 +125,23 @@ rpc.exe -u wss://[Development-IP-Address]:8080 -c "-t activate --profile [profil
 >| **Username**| standalone |
 >| **Password**| G@ppm0ym |
 
+<br>
+
+Example Success Output:
+
+[![RPC Success](../assets/images/RPC_Success.png)](../assets/images/RPC_Success.png)
 
 <br>
 
-### Linux*
+## Next up
+
+After successfully building RPC on Windows and activating the managed device, continue to MPS Device Management. Otherwise, view below for instructions on building RPC on Linux.
+
+Continue here: [MPS Device Management](../General/manageDevice.md)
+
+<br>
+
+## Linux*
 
 Follow these instructions to create RPC on Linux&ast;.
 
@@ -140,22 +152,11 @@ Follow these instructions to create RPC on Linux&ast;.
 2\. Clone the RPC Repository.
 
 ```
-git clone https://github.com/open-amt-cloud-toolkit/rpc.git
-```
-
-3\. Change to the rpc directory.
-
-```
+git clone --branch ActivEdge https://github.com/open-amt-cloud-toolkit/rpc.git
 cd rpc
 ```
 
-4\. Checkout the ActivEdge branch
-
-```
-git checkout ActivEdge
-```
-
-#### Build RPC
+### Build RPC
 
 1\. Build the required dependencies; enter the following command:
 
@@ -179,7 +180,7 @@ cmake -DCMAKE_BUILD_TYPE=Debug ..
 cmake --build .
 ```
 
-#### Run RPC to Activate and Connect the AMT Device
+### Run RPC to Activate and Connect the AMT Device
 
 4\. Run RPC with the following command to activate and configure Intel&reg; AMT.
 
@@ -187,7 +188,7 @@ cmake --build .
 - Replace [profile-name] with your created profile from the Web Server.
 
 ```
-sudo ./rpc -u wss://[Development-IP-Address]:8080 -c "-t activate --profile [profile-name]
+sudo ./rpc -u wss://[Development-IP-Address]:8080 -c "-t activate --profile [profile-name]"
 ```
 
 !!! note "Production Environment"
@@ -206,4 +207,5 @@ sudo ./rpc -u wss://[Development-IP-Address]:8080 -c "-t activate --profile [pro
 <br>
 
 ## Next up
-[Manage Device](../General/manageDevice.md)
+
+[MPS Device Management](../General/manageDevice.md)

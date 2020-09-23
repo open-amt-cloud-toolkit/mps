@@ -1,13 +1,13 @@
 Intel AMT&reg; devices are capable of being activated into two modes:
 
+- Admin Control Mode: In this mode, there are no limitations to Intel AMT functionality. This reflects the higher level of trust associated with these setup methods.
+
 - Client Control Mode: This mode limits some of Intel AMT functionality, reflecting the lower level of trust.
 
     Features requiring User Consent:
-    
-      - Keyboard, Video, Mouse (KVM) Control
-      - IDE-Redirection for sharing and mounting images remotely
 
-- Admin Control Mode: In this mode, there are no limitations to Intel AMT functionality. This reflects the higher level of trust associated with these setup methods.
+    - Keyboard, Video, Mouse (KVM) Control
+    - IDE-Redirection for sharing and mounting images remotely
 
 ### What You'll Need
 
@@ -29,7 +29,7 @@ Intel AMT&reg; devices are capable of being activated into two modes:
 
 <br>
 
->**Important Note:** This tutorial assumes both the MPS and RPS servers were successfully set up and running. If not, please refer to [Get Started with Local Microservices](../Local/overview.md) to begin.
+
 
 ### Create a Profile
 
@@ -53,15 +53,15 @@ Profiles provide configuration information to the AMT Firmware during the activa
 
 5\. Provide a strong AMT Password. 
     
+
 >**Note:** This password must meet standard, 'strong' password requirements:    
+>
 >> - 8 to 32 characters
 >> - One uppercase, one lowercase, one numerical digit, one special character
 
 6\. Select the name of the CIRA Config you created previously from the drop-down menu.
 
 7\. Under Activation, select 'Admin Control Mode' from the dropdown menu.
-
->**Note:** If you'd prefer to activate the device into Admin Control Mode (ACM), click [here](../Tutorials/acmActivation.md).
 
 8\. Click Create.
 
@@ -105,4 +105,5 @@ After successfully creating the domain, continue with the activation process by 
 <br>
 
 ## Next Up
+
 [Build RPC on a Managed Device](../General/buildRPC.md)

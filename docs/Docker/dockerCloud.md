@@ -46,17 +46,17 @@ This tutorial explains the steps to deploy Management Presence Server (MPS) and 
 
 1. Login to Microsoft Azure with the Azure CLI using the **az** command. Type the command in a Windows Command Prompt or Azure PowerShell.
 
-   ```
-   az login
-   ```
+```
+az login
+```
 
-   This command will invoke the default browser, which displays a login screen.
+This command will invoke the default browser, which displays a login screen.
 
 2. Login to the Docker hub account with the Docker ID and password. [KD: Please place pix here.]
 
-   ```
-   docker login --username [your Docker ID] --password [your Docker Hub Password]
-   ```
+```
+docker login --username [your Docker ID] --password [your Docker Hub Password]
+```
 
 ### Build MPS
 Build the MPS and RPS Docker images from their respective directories with the **build -t** command, giving the image a name and tag:
@@ -69,77 +69,75 @@ Build the MPS and RPS Docker images from their respective directories with the *
 
 3. Navigate to the MPS folder and build the Docker image. Execute a build and push for MPS. 
 
-   The **docker push** command with the -t or --tag option enables the naming and tagging of a build: 
+The **docker push** command with the -t or --tag option enables the naming and tagging of a build: 
 
-   [docker push -t [docker-id][name:tag]](**https://docs.docker.com/engine/reference/commandline/push/**)
+[docker push -t [docker-id][name:tag]](**https://docs.docker.com/engine/reference/commandline/push/**)
 
-   ```
-   cd parent directory\mps
-   docker build . -t  f30911230045\mps-microservice:v1
-   docker push f30911230045\mps-microservice:v1
-   ```
+```
+cd parent directory\mps
+docker build . -t  f30911230045\mps-microservice:v1
+docker push f30911230045\mps-microservice:v1
+```
 
 ### Build RPS
 
 4. Navigate to the RPS folder and build the Docker image. Execute a build and push for RPS. 
 
-   ```
-   cd ..\rps
-   docker build . -t  f30911230032\rps-microservice:v1
-   docker push f30911230032\rps-microservice:v1
-   ```
+```
+cd ..\rps
+docker build . -t  f30911230032\rps-microservice:v1
+docker push f30911230032\rps-microservice:v1
+```
 
 ## Deploy 
 1. After building the new MPS and RPS images, navigate to mps\scripts\docker-compose folder and use **xcopy** to copy the .env.template file to .env. 
 
-   The environment file .env.template contains the MPS and RPS environment variables to pass to the Docker engine.
+The environment file .env.template contains the MPS and RPS environment variables to pass to the Docker engine.
 
-   ```
-   cd mps\scripts\docker-compose
-   xcopy /Y .env.template .env
-   ```
+```
+cd mps\scripts\docker-compose
+xcopy /Y .env.template .env
+```
 
-   > **NOTE: Preserve the .env.template file.**
-   >
-   > This file is very important to maintain. Always copy to a new file. 
+> **NOTE: Preserve the .env.template file.**
+>
+> This file is very important to maintain. Always copy to a new file. 
 
 2. Set the image-related environment variables within the .env file:
 
-   MPS_IMAGE=[name:tag from the build step]
+MPS_IMAGE=[name:tag from the build step]
 
-   RPS_IMAGE=[name:tag from the build step]
+RPS_IMAGE=[name:tag from the build step]
 
-   ```
-   MPS_IMAGE=mps-microservice:v1
-   RPS_IMAGE=rps-microservice:v2
-   ```
+```
+MPS_IMAGE=mps-microservice:v1
+RPS_IMAGE=rps-microservice:v2
+```
 
 3. Set the proper proxy values if behind a proxy.
 
-   set HTTP_PROXY=http://[your-proxy-server]:[your-proxy-server-port]
-   set HTTPS_PROXY=http://[your-proxy-server]:[your-proxy-server-port]
+set HTTP_PROXY=http://[your-proxy-server]:[your-proxy-server-port]
+set HTTPS_PROXY=http://[your-proxy-server]:[your-proxy-server-port]
 
-   ```
-   set HTTP_PROXY=http://10.3.4.52:8080
-   set HTTPS_PROXY=http://10.3.4.52:8080
-   ```
+```
+set HTTP_PROXY=http://10.3.4.52:8080
+set HTTPS_PROXY=http://10.3.4.52:8080
+```
 
-   > **NOTE:**  If using a private Docker hub, set the password variable.
-   >
-   > DOCKER_LOGIN_PASSWORD=[your-docker-login-password
+> **NOTE:**  If using a private Docker hub, set the password variable.
+>
+> DOCKER_LOGIN_PASSWORD=[your-docker-login-password
 
 4. Run the oact-stack-azure-vm.bat file. This file: 
 
-   - Installs the Docker on the Microsoft Azure VM
-
-   - Runs the **docker-compose** up command. 
-
-   - Copies the .env-template file to .env.
+- Installs the Docker on the Microsoft Azure VM
+- Runs the **docker-compose** up command. 
+- Copies the .env-template file to .env.
 
 
-     oact-stack-azure-vm.bat [your-solution-name] [region (e.g.,: westus)] [MPS-IMAGE] [RPS-IMAGE]
+oact-stack-azure-vm.bat [your-solution-name] [region (e.g.,: westus)] [MPS-IMAGE] [RPS-IMAGE]
     
-     ```
-     cd scripts\docker-compose
-     oact-stack-azure-vm.bat vprodemo westus
-     ```
+```
+cd scripts\docker-compose
+oact-stack-azure-vm.bat vprodemo westus
+```

@@ -1,7 +1,3 @@
-## Attach a Database to RPS
-
-<span style="color:yellow"> **BW Comment**: Has this changed with Q2/Q3 release? Boolean doesn't exist as part of iConfigurator and IF condition is no longer in index.ts</span>
-
 RPS has the option to output device configuration information to a database so that other software components with access to this database can lookup and use the AMT credentials stored there.  Since there are many database options available, RPS takes a flexible approach that allows a developer to implement a simple module in RPS that will allow RPS to then send data to the database implementation of choice.
 
 The following example uses MongoDB as the example database, but the same concepts could be used for other database implementations.
@@ -75,11 +71,7 @@ amtDeviceWriter = new AmtDeviceMongoDbRepository(Logger("AmtDeviceMongoDbReposit
 
 4. Edit the file package.json and add "mongodb": "^3.3.12" under dev dependencies.
 
-**Ed comment:** Add/copy app.config.dev.json DbConfig content here?
-
 5. Edit app.config.dev.json database info
-
-<span style="color:yellow"> **BW Comment**: Need to update table fields to match JSON file</span>
 
 
 #### DbConfig: Configure the Database
