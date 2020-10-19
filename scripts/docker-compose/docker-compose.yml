@@ -9,6 +9,8 @@ services:
     ports: 
       - "${RPS_WEBSOCKETPORT}:${RPS_WEBSOCKETPORT}"
       - "${RPS_WEB_PORT}:${RPS_WEB_PORT}"
+    depends_on: 
+      - mps
     environment: 
       RPS_USE_VAULT: ${RPS_USE_VAULT}
       RPS_NODE_ENV: ${RPS_NODE_ENV}
