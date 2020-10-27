@@ -1,20 +1,13 @@
 {
   "credentials" : {
-    "c8429e33-d032-49d3-80e7-d45ddf046fff": {
-        "name" : "Win7-machine",
-        "mpsuser": "standalone",
-        "mpspass": "G@ppm0ym",
-        "amtuser": "admin",
-        "amtpass": "P@ssw0rd"
-    },
     "12345678-9abc-def1-2345-123456789000": {
-        "name" : "Win7-machine",
+        "name" : "Sample-Device",
         "mpsuser": "standalone",
         "mpspass": "G@ppm0ym",
         "amtuser": "admin",
         "amtpass": "P@ssw0rd"
     }
   },
-  "allowlist_guids" : [ "8dad96cb-c3db-11e6-9c43-bc0000d20000", "12345678-9abc-def1-2345-123456789000" ],
-  "allowlist_orgs" : [ "12345678901234567890123456789012", "12345678901234567890123456789013" ]
+  "allowlist_guids" : [ "12345678-9abc-def1-2345-123456789000" ],
+  "allowlist_orgs" : [ "12345678901234567890123456789012" ]
 }

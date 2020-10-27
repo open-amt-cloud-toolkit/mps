@@ -16,6 +16,13 @@ CREATE TABLE IF NOT EXISTS ciraconfigs(
       proxydetails text,
       CONSTRAINT configname UNIQUE(cira_config_name)
     );
+CREATE TABLE IF NOT EXISTS networkconfigs(
+      network_profile_name varchar(40),
+      dhcp_enabled BOOLEAN,
+      static_ip_shared BOOLEAN,
+      ip_sync_enabled BOOLEAN,
+      CONSTRAINT networkprofilename UNIQUE(network_profile_name)
+    );
 CREATE TABLE IF NOT EXISTS profiles(
       profile_name varchar(40),
       activation varchar(20),
@@ -27,6 +34,7 @@ CREATE TABLE IF NOT EXISTS profiles(
       random_password_length integer,
       creation_date timestamp,
       created_by varchar(40),
+      network_profile_name varchar(40) REFERENCES networkconfigs(network_profile_name),
       CONSTRAINT name UNIQUE(profile_name)
     );
 CREATE TABLE IF NOT EXISTS domains(
@@ -37,7 +45,8 @@ CREATE TABLE IF NOT EXISTS domains(
       provisioning_cert_key text,
       creation_date timestamp,
       created_by varchar(40),
-      CONSTRAINT domainname UNIQUE(name)
+      CONSTRAINT domainname UNIQUE(name),
+      CONSTRAINT domainsuffix UNIQUE(domain_suffix)
     );
 
     
