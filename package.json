@@ -17,9 +17,9 @@
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "node-forge": "^0.10.0",
-    "node-vault": "^0.9.12",
-    "rc": "^1.2.8",
+    "node-vault": "^0.9.20",
     "winston": "^3.0.0",
+    "rc": "^1.2.8",
     "ws": "^7.3.0"
   },
   "devDependencies": {

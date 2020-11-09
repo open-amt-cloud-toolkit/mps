@@ -14,21 +14,27 @@ node {
         }
 
         // if we are on the master branch run static code scans
-        if(env.GIT_BRANCH =~ /.*master/) {
+        // if(env.GIT_BRANCH =~ /.*master/) {
             stage('Static Code Scan') {
                 staticCodeScan {
                     // generic
-                    scanners             = ['checkmarx', 'protex']
+                    scanners             = ['checkmarx', 'protex', 'snyk']
                     scannerType          = 'javascript'
 
-                    protexProjectName    = 'Danger Bay'
+                    protexProjectName    = 'Danger Bay - 3Q2020'
                     // internal, do not change
                     protexBuildName      = 'rrs-generic-protex-build'
 
                     checkmarxProjectName = "RSD-Danger-Bay-MPS-MicroService"
+
+                    //snyk details
+                    snykUrl                 = 'https://snyk.devtools.intel.com/api'
+                    snykManifestFile        = ['package-lock.json','webui/package-lock.json']
+                    snykProjectName         = ['danger-bay-mps','danger-bay-mps_webui']
+                    snykScanApiToken        = 'snyk_apitoken_sys_rsdcodescan'
                 }
             }
-        }
+        // }
         
         stage('Prep Base Image') {
             // lets write the file dynamically here so we dont have to add too many ci-related files to the repo

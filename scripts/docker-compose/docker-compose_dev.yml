@@ -74,9 +74,9 @@ services:
       MPS_SESSION_ENCRYPTION_KEY: ${MPS_SESSION_ENCRYPTION_KEY}
       MPS_LOG_LEVEL: ${MPS_LOG_LEVEL}
     volumes:
-      - ../../.:/mps
+      - ../../.:/MPS_Microservice
       - app-volume:/config
-    working_dir: /mps
+    working_dir: /MPS_Microservice
     command: npm run watch
   rpsdb:
     image: postgres
