@@ -10,7 +10,8 @@ If DHCP option15 is not set, the following needs to be set manually through MEBX
 2\. While the device is booting up, press `Ctrl+P` to reach the MEBX login screen 
 
 3\. Enter the AMT password
-  >[NOTE] If it is the first time entering MEBX and the device has not been provisioned previously, the defaut password is `admin`. It will prompt you to create a new password.
+!!! NOTE
+    If it is the first time entering MEBX and the device has not been provisioned previously, the defaut password is `admin`. It will prompt you to create a new password.
 
 4\. Select ‘Remote Setup and Configuration’ 
 
@@ -28,20 +29,21 @@ If DHCP option15 is not set, the following needs to be set manually through MEBX
 
 ### Unprovision an AMT Device Through MEBX
 
-1. Restart or power on the device 
+1\. Restart or power on the device 
 
-2. While the device is booting up, press `Ctrl+P` to reach the MEBX login screen 
+2\. While the device is booting up, press `Ctrl+P` to reach the MEBX login screen 
 
-3. Enter the AMT password
-  >[NOTE] If it is the first time entering MEBX, the defaut password is `admin`. It will prompt you to create a new password.
+3\. Enter the AMT password
+!!! NOTE
+    If it is the first time entering MEBX, the defaut password is `admin`. It will prompt you to create a new password.
 
-4. Select ‘Intel AMT configuration’ 
+4\. Select ‘Intel AMT configuration’ 
 
-5. Select ‘Unconfigure Network access’ 
+5\. Select ‘Unconfigure Network access’ 
 
-6. Select ‘Full unprovision’, and then press 'y' to continue 
+6\. Select ‘Full unprovision’, and then press 'y' to continue 
 
-7. It takes 30 seconds to a minute to unprovision the device. While it is unprovisioning, the up/down arrow keys will not work.
+7\. It takes 30 seconds to a minute to unprovision the device. While it is unprovisioning, the up/down arrow keys will not work.
 
 
 

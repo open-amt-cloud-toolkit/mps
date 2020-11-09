@@ -12,13 +12,11 @@ In production mode, all profiles and CIRA configurations are written to the data
 
 The inputs below for both CIRA Config and AMT Profile creation will work in either Developer or Prod mode.
 
-<br>
-
 ## Create a CIRA Configuration
 
-ONLY proxyDetails is optional. 
+proxyDetails is an optional field. 
 
-```
+```json
 {
 	"payload": {
 		"configName": "config1",
@@ -37,19 +35,12 @@ ONLY proxyDetails is optional.
 
 Output:
 
-Success:
+???+ success
+    CIRA Config config1 successfully inserted
 
-```
-CIRA Config config1 successfully inserted
-```
 
-Duplicate Failure:
-
-```
-CIRA Config insertion failed for config1. CIRA Config already exists.
-```
-
-<br>
+???+ failure
+    CIRA Config insertion failed for config1. CIRA Config already exists.
 
 ## Get all CIRA configurations
 
@@ -59,14 +50,14 @@ CIRA Config insertion failed for config1. CIRA Config already exists.
 
 Sample Response:
 
-```
+```json
 [
     {
         "ConfigName": "config1",
         "MPSServerAddress": "13.64.233.163",
         "MPSPort": 4433,
         "Username": "admin",
-        "Password": "P@ssw0rd",
+        "Password": null,
         "CommonName": "13.64.233.163",
         "ServerAddressFormat": 201,
         "AuthMethod": 2,
@@ -78,7 +69,7 @@ Sample Response:
         "MPSServerAddress": "localhost",
         "MPSPort": 4433,
         "Username": "admin",
-        "Password": "P@ssw0rd",
+        "Password": null,
         "CommonName": "localhost",
         "ServerAddressFormat": 201,
         "AuthMethod": 2,
@@ -88,8 +79,6 @@ Sample Response:
 ]
 ```
 
-<br>
-
 ## Get a CIRA configuration
 
 * Endpoint: */api/v1/ciraconfigs/{ciraconfigname}*
@@ -98,13 +87,13 @@ Sample Response:
 
 Sample Response:
 
-```
+```json
 {
     "ConfigName": "config1",
     "MPSServerAddress": "localhost",
     "MPSPort": 4433,
     "Username": "admin",
-    "Password": "P@ssw0rd",
+    "Password": null,
     "CommonName": "localhost",
     "ServerAddressFormat": 201,
     "AuthMethod": 2,
@@ -113,7 +102,34 @@ Sample Response:
 }
 ```
 
-<br>
+## Edit a CIRA Configuration
+
+ONLY proxyDetails is optional. 
+
+```json
+{
+	"payload": {
+		"configName": "config1",
+		"mpsServerAddress": "localhost",
+		"mpsPort": 4434,
+		"username": "admin",
+		"password": "P@ssw0rd",
+		"commonName": "localhost",
+		"serverAddressFormat": 201,
+		"mpsRootCertificate": "",
+		"proxyDetails": "", 
+		"authMethod": 2
+	}
+}
+```
+
+Output:
+
+???+ success
+    CIRA Config config1 successfully inserted
+
+???+ failure
+    CIRA Config config11 not found
 
 ## Delete a CIRA configuration
 
@@ -121,17 +137,12 @@ Sample Response:
 * Method Type: DELETE
 * Headers: *X-RPS-API-Key*
 
-Success:
+???+ success
+    CIRA Config config1 successfully deleted
 
-```
-CIRA Config config1 successfully deleted
-```
 
-Constraint Failure (if an AMT profile is using this CIRA configuration)
-```
-Deletion failed for CIRA Config: config1. Profile associated with this Config.
-```
+???+ failure
+    Deletion failed for CIRA Config: config1. Profile associated with this Config. 
 
-<br>
 
 Return to [RPS Methods](../indexRPS.md)

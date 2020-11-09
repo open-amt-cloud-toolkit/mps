@@ -1,39 +1,48 @@
 # Project information
-site_name: 'ActivEdge: Smart Building Blocks for Remote Edge Management'
+site_name: 'Active Edge: Remote Edge Management Toolkit'
+repo_url: 'https://github.com/open-amt-cloud-toolkit/mps'
+repo_name: 'open-amt-cloud-toolkit/mps'
+copyright: 'Copyright &copy; 2020 Intel Corporation'
 # Configuration
 theme:
   name: 'material'
   language: 'en'
-  palette:
-    primary: 'Light Blue'
-    accent: 'Light Blue'
+  logo: 'assets/images/logo-white-75px.png'
+  # palette:
+  #   primary: 'Light Blue'
+  #   accent: 'Light Blue'
   font:
     text: 'Roboto'
     code: 'Roboto Mono'
-
+  features:
+    - navigation.tabs
 # Page tree
 nav:
   - Home: index.md
-  - MPS & RPS Local Setup:
-    - Overview: Local/overview.md
-    - Install MPS Locally: Local/installMPS.md
-    - Install RPS Locally: Local/installRPS.md
-  - MPS & RPS Docker* Images:
-    - Overview: Docker/overview.md
-    - Build Docker* Images: Docker/dockerLocal.md
-  - RPS Configuration:
-    - Login to RPS: General/loginToRPS.md
-    - Create a CIRA Config: General/createCIRAConfig.md
-    - Create a Profile with CCM: General/createProfileCCM.md
-    - Create a Profile with ACM: General/createProfileACM.md
-  - RPC on a Managed Device:
-    - Build & Run RPC: General/buildRPC.md
-  - MPS Device Management:
-    - See Connected Devices: General/manageDevice.md
+  - Getting Started:
+    - Installation MPS & RPS :
+      - Local Setup:
+        - Overview: Local/overview.md
+        - Install MPS Locally: Local/installMPS.md
+        - Install RPS Locally: Local/installRPS.md
+      - Docker* Images:
+        - Overview: Docker/overview.md
+        - Build Docker* Images: Docker/dockerLocal.md
+  - Microservices:
+    - Managed Presence Server:
+      - MPS Device Management: General/manageDevice.md
+    - Remote Provisioning Server:
+      - Login to RPS: General/loginToRPS.md
+      - Create a CIRA Config: General/createCIRAConfig.md
+      - Create a Profile with CCM: General/createProfileCCM.md
+      - Create a Profile with ACM: General/createProfileACM.md  
+    - Remote Provisioning Client :
+      - Build & Run RPC (GitHub Actions): General/buildRPC_GithubActions.md
+      - Build & Run RPC (manual): General/buildRPC.md
   - Tutorials:
     - Docker Images on the Cloud: Docker/dockerCloud.md
     - Create Consoles with the UI Toolkit: Tutorials/uitoolkit.md
-    - Construct a Rest API Call: Tutorials/apiTutorial.md
+    - Construct a REST API Call: Tutorials/apiTutorial.md
     - Add a Database: Tutorials/addDatabase.md
     - Add Vault Storage: Tutorials/addVault.md
     - Use an Allowlist: Tutorials/allowlist.md
@@ -41,21 +50,26 @@ nav:
     - MPS Methods: APIs/indexMPS.md
     - RPS Methods: APIs/indexRPS.md
   - Security: security.md
-  - ActivEdge Topics:
+  - Active Edge Topics:
     - Static and Dynamic IPs: Topics/misc.md
     - GUIDs in Intel AMT: Topics/guids.md
     - Manually Configure and Unprovision: Topics/mebx.md
     - Proxies: Topics/proxies.md
   - Release notes: release-notes.md
   - License: license.md
-
+  - Troubleshooting: troubleshooting.md
+  
 # Extensions
 markdown_extensions:
   - admonition
+  - pymdownx.details
   - pymdownx.tabbed
   - attr_list
   - pymdownx.inlinehilite
+  - pymdownx.superfences
   - codehilite:
       guess_lang: false
   - toc:
       permalink: true
+extra_css:
+  - assets\stylesheets\branding.css

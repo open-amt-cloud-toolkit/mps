@@ -15,29 +15,16 @@ In order to deploy and make changes, the following tools and application has to 
 -   [Visual Studio Code](https://code.visualstudio.com/) or any other IDE 
 -   [Node.js](https://nodejs.org/)
 -   [MPS](https://github.com/open-amt-cloud-toolkit/MPS) stands for **M**anagement **P**resence **S**erver
+-   Build and deploy MPS MicroService locally.
 -   Intel AMT device is configured and connected to MPS. See the [MPS](https://github.com/open-amt-cloud-toolkit/MPS) for documentation.
 -   Chrome Browser
-
-
-## Download and Install MPS MicroService
-At a command prompt, run the following commands:
-```
-git clone https://github.impcloud.net/Danger-Bay/MPS_MicroService.git
-cd MPS_MicroService
-npm install
-```
-
-## start mps server
-
-At a command prompt navigate to the root of MPS_UI_Toolkit, run the below command.
-npm start
 
 ## Download and Install MPS UI Toolkit
 
 At a command prompt, run the following commands:
 ```
-git clone https://github.impcloud.net/Danger-Bay/MPS_UI_Toolkit.git
-cd MPS_UI_Toolkit
+git clone https://github.com/open-amt-cloud-toolkit/ui-toolkit
+cd ui-toolkit
 npm install
 ```
 
@@ -55,7 +42,7 @@ npm start
 
 ## Create Bundle for devicegrid
 
-At a command prompt navigate to the root of MPS_UI_Toolkit, run the below command.
+At a command prompt navigate to the root of UI_Toolkit, run the below command.
 > **Note:** Remove or rename the existing **device.core.min.js**  in **dist/**
 ```
 npm run build
@@ -81,7 +68,7 @@ To display the Device Grid control on a sample web page, update following change
 ```
 
 ## Test the sample page
-At a command prompt navigate to the root of MPS_UI_Toolkit, run the below command.
+At a command prompt navigate to the root of UI_Toolkit, run the below command.
 ```
 npx serve
 ```
@@ -97,57 +84,4 @@ You will see the errors in the following scenario's:
 ## Add a new Language for Internationalization
 
 Please refer to [Localization](./localization.md) docs
-
-
-## By-pass CORS Security for testing
-
-To display UI controls on local react Web UI for **testing**, make the following changes to by-pass CORS.
-
-- Go to your local **mps** application where it is running.
-- Press **ctrl+c** to exit the application. 
-- Edit the file **mps/src/server/webserver.ts** 
-- Update the code as shown below to allow any origin by MPS 
-
-Search for **X-Frame-Options** and update the code as shown below
-```
-//Clickjacking defence
-this.app.use(function (req, res, next) {
-	//res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-	res.header('Access-Control-Allow-Origin', '*');
-	res.header('Access-Control-Allow-Headers','*');
-	if (req.method  ===  'OPTIONS') {
-		res.header('Access-Control-Allow-Methods', 'POST');
-		return  res.status(200).json({});
-	}	
-	next();
-})
-```
-Search for **isAuthenticated** and comment the code as shown below
-```
-isAuthenticated(req, res, next) {
-// if (req.session.loggedin){
-// return next();
-// }
-
-// if (req.header('User-Agent').startsWith('Mozilla')) {
-// // all browser calls that are not authenticated
-// res.redirect('/login.htm')
-// return;
-// }
-
-// // other api calls
-// if(req.header('X-MPS-API-Key') !== process.env.XAPIKEY){
-// res.status(401).end("Not Authenticated.")
-// return;
-// }
-// else
-return  next();
-}
-```
-- Save the changes.
-- At the command prompt, run the below command from the root of **mps** application 
-```
-npm start
-```
-
 

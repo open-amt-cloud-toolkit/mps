@@ -7,7 +7,7 @@
 * Method Type: POST
 * Headers: *X-RPS-API-Key*
 
-```
+```json
 {
 	"payload" :  
     {
@@ -23,7 +23,7 @@
 
 Example Input:
 
-```
+```json
 {
     "payload":
     {
@@ -37,25 +37,14 @@ Example Input:
 }
 ```
 
-On Success:
+???+ success
+    Profile testProfile1 successfully inserted
 
-```
-Profile testProfile1 successfully inserted
-```
+???+ failure
+    Profile insertion failed for testProfile1. Profile already exists. 
 
-On Failure: (Duplicate profile)
-
-```
-Profile insertion failed for testProfile1. Profile already exists. 
-```
-
-On Failure: (CIRA Config associated doesnt exist)
-
-```
-Referenced CIRA Config testconfig58 doesn't exist.
-```
-
-<br>
+???+ failure 
+    Referenced CIRA Config testconfig58 doesn't exist.
 
 ## Get a Profile
 
@@ -70,27 +59,21 @@ Example Input:
 N/A (test profile to retrieve provided in URL as query parameter)
 ```
 
-On Success:
+???+ success
+    ```json
+    {
+        "ProfileName": "testProfile1",
+        "AMTPassword": null,
+        "GenerateRandomPassword": false,
+        "RandomPasswordLength": null,
+        "ConfigurationScript": null,
+        "Activation": "ccmactivate",
+        "CIRAConfigName": "testconfig1"
+    }
+    ```
 
-```
-{
-    "ProfileName": "testProfile1",
-    "AMTPassword": "AMTpassword",
-    "GenerateRandomPassword": false,
-    "RandomPasswordLength": null,
-    "ConfigurationScript": null,
-    "Activation": "ccmactivate",
-    "CIRAConfigName": "testconfig1"
-}
-```
-
-On Failure: (profile doesnt exit)
-
-```
-Profile testProfile1 not found
-```
-
-<br>
+???+ failure
+    Profile testProfile1 not found
 
 ## Get All Profiles
 
@@ -108,29 +91,70 @@ Example Input:
 NA (no query parameter in the URL retrieves all profiles)
 ```
 
-On Success:
+???+ success
+    ```json
+    [
+        {
+            "ProfileName": "testProfile1",
+            "AMTPassword": null,
+            "GenerateRandomPassword": false,
+            "RandomPasswordLength": null,
+            "ConfigurationScript": null,
+            "Activation": "ccmactivate",
+            "CIRAConfigName": "testconfig1"
+        }
+    ]
+    ```
 
-```
-[
+???+ failure 
+    No profiles found.
+
+
+## Edit a Profile
+
+
+* Endpoint: **/api/v1/admin/profiles/edit*
+* Method Type: POST
+* Headers: *X-RPS-API-Key*
+
+```json
+{
+	"payload" :  
     {
-        "ProfileName": "testProfile1",
-        "AMTPassword": "AMTpassword",
-        "GenerateRandomPassword": false,
-        "RandomPasswordLength": null,
-        "ConfigurationScript": null,
-        "Activation": "ccmactivate",
-        "CIRAConfigName": "testconfig1"
+        "profileName": "[amt-profile-name]",
+        "amtPassword":"[strong-AMT-password]",
+        "generateRandomPassword": "false",
+        "passwordLength": 8,
+        "ciraConfigName": "testconfig",
+        "activation": "[acmactivate/ccmactivate]"
     }
-]
+}
 ```
 
-On Failure: (profiles empty)
+Example Input:
 
-```
-No profiles found.
+```json
+{
+    "payload":
+    {
+        "profileName":"testProfile1",
+        "amtPassword":"STRONGPASSWORD",
+        "generateRandomPassword":false,
+        "passwordLength":null,
+        "ciraConfigName": "testconfig",
+        "activation":"ccmactivate"
+    }
+}
 ```
 
-<br>
+???+ success
+    Profile testProfile1 successfully updated.
+
+???+ failure
+    Referenced CIRA Config testconfig58 not found.
+
+???+ failure
+    Profile testProfile11 not found
 
 ## Delete a Profile
 
@@ -148,18 +172,10 @@ Example Input:
 NA (profile to delete provided as query parameter in url 'profile1')
 ```
 
-On Success:
+???+ success
+    Profile testProfile1 successfully deleted
 
-```
-Profile testProfile1 successfully deleted
-```
-
-On Failure: (profiles not found)
-
-```
-Profile not found.
-```
-
-<br>
+???+ failure
+    Profile not found.
 
 Return to [RPS Methods](../indexRPS.md)

@@ -14,13 +14,13 @@
 **NOTE/COMMENT:***The following is for internal testing use for those with impcloud access. It must be modified to the released branch when code is public.
 
 ```
-git clone https://github.impcloud.net/Danger-Bay/MPS_MicroService.git
-cd MPS_MicroService
+https://github.com/open-amt-cloud-toolkit/mps.git
+cd mps
 git checkout add-helm-support-changes2
 ```
 
->[NOTE]
-If you see authentication failure with git clone, make sure your git credetnials works correctly using browser. You can connect to your github account with ssh keys using these instructions: https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh
+!!! NOTE
+    If you see authentication failure with git clone, make sure your git credetnials works correctly using browser. You can connect to your github account with ssh keys using these instructions: https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh
 
 ### Create Static IPs and Certificates
 

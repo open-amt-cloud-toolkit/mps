@@ -3,209 +3,164 @@ Estimated completion time:
 - 30 minutes on Windows 10 devices (20-25 minutes are required installation time estimates)
 - 15 minutes on Linux devices
 
-For prequisites to complete this section, see [Overview](../Local/overview.md).
 
 ## Remote Provisioning Client
 
-The Remote Provisioning Client (RPC) communicates with the Managability Engine Interface (MEI) and RPS interfaces. The MEI uses the ME Driver to talk to Intel AMT. By running RPC, we will activate Intel AMT into Client Control Mode (CCM), or ACM based on the created profile, as well as configure the CIRA connection of the AMT device to the MPS. After successfully running, the AMT device will be ready to be managed remotely using the web interface!
+The Remote Provisioning Client (RPC) communicates with the Manageability Engine Interface (MEI) and RPS interfaces. The MEI uses the ME Driver to talk to Intel AMT. By running RPC, we will activate Intel AMT into Client Control Mode (CCM), or ACM based on the created profile, as well as configure the CIRA connection of the AMT device to the MPS. After successfully running, the AMT device will be ready to be managed remotely using the web interface!
 
-!!! note "Production Environment"
-        In a production environment, RPC would be built on a development device. From there, RPC can be deployed with an in-band manageability agent to distrubute it to the fleet of AMT devices.  The in-band managebility agent can invoke RPC to run and activate the AMT devices.
+!!! tip "Production Environment"
+        In a production environment, RPC can be deployed with an in-band manageability agent to distribute it to the fleet of AMT devices. The in-band manageability agent can invoke RPC to run and activate the AMT devices.
 
 [![RPC](../assets/images/RPC_Overview.png)](../assets/images/RPC_Overview.png)
-
-## Windows*
-
-**Important: Perform the following steps on the managed (Intel&reg; AMT) device. Enter the commands in the following sections to create RPC on Windows.**
 
 
 ### Clone the Repository
 
-1\. Open 'x64 Native Tools Command Prompt for VS 20XX' as Administrator on the managed device.  **This is NOT a regular Windows Command Prompt.**  This specific tool is used for compiling the RPC executable.
+1. On your development system, navigate to a directory of your choice to clone and build RPC.
 
->**Note:** You can find this command prompt in the Start Menu by searching for 'x64 Native Tools Command Prompt for VS 20XX'
+2. Clone the RPC repository.
 
-2\. Navigate to a directory of your choice to clone and build RPC.
+    ``` bash
+    git clone --branch ActivEdge https://github.com/open-amt-cloud-toolkit/rpc.git && cd rpc
+    ```
 
-3\. Clone the RPC repository.
+### Install Prerequisites
 
-```
-git clone --branch ActivEdge https://github.com/open-amt-cloud-toolkit/rpc.git
-cd rpc
-```
-
-### Build VCPKG
-
-
-1\. In the rpc directory, clone the Vcpkg repository. Vcpkg is a C/C++ Library Manager for Windows that was created by Microsoft.  Find out more about it [here](https://github.com/microsoft/vcpkg).
-
-```
-git clone --branch 2020.01 https://github.com/microsoft/vcpkg.git
-cd vcpkg
-```
-
-2\. Build vcpkg.exe using the following command:
-
-```
-bootstrap-vcpkg.bat
-```
+=== "Windows"
+    Open 'x64 Native Tools Command Prompt for VS 20XX' as Administrator on your development system.  **This is NOT a regular Windows Command Prompt.**  This specific tool is used for compiling the RPC executable.
     
-3\. Set up user-wide integration in order to allow Vcpkg to work with Visual Studio. 
+    ![NTCP](../assets/images/x64NativeToolsCP.png)
 
-```
-vcpkg integrate install
-```
+    Build VCPKG
 
-### Build CPPRestSDK
 
-4\. Make sure you are still in the ../vcpkg directory.
+    1. In the `rpc` directory, clone the Vcpkg repository. Vcpkg is a C/C++ Library Manager for Windows that was created by Microsoft.  Find out more about it [here](https://github.com/microsoft/vcpkg).
 
-5\. Install the C++ REST SDK package using Vcpkg. C++ REST SDK is a library for cloud-based client-server communication with modern API design.  Find out more about it [here](https://github.com/microsoft/cpprestsdk).
+        ``` bash
+        git clone --branch 2020.01 https://github.com/microsoft/vcpkg.git && cd vcpkg
+        ```
 
-**Note:** This will take 15–25 minutes, depending on download speeds.
+    2. Build `vcpkg.exe` using the following command:
 
-```
-vcpkg install cpprestsdk:x64-windows-static
-```
+        ``` bash
+        bootstrap-vcpkg.bat
+        ```
+        
+    3. Set up user-wide integration in order to allow Vcpkg to work with Visual Studio. 
+
+        ``` bash
+        vcpkg integrate install
+        ```
+
+    Build CPPRestSDK
+
+    1. Make sure you are still in the ../vcpkg directory.
+
+    2. Install the C++ REST SDK package using Vcpkg. C++ REST SDK is a library for cloud-based client-server communication with modern API design.  Find out more about it [here](https://github.com/microsoft/cpprestsdk).
+
+        !!! note
+            This will take 15–25 minutes, depending on download speeds.
+
+        ``` bash
+        vcpkg install cpprestsdk:x64-windows-static
+        ```
+    3. Navigate back to the `./rpc` directory
+
+        ``` bash
+        cd ..
+        ```
+
+=== "Linux"
+    1. To install the required dependencies; enter the following command:
+
+        ``` bash
+        sudo apt install git cmake build-essential libboost-system-dev libboost-thread-dev libboost-random-dev libboost-regex-dev  libboost-filesystem-dev libssl-dev zlib1g-dev
+        ```
 
 ### Build RPC
+    
+1. Create a new directory called `build` within the `./rpc` directory and change to it.
 
-6\. Change to the rpc directory.
+    ``` bash
+    mkdir build && cd build
+    ```
 
-```
-cd ..
-```
+2. Run the following commands to build RPC.
 
-7\. Create a new build directory within the **./rpc** directory and change to it.
+    === "Windows"
 
-```
-mkdir build
-cd build
-```
+        Generate the CMake config
+        ``` bash
+        cmake .. -DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake
+        ```
 
-8\. Run the following commands to build rpc.exe.
+        Build the RPC executable
+        ```bash
+        cmake --build . --config Debug
+        ```
 
-```
-cmake .. -DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake
-```
+        Change to Debug directory
+        ``` bash
+        cd Debug
+        ```
 
-9\. Build rpc.exe using CMake.
+        Save the rpc.exe file to a flash drive or other means to transfer to the managed device.
+            
+    === "Linux"
+        ``` bash
+        cmake -DCMAKE_BUILD_TYPE=Debug ..
+        cmake --build .
+        ```
 
-```
-cmake --build . --config Debug
-```
+        Save the new 'rpc' file in the Build directory to a flash drive or other means to transfer to the managed device.
 
-10\. Navigate to the Debug directory. In this directory, you should see rpc.exe.
-
-```
-cd Debug
-```
 
 ### Run RPC to Activate and Connect the AMT Device
 
-1\. Run RPC with the following command to activate and configure Intel&reg; AMT. It will take 1-2 minutes to finish provisioning the device.
+1. Using a Flash Drive or other method, transfer the Debug folder to the managed device.
 
-- Replace [Development-IP-Address] with the development device's IP address, where the MPS and RPS servers are running
+2. On the managed device, run RPC with the following command to activate and configure Intel&reg; AMT. It will take 1-2 minutes to finish provisioning the device.
+
+- Replace [Development-IP-Address] with the development system's IP address, where the MPS and RPS servers are running
 - Replace [profile-name] with your created profile from the Web Server.
 
-```
-rpc.exe -u wss://[Development-IP-Address]:8080 -c "-t activate --profile [profile-name]"
-```
+=== "Windows"
+    ```
+    rpc.exe -u wss://[Development-IP-Address]:8080 -c "-t activate --profile [profile-name]"
+    ```
+=== "Linux"
+    ``` bash
+    sudo ./rpc -u wss://[Development-IP-Address]:8080 -c "-t activate --profile [profile-name]"
+    ```
 
-!!! note "Production Environment"
-        In a production environment, an in-band agent would invoke this command with the parameters rather than a manual command.
-
-
->Note: If you do not remember your created profile's name, you can navigate to the *Profiles* tab on the web server hosted at `https://[Development-IP-Address]:3000`
->
->**Default login credentials:**
->
->| Field       |  Value    |
->| :----------- | :-------------- |
->| **Username**| standalone |
->| **Password**| G@ppm0ym |
-
-<br>
 
 Example Success Output:
 
 [![RPC Success](../assets/images/RPC_Success.png)](../assets/images/RPC_Success.png)
 
-<br>
+
+!!! tip "Production Environment"
+        In a production environment, an in-band agent would invoke this command with the parameters rather than a manual command.
+
+!!! note "Troubleshooting"
+        The rpc.exe generates this message:
+                Unable to get activation info. Try again later or check AMT configuration.
+        Verify that the x64 Native Tools Command Prompt for VS 20XX is running in **Administrator mode** on the managed device.
+         
+        
+!!! note
+    If you do not remember your created profile's name, you can navigate to the *Profiles* tab on the web server hosted at `https://[Development-IP-Address]:3000`
+
+    **Default login credentials:**
+    
+    | Field       |  Value    |
+    | :----------- | :-------------- |
+    | **Username**| standalone |
+    | **Password**| G@ppm0ym |
+
 
 ## Next up
 
-After successfully building RPC on Windows and activating the managed device, continue to MPS Device Management. Otherwise, view below for instructions on building RPC on Linux.
+After successfully building RPC activating the managed device, continue to MPS Device Management.
 
 Continue here: [MPS Device Management](../General/manageDevice.md)
-
-<br>
-
-## Linux*
-
-Follow these instructions to create RPC on Linux&ast;.
-
-#### Clone the Repository
-
-1\. On the Intel&reg; AMT device, open a terminal.
-
-2\. Clone the RPC Repository.
-
-```
-git clone --branch ActivEdge https://github.com/open-amt-cloud-toolkit/rpc.git
-cd rpc
-```
-
-### Build RPC
-
-1\. Build the required dependencies; enter the following command:
-
-```
-sudo apt install git cmake build-essential libboost-system-dev libboost-thread-dev libboost-random-dev libboost-regex-dev  libboost-filesystem-dev libssl-dev zlib1g-dev
-```
-
-Build RPC with the following commands:
-
-2\. Create a new build directory and change to it.
-
-```
-mkdir build
-cd build
-```
-
-3\. Build RPC using CMake.
-
-```
-cmake -DCMAKE_BUILD_TYPE=Debug ..
-cmake --build .
-```
-
-### Run RPC to Activate and Connect the AMT Device
-
-4\. Run RPC with the following command to activate and configure Intel&reg; AMT.
-
-- Replace [Development-IP-Address] with the development device's IP address, where the MPS and RPS servers are running
-- Replace [profile-name] with your created profile from the Web Server.
-
-```
-sudo ./rpc -u wss://[Development-IP-Address]:8080 -c "-t activate --profile [profile-name]"
-```
-
-!!! note "Production Environment"
-        In a production environment, an in-band agent would invoke this command with the parameters rather than a manual command.
-        
->Note: If you do not remember your created profile's name, you can navigate to the *Profiles* tab on the web server hosted at `https://[Development-IP-Address]:3000`
->
->**Default login credentials:**
->
->| Field       |  Value    |
->| :----------- | :-------------- |
->| **Username**| standalone |
->| **Password**| G@ppm0ym |
-
-
-<br>
-
-## Next up
-
-[MPS Device Management](../General/manageDevice.md)

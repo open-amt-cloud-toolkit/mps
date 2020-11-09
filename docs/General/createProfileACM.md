@@ -1,8 +1,8 @@
 Intel AMT&reg; devices are capable of being activated into two modes:
 
-- Admin Control Mode: In this mode, there are no limitations to Intel AMT functionality. This reflects the higher level of trust associated with these setup methods.
+- **Admin Control Mode:** In this mode, there are no limitations to Intel AMT functionality. This reflects the higher level of trust associated with these setup methods.
 
-- Client Control Mode: This mode limits some of Intel AMT functionality, reflecting the lower level of trust.
+- **Client Control Mode:** This mode limits some of Intel AMT functionality, reflecting the lower level of trust.
 
     Features requiring User Consent:
 
@@ -40,30 +40,31 @@ Profiles provide configuration information to the AMT Firmware during the activa
 
 <br>
 
-1\. Select the Profiles tab from the menu on the left.
+1. Select the Profiles tab from the menu on the left.
 
-2\. Under the Profiles tab, click New in the top-right corner to create a profile.
+2. Under the Profiles tab, click New in the top-right corner to create a profile.
 
-3\. Specify a Profile Name of your choice.
+3. Specify a Profile Name of your choice.
 
-4\. Uncheck Generate Random Password.
+4. Uncheck Generate Random Password.
 
-!!! note "Production Environment"
+    !!! tip "Production Environment"
         In a production environment, you typically generate a random password for each AMT device to create a stronger, more secure AMT environment.
 
-5\. Provide a strong AMT Password. 
+5. Provide a strong AMT Password. 
     
+    !!! important
+        This password must meet standard, **strong** password requirements:
 
->**Note:** This password must meet standard, 'strong' password requirements:    
->
->> - 8 to 32 characters
->> - One uppercase, one lowercase, one numerical digit, one special character
+        - 8 to 32 characters
 
-6\. Select the name of the CIRA Config you created previously from the drop-down menu.
+        - One uppercase, one lowercase, one numerical digit, one special character
 
-7\. Under Activation, select 'Admin Control Mode' from the dropdown menu.
+6. Select the name of the CIRA Config you created previously from the drop-down menu.
 
-8\. Click Create.
+7. Under Activation, select 'Admin Control Mode' from the dropdown menu.
+
+8. Click Create.
 
 
 [![RPS ACM Profile](../assets/images/RPS_CreateProfile_ACM.png)](../assets/images/RPS_CreateProfile_ACM.png)
@@ -76,33 +77,33 @@ In addition to creating a CIRA Config and a Profile. A Domain **must** be create
 
 Intel AMT checks the network domain suffix against the provisioning certificate as a security check. During provisioning, the trusted certificate chain is injected into the AMT firmware.  AMT verifies that the certificate chain is complete and is signed by a trusted certificate authority.
 
-<br>
 
-1\. Select the Domains tab from the left-hand menu.
 
-2\. In the top-right corner, click New.
+1. Select the Domains tab from the left-hand menu.
 
-[![RPS New Domain](../assets/images/RPS_NewDomain.png)](../assets/images/RPS_NewDomain.png)
+2. In the top-right corner, click New.
 
-<br>
+    [![RPS New Domain](../assets/images/RPS_NewDomain.png)](../assets/images/RPS_NewDomain.png)
 
-3\. Specify a Domain Name of your choice.
 
-4\. Provide your Domain Suffix. This is the actual DNS Suffix of the network domain that is set in DHCP Option 15 or manually on the AMT device through MEBX.
+3. Specify a Domain Name of your choice.
 
-5\. Click Browse and select your purchased Provisioning Certificate.  This certificate must contain the private key.
+4. Provide your Domain Suffix. This is the actual DNS Suffix of the network domain that is set in DHCP Option 15 or manually on the AMT device through MEBX.
 
-6\. Provide the Password of the Provisioning Certificate used to encrypt the .pfx file.
+5. Click Browse and select your purchased Provisioning Certificate.  This certificate must contain the private key.
 
-7\. Click Create.
+6. Provide the Password of the Provisioning Certificate used to encrypt the `.pfx` file.
 
-Example Domain:
-    
-[![RPS Domain Creation](../assets/images/RPS_CreateDomain.png)](../assets/images/RPS_CreateDomain.png)
+7. Click Create.
 
-After successfully creating the domain, continue with the activation process by building and running the Remote Provisioning Client (RPC).
+    !!! example
+        Example Domain:
+            
+        [![RPS Domain Creation](../assets/images/RPS_CreateDomain.png)](../assets/images/RPS_CreateDomain.png)
 
-<br>
+        After successfully creating the domain, continue with the activation process by building and running the Remote Provisioning Client (RPC).
+
+
 
 ## Next Up
 

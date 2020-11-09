@@ -8,14 +8,17 @@
 
 4. Uncheck Generate Random Password.
 
-!!! note "Production Environment" In a production environment, you typically generate a random password for each AMT device to create a stronger, more secure AMT environment.
+    !!! tip "Production Environment"
+        In a production environment, you typically generate a random password for each AMT device to create a stronger, more secure AMT environment.
 
 5. Provide a strong AMT Password.
 
-> **Note:** This password must meet standard, 'strong' password requirements:
->
-> > - 8 to 32 characters
-> > - One uppercase, one lowercase, one numerical digit, one special character
+    !!! important
+        This password must meet standard, **strong** password requirements:
+
+        - 8 to 32 characters
+
+        - One uppercase, one lowercase, one numerical digit, one special character
 
 6. Select the name of the CIRA Config you created previously from the drop-down menu.
 
@@ -23,9 +26,10 @@
 
 8. Click Create.
 
-Example Profile:
+    !!! example
+        Example Profile:
 
-![RPS](../assets/images/RPS_CreateProfile.png)
+        [![RPS](../assets/images/RPS_CreateProfile.png)](../assets/images/RPS_CreateProfile.png)
 
 ## Next up
 [Build RPC](buildRPC.md)

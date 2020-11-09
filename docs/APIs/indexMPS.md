@@ -1,6 +1,6 @@
 # API and Command Reference
 
-This section is a reference to the MPS API methods available in ActivEdge, and to some commands it provides. 
+This section is a reference to the MPS API methods available in Active Edge, and to some commands it provides. 
 
 There are two types of method paths for the MPS Server:
 

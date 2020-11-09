@@ -1,45 +1,50 @@
-# ActivEdge Overview
+# Active Edge Overview
 
 Intel® vPro™ Platforms offer hardware-enhanced security features and remote manageability, also known as out-of-band manageability, using Intel® Active Management Technology (Intel&reg; AMT). With Intel&reg; AMT, administrators remotely manage, repair, and update network assets, such as systems and edge devices. In the event that a network asset is powered off or the operating system is unavailable, administrators can power on the asset. 
 
-ActivEdge provides open-source, modular microservices and libraries for integration of hardware provisioning, out-of-band manageability, and other Intel&reg; AMT features with both new and existing management consoles, software solutions, and more. As an open source implementation, ActivEdge makes it easier for IT departments and ISVs to adopt, integrate, and customize out-of-band management solutions for Intel® vPro™ Platforms.
+Active Edge provides open-source, modular microservices and libraries for integration of hardware provisioning, out-of-band manageability, and other Intel&reg; AMT features with both new and existing management consoles, software solutions, and more. As an open source implementation, Active Edge makes it easier for IT departments and ISVs to adopt, integrate, and customize out-of-band management solutions for Intel® vPro™ Platforms.
 
 Read more about Intel&reg; AMT features and capabilities [here](https://software.intel.com/content/www/us/en/develop/topics/iot/hardware/vpro-platform-retail.html).
 
 ## Goals
 
-By the end of this guide, you will have gained experience using these three core modules, shown in Figure 1:
+The Active Edge guides provides instructions to:
 
-![assets/images/ActivEdgeComponentsLarge.png](assets/images/ActivEdgeComponentsLarge.png)
+- Deploy the Management Presence Server (MPS) and Remote Provisioning Server (RPS) on the development system.
+- Build and run Remote Provisioning client (RPC) on the managed device.
+- Connect the managed device (edge device)
 
-**Figure 1: ActivEdge Components**
+Additional sections provide guidance on the reference implementation UI Toolkit, REST API usage, asset security, and more.
 
-1. **Management Presence Server (MPS)** - A microservice that utilizes an Intel vPro&reg; feature, Client Initiated Remote Access (CIRA), for enabling edge, cloud devices to maintain a persistent connection for out-of-band manageability features such as power control or KVM control
-2. **Remote Provisioning Server (RPS)** - A microservice that activates Intel&reg; AMT-based platforms using pre-defined profiles and connects them to the MPS for manageability use cases
-3. **Remote Provisioning Client (RPC)** - A lightweight client application that communicates with the RPS server to activate Intel&reg; AMT
+![assets/images/ActivEdgeComponentsLarge.png](assets/images/AEHighLevelArch.png)
 
-In addition to the three core modules, ActivEdge provides extras such as tutorials, including a UI Toolkit tutorial. The UI Toolkit allows developers to add manageability features to a console with prebuilt React components. 
+**Figure 1: Active Edge High-level Architecture**
 
-## ActivEdge Setup
+As shown in Figure 1, Active Edge high-level architecture consists of four components:
+
+1. **MPS** - A microservice that utilizes an Intel vPro&reg; feature, Client Initiated Remote Access (CIRA), for enabling edge, cloud devices to maintain a persistent connection for out-of-band manageability features, such as power control or KVM control.
+2. **RPS** - A microservice that activates Intel&reg; AMT-based platforms using pre-defined profiles and connects them to the MPS for manageability use cases.
+3. **RPC** - A lightweight client application that communicates with the RPS server to activate Intel&reg; AMT.
+4. **UI Toolkit** - A Toolkit that includes prebuilt React components and a reference implementation web console. The React-based snippets simplify the task of adding complex manageability-related UI controls, such as the Keyboard, Video, Mouse (KVM), to a console.
+
+## Active Edge Setup
 
 ### Build and Deploy Microservices Locally
 If unfamiliar with Docker, choose this setup option to accomplish a manual, local installation of microservices. 
 
-<!-- [Get Started with Local Microservices](Local/overview.md){: .md-button .md-button--primary } -->
+[Get Started with Local Microservices](Local/overview.md){: .md-button .md-button--primary }
 
-[![Local Get Started](assets/images/Local_Button.png)](Local/overview.md)
 
-**Estimated completion time:** Approximately 15 minutes
+Estimated completion time: **Approximately 15 minutes**
 
 ### Build and Deploy Microservices with Local Docker* Images
 
 If familiar with Docker, choose this setup option to install microservices as local Docker images. This option is an especially good choice for development systems with Docker already installed.
 
-<!-- [Get Started with Microservices as Docker Images](Docker/overview.md){: .md-button .md-button--primary } -->
+[Get Started with Microservices as Docker Images](Docker/overview.md){: .md-button .md-button--primary }
 
-[![Docker Get Started](assets/images/Docker_Button.png)](Docker/overview.md)
 
-**Estimated completion time**: Approximately 15 minutes
+Estimated completion time: **Approximately 15 minutes**
 
 Both build-and-deploy options install microservices locally on a development system. The client application is installed on a managed device. Experienced Docker users may choose to deploy microservices straight to the [cloud](Docker/dockerCloud.md).
  

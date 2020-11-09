@@ -2,7 +2,7 @@ Estimated completion time: 5 minutes
 
 ## Manage the Intel&reg; AMT Device using MPS
 
-1\. On your development device, browse to the web server using the development device's IP Address.
+1\. On your development system, browse to the web server using the development system's IP Address.
 	
 **Example URL:** https://[Development-IP-Address]:3000
 
@@ -41,11 +41,21 @@ Estimated completion time: 5 minutes
 
 ## Next steps
 
-Explore:
+After successfully deploying the Active Edge microservices and client, explore other tools and topics in the Active Edge architecture:
 
-- [REST API Calls to a Managed Device](../Tutorials/apiTutorial.md)
-- [The ActivEdge UI Toolkit](../Tutorials/uitoolkit.md) 
-- [Security and Hardening Considerations](../security.md)
+### REST API Calls
+Use the REST API tutorial to construct an Admin method API call to connected devices using node.js. Then modify the template to create other MPS REST API calls. 
 
-<br>
+[Get Started with REST API Calls](../Tutorials/apiTutorial.md){: .md-button .md-button--primary }
+
+### UI Toolkit
+Explore the Active Edge reference implementation console by adding manageability features with prebuilt React components, such as Keyboard, Video, and Mouse (KVM).
+
+[Get Started with the UI Toolkit](../Tutorials/uitoolkit.md){: .md-button .md-button--primary }
+
+### Security
+Learn how to use Active Edge architecture to secure assets. Topics include credentials, allowlisting, best known security methods, and more.
+
+[Learn More about Security and Hardening](../security.md){: .md-button .md-button--primary }
+
 

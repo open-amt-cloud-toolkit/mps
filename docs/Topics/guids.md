@@ -4,10 +4,10 @@ Each Intel&reg; AMT device has a Global Unique Identifier (GUID) assigned to it 
 
 There are a number of ways to obtain the GUID on the Intel&reg; AMT device:
 
-- WebUI of ActivEdge 
+- WebUI of Active Edge 
 - [ConnectedDevices API Method](../APIs/MPSmethods/connecteddevices.md)
 
-<br>
+
 
 ## Via WebUI
 
@@ -19,7 +19,7 @@ There are a number of ways to obtain the GUID on the Intel&reg; AMT device:
 
 [![GUID](../assets/images/GUID_WebUI.png)](../assets/images/GUID_WebUI.png)
 
-<br>
+
 
 ## Via API Method
 
@@ -28,11 +28,11 @@ A device's GUID can also be found via the AllDevices or ConnectedDevices MPS met
 Example ConnectedDevices Output:
 ``` json hl_lines="2"
 [{
-             "host": "d12428be-9fa1-4226-9784-54b2038beab6",
-             "amtuser": "admin",
-             "mpsuser": "standalone",
-             "icon": 1,
-             "conn": 1,
-             "name": "d12428be-9fa1-4226-9784-54b2038beab6"
+    "host": "d12428be-9fa1-4226-9784-54b2038beab6",
+    "amtuser": "admin",
+    "mpsuser": "standalone",
+    "icon": 1,
+    "conn": 1,
+    "name": "d12428be-9fa1-4226-9784-54b2038beab6"
 }]
 ```

@@ -125,7 +125,7 @@ Change the following fields:
 | :----------- | :-------------- |
 | **RPS_IMAGE** | rps:v1 | 
 | **MPS_IMAGE** | mps:v1 | 
-| **MPS_COMMON_NAME** | Your development device's IP address |
+| **MPS_COMMON_NAME** | Your development system's IP address |
 
 > **Note: Forgot the name and tag from the build?**
 >

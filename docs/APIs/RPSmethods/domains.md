@@ -1,13 +1,12 @@
 # Intel AMT Domains
 
-
 ## Create A Domain
 
 * Endpoint: **/api/v1/admin/domains/create*
 * Method Type: POST
 * Headers: *X-RPS-API-Key*
 
-```
+```json
 {
     "payload": 
     { 
@@ -21,7 +20,7 @@
 ```
 
 Example Input:
-```
+```json
 {
     "payload": 
     { 
@@ -34,19 +33,11 @@ Example Input:
 }
 ```
 
-On Success:
+???+ success:
+    Domain amtDomain successfully inserted
 
-```
-Domain domain2 successfully inserted
-```
-
-On Failure: (Duplicate Domain)
-
-```
-Duplicate Domain. Domain already exists.
-```
-
-<br>
+???+ failure
+    Duplicate Domain. Domain already exists.
 
 ## Get a Domain
 
@@ -60,25 +51,19 @@ input domain1 provided in the URL
 
 Example output:
 
-On Success:
+???+ success
+    ```json
+    {
+        "Name": "domain1",
+        "DomainSuffix": "vprodemo.com",
+        "ProvisioningCert": null,
+        "ProvisioningCertStorageFormat": "string",
+        "ProvisioningCertPassword": null
+    }
+    ```
 
-```
-{
-    "Name": "domain1",
-    "DomainSuffix": "vprodemo.com",
-    "ProvisioningCert": "asfasf",
-    "ProvisioningCertStorageFormat": "string",
-    "ProvisioningCertPassword": "PROVISIONING_CERT_PASSWORD_KEY"
-}
-```
-
-On Failure: (Domain not found)
-
-```
-Domain not found
-```
-
-<br>
+???+ failure
+    Domain not found
 
 ## Get ALL Domains
 
@@ -92,31 +77,62 @@ input  provided in the URL
 
 Example output:
 
-On Success:
+???+ success
+    ```json
+    [
+        {
+            "Name": "domain1",
+            "DomainSuffix": "vprodemo.com",
+            "ProvisioningCert": null,
+            "ProvisioningCertStorageFormat": "string",
+            "ProvisioningCertPassword": null
+        }
+    ]
+    ```
 
-```
-[
-    {
-        "Name": "domain1",
-        "DomainSuffix": "vprodemo.com",
-        "ProvisioningCert": "asfasf",
-        "ProvisioningCertStorageFormat": "string",
-        "ProvisioningCertPassword": "PROVISIONING_CERT_PASSWORD_KEY"
+???+ failure
+    Domains not found
+
+## Edit A Domain
+
+* Endpoint: **/api/v1/admin/domains/edit*
+* Method Type: POST
+* Headers: *X-RPS-API-Key*
+
+```json
+{
+    "payload": 
+    { 
+        "Name":"domain1",
+        "DomainSuffix":"d1.com",
+        "ProvisioningCert":"[Your_ProvisioningCert_Text]", 
+        "ProvisioningCertStorageFormat":"raw",
+        "ProvisioningCertPassword":"[P@ssw0rd]"
     }
-]
+}
 ```
 
-On Failure: (Domain empty)
-
+Example Input:
+```json
+{
+    "payload": 
+    { 
+        "Name":"amtDomain",
+        "DomainSuffix":"amtDomain.com",
+        "ProvisioningCert":"[Your_ProvisioningCert_Text]", 
+        "ProvisioningCertStorageFormat":"raw",
+        "ProvisioningCertPassword":"P@ssw0rd"
+    }
+}
 ```
-Domains not found
-```
 
-<br>
+???+ success
+    Domain amtDomain successfully updated
+
+???+ failure
+    Domain domain1 not found
 
 # Delete a Domain
-
-
 
 * Endpoint: **/api/v1/admin/domains/domain1*
 * Method Type: DELETE
@@ -128,19 +144,11 @@ Example Input:
 ```
 NA (domain to delete provided as query parameter in url 'domain1')
 ```
+???+ success
+    Domain domain1 successfully deleted
 
-On Success:
+???+ failure
+    Domain not found.
 
-```
-Domain domain1 successfully deleted
-```
-
-On Failure: (Domain not found)
-
-```
-Domain not found.
-```
-
-<br>
 
 Return to [RPS Methods](../indexRPS.md)

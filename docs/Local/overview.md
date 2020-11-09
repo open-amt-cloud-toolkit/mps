@@ -1,52 +1,65 @@
 # Build and Deploy Microservices Locally
 
-This section outlines the setup of ActivEdge's microservices and client application. Follow these instructions to install MPS and RPS on a development system, with RPC deployed on a managed device, as in Figure 1.
+This section contains the instructions for deploying Active Edge's Management Presence Server (MPS) and Remote Provisioning Server (RPS) on a local development system. These Hello World deployment instructions detail how to install the microservices manually. 
 
-[![Local Overview](../assets/images/HelloWorldLocal.png)](../assets/images/HelloWorldLocal.png)
+[![Local Overview](../assets/images/ManualDeploymentWorkflow.png)](../assets/images/ManualDeploymentWorkflow.png)
 
-**Figure 1: Microservices deployed on a local development system.**
+**Figure 1: Deploy microservices on a local development system.**
 
 
 ## What You'll Need
 
-**Hardware**
+### Hardware
 
-At minimum, to install and utilize the ActivEdge microservices, a network configuration must include:
+**Configure a network that includes:**
 
--  A development PC with Windows 10 or Ubuntu 18.04 or newer
--  At least one Intel® vPro device
+-  A development system running Windows® 10 or Ubuntu* 18.04 or newer 
+-  At least one Intel® vPro device to manage
+-  A flash drive or equivalent means to transfer files between
+
 
 Both systems must use a wired (i.e., cable) connection on the same network.
 
-**Software** 
+### Development System Software
 
-- The **development PC** hosts Management Presence Server (MPS) and Remote Provisioning Server (RPS) and requires the following software:
-    - [Chrome* Browser](https://www.google.com/chrome)
-    - [git](https://git-scm.com/downloads)
-    - [node.js v10 or greater](https://nodejs.org/)
+**Before MPS and RPS installation, install the following software:**
+
+- [Chrome* Browser](https://www.google.com/chrome)
+- [git](https://git-scm.com/downloads)
+- [Node.js* LTS 12.x.x or newer](https://nodejs.org/)
   
-- The **managed device (test client), with Intel® vPro** runs the Remote Provisioning Client (RPC) and requires the following software:
+### Intel® vPro Managed Device Software
 
-    - [git](https://git-scm.com/downloads)
-    - [Microsoft Visual Studio*](https://visualstudio.microsoft.com/): 2017 or newer version of Visual Studio Code or Visual Studio Community.
+**Before Remote Provisioning Client (RPC) installation, install the following software:**
 
-    >Note: Microsoft* Visual Studio on the managed devices is not typical for production environments. This is for demonstration purposes.
-    >
+- [git](https://git-scm.com/downloads)
+- [Microsoft Visual Studio*](https://visualstudio.microsoft.com/): 2019 or newer version of Visual Studio Community/Professional
+
+!!! note
+    Running Microsoft* Visual Studio on a managed device to build the RPC is for demo purposes. This is not typical for production environments.
+
+
 
 ## What You'll Do
-Follow the steps in these sections sequentially: 
+
+**To complete a Hello World microservice deployment:**
 
 - Install MPS Locally
 - Install RPS Locally
-- Configure RPS
-- Build RPC on Managed Device
+- Login and Configure RPS
+- Build RPC
 - Manage Device
 
-Run instructions in these sections can use Microsoft Windows* or Linux* environments. The terminal may be A) the Windows Command Prompt in Administrator mode or B) the Linux* shell/terminal. 
 
-Estimated completion time:** 15 minutes
+**To connect the managed device:**
 
-<br>
+- Build and Run RPC on a Managed Device
+- Manage the Device with MPS
+
+
+These sections include instructions for Windows* and Linux* environments. Run instructions in a terminal window, the Windows Command Prompt in Administrator mode or the Linux shell/terminal. 
+
+Estimated completion time: **15 minutes**
 
 ## Next up
 [Install MPS Locally](installMPS.md)

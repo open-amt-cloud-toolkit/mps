@@ -2,7 +2,7 @@
 
 ## Overview
 
-This section outlines the setup of the ActivEdge's microservices and client application. Take this path to install MPS and RPS as Docker images that will function as services on a local system or the cloud as in Figure 1.
+This section outlines the setup of the Active Edge's microservices and client application. Take this path to install MPS and RPS as Docker images that will function as services on a local system or the cloud as in Figure 1.
 
 [![Docker Local Overview](../assets/images/HelloWorldDocker.png)](../assets/images/HelloWorldDocker.png)
 
@@ -14,37 +14,34 @@ This section outlines the setup of the ActivEdge's microservices and client appl
 
 **Hardware**
 
-At minimum, to install and use the ActivEdge, a network configuration must include:
+At minimum, to install and use Active Edge, a network configuration must include:
 
--  A development PC 
+-  A development system 
 -  At least one Intel® vPro device
+-  A flash drive or equivalent means to transfer files between
 
 Both systems must use a wired (i.e., cable) connection on the same network.
 
 **Software**
 
-- The **development PC** hosts Management Presence Server (MPS) and Remote Provisioning Server (RPS) and requires the following software:
+The **development system** hosts Management Presence Server (MPS) and Remote Provisioning Server (RPS) and requires the following software:
 
-    - [Docker Desktop](https://www.docker.com/products/docker-desktop) for Windows* or Linux*
+- [Docker* Desktop](https://www.docker.com/products/docker-desktop) for Windows* or Linux*
 
-        Docker Configuration Details:
+    Docker Configuration Details:
 
-        - The Docker for Windows installer defaults to enable all the required settings for this tutorial.
-        - After successful installation, the Docker icon (whale), will appear on the task bar.
-        - To troubleshoot the installation, [see the troubleshooting guide](https://docs.docker.com/docker-for-windows/troubleshoot/).
+    - The Docker for Windows installer defaults to enable all the requiredsettings for this tutorial.
+    - After successful installation, the Docker icon (whale), will appear on thetask bar.
+    - To troubleshoot the installation, [see the troubleshooting guide](https:/docs.docker.com/docker-for-windows/troubleshoot/).
 
-    - [Chrome* Browser](https://www.google.com/chrome)
+- [Chrome* Browser](https://www.google.com/chrome)
+- [git](https://git-scm.com/downloads)
 
-    - [git](https://git-scm.com/downloads)
-
-- The **managed device (test client), with Intel® vPro** runs the Remote Provisioning Client (RPC) and requires the following software:
-
-      - [git](https://git-scm.com/downloads)
-
-      - [Microsoft* Visual Studio](https://visualstudio.microsoft.com/), 2017 or newer version 
+If using a Windows-based Development System, also requires:
     
-      >Note: Microsoft* Visual Studio on the managed devices is not typical for production environments. This is for demonstration purposes.
-      >
+- [Microsoft Visual Studio*](https://visualstudio.microsoft.com/): 2019 or newer version of Visual Studio Community/Professional
+
+      
 
 ## What You'll Do
 
@@ -57,11 +54,8 @@ Follow the steps in these sections sequentially to deploy Docker* images on a lo
 
 Run instructions in these sections can use Microsoft Windows* or Linux* environments. The terminal may be A) the Windows Command Prompt in Administrator mode or B) the Linux* shell/terminal. 
 
-Estimated completion time:** 15 minutes
+Estimated completion time: **15 minutes**
 
 ## Next up
 [Build Docker* Images](dockerLocal.md)
-
-
-<br><br>
 

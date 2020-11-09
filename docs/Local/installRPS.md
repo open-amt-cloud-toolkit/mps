@@ -1,21 +1,25 @@
-The Remote Provisioning Service is a Node.js-based microservice that works with the Remote Provisioning Client (RPC) to activate Intel&reg; AMT platforms using a pre-defined profile.
+The Remote Provisioning Service (RPS) is a microservice based on Node.js*. The RPS works with the Remote Provisioning Client (RPC) to activate Intel&reg; AMT platforms using a pre-defined profile.
 
-The image below illustrates how RPS activates an Intel&reg; AMT device for remote management. In this section, we will see how to deploy number two, RPS.
+Figure 1 illustrates where RPS fits into the overall microservice architecture.
 
-[![RPS](../assets/images/RPS_Overview.png)](../assets/images/RPS_Overview.png)
+[![RPS](../assets/images/RPSDeployment.png)](../assets/images/RPSDeployment.png)
 
-### Clone the Repository
+**Figure 1: Deploy Remote Provisioning Server (RPS) on a development system.**
 
-1\. Open a new Command Prompt or a Terminal. The MPS server will continue to run in your previous Command Prompt or Terminal.
+## Clone the Repository
 
-2\. Clone the RPS repository to the same parent directory where the mps directory is located. Enter the following command:
+**To clone the repository:**
+
+1. Open a new Command Prompt or a Terminal. The MPS server will continue to run in your previous Command Prompt or Terminal.
+
+2. Clone the RPS repository to the same parent directory where the mps directory is located. 
 
 ```
-git clone --branch ActivEdge https://github.com/open-amt-cloud-toolkit/rps.git
-cd rps
+git clone --branch ActivEdge https://github.com/open-amt-cloud-toolkit/rps.git && cd rps
 ```
 
-The parent directory structure should look like this:
+!!! Warning
+    Do not nest a microservice directory inside another microservice directory. The source code contains relative paths. The correct directory structure appears below, where *parent* is the your installation directory.
     
 ```
 📦parent
@@ -24,27 +28,30 @@ The parent directory structure should look like this:
 ```
 
 
-### Start the RPS Server
+## Start the RPS Server
 
-1\. In the rps directory, run the install command to install all required dependencies. 
+**To start the RPS:**
 
-```
-npm install
-```
+1. In the ```rps``` directory, run the install command to install all required dependencies. 
 
-2\. Then, start the server. By default, the RPS web port is 8080.
+    ``` bash
+    npm install
+    ```
 
-```
-npm run dev
-```
+2. Then, start the server. By default, the RPS web port is 8080.
 
->**Note:** Warning messages are okay and expected for optional dependencies.
+    ``` bash
+    npm run dev
+    ```
 
-Example Output:
+    !!! note
+        Warning messages are okay and expected for optional dependencies.
 
-[![RPS Output](../assets/images/RPS_npmrundev.png)](../assets/images/RPS_npmrundev.png)
+    Example Output:
 
-<br>
+    [![RPS Output](../assets/images/RPS_npmrundev.png)](../assets/images/RPS_npmrundev.png)
+
+**Figure 2: RPS reports successful deployment.**
 
 ## Next up
 [Login to RPS](../General/loginToRPS.md)
