@@ -108,7 +108,7 @@ git clone --branch ActivEdge https://github.com/open-amt-cloud-toolkit/mps.git &
         };
         ```
 
-4. Navigate back to the `./mps` root directory.
+4. Navigate back to the `./mps` base directory.
 5. Run the install commands to install all required dependencies.
     ``` bash
     npm install
