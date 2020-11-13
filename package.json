@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Containerized MPS service",
   "scripts": {
-    "install": "cd webui && npm install",
+    "install": "cd webui && npm ci",
     "build": "tsc && (cd webui && npm run build)",
     "compile": "tsc",
     "start": "npm run build && node ./dist/index.js",

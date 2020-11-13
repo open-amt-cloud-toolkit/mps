@@ -51,14 +51,14 @@ node {
 
         stage('Test') {
             docker.image('node-builder:latest').inside('-e http_proxy -e https_proxy') {
-                    sh 'npm install --unsafe-perm'
+                    sh 'npm ci --unsafe-perm'
                     sh 'npm run test'
             }
         }
 
         stage('Build') {
             docker.image('node-builder:latest').inside('-e http_proxy -e https_proxy') {
-                sh 'npm install --unsafe-perm'
+                sh 'npm ci --unsafe-perm'
                 sh 'npm build'
              }
         }

@@ -10,7 +10,7 @@ WORKDIR /mps-microservice
 
 COPY package*.json ./
 COPY webui/package*.json ./webui/
-RUN npm install --unsafe-perm
+RUN npm ci --unsafe-perm
 
 #Second stage ignores all the git credentials and copies the node-modules
 FROM node:latest
