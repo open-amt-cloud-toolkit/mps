@@ -1,3 +1,8 @@
+#*********************************************************************
+# Copyright (c) Intel Corporation 2020
+# SPDX-License-Identifier: Apache-2.0
+#*********************************************************************/
+
 # This is a basic workflow to help you get started with Actions
 
 name: Docs-Build
