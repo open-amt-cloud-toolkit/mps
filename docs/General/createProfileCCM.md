@@ -11,7 +11,7 @@ Intel AMT&reg; devices are capable of being activated into two modes:
 
 ![assets/images/Profiles.png](assets/images/Profiles.png)
 
-**Figure 1: Create configuration and profiles. **
+**Figure 1: Set up configuation and profiles for N number of clients. **
 
 ## Create a Profile
 
