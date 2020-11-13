@@ -1,8 +1,8 @@
 # Active Edge Overview
 
-Intel® vPro™ Platforms offer hardware-enhanced security features and remote manageability, also known as out-of-band manageability, using Intel® Active Management Technology (Intel&reg; AMT). With Intel&reg; AMT, administrators remotely manage, repair, and update network assets, such as systems and edge devices. In the event that a network asset is powered off or the operating system is unavailable, administrators can power on the asset. 
+Intel vPro® platforms offer hardware-enhanced security features and remote manageability, also known as out-of-band manageability, using Intel® Active Management Technology (Intel&reg; AMT). With Intel&reg; AMT, administrators remotely manage, repair, and update network assets, such as systems and edge devices. In the event that a network asset is powered off or the operating system is unavailable, administrators can power on the asset. 
 
-Active Edge provides open-source, modular microservices and libraries for integration of hardware provisioning, out-of-band manageability, and other Intel&reg; AMT features with both new and existing management consoles, software solutions, and more. As an open source implementation, Active Edge makes it easier for IT departments and ISVs to adopt, integrate, and customize out-of-band management solutions for Intel® vPro™ Platforms.
+Active Edge provides open-source, modular microservices and libraries for integration of hardware provisioning, out-of-band manageability, and other Intel&reg; AMT features with both new and existing management consoles, software solutions, and more. As an open source implementation, Active Edge makes it easier for IT departments and ISVs to adopt, integrate, and customize out-of-band management solutions for Intel vPro® platforms.
 
 Read more about Intel&reg; AMT features and capabilities [here](https://software.intel.com/content/www/us/en/develop/topics/iot/hardware/vpro-platform-retail.html).
 
@@ -16,7 +16,7 @@ The Active Edge guides provides instructions to:
 
 Additional sections provide guidance on the reference implementation UI Toolkit, REST API usage, asset security, and more.
 
-![assets/images/ActivEdgeComponentsLarge.png](assets/images/AEHighLevelArch.png)
+![assets/images/AEHighLevelArch.png](assets/images/AEHighLevelArch.png)
 
 **Figure 1: Active Edge High-level Architecture**
 
