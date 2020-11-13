@@ -28,4 +28,4 @@ Language can be changed in the browser under langauage section of the browser se
 
 ## Get the localised strings for the web consoles with localization enabled.
 
-if users web console is already enabled with localization please make sure to add the [translations](public/locales/en/translation.json) of UI-controls into your web consoles translations file.
+if users web console is already enabled with localization please make sure to add the translations located at `public/locales/en/translation.json` of UI-controls into your web consoles translations file.
