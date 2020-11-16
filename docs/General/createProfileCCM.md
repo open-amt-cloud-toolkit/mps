@@ -9,7 +9,7 @@ Intel AMT&reg; devices are capable of being activated into two modes:
     - Keyboard, Video, Mouse (KVM) Control
     - IDE-Redirection for sharing and mounting images remotely
 
-![assets/images/Profiles.png](assets/images/Profiles.png)
+![assets/images/Profiles.png](../assets/images/Profiles.png)
 
 **Figure 1: Set up configuation and profiles for N number of clients. **
 
