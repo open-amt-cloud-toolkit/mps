@@ -36,6 +36,8 @@
 
 **[Docker*:](https://www.docker.com/)**  A platform that employs the idea of containerization, isolating a unit of software, such as an application, from its environment. Containerization creates applications as lightweight, discrete processes that can be deployed to the cloud as services. See Docker overview for more information. 
 
+**DNS suffix:** A suffix appended to the hostname of a DNS name.
+
 **domain suffix:** The top-level portion (end) of a domain name (i.e., com, net, org).  
 
 ## E

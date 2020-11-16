@@ -1,19 +1,22 @@
-Client Initiated Remote Access (CIRA) enables a CIRA-capable edge device to initiate and establish a persistent connection to the MPS server rather than the MPS server initiating contact with the edge device.  This enables access to edge devices that might be harder to reach behind a firewall or a firewall process, such as network address translation (NAT).
+Client Initiated Remote Access (CIRA) enables a CIRA-capable edge device to initiate and establish a persistent connection to the MPS rather than the MPS initiating contact with the edge device.  This enables access to edge devices that might be harder to reach behind a firewall or a firewall process, such as network address translation (NAT).
 
-A CIRA Configuration provides the Remote Provisioning Client (RPC) the required information to establish the edge device's CIRA connection to the MPS Server during the activation process.  
+A CIRA Configuration provides the Remote Provisioning Client (RPC) the required information to establish the edge device's CIRA connection to the MPS Server during the activation process. 
 
-1. Select the CIRA Configs tab from the left-hand menu.
+**To create a CIRA Config:**
 
-2. In the top-right corner, click New.
+1. Select the **CIRA Configs** tab from the left-hand menu.
+
+2. In the top-right corner, click **New.**
     [![RPS](../assets/images/RPS_NewCIRAConfig.png)](../assets/images/RPS_NewCIRAConfig.png)
+    **Figure 1: Create a new CIRA Config.**
 
-3. Specify a Config Name of your choice.
+3. Specify a **Config Name** of your choice.
 
-4. Select IPV4, and provide your developement system's IP Address.
+4. Select **IPV4**, and provide your developement system's IP Address.
 
-5. Set Port to the default, 4433.
+5. Set **Port** to the default, 4433.
 
-6. Set User Name and Password to the following:
+6. Set **User Name** and **Password** to the following:
 
     | Field         | Value      |
     | :------------ | :--------- |
@@ -21,18 +24,19 @@ A CIRA Configuration provides the Remote Provisioning Client (RPC) the required 
     | **Password**  | G@ppm0ym   |
 
 
-7. Provide your developement system's IP address as the Common Name to generate the self-signed certificate by the MPS server.
+7. Provide your development system's IP address as the **Common Name** to generate the self-signed certificate by the MPS server.
 
-8. Leave Mps root certificate format to the default, Auto Load.
+8. Do not modify the default value of **Auto Load** for the **MPS root certificate format.**
 
-9. Click Load under MPS Root Certificate.
+9. Click **Load** under MPS Root Certificate.
 
-10. Click Create.
+10. Click **Create.**
     
     !!! example
         Example CIRA Config:
             
         [![RPS](../assets/images/RPS_CreateCIRAConfig.png)](../assets/images/RPS_CreateCIRAConfig.png)
+        **Figure 2: Load MPS Root Certificate.** 
 
 ## Next up
 
