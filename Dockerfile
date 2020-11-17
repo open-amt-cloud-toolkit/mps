@@ -4,28 +4,31 @@
 #*********************************************************************/
 #Multistage docker layer to isolate the git credentials
 #First stage copy and install dependencies
-ARG BASE=node:latest
+ARG BASE=node:14
 FROM ${BASE} as builder
+
 WORKDIR /mps-microservice
 
-COPY package*.json ./
-COPY webui/package*.json ./webui/
-RUN npm ci --unsafe-perm
+EXPOSE 4433
+EXPOSE 3000
 
-#Second stage ignores all the git credentials and copies the node-modules
-FROM node:latest
-WORKDIR /mps-microservice
-
-COPY --from=builder /mps-microservice/node_modules ./node_modules
-COPY --from=builder /mps-microservice/webui/node_modules ./webui/node_modules
-COPY . .
 COPY package*.json ./
-COPY src ./src/
 COPY tsconfig.json ./
+COPY src ./src/
+COPY webui/src ./webui/src
+COPY webui/public ./webui/public
+COPY webui/package*.json ./webui/
+COPY webui/jsconfig.json ./webui/
 COPY private/data.json ./private/ 
 COPY agent ./agent/
 COPY .mpsrc ./
 
-EXPOSE 4433
-EXPOSE 3000
+# Install dependencies
+RUN npm ci --unsafe-perm
+
+# Transpile TS -> JS
+RUN npm run build
+#RUN npm prune --production
+
+#CMD [ "node", "./dist/index.js" ]
 CMD [ "npm", "start" ]
