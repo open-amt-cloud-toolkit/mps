@@ -1,6 +1,6 @@
 # Build and Deploy Microservices Locally
 
-This section contains the instructions for deploying Active Edge's Management Presence Server (MPS) and Remote Provisioning Server (RPS) on a local development system. These Hello World deployment instructions detail how to install the microservices manually. 
+This section contains the instructions for deploying the Open AMT Cloud Toolkit's Management Presence Server (MPS) and Remote Provisioning Server (RPS) on a local development system. These Hello World deployment instructions detail how to install the microservices manually. 
 
 [![Local Overview](../assets/images/ManualDeploymentWorkflow.png)](../assets/images/ManualDeploymentWorkflow.png)
 

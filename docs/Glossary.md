@@ -6,11 +6,11 @@
 
 ## A
 
-**[Active Edge:]()** An open source software architecture consisting of modular microservices and libraries for integration of out-of-band manageability into exisiting network infrastructures. The software enables network administrators and ISVs to explore key Intel® Active Management Technology (Intel® AMT).
+**[Open Active Management Technology Cloud Toolkit:]()** An open source software architecture consisting of modular microservices and libraries for integration of out-of-band manageability into exisiting network infrastructures. The software enables network administrators and ISVs to explore key Intel® Active Management Technology (Intel® AMT). It can also be referred to as Open AMT Cloud Toolkit.
 
 **admin control mode (ACM):** A mode of provisioning Intel® AMT that requires a purchased provisioning certificate from a Certificate Authority (CA), the creation of a domain, and the creation of a profile in the Remote Provisioning Server (RPS) application. ACM achieves a higher level of trust than client control mode (CCM). See CCM and provisioning.
 
-**ACM Activation**: The act of loading a purchased certificate and associating it with an Active Edge profile.
+**ACM Activation**: The act of loading a purchased certificate and associating it with an AMT profile.
 
 **allowlist**: A list permiting access to a privilege, service, network, etc.
 
@@ -26,7 +26,7 @@
 
 **CIRA Config Control:** 
 
-**Client Control Mode (CCM)**: An alternative to ACM provisioning mode that does not require a purchased certificate. Use this mode to setup Active Edge software features quickly.
+**Client Control Mode (CCM)**: An alternative to ACM provisioning mode that does not require a purchased certificate. Use this mode to setup the Open AMT Cloud Toolkit software features quickly.
 
 **Container (Docker*):** The instantiation, or running instance, of a Docker image.
 
@@ -70,7 +70,7 @@
 
 **Management Presence Server (MPS):** A microservice that resides on the development system and enables platforms featuring featuring Intel® AMT. The MPS receives client initiated remote access (CIRA) requests from the managed device. 
 
-**microservice: ** A software unit or module of a microservice architecture. In Active Edge architecture, MPS and RPS are microservices residing on the development system. 
+**microservice: ** A software unit or module of a microservice architecture. In the Open AMT Cloud Toolkit architecture, MPS and RPS are microservices residing on the development system. 
 
 **microservice architecture:** An architecture in which the component parts are broken into discrete services, called microservices, that perform specific, limited functions. 
 
@@ -82,7 +82,7 @@
 
 ## O
 
-**out-of-band (OOB) manageability:** A remote management technology that allows administrators to perform actions on network assets or devices using a secure alernative to LAN-based communication protocols. Actions include reboot, power up, power down, system updates, and more. As long as the network device or asset is connected to power, Active Edge  software can perform remote management, including powering up as system that is currently powered down. 
+**out-of-band (OOB) manageability:** A remote management technology that allows administrators to perform actions on network assets or devices using a secure alernative to LAN-based communication protocols. Actions include reboot, power up, power down, system updates, and more. As long as the network device or asset is connected to power, the Open AMT Cloud Toolkit software can perform remote management, including powering up as system that is currently powered down. 
 
 ## P
 
@@ -98,7 +98,7 @@
 
 **Remote Provision Server (RPS):** A node.js-based microservice that works with the Remote Provision Client (RPC) to activate Intel AMT using a pre-defined profile.
 
-**Representational State Transfer (REST) API**: An architectural style or set of rules describing constraints that allow administrators and developers to take advantage of various Web services. in the context of Active Edge, administrators can construct REST API calls and run them with node, use provided REST code snippets to expand the reference implementation console, and use provided REST code snippets as a springboard for developing and expanding custom consoles.
+**Representational State Transfer (REST) API**: An architectural style or set of rules describing constraints that allow administrators and developers to take advantage of various Web services. in the context of the Open AMT Cloud Toolkit, administrators can construct REST API calls and run them with node, use provided REST code snippets to expand the reference implementation console, and use provided REST code snippets as a springboard for developing and expanding custom consoles.
 
 
 

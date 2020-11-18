@@ -23,7 +23,7 @@ In order to deploy and make changes, the following tools and application has to 
 At a command prompt, run the following commands:
 ```
 git clone https://github.com/open-amt-cloud-toolkit/ui-toolkit.git
-cd ui-toolkit
+cd UI_Toolkit
 npm install
 ```
 
