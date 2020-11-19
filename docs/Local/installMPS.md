@@ -1,4 +1,4 @@
-The Management Presence Server (MPS) is a cloud-agnostic microservice that enables platforms featuring Intel&reg; AMT to be managed over the internet. This section details how to set up the MPS on a development system.
+The [Management Presence Server (MPS)](../Glossary.md#m) is a cloud-agnostic microservice that enables platforms featuring Intel&reg; AMT to be managed over the internet. This section details how to set up the MPS on a development system.
 
 Figure 1 illustrates where MPS fits into the overall microservice architecture.
 
