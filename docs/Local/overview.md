@@ -1,6 +1,6 @@
 # Build and Deploy Microservices Locally
 
-This section contains the instructions for deploying the Open AMT Cloud Toolkit's Management Presence Server (MPS) and Remote Provisioning Server (RPS) on a local development system. These Hello World deployment instructions detail how to install the microservices manually. 
+This section contains instructions for deploying the Open AMT Cloud Toolkit's [Management Presence Server (MPS)](../Glossary.md#m) and [Remote Provisioning Server (RPS)](../Glossary.md#r) on a local development system. These Hello World deployment instructions detail how to install the microservices manually on a development system and are not intended as production environment instructions. 
 
 [![Local Overview](../assets/images/ManualDeploymentWorkflow.png)](../assets/images/ManualDeploymentWorkflow.png)
 
@@ -14,7 +14,7 @@ This section contains the instructions for deploying the Open AMT Cloud Toolkit'
 **Configure a network that includes:**
 
 -  A development system running Windows® 10 or Ubuntu* 18.04 or newer 
--  At least one Intel® vPro device to manage
+-  At least one Intel vPro® device to manage
 -  A flash drive or equivalent means to transfer files between
 
 
@@ -28,7 +28,7 @@ Both systems must use a wired (i.e., cable) connection on the same network.
 - [git](https://git-scm.com/downloads)
 - [Node.js* LTS 12.x.x or newer](https://nodejs.org/)
   
-### Intel® vPro Managed Device Software
+### Intel vPro® Managed Device Software
 
 **Before Remote Provisioning Client (RPC) installation, install the following software:**
 
@@ -36,7 +36,7 @@ Both systems must use a wired (i.e., cable) connection on the same network.
 - [Microsoft Visual Studio*](https://visualstudio.microsoft.com/): 2019 or newer version of Visual Studio Community/Professional
 
 !!! note
-    Running Microsoft* Visual Studio on a managed device to build the RPC is for demo purposes. This is not typical for production environments.
+    Running Microsoft Visual Studio* on a managed device to build the RPC is for demo purposes. This is not typical for production environments.
 
 
 
@@ -48,18 +48,18 @@ Both systems must use a wired (i.e., cable) connection on the same network.
 - Install RPS Locally
 - Login and Configure RPS
 - Build RPC
-- Manage Device
+- Copy RPC to a Managed Device
 
 
 **To connect the managed device:**
 
-- Build and Run RPC on a Managed Device
+- Run RPC on a Managed Device
 - Manage the Device with MPS
 
 
-These sections include instructions for Windows* and Linux* environments. Run instructions in a terminal window, the Windows Command Prompt in Administrator mode or the Linux shell/terminal. 
+These sections include instructions for Windows and Linux environments. Run instructions in a terminal window, the Windows Command Prompt in Administrator mode or the Linux shell/terminal.
 
 Estimated completion time: **15 minutes**
 
 ## Next up
-[Install MPS Locally](installMPS.md)
+**[Install MPS Locally](installMPS.md)**

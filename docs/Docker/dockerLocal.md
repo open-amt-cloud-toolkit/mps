@@ -1,42 +1,30 @@
 # Build and Deploy Docker* Images for MPS and RPS Locally
 
-Management Presence Server (MPS) and Remote Provisioning Server (RPS)  provide support for deploying the services as Docker* images, standardized packages containing an application's source code, libraries, environment, and dependencies. 
+The Open AMT Cloud Toolkit's [Management Presence Server (MPS)](../Glossary.md#m) and [Remote Provisioning Server (RPS)](../Glossary.md#r) provide support for deploying the microservices as [Docker*](../Glossary.md#d) images, standardized packages containing an application's source code, libraries, environment, and dependencies. 
 
-A Docker container is the instantiation of a Docker image as a virtualized unit that separates the application from the environment. Docker* containers start and run reliably, securely, and portably inside different environments, eliminating some of the usual problems that occur with software deployment on varying platforms. 
+## Why Docker*?
+
+A Docker container is the instantiation of a Docker image as a virtualized unit that separates the application from the environment. Docker containers start and run reliably, securely, and portably inside different environments, eliminating some of the usual problems that occur with software deployment on varying platforms. 
 
 Get more information about Docker images and containers at [Docker resources.](https://www.docker.com/resources/what-container)
 
-## What You'll Do
-
-This section describes how to deploy MPS and RPS as Docker* images on the development system:
-
-1. Clone the repositories.
-2. Build the images.
-3. Set the environment variables.
-4. Run the tool [docker-compose](https://docs.docker.com/compose/) tool on a sample configuration file to define and enable a multi-container environment. 
-
-
 ## Clone the MPS and RPS Repositories
 
-Navigate to a directory of your choice for development.
+**To clone the repositories:**
 
-### Clone MPS
+1\. Open a Command Prompt or Terminal and navigate to a directory of your choice for development.
 
-1\. Clone the MPS repository.
-
-```
+``` bash
 git clone https://github.com/open-amt-cloud-toolkit/mps.git
 ```
+2\. Repeat to clone the RPS repository to the same parent directory as MPS.
 
-### Clone RPS
-
-1\.Clone the RPS repository to the same parent directory as MPS.
-
-```
+``` bash
 git clone https://github.com/open-amt-cloud-toolkit/rps.git
 ```
 
-After the `git clone` commands complete, the parent directory will contain an MPS and RPS folder.
+!!! Warning
+    Do not nest a microservice directory inside another microservice directory. The source code contains relative paths. The correct directory structure appears below, where *parent* is your installation directory.
 
 ```
 📦parent
@@ -45,21 +33,21 @@ After the `git clone` commands complete, the parent directory will contain an MP
 ```
 
 
-
-<br>
-
 ## Build the Docker Images
-Build the MPS and RPS Docker images from their respective directories with the **build -t** command, giving the image a name and tag:
+Build the MPS and RPS Docker images from their respective directories with the `build -t` command, giving the image a name and tag:
 
 [docker build . -t [name:tag]](https://docs.docker.com/engine/reference/commandline/build/)  
 
-- Create a name and tag with lowercase letters, digits, and separators (i.e., underscores, periods, and dashes).
-- Do not end a name or tag with a separator.
-- Tags contain up to 128 characters.
+**Create name and tags that:**
 
-> **Note: Building a fresh Docker image may take several minutes.** 
+- Contain lowercase letters, digits, and separators (i.e., underscores, periods, and dashes).
+- Do not end with a separator.
+- Contain up to 128 characters.
 
-### Build MPS
+!!! Note
+    Building a fresh Docker image may take several minutes.
+
+**To build MPS:**
 
 1. Navigate to MPS folder and build the Docker image. 
 
@@ -72,7 +60,7 @@ docker build . -t mps:v1
 !!! note
     On completion, a security warning is normal during local setup with the default values for developer testing environments.
 
-### Build RPS
+**To build RPS:**
 
 2\. Navigate to the RPS folder and build the Docker image.
 
@@ -83,30 +71,33 @@ docker build . -t rps:v1
 ```
 ![Image of RPS Build Completion](../assets/images/RPSBuild.png) 
    
-### Set the Environment Variables  
-3\. After building the new MPS and RPS images, navigate to the mps\scripts\docker-compose folder and copy the .env.template file to .env. 
+## Set the Environment Variables  
+
+**To set the environment variables:**
+
+1\. After building the new MPS and RPS images, navigate to the `mps\scripts\docker-compose` folder and copy the .env.template file to `.env`. 
 
 ```
 cd ..
 cd mps/scripts/docker-compose
 ```
 
-Windows Command:
-```
-copy .env.template .env
-```
+=== "Windows"
+    ```
+    copy .env.template .env
+    ```
 
-Linux Command:
-```
-cp .env.template .env
-```
+=== "Linux"
+    ```
+    cp .env.template .env
+    ```
 
 !!! note 
     **Preserve the .env.template file.**
 
     This file is very important to maintain. Always copy to a new file. 
 
-4\. Open the .env file in a text editor. Set the image-related environment variables within the .env file.
+2\. Open the .env file in a text editor. Set the image-related environment variables within the .env file.
 
 Change the following fields:
 
@@ -166,4 +157,4 @@ The environment file .env now contains the MPS and RPS environment variables to 
 
 
 ## Next up
-[Login to RPS](../General/loginToRPS.md)
+[**Login to RPS**](../General/loginToRPS.md)

@@ -1,6 +1,5 @@
 
-Below is a list of some possible errors you may come across when activating or de-activating your devices along with some potential solutions that may help address the issue at hand.  
-
+The table below details possible errors that may occur when activating or de-activating managed devices along with some potential solutions.
 
 | Error Message | Possible Solutions |
 | ------------- | ------------------ |

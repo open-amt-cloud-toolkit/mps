@@ -1,6 +1,6 @@
-The Management Presence Server (MPS) is a cloud-agnostic microservice that enables platforms featuring Intel&reg; AMT to be managed over the internet. This section details how to set up the MPS on a development system.
+The [Management Presence Server (MPS)](../Glossary.md#m) is a cloud-agnostic microservice that enables platforms featuring Intel® AMT to be managed over the internet. This section details how to set up the MPS on a development system.
 
-Figure 1 illustrates where MPS fits into the overall microservice architecture.
+Figure 1 illustrates where MPS fits into the overall [microservice architecture.](../Glossary.md#m)
 
 [![MPS](../assets/images/MPSDeployment.png)](../assets/images/MPSDeployment.png)
 
@@ -27,7 +27,7 @@ git clone https://github.com/open-amt-cloud-toolkit/mps.git && cd mps
 
 | Field       |  Change to    | Description |
 | :----------- | :-------------- | :- |
-| `use_allowlist` | false |A value of false disables the allowlist functionaliy. For information about allowlist, see the allowlist [tutorial](../Tutorials/allowlist.md) |
+| `use_allowlist` | false |A value of false disables the allowlist functionality. For information about allowlist, see the allowlist [tutorial](../Tutorials/allowlist.md) |
 | `common_name` | Development system's IP address. <br> **Note:** For this guide, you **cannot** use localhost because the managed device would be unable to reach the MPS and RPS servers. | For this guide, the address will be used in a self-signed certificate. It may be an IP address or FQDN in real world deployment.|
 
 
@@ -121,14 +121,17 @@ git clone https://github.com/open-amt-cloud-toolkit/mps.git && cd mps
 ``` bash
 npm run dev
 ```
-2. Figure 2 demonstrates successful deployment. The web server runs on port 3000 by default, and the MPS Server listens on port 4433. It will take approximately 2–3 minutes to start.
+2. Figure 2 demonstrates successful deployment. The web server runs on port 3000 by default, and the MPS Server listens on port 4433. It will take approximately 2-3 minutes to start.
 
 !!! Note
     The development system's IP Address will be used to connect to the web server.
-    
+
 [![mps](../assets/images/MPS_npmrundev.png)](../assets/images/MPS_npmrundev.png)
 
 **Figure 2: MPS reports successful deployment.**
 
 !!! Note
     Because the `generateCertificates` field is set to true in the `.mpsrc` file, certificates will be generated and stored in the `../mps/private` directory.
+
+## Next up
+**[Install RPS Locally](installRPS.md)**
