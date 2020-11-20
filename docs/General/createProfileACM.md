@@ -34,7 +34,7 @@ In this example, the hostname is **cb-vending1** and the DNS suffix is **burgerb
 
  **To set the DNS suffix: **
 
-1. Manually modify it MEBX on the managed device. Find instructions [here](../Topics/mebx.md)
+1. Manually modify it MEBX on the managed device. Find instructions [here](../Topics/MEBX/dnsSuffix.md)
 2. Alternately, change the DHCP Option 15 to DNS Suffix within the Router settings.
 
 **To find the the DNS suffix, use the following command: **

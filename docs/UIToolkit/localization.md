@@ -6,7 +6,7 @@
  - **Example**: To support for Kannada language, 
 		 - Add the directory  **kn** to **public/locales**. 
 		 - Copy the translation.json file from **public/locales/en**  to **public/locales/kn** 
-		 - Update the **public/locales/kn/translation.json** file as per kanada language 
+		 - Update the **public/locales/kn/translation.json** file as per kanada langauage 
  - Modify the **/i18n.ts** file to import the newly added **public/locales/Language/translation.json** file and
    update the 'const resources' to include the new file. 
  - **Example** : To support for Kannada language modified **/i18n.ts** as below.
@@ -24,8 +24,8 @@
 
 Note: Rebuild and generate a new bundle before testing the changes.
 
-Language can be changed in the browser under language section of the browser settings. English is the default if no customized translation file provided for the language.
+Language can be changed in the browser under langauage section of the browser settings. English is the default if no customized translation file provided for the langauage.
 
-## Get the localized strings for the web consoles with localization enabled.
+## Get the localised strings for the web consoles with localization enabled.
 
-If users web console is already enabled with localization please make sure to add the translations located at `public/locales/en/translation.json` of UI-controls into your web consoles translations file.
+If users web console is already enabled with localization please make sure to add the [translations](https://github.com/open-amt-cloud-toolkit/ui-toolkit/tree/master/public/locales) of UI-controls into your web consoles translations file. 

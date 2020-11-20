@@ -57,4 +57,3 @@ For additional information about Intel® AMT, see the following links:
 - [Intel vPro® Platform Overview](https://software.intel.com/content/www/us/en/develop/topics/iot/hardware/vpro-platform-retail.html)
 - [Video Link](https://www.intel.com/content/www/us/en/support/articles/000026592/technologies.html)
 - [Detailed Setup document](https://software.intel.com/en-us/articles/getting-started-with-intel-active-management-technology-amt)
-

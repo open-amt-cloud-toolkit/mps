@@ -211,6 +211,6 @@ The sample Node code snippet can be adapted for other MPS and RPS methods. To le
 - [RPS Methods for server configuration and provisioning](../APIs/indexRPS.md).
 
 ## Explore the UI Toolkit
-In addition to REST API calls, Active Edge provides a reference implementation console. Add manageability features to the console with prebuilt React components, such as Keyboard, Video, and Mouse (KVM).
+In addition to REST API calls, the Open AMT Cloud Toolkit provides a reference implementation console. Add manageability features to the console with prebuilt React components, such as Keyboard, Video, and Mouse (KVM).
 
 [Get Started with the UI Toolkit](../Tutorials/uitoolkit.md){: .md-button .md-button--primary }

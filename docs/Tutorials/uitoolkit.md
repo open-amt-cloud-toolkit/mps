@@ -8,7 +8,7 @@ The tutorial outlines how to add various controls to the sample React web applic
 
 ### Hardware
 
-At minimum, to install and utilize the Active Edge microservices, a network configuration must include:
+At minimum, to install and utilize the Open AMT Cloud Toolkit microservices, a network configuration must include:
 
 -  A development system with Windows* 10 or Ubuntu* 18.04 or newer
 -  At least one Intel® vPro device
@@ -48,8 +48,7 @@ The React app can be created in any preferred development directory. The MPS can
 2. Run the following commands to create sample React app named `my-app`.
 
   ``` bash
-  npx create-react-app my-app
-  cd my-app
+  npx create-react-app my-app && cd my-app
   ```
 
 ## Add UI Toolkit
@@ -57,7 +56,7 @@ The React app can be created in any preferred development directory. The MPS can
 1. Run the following command to add the UI Toolkit and install the required dependencies:
 
     ``` bash
-    npm install git+https://github.com/open-amt-cloud-toolkit/ui-toolkit.git#ActivEdge --save
+    npm install git+https://github.com/open-amt-cloud-toolkit/ui-toolkit.git --save
     ```
 
 2. Run the following commands to start the web UI locally:
@@ -104,7 +103,6 @@ The code snippet below adds KVM control to the React application.
 
     ``` javascript hl_lines="13 14"
     import React from "react";
-    import logo from "./logo.svg";
     import "./App.css";
     import { KVM, MpsProvider } from "ui-toolkit";
     import '../node_modules/ui-toolkit/i18n.ts';
@@ -137,203 +135,6 @@ The code snippet below adds KVM control to the React application.
 You are now able to remotely control your Intel AMT device. Other controls such as device audit logs or profiles for RPS have example code below to test with.
 
 
-## Add Other Controls
-The following sections outline how to add controls. To use the code snippets provided, replace what is in `App.js` file with the code snippet.
-
-Refresh the app after adding a control.
-
-### Add Audit Log Control
-
-The following code snippet shows how to add Audit Log control to the React application.
-Open `src/App.js`, add the following code as show below:
-
-!!! note
-    Change `deviceId` value to your device GUID `mpsServer` value to your MPS server address and appropriate port.
-
-``` javascript hl_lines="14 15"
-import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
-import { AuditLog, MpsProvider } from "ui-toolkit";
-
-function App() {
-  const data = {
-    mpsKey: '<MPS API key>'
-  };
-  return (
-    <div className="App">
-      <MpsProvider data={data}>
-        <AuditLog
-        deviceId="038d0240-045c-05f4-7706-980700080009"
-        mpsServer="localhost:3000"></AuditLog>
-      </MpsProvider>
-    </div>
-  );
-}
-
-export default App;
-```
-
-### Add Device Grid Control
-
-The following code snippet shows how to add Device Grid control to the React application.
-Open `src/App.js`, add the following code as show below:
-
-!!! note
-    Change `mpsServer` value to your MPS server address and appropriate port.
-
-```javascript hl_lines="13"
-import React from "react";
-import { DeviceGrid, MpsProvider } from "ui-toolkit";
-import '../node_modules/ui-toolkit/i18n.ts'
-
-function App() {
-  const data = {
-    mpsKey: '<MPS API key>'
-  };
-  return (
-    <div>
-      <MpsProvider data={data}>
-        <DeviceGrid
-          mpsServer="localhost:3000"></DeviceGrid>
-      </MpsProvider>
-    </div>
-  );
-}
-
-export default App;
-```
-
-### Add Serial Over LAN Control
-
-The following code snippet shows how to add Serial Over LAN control to the React application.
-Open `src/App.js`, add the following code as show below:
-
-!!! note
-    Change `deviceId` value to your device GUID `mpsServer` value to your MPS server address and appropriate port.
-
-```javascript hl_lines="12 13"
-import React from "react";
-import { SOL, MpsProvider } from "ui-toolkit";
-import '../node_modules/ui-toolkit/i18n.ts'
-
-function App() {
-  const data = {
-    mpsKey: '<MPS API key>'
-  };
-  return (
-    <div>
-      <MpsProvider data={data}>
-        <SOL deviceId="038d0240-045c-05f4-7706-980700080009"
-        mpsServer="localhost:3000"></SOL>
-      </MpsProvider>
-    </div>
-  );
-}
-
-export default App;
-```
-
-### Add Profile Control
-
-Open `src/App.js`, add the following code as show below:
-
-!!! note
-    Change `rpsServer` value to your RPS server address and appropriate port.
-
-```javascript hl_lines="13"
-import React from "react";
-import { Profile, RpsProvider } from "ui-toolkit";
-import '../node_modules/ui-toolkit/i18n.ts'
-
-function App() {
-  const data = {
-    rpsKey: '<RPS API key>'
-  };
-  return (
-    <div>
-      <RpsProvider data={data}>
-        <Profile
-        rpsServer="http://localhost:8081"/>
-      </RpsProvider>
-    </div>
-  );
-}
-
-export default App;
-
-```
-
-### Add CIRA configs Control
-
-Open `src/App.js`, add the following code as show below:
-
-!!! note
-    Change `rpsServer` value to your RPS server address and appropriate port.
-
-```javascript hl_lines="13"
-import React from "react";
-import { CiraEditor, RpsProvider } from "ui-toolkit";
-import '../node_modules/ui-toolkit/i18n.ts'
-
-function App() {
-  const data = {
-    rpsKey: '<RPS API key>'
-  };
-  return (
-    <div>
-      <RpsProvider data={data}>
-        <CiraEditor
-        rpsServer="http://localhost:8081"/>
-      </RpsProvider>
-    </div>
-  );
-}
-
-export default App;
-
-```
-
-### Add Domain Control
-
-Open `src/App.js`, add the following code as show below:
-
-!!! note
-    Change `rpsServer` value to your RPS server address and appropriate port
-
-```javascript hl_lines="13"
-import React from "react";
-import { DomainEditor, RpsProvider } from "ui-toolkit";
-import '../node_modules/ui-toolkit/i18n.ts'
-
-function App() {
-  const data = {
-    rpsKey: '<RPS API key>'
-  };
-  return (
-    <div>
-      <RpsProvider data={data}>
-        <DomainEditor
-        rpsServer="http://localhost:8081"/>
-      </RpsProvider>
-    </div>
-  );
-}
-
-export default App;
-
-```
-
-### Test the changes
-
-At a command prompt navigate to the root of react app, and run the web UI locally if it has been stopped:
-
-```
-npm start
-```
-
-Go to the chrome browser, ensure controls shows up correctly.
-
 You will see the errors in the following scenario's:
 
 - compilation errors if ui-toolkit has not downloaded and installed to your react app.
@@ -341,102 +142,18 @@ You will see the errors in the following scenario's:
 - MPS server running and device not connected.
 - If your browser is IE / Edge, there might be some compatibility issues.
 
-<!-- ## By-pass CORS Security for testing
+<br>
 
-### MPS
+## Next Steps
 
-To display UI controls on local react Web UI for **testing**, make the following changes to by-pass CORS.
+### Try Other Controls
 
-- Go to your local **mps** application where it is running.
-- Press **ctrl+c** to exit the application.
-- Edit the file **mps/src/server/webserver.ts**
-- Update the code as shown below to allow any origin by MPS
+Try out other React controls such as Serial Over LAN or Audit Logs [here](../UIToolkit/Controls/auditLogControl.md)
 
-Search for **X-Frame-Options** and update the code as shown below
+### Customize and Create Bundles
 
-```javascript
+Try out creating and customizing React bundles for things such as Serial Over LAN or KVM [here](../UIToolkit/Bundles/kvm.md)
 
-//Clickjacking defence
-this.app.use((req, res, next) => {
-  //res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers','*');
-  if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Methods', '*');
-    return res.status(200).json({});
-  }
-  next();
-})
-
-```
-
-Search for **isAuthenticated** and comment the code as shown below
-
-```javascript
-
-isAuthenticated(req, res, next) {
-
-// if (req.session.loggedin){
-// return next();
-// }
-
-// if (req.header('User-Agent').startsWith('Mozilla')) {
-// // all browser calls that are not authenticated
-// res.redirect('/login.htm')
-// return;
-// }
-
-// // other api calls
-// if(req.header('X-MPS-API-Key') !== process.env.XAPIKEY){
-// res.status(401).end("Not Authenticated.")
-// return;
-// }
-
-// else
-return next();
-
-}
-
-```
-
-- Save the changes.
-
-- At the command prompt, run the below command from the root of **mps** application
-
-```
-npm start
-``` -->
-
-<!-- ## Run RPS server in DEV mode
-
-To display UI controls on local react Web UI for **testing**, make the following changes.
-
-- Go to your local **rps** application where it is running.
-- Press **ctrl+c** to exit the application.
-- Edit the file **rps/.rpsrc**
-
-Update the _xapikey_ value with below snippet
-
-```
-"xapikey": "APIKEYFORRPS123!"
-```
-
-- Save the changes.
-- At the command prompt, run the below command from the root of **rps** application
-
-```
-npm run dev
-``` -->
-
-## Customize and create bundles
-
-- [AuditLog](uitoolkitDocs/auditLog.md)
-- [KVM](uitoolkitDocs/kvm.md)
-- [Device Grid](uitoolkitDocs/DeviceGrid.md)
-- [Serial Over LAN](uitoolkitDocs/SerialOverLAN.md)
-- [Profile Editor](uitoolkitDocs/Profiles.md)
-- [CIRA Configs](uitoolkitDocs/CIRAConfigs.md)
-- [Domains](uitoolkitDocs/Domains.md)
 
 ## License Note
 

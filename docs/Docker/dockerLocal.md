@@ -49,7 +49,7 @@ Build the MPS and RPS Docker images from their respective directories with the `
 
 **To build MPS:**
 
-1\. Navigate to MPS folder and build the Docker image. 
+1. Navigate to MPS folder and build the Docker image. 
 
 ```
 cd ../mps
@@ -57,7 +57,7 @@ docker build . -t mps:v1
 ```
 ![Image of MPS Build Completion](../assets/images/MPSBuild.png) 
 
-!!! Note
+!!! note
     On completion, a security warning is normal during local setup with the default values for developer testing environments.
 
 **To build RPS:**
@@ -92,8 +92,10 @@ cd mps/scripts/docker-compose
     cp .env.template .env
     ```
 
-!!! Note
-    Always preserve the .env.template file by copying it to a new file. 
+!!! note 
+    **Preserve the .env.template file.**
+
+    This file is very important to maintain. Always copy to a new file. 
 
 2\. Open the .env file in a text editor. Set the image-related environment variables within the .env file.
 
@@ -105,14 +107,14 @@ Change the following fields:
 | **MPS_IMAGE** | mps:v1 | 
 | **MPS_COMMON_NAME** | Your development system's IP address |
 
-!!! Note
-    Forgot the name and tag from the build? The **docker images** command lists repository names, tags, image IDs, and sizes. 
-
-> ```
-> docker images
-> ```
->
-> ![Image of docker images command](../assets/images/DICommands.png)
+!!! tip "Forgot the name and tag from the build?"
+     The **docker images** command lists repository names, tags, image IDs, and sizes. 
+    
+     ```
+     docker images
+     ```
+    
+     ![Image of docker images command](../assets/images/DICommands.png)
 
 <!-- 5. Set the proper proxy values if behind a proxy.
 
@@ -135,44 +137,23 @@ Change the following fields:
 
 The environment file .env now contains the MPS and RPS environment variables to pass to the Docker engine. 
 
-**To run docker-compose:**
+1. Navigate to the the `mps/scripts/docker-compose` directory. 
 
-1\. Navigate to the the `mps/scripts/docker-compose` directory. 
+2. Run the `docker-compose up` command, which starts the containers. approximately 2-3 minutes to start the containers.
+      ```
+      docker-compose up
+      ```
 
-2\. Run the `docker-compose up` command, which starts the containers. approximately 2-3 minutes to start the containers.
-
-```
-docker-compose up
-```
-!!! Note
-    While the `docker-compose up` command is running, you may see a pop-up ask for permission for Docker Desktop Filesharing. You must select **Share it** for the `docker-compose up` command to execute successfully.  If the pop-up expires,`docker-compose up` will fail.  You must run `docker-compose down` and then rerun `docker-compose up` to successfully start the containers.
+3. **Important**: While the `docker-compose up` command is running, you may see a pop-up ask for permission for Docker Desktop Filesharing. You must select **Share It** for the `docker-compose up` command to execute successfully.  If the pop-up expires,`docker-compose up` will fail.  You must run `docker-compose down -v` and then rerun `docker-compose up` to successfully start the containers.
 
 ![Image of filesharing](../assets/images/DockerFileSharing.png)
 
-<br>
-
-Successful Output:
-
-![Image of docker compose command](../assets/images/DockerCompose.png)
+!!! success
+    ![Image of docker compose command](../assets/images/DockerCompose.png)
 
 
-<!-- ## Check Logs
-Alternatively, run `docker-compose up -d` to start the containers in the background.  To view the logs in a separate window, follow the steps below.
-
-Check the logs to ensure the MPS and RPS services are properly handling the traffic from end devices. 
-
-1. Allow the previous command line window for mps and rps to continue to run. Open a new command line window to run the **docker-compose logs** command. 
-2. Navigate to the docker-compose folder
-
-3. Type the **docker-compose logs** command.
-
-   docker-compose logs [name of service]
-
-   ```
-   docker-compose logs mps
-   ```
-   ![Image of Docker Log Output](../assets/images/DockerLogFile.png) 
-   A log file may provide information for troubleshooting these problems: -->
+!!! important
+    Since the vault is running in a dev mode, you will not be able to restart the vault and maintain the secrets stored since they are not persisted. You will need to recreate profiles and configs again. Be sure and run `docker-compose down -v` when bringing down the stack so as to remove the volumes and start fresh upon `docker-compose up`.  You may follow the guide [here](./dockerLocal_prodVault.md) to run vault in production mode.
 
 
 ## Next up
