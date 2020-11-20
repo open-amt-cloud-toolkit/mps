@@ -63,7 +63,7 @@ Open Active Management Technology (Open AMT) Cloud Toolkit, also referred to as 
 
 **managed (edge) device:** An Intel vPro® platform that features Intel® AMT and functions as an edge device.
 
-**Manageability Engine BIOS Extensions (MEBX):** A BIOS extension that enables the configuration of the Intel® AMT. [See Manually Configure and Unprovision.](Topics/mebx.md)
+**Manageability Engine BIOS Extensions (MEBX):** A BIOS extension that enables the configuration of the Intel® AMT.
 
 **Management Presence Server (MPS):** A microservice that resides on the development system and enables platforms featuring featuring Intel® AMT. The MPS receives CIRA requests from the managed device. 
 
