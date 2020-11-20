@@ -39,17 +39,17 @@ jobs:
           mkdocs build --strict
       #checkout the gh-pages branch    
       - uses: actions/checkout@v2
-      #  if: ${{ github.ref == 'refs/heads/master' }}      
+        if: ${{ github.ref == 'refs/heads/master' }}      
         with:
           path: 'to-be-published'
           ref: 'gh-pages'
       #copy the built site content
       - name: Copy 
-       # if: ${{ github.ref == 'refs/heads/master' }}      
+        if: ${{ github.ref == 'refs/heads/master' }}      
         run: cp -rlf site/* ./to-be-published/
       #publish it
       - name: Publish content
-       # if: ${{ github.ref == 'refs/heads/master' }}      
+        if: ${{ github.ref == 'refs/heads/master' }}      
         run: |
           cd ./to-be-published
           git config user.name github-actions
