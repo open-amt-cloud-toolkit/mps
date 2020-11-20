@@ -30,8 +30,8 @@ The **development system** hosts Management Presence Server (MPS) and Remote Pro
 
     Docker Configuration Details:
 
-    - The Docker for Windows installer defaults to enable all the requiredsettings for this tutorial.
-    - After successful installation, the Docker icon (whale), will appear on thetask bar.
+    - The Docker for Windows installer defaults to enable all the required settings for this tutorial.
+    - After successful installation, the Docker icon (whale), will appear on the taskbar.
     - To troubleshoot the installation, [see the troubleshooting guide](https:/docs.docker.com/docker-for-windows/troubleshoot/).
 
 - [Chrome* Browser](https://www.google.com/chrome)
