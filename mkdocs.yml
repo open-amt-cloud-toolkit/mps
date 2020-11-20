@@ -16,6 +16,7 @@ theme:
     code: 'Roboto Mono'
   features:
     - navigation.tabs
+  custom_dir: ./docs/overrides
 # Page tree
 nav:
   - Home: index.md
