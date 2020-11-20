@@ -1,4 +1,4 @@
-Intel AMT&reg; devices are capable of being activated into two modes:
+Intel® AMT devices are capable of being activated into two modes:
 
 - [**Admin Control Mode (ACM):**](../Glossary.md#a) In this mode, there are no limitations to Intel AMT functionality. This reflects the higher level of trust associated with these setup methods. No user consent is required.
 
@@ -129,6 +129,6 @@ Intel AMT checks the network DNS suffix against the provisioning certificate as 
 
 ## Next Up
 
-[Build RPC on a Managed Device](../General/buildRPC.md)
+**[Build RPC on a Managed Device](../General/buildRPC.md)**
 
 

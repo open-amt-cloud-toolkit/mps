@@ -1,5 +1,5 @@
 
-The web portal is available for login after the deployment of Management Presence Server (MPS) and Remote Provisioning Server (RPS). Make sure both are running before attempting to login.
+The web portal is available for login after the deployment of [Management Presence Server (MPS)](../Glossary.md#m) and [Remote Provisioning Server (RPS)](../Glossary.md#r). Make sure both are running before attempting to login.
 
 **To login:**
 
@@ -31,4 +31,4 @@ The web portal is available for login after the deployment of Management Presenc
 **Figure 1: Choose Remote Provisioning Server.**
 
 ## Next up
-[Create a CIRA Config](createCIRAConfig.md)
+**[Create a CIRA Config](createCIRAConfig.md)**

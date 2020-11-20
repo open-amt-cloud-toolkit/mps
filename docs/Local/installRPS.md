@@ -1,6 +1,6 @@
-The Remote Provisioning Service (RPS) is a microservice based on Node.js*. The RPS works with the Remote Provisioning Client (RPC) to activate Intel&reg; AMT platforms using a pre-defined profile.
+The [Remote Provisioning Service (RPS)](../Glossary.md#r) is a microservice based on Node.js*. The RPS works with the [Remote Provisioning Client (RPC)](../Glossary.md#r) to activate Intel® AMT platforms using a pre-defined profile.
 
-Figure 1 illustrates where RPS fits into the overall microservice architecture.
+Figure 1 illustrates where RPS fits into the overall [microservice architecture.](../Glossary.md#m)
 
 [![RPS](../assets/images/RPSDeployment.png)](../assets/images/RPSDeployment.png)
 
@@ -15,11 +15,11 @@ Figure 1 illustrates where RPS fits into the overall microservice architecture.
 2. Clone the RPS repository to the same parent directory where the mps directory is located. 
 
 ```
-git clone --branch ActivEdge https://github.com/open-amt-cloud-toolkit/rps.git && cd rps
+git clone https://github.com/open-amt-cloud-toolkit/rps.git && cd rps
 ```
 
 !!! Warning
-    Do not nest a microservice directory inside another microservice directory. The source code contains relative paths. The correct directory structure appears below, where *parent* is the your installation directory.
+    Do not nest a microservice directory inside another microservice directory. The source code contains relative paths. The correct directory structure appears below, where *parent* is your installation directory.
     
 ```
 📦parent
@@ -54,4 +54,4 @@ git clone --branch ActivEdge https://github.com/open-amt-cloud-toolkit/rps.git &
 **Figure 2: RPS reports successful deployment.**
 
 ## Next up
-[Login to RPS](../General/loginToRPS.md)
+[**Login to RPS**](../General/loginToRPS.md)

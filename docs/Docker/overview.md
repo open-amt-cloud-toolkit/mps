@@ -1,43 +1,41 @@
 # Build and Deploy Microservices with Local Docker* Images
 
-## Overview
+This section contains instructions for deploying the  Open AMT Cloud Toolkit's [Management Presence Server (MPS)](../Glossary.md#m) and [Remote Provisioning Server (RPS)](../Glossary.md#r) on a local development system as Docker* images. These Hello World deployment instructions detail how to install the microservices manually on a development system and are not intended as production environment instructions.
 
-This section outlines the setup of the Active Edge's microservices and client application. Take this path to install MPS and RPS as Docker images that will function as services on a local system or the cloud as in Figure 1.
-
-[![Docker Local Overview](../assets/images/HelloWorldDocker.png)](../assets/images/HelloWorldDocker.png)
+[![Docker Local Overview](../assets/images/LocalDockerWorkflow.png)](../assets/images/LocalDockerWorkflow.png)
 
 
-**Figure 1: Microservices deployed as Docker images**
+**Figure 1: Deploy microservices on a local development system as Docker images. **
 
 
 ## What You'll Need
 
-**Hardware**
+###Hardware
 
-At minimum, to install and use Active Edge, a network configuration must include:
+**Configure a network that includes:**
 
 -  A development system 
--  At least one Intel® vPro device
+-  At least one Intel vPro® device
 -  A flash drive or equivalent means to transfer files between
 
 Both systems must use a wired (i.e., cable) connection on the same network.
 
-**Software**
+###Development System Software
 
-The **development system** hosts Management Presence Server (MPS) and Remote Provisioning Server (RPS) and requires the following software:
+**Before MPS and RPS installation, install the following software:**
 
 - [Docker* Desktop](https://www.docker.com/products/docker-desktop) for Windows* or Linux*
-
-    Docker Configuration Details:
-
-    - The Docker for Windows installer defaults to enable all the requiredsettings for this tutorial.
-    - After successful installation, the Docker icon (whale), will appear on thetask bar.
-    - To troubleshoot the installation, [see the troubleshooting guide](https:/docs.docker.com/docker-for-windows/troubleshoot/).
+  
+!!! Info
+    **Docker Configuration Details: **
+    (1) The Docker for Windows installer defaults to enable all the required settings for this tutorial.
+    (2) After successful installation, the Docker icon (whale), will appear on the task bar. 
+    (3) To troubleshoot the installation, [see the troubleshooting guide](https:/docs.docker.com/docker-for-windows/troubleshoot/).
 
 - [Chrome* Browser](https://www.google.com/chrome)
 - [git](https://git-scm.com/downloads)
 
-If using a Windows-based Development System, also requires:
+**If running Windows on the development system, also install:**
     
 - [Microsoft Visual Studio*](https://visualstudio.microsoft.com/): 2019 or newer version of Visual Studio Community/Professional
 
@@ -45,17 +43,22 @@ If using a Windows-based Development System, also requires:
 
 ## What You'll Do
 
-Follow the steps in these sections sequentially to deploy Docker* images on a local development system: 
+**To complete a Hello World microservice deployment:**
 
 - Build and Deploy Docker* Images Locally
-- Configure RPS
-- Build RPC on Managed Device
-- Manage Device
+- Login and Configure RPS
+- Build RPC
+- Copy RPC to a Managed Device
 
-Run instructions in these sections can use Microsoft Windows* or Linux* environments. The terminal may be A) the Windows Command Prompt in Administrator mode or B) the Linux* shell/terminal. 
+**To connect the managed device:**
+
+- Run RPC on a Managed Device
+- Manage the Device with MPS
+
+These sections include instructions for Windows and Linux* environments. Run instructions in a terminal window, the Windows Command Prompt in Administrator mode or the Linux shell/terminal.
 
 Estimated completion time: **15 minutes**
 
 ## Next up
-[Build Docker* Images](dockerLocal.md)
+[**Build Docker* Images**](dockerLocal.md)
 

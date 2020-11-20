@@ -1,4 +1,4 @@
-Client Initiated Remote Access (CIRA) enables a CIRA-capable edge device to initiate and establish a persistent connection to the MPS rather than the MPS initiating contact with the edge device.  This enables access to edge devices that might be harder to reach behind a firewall or a firewall process, such as network address translation (NAT).
+[Client Initiated Remote Access (CIRA)](../Glossary.md#c) enables a CIRA-capable edge device to initiate and establish a persistent connection to the MPS rather than the MPS initiating contact with the edge device.  This enables access to edge devices that might be harder to reach behind a firewall or a firewall process, such as network address translation (NAT).
 
 A CIRA Configuration provides the Remote Provisioning Client (RPC) the required information to establish the edge device's CIRA connection to the MPS Server during the activation process. 
 

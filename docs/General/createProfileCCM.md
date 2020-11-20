@@ -1,4 +1,4 @@
-Intel AMT&reg; devices are capable of being activated into two modes:
+Intel® AMT devices are capable of being activated into two modes:
 
 - [**Admin Control Mode (ACM):**](../Glossary.md#a) In this mode, there are no limitations to Intel AMT functionality. This reflects the higher level of trust associated with these setup methods. No user consent is required.
 
@@ -15,7 +15,7 @@ Intel AMT&reg; devices are capable of being activated into two modes:
 
 ## Create a Profile
 
-[Profiles](../Glossary.md#p) provide configuration information to the AMT Firmware during the activation process with the Remote Provisioning Client (RPC).
+[Profiles](../Glossary.md#p) provide configuration information to the AMT Firmware during the activation process with the [Remote Provisioning Client (RPC)](../Glossary.md#r).
 
 **To create a CCM profile:**
 
@@ -51,5 +51,5 @@ Intel AMT&reg; devices are capable of being activated into two modes:
         [![RPS](../assets/images/RPS_CreateProfile.png)](../assets/images/RPS_CreateProfile.png)
 
 ## Next up
-[Build RPC](buildRPC.md)
+**[Build RPC](buildRPC.md)**
 
