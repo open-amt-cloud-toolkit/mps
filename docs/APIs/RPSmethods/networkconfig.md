@@ -88,7 +88,7 @@ NA (no query parameter in the URL retrieves all profiles)
 ???+ failure
     No NETWORK Configs found.
 
-## Edit a Profile
+## Edit a Network Configuration
 
 
 * Endpoint: **/api/v1/admin/networkconfigs/edit*

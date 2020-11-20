@@ -28,13 +28,6 @@ Navigate to a directory of your choice for development.
 git clone https://github.com/open-amt-cloud-toolkit/mps.git
 ```
 
-2\. Checkout the ActivEdge branch.
-
-```
-cd mps
-git checkout ActivEdge
-```
-
 ### Clone RPS
 
 1\.Clone the RPS repository to the same parent directory as MPS.
@@ -51,12 +44,6 @@ After the `git clone` commands complete, the parent directory will contain an MP
  ┗ 📂rps
 ```
 
-2\. Checkout the ActivEdge branch.
-
-```
-cd rps
-git checkout ActivEdge
-```
 
 
 <br>

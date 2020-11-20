@@ -2,7 +2,7 @@
 
 ## Overview
 
-This section outlines the setup of the Active Edge's microservices and client application. Take this path to install MPS and RPS as Docker images that will function as services on a local system or the cloud as in Figure 1.
+This section outlines the setup of the Open AMT Cloud Toolkit's microservices and client application. Take this path to install MPS and RPS as Docker images that will function as services on a local system or the cloud as in Figure 1.
 
 [![Docker Local Overview](../assets/images/HelloWorldDocker.png)](../assets/images/HelloWorldDocker.png)
 
@@ -14,7 +14,7 @@ This section outlines the setup of the Active Edge's microservices and client ap
 
 **Hardware**
 
-At minimum, to install and use Active Edge, a network configuration must include:
+At minimum, to install and use the Open AMT Cloud Toolkit, a network configuration must include:
 
 -  A development system 
 -  At least one Intel® vPro device

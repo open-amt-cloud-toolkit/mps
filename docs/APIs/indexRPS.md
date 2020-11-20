@@ -1,6 +1,6 @@
 # API and Command Reference
 
-This section is a reference to the RPS API methods available in Active Edge, and to some commands it provides.
+This section is a reference to the RPS API methods available in the Open AMT Cloud Toolkit, and to some commands it provides.
 
 RPS APIs allow you to get, create, and delete things such as CIRA Configs, Domains, and Profiles that are used in the remote configuration of Intel AMT devices.
 

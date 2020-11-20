@@ -1,5 +1,5 @@
 # Project information
-site_name: 'Active Edge: Remote Edge Management Toolkit'
+site_name: 'Open Active Management Technology Cloud Toolkit'
 repo_url: 'https://github.com/open-amt-cloud-toolkit/mps'
 repo_name: 'open-amt-cloud-toolkit/mps'
 copyright: 'Copyright &copy; 2020 Intel Corporation'
@@ -21,44 +21,92 @@ theme:
 nav:
   - Home: index.md
   - Getting Started:
-    - Installation MPS & RPS :
-      - Local Setup:
+    - Install:
+      - Setup Manually:
         - Overview: Local/overview.md
         - Install MPS Locally: Local/installMPS.md
         - Install RPS Locally: Local/installRPS.md
-      - Docker* Images:
+      - Setup with Docker*:
         - Overview: Docker/overview.md
         - Build Docker* Images: Docker/dockerLocal.md
-  - Microservices:
-    - Managed Presence Server:
-      - MPS Device Management: General/manageDevice.md
-    - Remote Provisioning Server:
+    - Configure:
       - Login to RPS: General/loginToRPS.md
       - Create a CIRA Config: General/createCIRAConfig.md
-      - Create a Profile with CCM: General/createProfileCCM.md
-      - Create a Profile with ACM: General/createProfileACM.md  
+      - Create an AMT Profile:
+        - Create a Profile with CCM: General/createProfileCCM.md
+        - Create a Profile with ACM: General/createProfileACM.md  
+    - Connect:
+      - Build & Run RPC: General/buildRPC.md
+      - Manage AMT Device: General/manageDevice.md
+  - Microservices:
+    - Managed Presence Server:
+      - Security Information: Microservices/MPS/securityMPS.md
+    - Remote Provisioning Server:
+      - Security Information: Microservices/RPS/securityRPS.md
     - Remote Provisioning Client :
       - Build & Run RPC (GitHub Actions): General/buildRPC_GithubActions.md
-      - Build & Run RPC (manual): General/buildRPC.md
+      - Troubleshooting: Microservices/RPC/troubleshootingRPC.md
+  - UI Toolkit:
+    - Controls:
+      - Audit Log: UIToolkit/Controls/auditLogControl.md
+      - Cira Config: UIToolkit/Controls/ciraConfigControl.md
+      - Device Grid: UIToolkit/Controls/deviceGridControl.md
+      - Domain: UIToolkit/Controls/domainControl.md
+      - Keyboard, Video, Mouse (KVM): UIToolkit/Controls/kvmControl.md
+      - Profile: UIToolkit/Controls/profileControl.md
+      - Serial Over LAN (SOL): UIToolkit/Controls/serialOverLANControl.md
+    - React Bundles:
+      - Audit Logs: UIToolkit/Bundles/auditLog.md
+      - Cira Configs: UIToolkit/Bundles/CIRAConfigs.md
+      - Device Grid: UIToolkit/Bundles/DeviceGrid.md
+      - Domains: UIToolkit/Bundles/Domains.md
+      - Keyboard, Video, Mouse (KVM): UIToolkit/Bundles/kvm.md
+      - Profiles: UIToolkit/Bundles/Profiles.md
+      - Serial Over LAN (SOL): UIToolkit/Bundles/SerialOverLAN.md
+    - Localization: UIToolkit/localization.md
+    - Webpack Configuration: UIToolkit/Webpack-Configuration.md
   - Tutorials:
-    - Docker Images on the Cloud: Docker/dockerCloud.md
-    - Create Consoles with the UI Toolkit: Tutorials/uitoolkit.md
-    - Construct a REST API Call: Tutorials/apiTutorial.md
-    - Add a Database: Tutorials/addDatabase.md
-    - Add Vault Storage: Tutorials/addVault.md
-    - Use an Allowlist: Tutorials/allowlist.md
+    - Docker* Images on the Cloud: Docker/dockerCloud.md
+    - UI Toolkit KVM Module: Tutorials/uitoolkit.md
+    - REST API Call: Tutorials/apiTutorial.md
+    - Databases: Tutorials/addDatabase.md
+    - Secret Storage: Tutorials/addVault.md
+    - Allowlists: Tutorials/allowlist.md
   - APIs:
-    - MPS Methods: APIs/indexMPS.md
-    - RPS Methods: APIs/indexRPS.md
-  - Security: security.md
-  - Active Edge Topics:
-    - Static and Dynamic IPs: Topics/misc.md
+    - Management Presence Server:
+      - Overview: APIs/indexMPS.md
+      - Admin Methods:
+        - AllDevices: APIs/MPSmethods/alldevices.md
+        - ConnectedDevices: APIs/MPSmethods/connecteddevices.md
+        - Disconnect: APIs/MPSmethods/disconnect.md
+        - MEScript: APIs/MPSmethods/mescript.md
+        - RootCertificate: APIs/MPSmethods/rootcertificate.md
+      - AMT Methods:
+        - AuditLog: APIs/MPSmethods/auditlog.md
+        - EventLog: APIs/MPSmethods/eventlog.md
+        - GeneralSettings: APIs/MPSmethods/generalsettings.md
+        - GetAMTFeatures: APIs/MPSmethods/getamtfeatures.md
+        - HardwareInfo: APIs/MPSmethods/hardwareinfo.md
+        - PowerAction: APIs/MPSmethods/poweraction.md
+        - PowerCapabilities: APIs/MPSmethods/powercapabilities.md
+        - PowerState: APIs/MPSmethods/powerstate.md
+        - SetAMTFeatures: APIs/MPSmethods/setamtfeatures.md
+        - Version: APIs/MPSmethods/version.md
+    - Remote Provisioning Server:
+      - Overview: APIs/indexRPS.md
+      - CIRA Configuration: APIs/RPSmethods/ciraconfig.md
+      - Intel AMT Domains: APIs/RPSmethods/domains.md
+      - Intel AMT Profiles: APIs/RPSmethods/profiles.md
+      - Network Configurations: APIs/RPSmethods/networkconfig.md
+  - Topics:
+    - Static and Dynamic IPs: Topics/staticIP.md
     - GUIDs in Intel AMT: Topics/guids.md
-    - Manually Configure and Unprovision: Topics/mebx.md
-    - Proxies: Topics/proxies.md
+    - Intel&reg MEBX:
+      - DNS Suffix: Topics/MEBX/dnsSuffix.md
+      - Unprovisioning: Topics/MEBX/unprovision.md
+    # - Proxies: Topics/proxies.md
   - Release notes: release-notes.md
   - License: license.md
-  - Troubleshooting: troubleshooting.md
   
 # Extensions
 markdown_extensions:
