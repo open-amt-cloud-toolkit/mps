@@ -43,10 +43,10 @@ ipAddress=$(az network public-ip show \
   --query ipAddress \
   --output tsv)
 
-cp -f .env.sample .env
+cp -f .env.template .env
 
 echo "" >> .env
-echo "CERT_COMMON_NAME=$ipAddress" >> .env
+echo "MPS_COMMON_NAME=$ipAddress" >> .env
 echo "Updated ENV file with ip address"
 
 
@@ -84,7 +84,7 @@ ssh -o "StrictHostKeyChecking no" "azureuser@$ipAddress" sudo apt install --assu
 echo "Installed docker-compose"
 
 scp -r ./data "azureuser@$ipAddress:~/data/" >/dev/null 2>&1
-scp ./docker-compose.yml "azureuser@$ipAddress:~/docker-compose.yml" >/dev/null 2>&1
+scp ./docker-compose-azure.yml "azureuser@$ipAddress:~/docker-compose.yml" >/dev/null 2>&1
 scp ./.env "azureuser@$ipAddress:~/.env" >/dev/null 2>&1
 
 echo "Copied docker-compose yml files"

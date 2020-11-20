@@ -28,56 +28,56 @@ spec:
       - name: azure-rcs
         image: {{ .Values.images.rps }}
         env:
-          - name: "DEVELOPER_MODE"
-            value: "{{ .Values.rps.devmode }}"
-          - name: "USEVAULT"
+          - name: "RPS_DEVELOPER_MODE"
+            value: "{{ .Values.rps.developermode }}"
+          - name: "RPS_USE_VAULT"
             value: "{{ .Values.rps.useVault }}"
-          - name: "NODE_ENV"
+          - name: "RPS_NODE_ENV"
             value: "{{ .Values.rps.nodeEnv }}"
-          - name: "HTTPS"
+          - name: "RPS_HTTPS"
             value: "{{ .Values.rps.https }}"
-          - name: "USE_DB_PROFILES"
+          - name: "RPS_USE_DB_PROFILES"
             value: "{{ .Values.rps.useDBProfiles }}"
-          - name: "DB_HOST"
+          - name: "RPS_DB_HOST"
             value: "{{ .Values.rps.dbHost }}"
-          - name: "DB_NAME"
+          - name: "RPS_DB_NAME"
             value: "{{ .Values.backenddb.dbName }}"
-          - name: "DB_PORT"
+          - name: "RPS_DB_PORT"
             value: "{{ .Values.rps.dbPort }}"
-          - name: "DB_USER"
+          - name: "RPS_DB_USER"
             value: "{{ .Values.backenddb.dbUser }}"
-          - name: "DB_PASSWORD"
+          - name: "RPS_DB_PASSWORD"
             value: "{{ .Values.backenddb.dbPassword }}"
-          - name: "WEBSOCKETTLS"
+          - name: "RPS_WEBSOCKETTLS"
             value: "{{ .Values.rps.webSocketTLS }}"
-          - name: WEB_TLS_CERT
+          - name: RPS_WEB_TLS_CERT
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.rpsSecretStoreNames.rpscerts }}
                 key: {{ .Values.rps.webcertpublic }}
-          - name: WEB_TLS_CERT_KEY
+          - name: RPS_WEB_TLS_CERT_KEY
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.rpsSecretStoreNames.rpscerts }}
                 key: {{ .Values.rps.webcertkey }}
-          - name: ROOT_CA_CERT
+          - name: RPS_ROOT_CA_CERT
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.rpsSecretStoreNames.rpscerts }}
                 key: {{ .Values.rps.rootcacert }}
-          - name: XAPIKEY
+          - name: RPS_XAPIKEY
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.rpsSecretStoreNames.api }}
                 key: {{ .Values.rps.apikeyKeyName }}
-          - name: "VAULT_ADDR"
+          - name: "RPS_VAULT_ADDRESS"
             value : "{{ .Values.rps.vaultAddr }}"
-          - name: VAULT_TOKEN
+          - name: RPS_VAULT_TOKEN
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.rpsSecretStoreNames.vault }}
                 key: {{ .Values.rps.vaultkey }}
-          - name: "SECRETS_PATH"
+          - name: "RPS_SECRETS_PATH"
             value: "{{ .Values.rps.secretsPath }}"
         resources:
           requests:

@@ -8,9 +8,9 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${RPS_DB_NAME}
+      POSTGRES_USER: ${RPS_DB_USER}
+      POSTGRES_PASSWORD: ${RPS_DB_PASSWORD}
     ports:
       - "5432:5432"
     volumes: 
@@ -20,7 +20,7 @@ services:
     ports: 
       - "8200:8200"
     environment: 
-      VAULT_DEV_ROOT_TOKEN_ID: ${VAULT_TOKEN}
+      VAULT_DEV_ROOT_TOKEN_ID: ${RPS_VAULT_TOKEN}
       VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
     cap_add: 
       - IPC_LOCK

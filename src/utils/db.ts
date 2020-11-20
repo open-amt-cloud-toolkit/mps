@@ -18,6 +18,7 @@ import * as util from "util";
 import { configType } from "../models/Config";
 import { logger as log } from "./logger";
 import { IDbProvider } from '../models/IDbProvider';
+import { loggers } from "winston";
 
 const readFileAsync = util.promisify(fs.readFile);
 
@@ -25,61 +26,71 @@ export class dataBase implements IDbProvider {
   private config: configType;
   private datapath: string;
 
-  constructor(config: configType, datapath: string) {
+  constructor(config: configType) {
     try {
       this.config = config;
-      this.datapath = datapath;
+      this.datapath = config.data_path;
+      if (!fs.existsSync(this.datapath)) 
+        log.error(`DB Path is not valid. Check if ${this.datapath} exists.`)
     } catch (error) {
       log.error(error);
+      throw error;
     }
   }
 
   // Mock up code, real deployment must use proper data providers
   async getAllGUIDS() {
     let guids = [];
-    let guidsFilePath = path.join(this.datapath, this.config.guidspath);
     try {
-      if (fs.existsSync(guidsFilePath)) {
-        guids = JSON.parse(await readFileAsync(guidsFilePath, "utf8"));
-      } else {
-        log.debug(`File guids.json does not exists ${guidsFilePath}`);
+      if (this.datapath && fs.existsSync(this.datapath)) {
+        let fileData = fs.readFileSync(this.datapath, 'utf8');
+        let jsonData = JSON.parse(fileData);
+        //console.log(jsonData)
+        if(Array.isArray(jsonData.allowlist_guids)) 
+          guids = guids.concat(jsonData.allowlist_guids);
+
+        log.silly(`Guids - ${JSON.stringify(guids)}`)
       }
     } catch (error) {
-      log.error(`Exception in getAllGUIDS: ${error}`);
+      log.error(`Error while reading guids from data.json ${error}`)
     }
     return guids;
   }
 
   //Check: why orgs
   async getAllOrgs() {
-    var guids = [];
-    let orgsFilePath = path.join(this.datapath, this.config.orgspath);
+    
+    let orgs = [];
     try {
-      if (fs.existsSync(orgsFilePath)) {
-        guids = JSON.parse(await readFileAsync(orgsFilePath, "utf8"));
-      } else {
-        log.debug(`File orgs.json does not exists ${orgsFilePath}`);
+      if (this.datapath && fs.existsSync(this.datapath)) {
+        let fileData = fs.readFileSync(this.datapath, 'utf8');
+        let jsonData = JSON.parse(fileData);
+        if(Array.isArray(jsonData.allowlist_orgs)) 
+          orgs = orgs.concat(jsonData.allowlist_orgs)
+        log.silly(`Orgs - ${JSON.stringify(orgs)}`)
       }
     } catch (error) {
-        log.error(`Exception in getAllOrgs: ${error}`);
+      log.error(`Error while reading orgs from data.json ${error}`)
     }
-    return guids;
+    return orgs;
   }
 
   async getAllCredentials() {
-    var credentials = {};
-    let credentialsFilePath = path.join(this.datapath,  this.config.credentialspath);
+    let credentials = {};
     try {
-      if (fs.existsSync(credentialsFilePath)) {
-        credentials = JSON.parse(
-          await readFileAsync(credentialsFilePath, "utf8")
-        );
-      } else {
-        log.debug(`File credentials.json does not exists ${credentialsFilePath}`);
+      if (this.datapath && fs.existsSync(this.datapath)) {
+        let fileData = fs.readFileSync(this.datapath, 'utf8');
+        let jsonData = JSON.parse(fileData);
+        log.silly(fileData)
+        credentials = Object.keys(jsonData.credentials).reduce( (prev, curr) => {
+          prev[curr] = jsonData.credentials[curr];
+          return prev;
+        }, credentials)
+      
+        log.silly(`Creds - ${JSON.stringify(credentials)}`)
       }
     } catch (error) {
-        log.error(`Exception in getAllCredentials: ${error}`);
-      return {};
+      log.error(`Error while reading credentials from data.json ${error}`)
     }
     return credentials;
   }
@@ -111,10 +122,11 @@ export class dataBase implements IDbProvider {
   async IsGUIDApproved(guid, cb) {
     try {
       var result = false;
-      if (this.config && this.config.usewhitelist) {
+      if (this.config && this.config.use_allowlist) {
         var guids = await this.getAllGUIDS();
         if (guids.indexOf(guid) >= 0) {
           result = true;
+          log.silly("Guid found.")
         }
       } else {
         result = true;
@@ -131,7 +143,7 @@ export class dataBase implements IDbProvider {
   async IsOrgApproved(org, cb) {
     try {
       var result = false;
-      if (this.config && this.config.usewhitelist) {
+      if (this.config && this.config.use_allowlist) {
         var orgs = await this.getAllOrgs();
         if (orgs.indexOf(org) >= 0) {
           result = true;
@@ -152,11 +164,13 @@ export class dataBase implements IDbProvider {
     try {
       var result = false;
       var cred = await this.getCredentialsForGuid(guid);
+      log.info(cred)
       if (cred && cred.mpsuser == username && cred.mpspass == password) {
         result = true;
-      } else if (cred && this.config.useglobalmpscredentials) {
-        if (this.config.mpsusername == username && this.config.mpspass == password) {
+      } else if (cred && this.config.use_global_mps_credentials) {
+        if (this.config.username == username && this.config.pass == password) {
           result = true;
+          log.silly(`CIRAAuth successful. ${username} ${password}`)
         }
       }
       if (func) func(result);

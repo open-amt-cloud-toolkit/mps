@@ -102,6 +102,7 @@ export class PowerCapabilitiesHandler implements IAmtHandler {
     try {
         amtstack.BatchEnum("", ["CIM_SoftwareIdentity", "*AMT_SetupAndConfigurationService"],
             function (stack, name, responses, status) {
+              stack.wsman.comm.socket.sendchannelclose();
                 if (status != 200) {
                     return res.status(status).send(ErrorResponse(status, "Request failed during AMTVersion BatchEnum Exec."));
                 }

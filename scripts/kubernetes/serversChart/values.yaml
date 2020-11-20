@@ -34,7 +34,7 @@ mps:
   nodeEnv: "prod"
   certCommonName: "STATIC_IP_MPS"
   serverDeploymentMode: "mps"
-  useWhiteList: "false"
+  useAllowList: "false"
   mpsPort: "4433"
   webPort: "3000"
   mpsUser: "admin"
@@ -58,6 +58,7 @@ mps:
   staticIPAddress: "STATIC_IP_MPS"
   resourceGroupName: "NODE_RESOURCE_GROUP"
   devmode: "false"
+  certFormat: "raw"
   sessionEncryptionKey: "session-key.txt"
 rps:
   replicaCount: 1

@@ -11,18 +11,18 @@ const myFormat = printf(info => {
 });
 
 export const logger = winston.createLogger({
-  level: process.env.MPS_LOG_LEVEL || "debug",
+  level: process.env.MPS_LOG_LEVEL || "info",
   format: combine(timestamp(), myFormat),
   transports: [
     new winston.transports.Console(),
     new winston.transports.File({
-      filename: __dirname + "/debug.log"
+      filename: __dirname + "/logs/debug.log"
     })
   ],
   exceptionHandlers: [
     new winston.transports.Console(),
     new winston.transports.File({
-      filename: __dirname + "/exceptions.log"
+      filename: __dirname + "/logs/exceptions.log"
     })
   ],
   exitOnError: false

@@ -14,39 +14,53 @@ import * as path from 'path';
 import { dataBase } from "../src/utils/db";
 import { mpsMicroservice } from '../src/mpsMicroservice';
 import { mpsServer } from '../src/server/mpsserver';
+import { join } from "path";
 
 // Parsing configuration
 let config: configType = {
-    "usewhitelist": false,
-    "commonName": "localhost",
-    "mpsport": 4433,
-    "mpsusername": "standalone",
-    "mpspass": "P@ssw0rd",
-    "useglobalmpscredentials": true,
+    "use_allowlist": false,
+    "common_name": "localhost",
+    "port": 4433,
+    "username": "standalone",
+    "pass": "G@ppm0ym",
+    "use_global_mps_credentials": true,
     "country": "US",
     "company": "NoCorp",
     "debug": true,
-    "listenany": true,
+    "listen_any": true,
     "https": true,
-    "mpstlsoffload": false,
-    "webport": 3000,
-    "generateCertificates": true,
-    "debugLevel": 2,
-    "loggeroff": false,
-    "credentialspath": 'credentials.json',
-    "orgspath": 'orgs.json',
-    "guidspath": 'guids.json',
-    "developermode": true,
-    "webadminuser": "standalone",
-    "webadminpassword": "G@ppm0ym",
-    "mpsxapikey": "APIKEYFORMPS123!",
-    "sessionEncryptionKey": ""
+    "tls_offload": false,
+    "web_port": 3000,
+    "generate_certificates": true,
+    "debug_level": 5,
+    "logger_off": false,
+    "cert_format": "file",
+    "cert_path": join(__dirname, "private"),
+    "data_path": join(__dirname, "private", "data.json"),
+    "web_admin_user": "standalone",
+    "web_admin_password": "G@ppm0ym",
+    "session_encryption_key": "key",
+    "mpsxapikey": "testkey",
+    "mps_tls_config" : {
+        "key": "../private/mpsserver-cert-private.key",
+        "cert": "../private/mpsserver-cert-public.crt",
+        "requestCert": true,
+        "rejectUnauthorized": false,
+        "minVersion": "TLSv1",
+        "ciphers": null,
+        "secureOptions": ["SSL_OP_NO_SSLv2", "SSL_OP_NO_SSLv3"]
+      },
+      "web_tls_config" : {
+        "key": "../private/mpsserver-cert-private.key",
+        "cert": "../private/mpsserver-cert-public.crt",
+        "ca": ["../private/root-cert-public.crt"],
+        "secureOptions": ["SSL_OP_NO_SSLv2", "SSL_OP_NO_SSLv3", "SSL_OP_NO_COMPRESSION" , "SSL_OP_CIPHER_SERVER_PREFERENCE", "SSL_OP_NO_TLSv1", "SSL_OP_NO_TLSv11"]
+      }
 };
 
 let pki = forge.pki;
 let certs : certificatesType;
-let certPath = path.join(__dirname, 'private');
-let dbPath = path.join(__dirname, 'private');
+let certPath = config.cert_path
 let db: dataBase;
 let mpsService: mpsMicroservice;
 let mps: mpsServer;
@@ -62,7 +76,7 @@ describe('MPS Server', function () {
             console.log(`Failed to create Cert path ${certPath}. Create if it doesnt exist`);
         }
         certs = await certificates.generateCertificates(config, certPath);
-        db = new dataBase(config, dbPath);
+        db = new dataBase(config);
         mpsService = new mpsMicroservice(config, db, certs);
         mps = new mpsServer(mpsService);
         
@@ -73,7 +87,7 @@ describe('MPS Server', function () {
     it("Accept TLS connection test", function (done) {
         var tlsOptions = { rejectUnauthorized: false, secureProtocol: 'TLSv1_1_method' }
         try {
-            var socket = tls.connect(config.mpsport, 'localhost', tlsOptions, function () {
+            var socket = tls.connect(config.port, 'localhost', tlsOptions, function () {
                 socket.end();
                 done();
             })
@@ -98,7 +112,7 @@ describe('MPS Server', function () {
             console.log(data);
         })
 
-        socket.connect(config.mpsport, function () {
+        socket.connect(config.port, function () {
             socket.write("1234567890\n");
             setTimeout(function () {
                 terminated = true;
@@ -109,13 +123,13 @@ describe('MPS Server', function () {
 
     it("Server Fingerprint Test", function (done) {
         var tlsOptions = { rejectUnauthorized: false, secureProtocol: 'TLSv1_1_method' }
-        var socket = tls.connect(config.mpsport, "localhost", tlsOptions, function () {
+        var socket = tls.connect(config.port, "localhost", tlsOptions, function () {
             var fingerprint = socket.getPeerCertificate().fingerprint.toLowerCase().replace(/\:/gi, "");
             socket.end();
 
             //Generate Thumbprint of the certificate
             const md = forge.md.sha1.create();
-            md.update(forge.asn1.toDer(forge.pki.certificateToAsn1(pki.certificateFromPem(mps.certs.mpsConfig.cert))).getBytes());
+            md.update(forge.asn1.toDer(forge.pki.certificateToAsn1(pki.certificateFromPem(mps.certs.mps_tls_config.cert))).getBytes());
             const serverFingerprint = md.digest().toHex();
             if (serverFingerprint == fingerprint) {
                 done();
@@ -128,10 +142,10 @@ describe('MPS Server', function () {
     it("Get MPS details on HTTPS GET", function (done) {
         const get_options = {
             hostname: 'localhost',
-            port: config.mpsport,
+            port: config.port,
             path: '/',
             method: 'GET',
-            ca: certs.mpsConfig.cert.ca,
+            ca: certs.mps_tls_config.cert.ca,
             strictSSL: false,
             rejectUnauthorized: false
         };
@@ -159,16 +173,16 @@ describe('MPS Server', function () {
     });
 
     it("Validate UserAuth for a valid MPS connection request", function (done) {
-        jest.setTimeout(10000);
+        jest.setTimeout(60000);
         var obj : any = {};
         var args = {
-            host: config.commonName,
-            port: config.mpsport,
+            host: config.common_name,
+            port: config.port,
             clientName: 'hostname-prefix',
             uuid: "12345678-9abc-def1-2345-123456789000",//GUID template, last few chars of the string will be replaced
-            username: config.mpsusername, // mps username
-            password: config.mpspass, // mps password
-            keepalive: 60000, // interval for keepalive ping
+            username: config.username, // mps username
+            password: config.pass, // mps password
+            keepalive: 10000, // interval for keepalive ping
             debug: false,
             testciraState: 'USERAUTH_SUCCESS' //USERAUTH_SERVICE_ACCEPT, PFWD_SERVICE_ACCEPT, GLOBAL_REQUEST_SUCCESS, USERAUTH_SUCCESS, USERAUTH_FAILURE, PROTOCOL_VERSION_SENT, KEEPALIVE_REPLY
         };
@@ -181,16 +195,16 @@ describe('MPS Server', function () {
     });
 
     it("Validate APF USERAUTH_SERVICE_ACCEPT Message", function (done) {
-        jest.setTimeout(10000);
+        jest.setTimeout(60000);
         var obj : any = {};
         var args = {
-            host: config.commonName,
-            port: config.mpsport,
+            host: config.common_name,
+            port: config.port,
             clientName: 'hostname-prefix',
             uuid: "12345678-9abc-def1-2345-123456789000",//GUID template, last few chars of the string will be replaced
-            username: config.mpsusername, // mps username
-            password: config.mpspass, // mps password
-            keepalive: 60000, // interval for keepalive ping
+            username: config.username, // mps username
+            password: config.pass, // mps password
+            keepalive: 10000, // interval for keepalive ping
             debug: false,
             testciraState: 'USERAUTH_SERVICE_ACCEPT' //USERAUTH_SERVICE_ACCEPT, PFWD_SERVICE_ACCEPT, GLOBAL_REQUEST_SUCCESS, USERAUTH_SUCCESS, USERAUTH_FAILURE, PROTOCOL_VERSION_SENT, KEEPALIVE_REPLY
         };
@@ -203,16 +217,16 @@ describe('MPS Server', function () {
     });
 
     it("Validate APF PFWD_SERVICE_ACCEPT Message", function (done) {
-        jest.setTimeout(10000);
+        jest.setTimeout(60000);
         var obj:any = {};
         var args = {
-            host: config.commonName,
-            port: config.mpsport,
+            host: config.common_name,
+            port: config.port,
             clientName: 'hostname-prefix',
             uuid: "12345678-9abc-def1-2345-123456789000",//GUID template, last few chars of the string will be replaced
-            username: config.mpsusername, // mps username
-            password: config.mpspass, // mps password
-            keepalive: 60000, // interval for keepalive ping
+            username: config.username, // mps username
+            password: config.pass, // mps password
+            keepalive: 10000, // interval for keepalive ping
             debug: false,
             testciraState: 'PFWD_SERVICE_ACCEPT' //USERAUTH_SERVICE_ACCEPT, PFWD_SERVICE_ACCEPT, GLOBAL_REQUEST_SUCCESS, USERAUTH_SUCCESS, USERAUTH_FAILURE, PROTOCOL_VERSION_SENT, KEEPALIVE_REPLY
         };
@@ -225,16 +239,16 @@ describe('MPS Server', function () {
     });
 
     it("Validate APF GLOBAL_REQUEST_SUCCESS Message", function (done) {
-        jest.setTimeout(10000);
+        jest.setTimeout(60000);
         var obj:any = {};
         var args = {
-            host: config.commonName,
-            port: config.mpsport,
+            host: config.common_name,
+            port: config.port,
             clientName: 'hostname-prefix',
             uuid: "12345678-9abc-def1-2345-123456789000",//GUID template, last few chars of the string will be replaced
-            username: config.mpsusername, // mps username
-            password: config.mpspass, // mps password
-            keepalive: 60000, // interval for keepalive ping
+            username: config.username, // mps username
+            password: config.pass, // mps password
+            keepalive: 10000, // interval for keepalive ping
             debug: false,
             testciraState: 'GLOBAL_REQUEST_SUCCESS' //USERAUTH_SERVICE_ACCEPT, PFWD_SERVICE_ACCEPT, GLOBAL_REQUEST_SUCCESS, USERAUTH_SUCCESS, USERAUTH_FAILURE, PROTOCOL_VERSION_SENT, KEEPALIVE_REPLY
         };
@@ -247,16 +261,16 @@ describe('MPS Server', function () {
     });
 
     it("Validate APF PROTOCOL_VERSION_SENT Message", function (done) {
-        jest.setTimeout(5000);
+        jest.setTimeout(60000);
         var obj:any = {};
         var args = {
-            host: config.commonName,
-            port: config.mpsport,
+            host: config.common_name,
+            port: config.port,
             clientName: 'hostname-prefix',
             uuid: "12345678-9abc-def1-2345-123456789000",//GUID template, last few chars of the string will be replaced
-            username: config.mpsusername, // mps username
-            password: config.mpspass, // mps password
-            keepalive: 60000, // interval for keepalive ping
+            username: config.username, // mps username
+            password: config.pass, // mps password
+            keepalive: 10000, // interval for keepalive ping
             debug: false,
             testciraState: 'PROTOCOL_VERSION_SENT' //USERAUTH_SERVICE_ACCEPT, PFWD_SERVICE_ACCEPT, GLOBAL_REQUEST_SUCCESS, USERAUTH_SUCCESS, USERAUTH_FAILURE, PROTOCOL_VERSION_SENT, KEEPALIVE_REPLY
         };
@@ -269,15 +283,15 @@ describe('MPS Server', function () {
     });
 
     it("Validate APF KEEPALIVE_REPLY Message", function (done) {
-        jest.setTimeout(90000);
+        jest.setTimeout(15000);
         var obj:any = {};
         var args = {
-            host: config.commonName,
-            port: config.mpsport,
+            host: config.common_name,
+            port: config.port,
             clientName: 'hostname-prefix',
             uuid: "12345678-9abc-def1-2345-123456789000",//GUID template, last few chars of the string will be replaced
-            username: config.mpsusername, // mps username
-            password: config.mpspass, // mps password
+            username: config.username, // mps username
+            password: config.pass, // mps password
             keepalive: 10000, // interval for keepalive ping
             debug: false,
             testciraState: 'KEEPALIVE_REPLY' //USERAUTH_SERVICE_ACCEPT, PFWD_SERVICE_ACCEPT, GLOBAL_REQUEST_SUCCESS, USERAUTH_SUCCESS, USERAUTH_FAILURE, PROTOCOL_VERSION_SENT, KEEPALIVE_REPLY
@@ -290,17 +304,18 @@ describe('MPS Server', function () {
         });
     });
 
+   
     it("Validate APF USERAUTH_FAILURE Message (using wrong password)", function (done) {
-        jest.setTimeout(10000);
+        jest.setTimeout(60000);
         var obj:any = {};
         var args = {
-            host: config.commonName,
-            port: config.mpsport,
+            host: config.common_name,
+            port: config.port,
             clientName: 'hostname-prefix',
             uuid: "12345678-9abc-def1-2345-123456789000",//GUID template, last few chars of the string will be replaced
-            username: config.mpsusername, // mps username
+            username: config.username, // mps username
             password: "pasdbenaksd", // Invalid mps password
-            keepalive: 60000, // interval for keepalive ping
+            keepalive: 10000, // interval for keepalive ping
             debug: false,
             testciraState: 'USERAUTH_FAILURE' //USERAUTH_SERVICE_ACCEPT, PFWD_SERVICE_ACCEPT, GLOBAL_REQUEST_SUCCESS, USERAUTH_SUCCESS, USERAUTH_FAILURE, PROTOCOL_VERSION_SENT, KEEPALIVE_REPLY
         };

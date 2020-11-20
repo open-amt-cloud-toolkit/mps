@@ -23,7 +23,7 @@ export class mpsMicroservice {
 constructor(config: configType, db: IDbProvider, certs: certificatesType){
     try {
       this.config = config;    
-      this.debugLevel = config.debugLevel;
+      this.debugLevel = config.debug_level;
       this.db = db;
       this.certs = certs;
     } catch (e) {

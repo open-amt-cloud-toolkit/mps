@@ -12,12 +12,13 @@ function getDeviceConnection(parent) {
   this.cache = {};
 }
 
-getDeviceConnection.prototype.getAmtStack = function getAmtStack (host, port, user, pass, tls) {
-  if (typeof this.cache[host + ':' + port] === 'undefined') {
-    var wsstack = new wsman(wscomm, host, port, user, pass, 0, this.mpsService);
-    this.cache[host + ':' + port] = new amt(wsstack);
-  }
-  return this.cache[host + ':' + port];
+getDeviceConnection.prototype.getAmtStack = function getAmtStack(host, port, user, pass, tls) {
+  // if (typeof this.cache[host + ':' + port] === 'undefined') {
+  var wsstack = new wsman(wscomm, host, port, user, pass, 0, this.mpsService);
+  //   this.cache[host + ':' + port] = new amt(wsstack);
+  // }
+  // return this.cache[host + ':' + port];
+  return new amt(wsstack);
 }
 
 module.exports = getDeviceConnection;

@@ -47,7 +47,7 @@ export class certificates {
             mpsCertAndKey = { cert: certoperation.pki.certificateFromPem(mpsCertificate), key: certoperation.pki.privateKeyFromPem(mpsPrivateKey)};
         } else {
             log.info('Generating Intel AMT MPS certificate...');
-            mpsCertAndKey = certoperation.IssueWebServerCertificate(rootCertAndKey, false, config.commonName, config.country, config.organization, null, false);
+            mpsCertAndKey = certoperation.IssueWebServerCertificate(rootCertAndKey, false, config.common_name, config.country, config.organization, null, false);
             mpsCertificate = certoperation.pki.certificateToPem(mpsCertAndKey.cert);
             mpsPrivateKey = certoperation.pki.privateKeyToPem(mpsCertAndKey.key);
             fs.writeFileSync(certpath + '/mpsserver-cert-public.crt', mpsCertificate);
@@ -61,7 +61,7 @@ export class certificates {
         //certificates.web.root.key = rootPrivateKey;
         webConfig = { ca: rootCertificate, cert: mpsCertificate, key: mpsPrivateKey };
 
-        certificates = { mpsConfig: mpsConfig, webConfig: webConfig };
+        certificates = { mps_tls_config: mpsConfig, web_tls_config: webConfig };
 
         return certificates;//return mps and web certificates
     }

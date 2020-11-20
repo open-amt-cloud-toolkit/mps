@@ -14,7 +14,7 @@ export class secretsDbProvider implements IDbProvider {
   config: configType;
   constructor(secretsManager: ISecretManagerService, logger: any, config: configType) {
     this.secretsManager = secretsManager;
-    this.secretsPath = config.secretsPath;
+    this.secretsPath = config.secrets_path;
     this.logger = logger;
     this.config = config;
   }
@@ -25,13 +25,13 @@ export class secretsDbProvider implements IDbProvider {
       // let user = await this.secretsManager.getSecretFromKey(`${this.secretsPath}devices/${guid}`, `username`);
       // let pwd = await this.secretsManager.getSecretFromKey(`${this.secretsPath}devices/${guid}`, `password`);
       let user, pwd;
-      if(this.config.useglobalmpscredentials) {
+      if(this.config.use_global_mps_credentials) {
         // user = await this.secretsManager.getSecretFromKey(`${this.secretsPath}global`, `username`);
         // pwd = await this.secretsManager.getSecretFromKey(`${this.secretsPath}global`, `password`);
 
         // TODO: move this to vault.
-        user = this.config.mpsusername;
-        pwd = this.config.mpspass;
+        user = this.config.username;
+        pwd = this.config.pass;
 
         if (username === user && password === pwd) {
           if(cb)
@@ -75,7 +75,7 @@ export class secretsDbProvider implements IDbProvider {
   async IsGUIDApproved(guid: string, cb: any) {
     try {
       let result = false;
-      let guids = await this.secretsManager.getSecretFromKey(`${this.secretsPath}global`, `guids_whitelist`);
+      let guids = await this.secretsManager.getSecretFromKey(`${this.secretsPath}global`, `guids_allowlist`);
       if (guids.indexOf(guid) >= 0) {
         result = true;
       }
@@ -83,14 +83,14 @@ export class secretsDbProvider implements IDbProvider {
         cb(result);
       }
     } catch (error) {
-      this.logger.error('Error while retrieving guids whitelist\r\n')
+      this.logger.error('Error while retrieving guids allowlist\r\n')
       this.logger.error(error)
     }
   }
   async IsOrgApproved(org: string, cb: any) {
     try {
       let result = false;
-      let orgs = await this.secretsManager.getSecretFromKey(`${this.secretsPath}global`, `orgs_whitelist`);
+      let orgs = await this.secretsManager.getSecretFromKey(`${this.secretsPath}global`, `orgs_allowlist`);
       
       if (orgs.indexOf(org) >= 0) {
         result = true;
@@ -99,10 +99,10 @@ export class secretsDbProvider implements IDbProvider {
         cb(result);
       }
     } catch (error) {
-      this.logger.error('Error while retrieving org whitelist\r\n')
+      this.logger.error('Error while retrieving org allowlist\r\n')
       this.logger.error(error)
       if (cb) {
-        cb(null, 'error while retrieving org whitelist');
+        cb(null, 'error while retrieving org allowlist');
       }
     }
   }
@@ -119,7 +119,7 @@ export class secretsDbProvider implements IDbProvider {
         }, {})
         
       } catch (error) {
-        this.logger.error('Error while retrieving org whitelist\r\n')
+        this.logger.error('Error while retrieving org allowlist\r\n')
         this.logger.error(error)
         
       }

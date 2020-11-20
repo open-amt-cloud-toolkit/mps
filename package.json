@@ -3,24 +3,23 @@
   "version": "0.0.1",
   "description": "Containerized MPS service",
   "scripts": {
-    "build": "tsc --w",
+    "install": "cd webui && npm ci",
+    "build": "tsc && (cd webui && npm run build)",
     "compile": "tsc",
-    "copy-dep": "npx copyfiles -f ./node_modules/react/umd/react.production.min.js ./node_modules/react-dom/umd/react-dom.production.min.js ./node_modules/MPS_UI_Toolkit/dist/bundle.core.min.js ./public/scripts",
-    "copy-css": "npx copyfiles -f ./node_modules/ag-grid-community/dist/styles/ag-grid.css ./node_modules/ag-grid-community/dist/styles/ag-theme-balham-dark.css ./node_modules/ag-grid-community/dist/styles/agGridBalhamFont.css ./public/styles",
-    "start": "npm run copy-dep && npm run copy-css && tsc && ts-node ./dist/index.js",
-    "test": "jest --coverage",
-    "watch": "nodemon -e ts -w ./src -x npm run start"
+    "start": "npm run build && node ./dist/index.js",
+    "test": "jest & (cd webui && npm run test)",
+    "dev": "set MPS_USE_VAULT=false&& set MPS_LOG_LEVEL=silly&&set MPS_AUTH_ENABLED=false&& npm start",
+    "devx": "MPS_USE_VAULT=false MPS_LOG_LEVEL=silly MPS_AUTH_ENABLED=false npm start"
   },
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "MPS_UI_Toolkit": "git+https://github.com/open-amt-cloud-toolkit/ui-toolkit.git",
     "express": "^4.17.1",
     "express-session": "^1.17.0",
-    "minimist": "^1.2.5",
-    "node-forge": "^0.9.1",
-    "node-vault": "^0.9.12",
+    "node-forge": "^0.10.0",
+    "node-vault": "^0.9.20",
     "winston": "^3.0.0",
+    "rc": "^1.2.8",
     "ws": "^7.3.0"
   },
   "devDependencies": {
@@ -30,8 +29,7 @@
     "@types/node-forge": "^0.8.4",
     "jest": "^24.8.0",
     "jest-transform-stub": "^2.0.0",
-    "nodemon": "^2.0.2",
-    "ts-jest": "^26.0.0",
+    "ts-jest": "^26.2.0",
     "ts-node": "^8.1.0",
     "typescript": "^3.6.2"
   }

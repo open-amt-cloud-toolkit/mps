@@ -1,0 +1,30 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation 2020
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
+.domain-buttons {
+    margin: auto;
+    text-align: center;
+    padding: 25px;
+    width: 350px;
+    height: 100px;
+    border: 3px solid white !important;
+    border-radius: 6px !important;
+    background-color: grey !important;
+    font-size: 16px;
+    .btn-text {
+        font-size:16px !important;
+        font-weight: 700;
+    }
+   
+}
+
+.mps-button {
+    margin-top: 100px;
+    margin-bottom: 20px;
+}
+.rps-button  {
+    margin-top: 20px;
+}
+

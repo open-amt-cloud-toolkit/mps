@@ -16,6 +16,7 @@ export class PowerActionHandler implements IAmtHandler {
   mpsService: mpsMicroservice;
   name: string;
   amtFactory: any;
+  useSOLFlag: boolean;
 
   constructor(mpsService: mpsMicroservice) {
     this.name = "PowerAction";
@@ -25,7 +26,13 @@ export class PowerActionHandler implements IAmtHandler {
 
   async AmtAction(req: Request, res: Response) {
     try {
-      let payload = req.body.payload;
+      let payload = req.body.payload;      
+      
+      if (payload.useSOL !== undefined && typeof payload.useSOL !== "boolean") {
+        return res.status(400).send(ErrorResponse(400, `Device : ${payload.guid} useSOL should be boolean`));
+      }
+      this.useSOLFlag = payload.useSOL ? payload.useSOL : false ;
+      
       if (payload.guid) {
         if (payload.action) {
           let ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid];
@@ -98,7 +105,7 @@ export class PowerActionHandler implements IAmtHandler {
           r["LockSleepButton"] = false;
           r["ReflashBIOS"] = false;
           r["UseIDER"] = action > 199 && action < 300;
-          r["UseSOL"] = false; //TODO: Fix SOL if connected.  If we are looking at the terminal, turn on SOL.
+          r["UseSOL"] = this.useSOLFlag; 
           r["UseSafeMode"] = false;
           r["UserPasswordBypass"] = false;
           if (r["SecureErase"]) {
@@ -212,6 +219,7 @@ export class PowerActionHandler implements IAmtHandler {
     amtstack.RequestPowerStateChange(
       action,
       (stack, name, response, status) => {
+        stack.wsman.comm.socket.sendchannelclose();
         if (status == 200) {
           // log.info(`Power state change request successful for guid : ${uuid}`);
           return res.send(response);

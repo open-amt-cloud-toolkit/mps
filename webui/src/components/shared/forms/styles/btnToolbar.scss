@@ -1,0 +1,13 @@
+// Copyright (c) Microsoft. All rights reserved.
+
+@import 'src/styles/mixins';
+
+.btn-toolbar {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-end;
+  @include rem-fallback(padding-top, 32px);
+
+  // TODO: Use some flexbox properties to avoid strange staggering when wrapped
+  .btn { @include rem-fallback(margin-right, 20px); }
+}

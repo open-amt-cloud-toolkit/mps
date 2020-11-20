@@ -22,21 +22,21 @@ spec:
       - name: azure-mpsserver
         image: {{ .Values.images.mps }}
         env:
-          - name: "DEVELOPER_MODE"
-            value: "{{ .Values.mps.devmode }}"
-          - name: "GENERATE_CERTS"
+          - name: "MPS_DEVELOPER_MODE"
+            value: "{{ .Values.mps.developermode }}"
+          - name: "MPS_GENERATE_CERTS"
             value: "{{ .Values.mps.generateCerts }}"
-          - name: "NODE_ENV"
+          - name: "MPS_NODE_ENV"
             value: "{{ .Values.mps.nodeEnv }}"
-          - name: "CERT_COMMON_NAME"
+          - name: "MPS_COMMON_NAME"
             value: "{{ .Values.mps.certCommonName }}"
-          - name: "SERVER_DEPLOYMENT_MODE"
+          - name: "MPS_SERVER_DEPLOYMENT_MODE"
             value: "{{ .Values.mps.serverDeploymentMode }}"
-          - name: "USE_WHITELIST"
-            value: "{{ .Values.mps.useWhiteList }}"
+          - name: "MPS_USE_ALLOWLIST"
+            value: "{{ .Values.mps.useAllowList }}"
           - name: "MPS_PORT"
             value: "{{ .Values.mps.mpsPort }}"
-          - name: "WEB_PORT"
+          - name: "MPS_WEB_PORT"
             value: "{{ .Values.mps.webPort }}"
           - name: "MPS_USER"
             value: "{{ .Values.mps.mpsUser }}"
@@ -45,31 +45,31 @@ spec:
               secretKeyRef:
                 name: {{ .Values.mpsSecretStoreNames.creds }}
                 key: {{ .Values.mps.mpsPassword }}
-          - name: "USE_GLOBAL_CREDENTIALS"
+          - name: "MPS_USE_GLOBAL_CREDENTIALS"
             value: "{{ .Values.mps.useGlobalCredentials }}"
-          - name: "ENABLE_LOGGING"
+          - name: "MPS_ENABLE_LOGGING"
             value: "{{ .Values.mps.enableLogging }}"
-          - name: "DEBUG"
+          - name: "MPS_DEBUG"
             value: "{{ .Values.mps.debug }}"
-          - name: "USEVAULT"
+          - name: "MPS_USE_VAULT"
             value: "{{ .Values.mps.useVault }}"
-          - name: "VAULT_ADDR"
+          - name: "MPS_VAULT_ADDRESS"
             value : "{{ .Values.mps.vaultAddr }}"
-          - name: "SECRETS_PATH"
+          - name: "MPS_SECRETS_PATH"
             value: "{{ .Values.mps.secretsPath }}"
-          - name: "DEBUG_LEVEL"
+          - name: "MPS_DEBUG_LEVEL"
             value: "{{ .Values.mps.debugLevel }}"
-          - name: "WEB_ADMIN_USER"
+          - name: "MPS_WEB_ADMIN_USER"
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.mpsSecretStoreNames.web }}
                 key: {{ .Values.mps.webAdminUserKey }}
-          - name: "WEB_ADMIN_PASSWORD"
+          - name: "MPS_WEB_ADMIN_PASSWORD"
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.mpsSecretStoreNames.web }}
                 key: {{ .Values.mps.webAdminPasswordKey }}
-          - name: MPSXAPIKEY
+          - name: MPS_MPSXAPIKEY
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.mpsSecretStoreNames.api }}
@@ -79,27 +79,29 @@ spec:
               secretKeyRef:
                 name: {{ .Values.mpsSecretStoreNames.certs }}
                 key: {{ .Values.mps.mpscertpublic }}
+          - name: MPS_CERT_FORMAT
+            value: {{ .Values.mps.certFormat }}
           - name: MPS_TLS_CERT_KEY
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.mpsSecretStoreNames.certs }}
                 key: {{ .Values.mps.mpscertkey }}
-          - name: WEB_TLS_CERT
+          - name: MPS_WEB_TLS_CERT
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.mpsSecretStoreNames.certs }}
                 key: {{ .Values.mps.webcertpublic }}
-          - name: WEB_TLS_CERT_KEY
+          - name: MPS_WEB_TLS_CERT_KEY
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.mpsSecretStoreNames.certs }}
                 key: {{ .Values.mps.webcertkey }}
-          - name: ROOT_CA_CERT
+          - name: MPS_ROOT_CA_CERT
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.mpsSecretStoreNames.certs }}
                 key: {{ .Values.mps.rootcacert }}
-          - name: VAULT_TOKEN
+          - name: MPS_VAULT_TOKEN
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.mpsSecretStoreNames.vault }}
