@@ -15,6 +15,7 @@ In order to deploy and make changes, the following tools and application has to 
 -   [Visual Studio Code](https://code.visualstudio.com/) or any other IDE 
 -   [Node.js](https://nodejs.org/)
 -   [RPS](https://github.com/open-amt-cloud-toolkit/rps) stands for **R**emote **P**rovisioning **S**erver
+-   Build and deploy RPS MicroService locally
 -	Intel AMT device is configured and connected to RPS. See the [RPS](https://github.com/open-amt-cloud-toolkit/rps) for documentation.
 -   Chrome 
 
@@ -86,34 +87,5 @@ http://<localhost>:5000/src/sample/sampleCIRA.htm?server=<rps IPaddress>:<rps po
 
 ## Add a new Language for Internationalization
 
- Please refer to [Localization](./localization.md) docs
+ Please refer to [Localization](../localization.md) docs
 
-
- ## Run RPS server in DEV mode
-
-To display UI controls on local react Web UI for **testing**, make the following changes.
-
-- Go to your local **rps** application where it is running.
-- Press **ctrl+c** to exit the application.
-- Edit the file **rps/package.json**
-
-Replace the *dev* command under *scripts* with below code 
-
-```
-"dev": "set RPS_NODE_ENV=dev&& set RPS_USE_VAULT=false&& set RPS_USE_DB_PROFILES=false&& set RPS_LOG_LEVEL=silly&& set RPS_HTTPS=false&& npm start"
-```
-
-- Edit the file **rps/.rpsrc**
-
-Update the *xapikey* value with below snippet
-
-```
-"xapikey": "APIKEYFORRPS123!"
-```
-
-- Save the changes.
-- At the command prompt, run the below command from the root of **rps** application
-
-```
-npm run dev
-```

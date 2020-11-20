@@ -4,7 +4,7 @@ Each Intel&reg; AMT device has a Global Unique Identifier (GUID) assigned to it 
 
 There are a number of ways to obtain the GUID on the Intel&reg; AMT device:
 
-- WebUI of Active Edge 
+- WebUI of the Management Presence Server within the Open AMT Cloud Toolkit 
 - [ConnectedDevices API Method](../APIs/MPSmethods/connecteddevices.md)
 
 

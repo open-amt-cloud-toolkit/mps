@@ -23,7 +23,7 @@ In order to deploy and make changes, the following tools and application has to 
 At a command prompt, run the following commands:
 ```
 git clone https://github.com/open-amt-cloud-toolkit/ui-toolkit
-cd ui-toolkit
+cd UI_Toolkit
 npm install
 ```
 
@@ -83,4 +83,4 @@ You will see the errors in the following scenario's:
  
 ## Add a new Language for Internationalization
 
-Please refer to [Localization](./localization.md) docs
+Please refer to [Localization](../localization.md) docs

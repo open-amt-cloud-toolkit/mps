@@ -31,7 +31,7 @@ Estimated completion time: 5 minutes
 
 6\. Select an action to perform from the options on the right.
 
->**Note:** Since the device was activated in Client Control Mode(CCM), the KVM feature will not function in this current release. To use KVM, follow the [ACM Activation Tutorial](../Tutorials/acmActivation.md) to see how to configure a device into Admin Control Mode.
+>**Note:** Since the device was activated in Client Control Mode(CCM), the KVM feature will not function in this current release. To use KVM, follow the [ACM Activation Tutorial](createProfileACM.md) to see how to configure a device into Admin Control Mode.
 
 >**Note:** Activated in Admin Control Mode already? Try out the Keyboard, Video, Mouse (KVM) feature to remotely view and control the AMT device.  Issue a Reset to BIOS command and be able to view and make live changes to BIOS settings.
 
@@ -41,7 +41,7 @@ Estimated completion time: 5 minutes
 
 ## Next steps
 
-After successfully deploying the Active Edge microservices and client, explore other tools and topics in the Active Edge architecture:
+After successfully deploying the Open AMT Cloud Toolkit microservices and client, explore other tools and topics in the Open AMT Cloud Toolkit architecture:
 
 ### REST API Calls
 Use the REST API tutorial to construct an Admin method API call to connected devices using node.js. Then modify the template to create other MPS REST API calls. 
@@ -49,13 +49,13 @@ Use the REST API tutorial to construct an Admin method API call to connected dev
 [Get Started with REST API Calls](../Tutorials/apiTutorial.md){: .md-button .md-button--primary }
 
 ### UI Toolkit
-Explore the Active Edge reference implementation console by adding manageability features with prebuilt React components, such as Keyboard, Video, and Mouse (KVM).
+Explore the Open AMT Cloud Toolkit reference implementation console by adding manageability features with prebuilt React components, such as Keyboard, Video, and Mouse (KVM).
 
 [Get Started with the UI Toolkit](../Tutorials/uitoolkit.md){: .md-button .md-button--primary }
 
 ### Security
-Learn how to use Active Edge architecture to secure assets. Topics include credentials, allowlisting, best known security methods, and more.
+Learn how to use the Open AMT Cloud Toolkit architecture to secure assets. Topics include credentials, allowlisting, best known security methods, and more.
 
-[Learn More about Security and Hardening](../security.md){: .md-button .md-button--primary }
+[Learn More about Security and Hardening](../Microservices/MPS/securityMPS.md){: .md-button .md-button--primary }
 
 

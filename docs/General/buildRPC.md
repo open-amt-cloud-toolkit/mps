@@ -21,7 +21,7 @@ The Remote Provisioning Client (RPC) communicates with the Manageability Engine 
 2. Clone the RPC repository.
 
     ``` bash
-    git clone --branch ActivEdge https://github.com/open-amt-cloud-toolkit/rpc.git && cd rpc
+    git clone https://github.com/open-amt-cloud-toolkit/rpc.git && cd rpc
     ```
 
 ### Install Prerequisites

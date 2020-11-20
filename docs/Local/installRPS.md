@@ -15,7 +15,7 @@ Figure 1 illustrates where RPS fits into the overall microservice architecture.
 2. Clone the RPS repository to the same parent directory where the mps directory is located. 
 
 ```
-git clone --branch ActivEdge https://github.com/open-amt-cloud-toolkit/rps.git && cd rps
+git clone https://github.com/open-amt-cloud-toolkit/rps.git && cd rps
 ```
 
 !!! Warning

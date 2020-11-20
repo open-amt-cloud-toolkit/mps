@@ -15,7 +15,7 @@ Figure 1 illustrates where MPS fits into the overall microservice architecture.
 2. Clone the MPS repository and navigate to it with the following commands:
 
 ``` bash
-git clone --branch ActivEdge https://github.com/open-amt-cloud-toolkit/mps.git && cd mps
+git clone https://github.com/open-amt-cloud-toolkit/mps.git && cd mps
 ```
 
 ## Modify MPS Configuration File
