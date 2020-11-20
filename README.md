@@ -45,9 +45,13 @@ To deploy the MPS on a local development system:
     npm run dev
     ```
 
-6. The MPS listens on port 4433. Successful installation produces the command line message MPS: Microservice running on https://your-development-system-ip-address:3000.
-
-
+6. The MPS listens on port 4433. Successful installation produces the command line message:
+    
+    ```
+    Intel(R) AMT server running on [development-system-ip]:4433
+    MPS: Microservice running on https://[development-system-ip]:3000.
+    ```
+    
 For detailed documentation about MPS, see the [docs](https://open-amt-cloud-toolkit.github.io/mps/)
 
 
