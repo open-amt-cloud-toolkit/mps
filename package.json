@@ -20,7 +20,7 @@
     "node-vault": "^0.9.20",
     "winston": "^3.0.0",
     "rc": "^1.2.8",
-    "ws": "^7.3.0"
+    "ws": "^7.4.0"
   },
   "devDependencies": {
     "@types/body-parser": "^1.17.1",
