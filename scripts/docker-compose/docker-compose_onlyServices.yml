@@ -9,6 +9,8 @@ services:
     ports: 
       - "${RPS_WEBSOCKETPORT}:${RPS_WEBSOCKETPORT}"
       - "${RPS_WEB_PORT}:${RPS_WEB_PORT}"
+    depends_on:
+      - mps
     environment: 
       RPS_USE_VAULT: ${RPS_USE_VAULT}
       RPS_NODE_ENV: ${RPS_NODE_ENV}
@@ -26,7 +28,7 @@ services:
       RPS_VAULT_ADDRESS: ${RPS_VAULT_ADDRESS}
       RPS_VAULT_TOKEN: ${RPS_VAULT_TOKEN}
       RPS_SECRETS_PATH: ${RPS_SECRETS_PATH}
-      RPS_CREDENTIALS_PATH: ${RPS_DEVELOPER_MODE}
+      RPS_CREDENTIALS_PATH: ${RPS_CREDENTIALS_PATH}
       RPS_USER: ${RPS_MPS_USER}
       RPS_PASSWORD: ${RPS_MPS_PASSWORD}
       RPS_AMT_USER: ${RPS_AMT_USER}
@@ -35,7 +37,17 @@ services:
       RPS_ROOT_CA_CERT: ${RPS_ROOT_CA_CERT}
       RPS_LOG_LEVEL: ${RPS_LOG_LEVEL}
     volumes:
-            - app-volume:/config
+      - private-volume:/rcs-microservice/private
+    command: >
+      /bin/bash -c "
+        while ! nc -z mps 3000;
+        do
+          echo waiting for mps;
+          sleep 5;
+        done;
+        echo MPS Running!;
+        npm start;
+      "
   mps:
     image: ${MPS_IMAGE}
     ports: 
@@ -60,12 +72,20 @@ services:
       MPS_WEB_ADMIN_USER: ${MPS_WEB_ADMIN_USER}
       MPS_WEB_ADMIN_PASSWORD: ${MPS_WEB_ADMIN_PASSWORD}
       MPS_HTTPS: ${MPS_HTTPS}
-      MPS_MPSXAPIKEY: ${MPS_MPSXAPIKEY}
+      MPS_MPSXAPIKEY: ${MPS_XAPIKEY}
       MPS_LISTEN_ANY: ${MPS_LISTEN_ANY}
       MPS_TLS_OFFLOAD: ${MPS_TLS_OFFLOAD}
       MPS_SESSION_ENCRYPTION_KEY: ${MPS_SESSION_ENCRYPTION_KEY}
       MPS_LOG_LEVEL: ${MPS_LOG_LEVEL}
+      MPS_AUTH_ENABLED: ${MPS_AUTH_ENABLED}
+      REACT_APP_MPS_WEB_PORT: ${MPS_WEB_PORT}
+      REACT_APP_RPS_WEB_PORT: ${RPS_WEB_PORT}
+      REACT_APP_RPS_SERVER: ${MPS_COMMON_NAME}
+      REACT_APP_MPS_SERVER: ${MPS_COMMON_NAME}
+      REACT_APP_MPSXAPIKEY: ${MPS_XAPIKEY}
+      REACT_APP_RPSXAPIKEY: ${RPS_XAPIKEY}
     volumes:
-            - app-volume:/config
+      - private-volume:/mps-microservice/private
 volumes:
     app-volume:
+    private-volume:
