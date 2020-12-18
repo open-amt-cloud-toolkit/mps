@@ -6,6 +6,7 @@
     "install": "cd webui && npm ci",
     "build": "tsc && (cd webui && npm run build)",
     "compile": "tsc",
+    "lint": "eslint . --ext .ts",
     "start": "npm run build && node ./dist/index.js",
     "test": "jest & (cd webui && npm run test)",
     "dev": "set MPS_USE_VAULT=false&& set MPS_LOG_LEVEL=silly&&set MPS_AUTH_ENABLED=false&& npm start",
@@ -20,7 +21,7 @@
     "node-vault": "^0.9.20",
     "winston": "^3.0.0",
     "rc": "^1.2.8",
-    "ws": "^7.4.0"
+    "ws": "^7.4.1"
   },
   "devDependencies": {
     "@types/body-parser": "^1.17.1",

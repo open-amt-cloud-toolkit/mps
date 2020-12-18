@@ -4,19 +4,19 @@
 * Description: Implements admin handle registry
 **********************************************************************/
 
-import { IAdminHandler } from '../models/IAdminHandler';
+import { IAdminHandler } from '../models/IAdminHandler'
 
 export class AdminHandlerRegistrar {
     adminHandlers: any;
-    constructor() {
-        this.adminHandlers = {};
+    constructor () {
+      this.adminHandlers = {}
     }
 
-    registerHandler(handler : IAdminHandler) : void {
-        this.adminHandlers[handler.name] = handler;
+    registerHandler (handler : IAdminHandler) : void {
+      this.adminHandlers[handler.name] = handler
     }
 
-    getHandler(name : string) : IAdminHandler {
-        return this.adminHandlers[name];
+    getHandler (name : string) : IAdminHandler {
+      return this.adminHandlers[name]
     }
 }

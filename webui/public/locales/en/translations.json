@@ -185,33 +185,52 @@
     "grid": {
       "name": "Name",
       "password": "password",
-      "generateRandom": "Generate Random Password",
-      "randomPasswordLength": "Random password length",
+      "generateRandom": "Generate Random AMT Password",
+      "randomPasswordLength": "Random AMT password length",
       "activation": "Activation",
-      "ciraConfigName": "CIRA Config Name"
+      "ciraConfigName": "CIRA Config",
+      "networkConfigName":"Network Config",
+      "generateMEBXRandom":"Generate Random MEBX Password",
+      "randomMEBXPasswordLength":"Random MEBX Password length"
     },
-    "new" : "New",
-    "delete" : "Delete",
-    "newProfileDetails":"New Profile Details",
+    "new": "New",
+    "delete": "Delete",
+    "edit": "Edit",
+    "save": "Save",
+    "newProfileDetails": "New Profile Details",
+    "editProfile": "Edit profile details",
     "close": "Close",
-    "profileName" : "Profile Name",
-    "generateRandomPassword" : "Generate Random Password",
-    "amtPassword":"AMT Password",
-    "randomPasswordLength":"Random Password Length",
-    "ciraConfiguration":"CIRA Configuration",
-    "activation":"Activation",
-    "create":"Create",
-    "errors":{
-      "profileNameValidation":"Profile name contains letters, numbers and special characters.",
-      "amtPassword":"Generate Random Password (or) AMT Password is required.",
-      "amtPasswordValidation" : "Amt password should contains lowercase letter, one uppercase letter, one numeric digit, and one special character and password length should be in between 8 to 32.",
-      "randomPasswordValidation":"Random password length should be in between 8 to 32."
+    "profileName": "Profile Name",
+    "generateRandomPassword": "Generate Random AMT Password",
+    "generateRandomMEBxPassword":"Generate Random MEBX Password",
+    "amtPassword": "AMT Password",
+    "mebxPassword":"MEBX Password",
+    "randomPasswordLength": "Random Password Length",
+    "randomMEBXPasswordLength":"Random MEBX Password length",
+    "ciraConfiguration": "CIRA Config",
+    "newCira":"New CIRA Config",
+    "newNetwork":"New Network Config",
+    "dhcpEnabled":"DHCP Enabled",
+    "networkProile":"Network Config",
+    "activation": "Activation",
+    "create": "Create",
+    "errors": {
+      "profileNameValidation": "Profile name contains letters, numbers and special characters.",
+      "amtPassword": "Generate Random AMT Password (or) AMT Password is required.",
+      "mebxPassword": "Generate Random MEBX Password (or) MEBX Password is required.",
+      "amtPasswordValidation": "AMT password must contain at least one lower case letter, one upper case letter, one number, one special character, and length must be between 8 and 32.",
+      "mebxPasswordValidation": "MEBX password must contain at least one lower case letter, one upper case letter, one number, one special character, and length must be between 8 and 32.",
+      "randomPasswordValidation": "Random password length should be in between 8 to 32.",
+      "randomMEBXPasswordValidation":"Random MEBX Password length should be in between 8 to 32."
     }
   },
   "cira": {
     "new": "New",
     "delete": "Delete",
     "close": "Close",
+    "save": "Save",
+    "edit": "Edit",
+    "editCIRAConfig": "Edit CIRA Configuration",
     "newCIRAConfig": "New CIRA Configuration",
     "configName": "Config Name",
     "addressFormat": "MPS Server Address Format",
@@ -258,6 +277,9 @@
     "new": "New",
     "close": "Close",
     "newDomain": "Create Domain",
+    "edit": "Edit",
+    "save": "Save",
+    "editDomain": "Edit domain details",
     "grid": {
       "name": "Name",
       "domainSuffix": "Domain Suffix",
@@ -272,12 +294,15 @@
     "provisioningCertPassword": "Provisioning Cert Password",
     "create": "Create",
     "file": "File",
+    "browse": "Browse",
+    "browseNew": "Browse new file",
     "namePlaceHolder": "Enter domain name",
     "domainSuffixPlaceHolder": "Enter Domain suffix",
     "provisioningCertTextAreaPlaceHolder": "Enter provisioning Cert ",
     "provisioningCertPasswordPlaceHolder" : "Enter password",
     "provisioningCertTextPlaceHolder":"Enter file path",
     "text": "Text",
+    "certExists": "If you would like to add a new Provisioning certificate browse and select.",
     "error": {
       "nameValidation": "Name is a required field and contains letters, numbers and special characters.",
       "domainSuffixValidation": "Domain suffix is a required field",
@@ -290,5 +315,23 @@
   "landing": {
     "mps": "Management Presence Server",
     "rps": "Remote Provisioning Server"
+  },
+  "network":{
+    "new":"New",
+    "newNetwork": "New Network configuration",
+    "editNetwork": "Edit Network configuration",
+    "create": "Create",
+    "delete":"Delete",
+    "edit": "Edit",
+    "save": "Save",
+    "grid":{
+      "name":"Name",
+      "dhcpEnabled":"DHCP Enabled"
+    },
+    "networkName": "Network Name",
+    "dhcpEnabled": "DHCP Enabled",
+    "errors": {
+      "networkNameValidation": "Network name is a required field and contains letters, numbers and special characters."
+    }
   }
 }

@@ -35,6 +35,9 @@ CREATE TABLE IF NOT EXISTS profiles(
       creation_date timestamp,
       created_by varchar(40),
       network_profile_name varchar(40) REFERENCES networkconfigs(network_profile_name),
+      mebx_password varchar(40),
+      generate_random_mebx_password BOOLEAN,
+      random_mebx_password_length integer,
       CONSTRAINT name UNIQUE(profile_name)
     );
 CREATE TABLE IF NOT EXISTS domains(

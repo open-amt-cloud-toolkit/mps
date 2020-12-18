@@ -1,11 +1,9 @@
-import { ParseWsman } from '../src/amt_libraries/amt-xml';
+import { ParseWsman } from '../src/amt_libraries/amt-xml'
 
-
-describe("CIM related XML parser testing ", () => {
-  
-    //CIM_BIOSElement
-    it('should convert CIM_BIOS Element Output XML To JSON', async () => {
-      const xmlOutput = `
+describe('CIM related XML parser testing ', () => {
+  // CIM_BIOSElement
+  it('should convert CIM_BIOS Element Output XML To JSON', async () => {
+    const xmlOutput = `
       <?xml version="1.0" encoding="UTF-8"?>
 <a:Envelope
     xmlns:a="http://www.w3.org/2003/05/soap-envelope"
@@ -46,48 +44,46 @@ describe("CIM related XML parser testing ", () => {
             <g:EndOfSequence></g:EndOfSequence>
         </g:PullResponse>
     </a:Body>
-</a:Envelope>`;
-  
-      var wsresponse= ParseWsman(xmlOutput);
-      const outputJson =
+</a:Envelope>`
+
+    const wsresponse = ParseWsman(xmlOutput)
+    const outputJson =
       {
-        "Header": {
-            "To": "http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous",
-            "RelatesTo": "2",
-            "Action": "http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse",
-            "MessageID": "uuid:00000000-8086-8086-8086-00000001348B",
-            "ResourceURI": "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BIOSElement",
-            "Method": "PullResponse"
+        Header: {
+          To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+          RelatesTo: '2',
+          Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse',
+          MessageID: 'uuid:00000000-8086-8086-8086-00000001348B',
+          ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BIOSElement',
+          Method: 'PullResponse'
         },
-        "Body": {
-            "Items": {
-                "CIM_BIOSElement": {
-                    "ElementName": "Primary BIOS",
-                    "Manufacturer": "Intel Corp.",
-                    "Name": "Primary BIOS",
-                    "OperationalStatus": 0,
-                    "PrimaryBIOS": true,
-                    "ReleaseDate": {
-                        "Datetime": "2012-04-25T00:00:00Z"
-                    },
-                    "SoftwareElementID": "KBQ7710H.86A.0038.2012.0425.1537",
-                    "SoftwareElementState": 2,
-                    "TargetOperatingSystem": 66,
-                    "Version": "KBQ7710H.86A.0038.2012.0425.1537"
-                }
+        Body: {
+          Items: {
+            CIM_BIOSElement: {
+              ElementName: 'Primary BIOS',
+              Manufacturer: 'Intel Corp.',
+              Name: 'Primary BIOS',
+              OperationalStatus: 0,
+              PrimaryBIOS: true,
+              ReleaseDate: {
+                Datetime: '2012-04-25T00:00:00Z'
+              },
+              SoftwareElementID: 'KBQ7710H.86A.0038.2012.0425.1537',
+              SoftwareElementState: 2,
+              TargetOperatingSystem: 66,
+              Version: 'KBQ7710H.86A.0038.2012.0425.1537'
             }
-         }
-    
-      };
+          }
+        }
 
-      expect(JSON.stringify(wsresponse)).toBe(JSON.stringify(outputJson));
-      
-      });
+      }
 
+    expect(JSON.stringify(wsresponse)).toBe(JSON.stringify(outputJson))
+  })
 
-      //CIM_Card
-    it('should convert CIM_Card Element Output XML To JSON', async () => {
-        const xmlOutput = `
+  // CIM_Card
+  it('should convert CIM_Card Element Output XML To JSON', async () => {
+    const xmlOutput = `
         <?xml version="1.0" encoding="UTF-8"?>
            <a:Envelope
                 xmlns:a="http://www.w3.org/2003/05/soap-envelope"
@@ -126,44 +122,43 @@ describe("CIM related XML parser testing ", () => {
                 <g:EndOfSequence></g:EndOfSequence>
                 </g:PullResponse>
             </a:Body>
-        </a:Envelope>`;
-    
-        var wsresponse = ParseWsman(xmlOutput);
-        const outputJson =
-        {
-            "Header": {
-                "To": "http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous",
-                "RelatesTo": "2",
-                "Action": "http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse",
-                "MessageID": "uuid:00000000-8086-8086-8086-000000013489",
-                "ResourceURI": "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_Card",
-                "Method": "PullResponse"
-            },
-            "Body": {
-                "Items": {
-                    "CIM_Card": {
-                        "CanBeFRUed": true,
-                        "CreationClassName": "CIM_Card",
-                        "ElementName": "Managed System Base Board",
-                        "Manufacturer": "Intel Corporation",
-                        "Model": "DQ77KB",
-                        "OperationalStatus": 0,
-                        "PackageType": 9,
-                        "SerialNumber": "BTKB2440008L",
-                        "Tag": "To be filled by O.E.M.",
-                        "Version": "AAG40294-402"
-                    }
-                }
-            }
-        };
-  
-        expect(JSON.stringify(wsresponse)).toBe(JSON.stringify(outputJson));
-        
-        });
+        </a:Envelope>`
 
-        //CIM_Chip
-    it('should convert CIM_Chip Element Output XML To JSON', async () => {
-        const xmlOutput = `
+    const wsresponse = ParseWsman(xmlOutput)
+    const outputJson =
+        {
+          Header: {
+            To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+            RelatesTo: '2',
+            Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse',
+            MessageID: 'uuid:00000000-8086-8086-8086-000000013489',
+            ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_Card',
+            Method: 'PullResponse'
+          },
+          Body: {
+            Items: {
+              CIM_Card: {
+                CanBeFRUed: true,
+                CreationClassName: 'CIM_Card',
+                ElementName: 'Managed System Base Board',
+                Manufacturer: 'Intel Corporation',
+                Model: 'DQ77KB',
+                OperationalStatus: 0,
+                PackageType: 9,
+                SerialNumber: 'BTKB2440008L',
+                Tag: 'To be filled by O.E.M.',
+                Version: 'AAG40294-402'
+              }
+            }
+          }
+        }
+
+    expect(JSON.stringify(wsresponse)).toBe(JSON.stringify(outputJson))
+  })
+
+  // CIM_Chip
+  it('should convert CIM_Chip Element Output XML To JSON', async () => {
+    const xmlOutput = `
         <?xml version="1.0" encoding="UTF-8"?>
         <a:Envelope
             xmlns:a="http://www.w3.org/2003/05/soap-envelope"
@@ -216,60 +211,59 @@ describe("CIM related XML parser testing ", () => {
                     <g:EndOfSequence></g:EndOfSequence>
                 </g:PullResponse>
             </a:Body>
-        </a:Envelope>`;
-    
-        var wsresponse = ParseWsman(xmlOutput);
-        const outputJson =
-        {
-            "Header": {
-                "To": "http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous",
-                "RelatesTo": "3",
-                "Action": "http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse",
-                "MessageID": "uuid:00000000-8086-8086-8086-000000013485",
-                "ResourceURI": "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_Chip",
-                "Method": "PullResponse"
-            },
-            "Body": {
-                "Items": {
-                    "CIM_PhysicalMemory": [
-                        {
-                            "BankLabel": "CHANNEL A SLOT 0",
-                            "Capacity": 4294967296,
-                            "CreationClassName": "CIM_PhysicalMemory",
-                            "ElementName": "Managed System Memory Chip",
-                            "FormFactor": 13,
-                            "Manufacturer": "830B",
-                            "MemoryType": 24,
-                            "PartNumber": "NT4GC64C88C0NS-DI ",
-                            "SerialNumber": "8A6A2E6B",
-                            "Speed": 0,
-                            "Tag": 9876543210
-                        },
-                        {
-                            "BankLabel": "CHANNEL B SLOT 0",
-                            "Capacity": 4294967296,
-                            "CreationClassName": "CIM_PhysicalMemory",
-                            "ElementName": "Managed System Memory Chip",
-                            "FormFactor": 13,
-                            "Manufacturer": "830B",
-                            "MemoryType": 24,
-                            "PartNumber": "NT4GC64C88C0NS-DI ",
-                            "SerialNumber": "8F582E6E",
-                            "Speed": 0,
-                            "Tag": "9876543210 (#1)"
-                        }
-                    ]
-                }
-            }
-        };
-  
-        expect(JSON.stringify(wsresponse)).toBe(JSON.stringify(outputJson));
-        
-        });
+        </a:Envelope>`
 
-        //CIM_ComputerSystemPackage
-    it('should convert CIM_ComputerSystemPackage Element Output XML To JSON', async () => {
-        const xmlOutput = `
+    const wsresponse = ParseWsman(xmlOutput)
+    const outputJson =
+        {
+          Header: {
+            To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+            RelatesTo: '3',
+            Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse',
+            MessageID: 'uuid:00000000-8086-8086-8086-000000013485',
+            ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_Chip',
+            Method: 'PullResponse'
+          },
+          Body: {
+            Items: {
+              CIM_PhysicalMemory: [
+                {
+                  BankLabel: 'CHANNEL A SLOT 0',
+                  Capacity: 4294967296,
+                  CreationClassName: 'CIM_PhysicalMemory',
+                  ElementName: 'Managed System Memory Chip',
+                  FormFactor: 13,
+                  Manufacturer: '830B',
+                  MemoryType: 24,
+                  PartNumber: 'NT4GC64C88C0NS-DI ',
+                  SerialNumber: '8A6A2E6B',
+                  Speed: 0,
+                  Tag: 9876543210
+                },
+                {
+                  BankLabel: 'CHANNEL B SLOT 0',
+                  Capacity: 4294967296,
+                  CreationClassName: 'CIM_PhysicalMemory',
+                  ElementName: 'Managed System Memory Chip',
+                  FormFactor: 13,
+                  Manufacturer: '830B',
+                  MemoryType: 24,
+                  PartNumber: 'NT4GC64C88C0NS-DI ',
+                  SerialNumber: '8F582E6E',
+                  Speed: 0,
+                  Tag: '9876543210 (#1)'
+                }
+              ]
+            }
+          }
+        }
+
+    expect(JSON.stringify(wsresponse)).toBe(JSON.stringify(outputJson))
+  })
+
+  // CIM_ComputerSystemPackage
+  it('should convert CIM_ComputerSystemPackage Element Output XML To JSON', async () => {
+    const xmlOutput = `
       <?xml version="1.0" encoding="UTF-8"?>
         <a:Envelope
             xmlns:a="http://www.w3.org/2003/05/soap-envelope"
@@ -318,71 +312,70 @@ describe("CIM related XML parser testing ", () => {
                 <g:EndOfSequence></g:EndOfSequence>
                 </g:PullResponse>
             </a:Body>
-        </a:Envelope>`;
-    
-        var wsresponse = ParseWsman(xmlOutput);
-        const outputJson =
-        {
-            "Header": {
-                "To": "http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous",
-                "RelatesTo": "2",
-                "Action": "http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse",
-                "MessageID": "uuid:00000000-8086-8086-8086-000000013480",
-                "ResourceURI": "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ComputerSystemPackage",
-                "Method": "PullResponse"
-            },
-            "Body": {
-                "Items": {
-                    "CIM_ComputerSystemPackage": {
-                        "Antecedent": {
-                            "Address": "http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous",
-                            "ReferenceParameters": {
-                                "ResourceURI": "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_Chassis",
-                                "SelectorSet": {
-                                    "Selector": [
-                                        {
-                                            "Value": "CIM_Chassis",
-                                            "@Name": "CreationClassName"
-                                        },
-                                        {
-                                            "Value": "CIM_Chassis",
-                                            "@Name": "Tag"
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        "Dependent": {
-                            "Address": "http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous",
-                            "ReferenceParameters": {
-                                "ResourceURI": "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ComputerSystem",
-                                "SelectorSet": {
-                                    "Selector": [
-                                        {
-                                            "Value": "CIM_ComputerSystem",
-                                            "@Name": "CreationClassName"
-                                        },
-                                        {
-                                            "Value": "ManagedSystem",
-                                            "@Name": "Name"
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        "PlatformGUID": "8205E255227711E2897A505054503030"
-                    }
-                }
-            }
-        };
-  
-        expect(JSON.stringify(wsresponse)).toBe(JSON.stringify(outputJson));
-        
-        });
+        </a:Envelope>`
 
-          //CIM_MediaAccessDevice
-    it('should convert CIM_MediaAccessDevice Element Output XML To JSON', async () => {
-        const xmlOutput = `
+    const wsresponse = ParseWsman(xmlOutput)
+    const outputJson =
+        {
+          Header: {
+            To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+            RelatesTo: '2',
+            Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse',
+            MessageID: 'uuid:00000000-8086-8086-8086-000000013480',
+            ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ComputerSystemPackage',
+            Method: 'PullResponse'
+          },
+          Body: {
+            Items: {
+              CIM_ComputerSystemPackage: {
+                Antecedent: {
+                  Address: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+                  ReferenceParameters: {
+                    ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_Chassis',
+                    SelectorSet: {
+                      Selector: [
+                        {
+                          Value: 'CIM_Chassis',
+                          '@Name': 'CreationClassName'
+                        },
+                        {
+                          Value: 'CIM_Chassis',
+                          '@Name': 'Tag'
+                        }
+                      ]
+                    }
+                  }
+                },
+                Dependent: {
+                  Address: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+                  ReferenceParameters: {
+                    ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ComputerSystem',
+                    SelectorSet: {
+                      Selector: [
+                        {
+                          Value: 'CIM_ComputerSystem',
+                          '@Name': 'CreationClassName'
+                        },
+                        {
+                          Value: 'ManagedSystem',
+                          '@Name': 'Name'
+                        }
+                      ]
+                    }
+                  }
+                },
+                PlatformGUID: '8205E255227711E2897A505054503030'
+              }
+            }
+          }
+        }
+
+    expect(JSON.stringify(wsresponse)).toBe(JSON.stringify(outputJson))
+  })
+
+  // CIM_MediaAccessDevice
+  it('should convert CIM_MediaAccessDevice Element Output XML To JSON', async () => {
+    const xmlOutput = `
         <?xml version="1.0" encoding="UTF-8"?>
         <a:Envelope
             xmlns:a="http://www.w3.org/2003/05/soap-envelope"
@@ -424,49 +417,48 @@ describe("CIM related XML parser testing ", () => {
                 <g:EndOfSequence></g:EndOfSequence>
                 </g:PullResponse>
             </a:Body>
-        </a:Envelope>`;
-    
-        var wsresponse = ParseWsman(xmlOutput);
-        const outputJson =
-        {
-            "Header": {
-                "To": "http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous",
-                "RelatesTo": "2",
-                "Action": "http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse",
-                "MessageID": "uuid:00000000-8086-8086-8086-000000013491",
-                "ResourceURI": "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_MediaAccessDevice",
-                "Method": "PullResponse"
-            },
-            "Body": {
-                "Items": {
-                    "CIM_MediaAccessDevice": {
-                        "Capabilities": [
-                            4,
-                            10
-                        ],
-                        "CreationClassName": "CIM_MediaAccessDevice",
-                        "DeviceID": "MEDIA DEV 0",
-                        "ElementName": "Managed System Media Access Device",
-                        "EnabledDefault": 2,
-                        "EnabledState": 0,
-                        "MaxMediaSize": 80026361,
-                        "OperationalStatus": 0,
-                        "RequestedState": 12,
-                        "Security": 2,
-                        "SystemCreationClassName": "CIM_ComputerSystem",
-                        "SystemName": "ManagedSystem"
-                    }
-                }
-            }
-        };
-  
-        expect(JSON.stringify(wsresponse)).toBe(JSON.stringify(outputJson));
-        
-        });
+        </a:Envelope>`
 
-        //CIM_PhysicalMemory
-    it('should convert CIM_PhysicalMemory Element Output XML To JSON', async () => {
-        const xmlOutput = `
+    const wsresponse = ParseWsman(xmlOutput)
+    const outputJson =
+        {
+          Header: {
+            To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+            RelatesTo: '2',
+            Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse',
+            MessageID: 'uuid:00000000-8086-8086-8086-000000013491',
+            ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_MediaAccessDevice',
+            Method: 'PullResponse'
+          },
+          Body: {
+            Items: {
+              CIM_MediaAccessDevice: {
+                Capabilities: [
+                  4,
+                  10
+                ],
+                CreationClassName: 'CIM_MediaAccessDevice',
+                DeviceID: 'MEDIA DEV 0',
+                ElementName: 'Managed System Media Access Device',
+                EnabledDefault: 2,
+                EnabledState: 0,
+                MaxMediaSize: 80026361,
+                OperationalStatus: 0,
+                RequestedState: 12,
+                Security: 2,
+                SystemCreationClassName: 'CIM_ComputerSystem',
+                SystemName: 'ManagedSystem'
+              }
+            }
+          }
+        }
+
+    expect(JSON.stringify(wsresponse)).toBe(JSON.stringify(outputJson))
+  })
+
+  // CIM_PhysicalMemory
+  it('should convert CIM_PhysicalMemory Element Output XML To JSON', async () => {
+    const xmlOutput = `
         <?xml version="1.0" encoding="UTF-8"?>
         <a:Envelope
             xmlns:a="http://www.w3.org/2003/05/soap-envelope"
@@ -519,60 +511,59 @@ describe("CIM related XML parser testing ", () => {
             <g:EndOfSequence></g:EndOfSequence>
             </g:PullResponse>
             </a:Body>
-        </a:Envelope>`;
-    
-        var wsresponse= ParseWsman(xmlOutput);
-        const outputJson =
-        {
-            "Header": {
-                "To": "http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous",
-                "RelatesTo": "2",
-                "Action": "http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse",
-                "MessageID": "uuid:00000000-8086-8086-8086-00000001348F",
-                "ResourceURI": "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_PhysicalMemory",
-                "Method": "PullResponse"
-            },
-            "Body": {
-                "Items": {
-                    "CIM_PhysicalMemory": [
-                        {
-                            "BankLabel": "CHANNEL A SLOT 0",
-                            "Capacity": 4294967296,
-                            "CreationClassName": "CIM_PhysicalMemory",
-                            "ElementName": "Managed System Memory Chip",
-                            "FormFactor": 13,
-                            "Manufacturer": "830B",
-                            "MemoryType": 24,
-                            "PartNumber": "NT4GC64C88C0NS-DI ",
-                            "SerialNumber": "8A6A2E6B",
-                            "Speed": 0,
-                            "Tag": 9876543210
-                        },
-                        {
-                            "BankLabel": "CHANNEL B SLOT 0",
-                            "Capacity": 4294967296,
-                            "CreationClassName": "CIM_PhysicalMemory",
-                            "ElementName": "Managed System Memory Chip",
-                            "FormFactor": 13,
-                            "Manufacturer": "830B",
-                            "MemoryType": 24,
-                            "PartNumber": "NT4GC64C88C0NS-DI ",
-                            "SerialNumber": "8F582E6E",
-                            "Speed": 0,
-                            "Tag": "9876543210 (#1)"
-                        }
-                    ]
-                }
-            }
-        };
-  
-        expect(JSON.stringify(wsresponse)).toBe(JSON.stringify(outputJson));
-        
-        });
+        </a:Envelope>`
 
-        //CIM_Processor
-    it('should convert CIM_Processor Element Output XML To JSON', async () => {
-        const xmlOutput = `
+    const wsresponse = ParseWsman(xmlOutput)
+    const outputJson =
+        {
+          Header: {
+            To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+            RelatesTo: '2',
+            Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse',
+            MessageID: 'uuid:00000000-8086-8086-8086-00000001348F',
+            ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_PhysicalMemory',
+            Method: 'PullResponse'
+          },
+          Body: {
+            Items: {
+              CIM_PhysicalMemory: [
+                {
+                  BankLabel: 'CHANNEL A SLOT 0',
+                  Capacity: 4294967296,
+                  CreationClassName: 'CIM_PhysicalMemory',
+                  ElementName: 'Managed System Memory Chip',
+                  FormFactor: 13,
+                  Manufacturer: '830B',
+                  MemoryType: 24,
+                  PartNumber: 'NT4GC64C88C0NS-DI ',
+                  SerialNumber: '8A6A2E6B',
+                  Speed: 0,
+                  Tag: 9876543210
+                },
+                {
+                  BankLabel: 'CHANNEL B SLOT 0',
+                  Capacity: 4294967296,
+                  CreationClassName: 'CIM_PhysicalMemory',
+                  ElementName: 'Managed System Memory Chip',
+                  FormFactor: 13,
+                  Manufacturer: '830B',
+                  MemoryType: 24,
+                  PartNumber: 'NT4GC64C88C0NS-DI ',
+                  SerialNumber: '8F582E6E',
+                  Speed: 0,
+                  Tag: '9876543210 (#1)'
+                }
+              ]
+            }
+          }
+        }
+
+    expect(JSON.stringify(wsresponse)).toBe(JSON.stringify(outputJson))
+  })
+
+  // CIM_Processor
+  it('should convert CIM_Processor Element Output XML To JSON', async () => {
+    const xmlOutput = `
         <?xml version="1.0" encoding="UTF-8"?>
             <a:Envelope
                 xmlns:a="http://www.w3.org/2003/05/soap-envelope"
@@ -618,51 +609,50 @@ describe("CIM related XML parser testing ", () => {
             <g:EndOfSequence></g:EndOfSequence>
             </g:PullResponse>
         </a:Body>
-        </a:Envelope>`;
-    
-        var wsresponse= ParseWsman(xmlOutput);
-        const outputJson =
-        {
-            "Header": {
-                "To": "http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous",
-                "RelatesTo": "2",
-                "Action": "http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse",
-                "MessageID": "uuid:00000000-8086-8086-8086-00000001348D",
-                "ResourceURI": "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_Processor",
-                "Method": "PullResponse"
-            },
-            "Body": {
-                "Items": {
-                    "CIM_Processor": {
-                        "CPUStatus": 1,
-                        "CreationClassName": "CIM_Processor",
-                        "CurrentClockSpeed": 3000,
-                        "DeviceID": "CPU 0",
-                        "ElementName": "Managed System CPU",
-                        "EnabledState": 2,
-                        "ExternalBusClockSpeed": 100,
-                        "Family": 205,
-                        "HealthState": 0,
-                        "MaxClockSpeed": 3800,
-                        "OperationalStatus": 0,
-                        "RequestedState": 12,
-                        "Role": "Central",
-                        "Stepping": 9,
-                        "SystemCreationClassName": "CIM_ComputerSystem",
-                        "SystemName": "ManagedSystem",
-                        "UpgradeMethod": 2
-                    }
-                }
-            }
-        };
-  
-        expect(JSON.stringify(wsresponse)).toBe(JSON.stringify(outputJson));
-        
-        });
+        </a:Envelope>`
 
-        //CIM_ServiceAvailabletToElement
-    it('should convert CIM_ServiceAvailableToElement Element Output XML To JSON', async () => {
-        const xmlOutput = `
+    const wsresponse = ParseWsman(xmlOutput)
+    const outputJson =
+        {
+          Header: {
+            To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+            RelatesTo: '2',
+            Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse',
+            MessageID: 'uuid:00000000-8086-8086-8086-00000001348D',
+            ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_Processor',
+            Method: 'PullResponse'
+          },
+          Body: {
+            Items: {
+              CIM_Processor: {
+                CPUStatus: 1,
+                CreationClassName: 'CIM_Processor',
+                CurrentClockSpeed: 3000,
+                DeviceID: 'CPU 0',
+                ElementName: 'Managed System CPU',
+                EnabledState: 2,
+                ExternalBusClockSpeed: 100,
+                Family: 205,
+                HealthState: 0,
+                MaxClockSpeed: 3800,
+                OperationalStatus: 0,
+                RequestedState: 12,
+                Role: 'Central',
+                Stepping: 9,
+                SystemCreationClassName: 'CIM_ComputerSystem',
+                SystemName: 'ManagedSystem',
+                UpgradeMethod: 2
+              }
+            }
+          }
+        }
+
+    expect(JSON.stringify(wsresponse)).toBe(JSON.stringify(outputJson))
+  })
+
+  // CIM_ServiceAvailabletToElement
+  it('should convert CIM_ServiceAvailableToElement Element Output XML To JSON', async () => {
+    const xmlOutput = `
         <?xml version="1.0" encoding="UTF-8"?>
         <a:Envelope
             xmlns:a="http://www.w3.org/2003/05/soap-envelope"
@@ -715,80 +705,79 @@ describe("CIM related XML parser testing ", () => {
              <g:EndOfSequence></g:EndOfSequence>
             </g:PullResponse>
             </a:Body>
-        </a:Envelope>`;
-    
-        var wsresponse= ParseWsman(xmlOutput);
-        const outputJson =
-        {
-            "Header": {
-                "To": "http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous",
-                "RelatesTo": "2",
-                "Action": "http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse",
-                "MessageID": "uuid:00000000-8086-8086-8086-0000000134A1",
-                "ResourceURI": "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ServiceAvailableToElement",
-                "Method": "PullResponse"
-            },
-            "Body": {
-                "Items": {
-                    "CIM_AssociatedPowerManagementService": {
-                        "PowerState": 2,
-                        "RequestedPowerState": 2,
-                        "ServiceProvided": {
-                            "Address": "http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous",
-                            "ReferenceParameters": {
-                                "ResourceURI": "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_PowerManagementService",
-                                "SelectorSet": {
-                                    "Selector": [
-                                        {
-                                            "Value": "CIM_PowerManagementService",
-                                            "@Name": "CreationClassName"
-                                        },
-                                        {
-                                            "Value": "Intel(r) AMT Power Management Service",
-                                            "@Name": "Name"
-                                        },
-                                        {
-                                            "Value": "CIM_ComputerSystem",
-                                            "@Name": "SystemCreationClassName"
-                                        },
-                                        {
-                                            "Value": "Intel(r) AMT",
-                                            "@Name": "SystemName"
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        "UserOfService": {
-                            "Address": "http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous",
-                            "ReferenceParameters": {
-                                "ResourceURI": "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ComputerSystem",
-                                "SelectorSet": {
-                                    "Selector": [
-                                        {
-                                            "Value": "CIM_ComputerSystem",
-                                            "@Name": "CreationClassName"
-                                        },
-                                        {
-                                            "Value": "ManagedSystem",
-                                            "@Name": "Name"
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        };
-  
-        expect(JSON.stringify(wsresponse)).toBe(JSON.stringify(outputJson));
-        
-        });
+        </a:Envelope>`
 
-        //CIM_SoftwareIdentity
-    it('should convert CIM_SoftwareIdentity Element Output XML To JSON', async () => {
-        const xmlOutput = `
+    const wsresponse = ParseWsman(xmlOutput)
+    const outputJson =
+        {
+          Header: {
+            To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+            RelatesTo: '2',
+            Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse',
+            MessageID: 'uuid:00000000-8086-8086-8086-0000000134A1',
+            ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ServiceAvailableToElement',
+            Method: 'PullResponse'
+          },
+          Body: {
+            Items: {
+              CIM_AssociatedPowerManagementService: {
+                PowerState: 2,
+                RequestedPowerState: 2,
+                ServiceProvided: {
+                  Address: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+                  ReferenceParameters: {
+                    ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_PowerManagementService',
+                    SelectorSet: {
+                      Selector: [
+                        {
+                          Value: 'CIM_PowerManagementService',
+                          '@Name': 'CreationClassName'
+                        },
+                        {
+                          Value: 'Intel(r) AMT Power Management Service',
+                          '@Name': 'Name'
+                        },
+                        {
+                          Value: 'CIM_ComputerSystem',
+                          '@Name': 'SystemCreationClassName'
+                        },
+                        {
+                          Value: 'Intel(r) AMT',
+                          '@Name': 'SystemName'
+                        }
+                      ]
+                    }
+                  }
+                },
+                UserOfService: {
+                  Address: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+                  ReferenceParameters: {
+                    ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ComputerSystem',
+                    SelectorSet: {
+                      Selector: [
+                        {
+                          Value: 'CIM_ComputerSystem',
+                          '@Name': 'CreationClassName'
+                        },
+                        {
+                          Value: 'ManagedSystem',
+                          '@Name': 'Name'
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+    expect(JSON.stringify(wsresponse)).toBe(JSON.stringify(outputJson))
+  })
+
+  // CIM_SoftwareIdentity
+  it('should convert CIM_SoftwareIdentity Element Output XML To JSON', async () => {
+    const xmlOutput = `
         <?xml version="1.0" encoding="UTF-8"?>
             <a:Envelope
             xmlns:a="http://www.w3.org/2003/05/soap-envelope"
@@ -870,89 +859,88 @@ describe("CIM related XML parser testing ", () => {
                 <g:EndOfSequence></g:EndOfSequence>
             </g:PullResponse>
             </a:Body>
-        </a:Envelope>`;
-    
-        var wsresponse= ParseWsman(xmlOutput);
-        const outputJson =
-        {
-            "Header": {
-                "To": "http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous",
-                "RelatesTo": "2",
-                "Action": "http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse",
-                "MessageID": "uuid:00000000-8086-8086-8086-000000013497",
-                "ResourceURI": "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_SoftwareIdentity",
-                "Method": "PullResponse"
-            },
-            "Body": {
-                "Items": {
-                    "CIM_SoftwareIdentity": [
-                        {
-                            "InstanceID": "Flash",
-                            "IsEntity": true,
-                            "VersionString": "8.1.71"
-                        },
-                        {
-                            "InstanceID": "Netstack",
-                            "IsEntity": true,
-                            "VersionString": "8.1.71"
-                        },
-                        {
-                            "InstanceID": "AMTApps",
-                            "IsEntity": true,
-                            "VersionString": "8.1.71"
-                        },
-                        {
-                            "InstanceID": "AMT",
-                            "IsEntity": true,
-                            "VersionString": "8.1.71"
-                        },
-                        {
-                            "InstanceID": "Sku",
-                            "IsEntity": true,
-                            "VersionString": 24584
-                        },
-                        {
-                            "InstanceID": "VendorID",
-                            "IsEntity": true,
-                            "VersionString": 8086
-                        },
-                        {
-                            "InstanceID": "Build Number",
-                            "IsEntity": true,
-                            "VersionString": 3608
-                        },
-                        {
-                            "InstanceID": "Recovery Version",
-                            "IsEntity": true,
-                            "VersionString": "8.1.71"
-                        },
-                        {
-                            "InstanceID": "Recovery Build Num",
-                            "IsEntity": true,
-                            "VersionString": 3608
-                        },
-                        {
-                            "InstanceID": "Legacy Mode",
-                            "IsEntity": true,
-                            "VersionString": "False"
-                        },
-                        {
-                            "InstanceID": "AMT FW Core Version",
-                            "IsEntity": true,
-                            "VersionString": "8.1.71"
-                        }
-                    ]
-                }
-            }
-        };
-  
-        expect(JSON.stringify(wsresponse)).toBe(JSON.stringify(outputJson));
-        
-        });
+        </a:Envelope>`
 
-         //CIM_SystemPackaging
-    it('should convert CIM_SystemPackaging Element Output XML To JSON', async () => {
-        const xmlOutput = `
+    const wsresponse = ParseWsman(xmlOutput)
+    const outputJson =
+        {
+          Header: {
+            To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+            RelatesTo: '2',
+            Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse',
+            MessageID: 'uuid:00000000-8086-8086-8086-000000013497',
+            ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_SoftwareIdentity',
+            Method: 'PullResponse'
+          },
+          Body: {
+            Items: {
+              CIM_SoftwareIdentity: [
+                {
+                  InstanceID: 'Flash',
+                  IsEntity: true,
+                  VersionString: '8.1.71'
+                },
+                {
+                  InstanceID: 'Netstack',
+                  IsEntity: true,
+                  VersionString: '8.1.71'
+                },
+                {
+                  InstanceID: 'AMTApps',
+                  IsEntity: true,
+                  VersionString: '8.1.71'
+                },
+                {
+                  InstanceID: 'AMT',
+                  IsEntity: true,
+                  VersionString: '8.1.71'
+                },
+                {
+                  InstanceID: 'Sku',
+                  IsEntity: true,
+                  VersionString: 24584
+                },
+                {
+                  InstanceID: 'VendorID',
+                  IsEntity: true,
+                  VersionString: 8086
+                },
+                {
+                  InstanceID: 'Build Number',
+                  IsEntity: true,
+                  VersionString: 3608
+                },
+                {
+                  InstanceID: 'Recovery Version',
+                  IsEntity: true,
+                  VersionString: '8.1.71'
+                },
+                {
+                  InstanceID: 'Recovery Build Num',
+                  IsEntity: true,
+                  VersionString: 3608
+                },
+                {
+                  InstanceID: 'Legacy Mode',
+                  IsEntity: true,
+                  VersionString: 'False'
+                },
+                {
+                  InstanceID: 'AMT FW Core Version',
+                  IsEntity: true,
+                  VersionString: '8.1.71'
+                }
+              ]
+            }
+          }
+        }
+
+    expect(JSON.stringify(wsresponse)).toBe(JSON.stringify(outputJson))
+  })
+
+  // CIM_SystemPackaging
+  it('should convert CIM_SystemPackaging Element Output XML To JSON', async () => {
+    const xmlOutput = `
         <?xml version="1.0" encoding="UTF-8"?>
           <a:Envelope
             xmlns:a="http://www.w3.org/2003/05/soap-envelope"
@@ -1001,65 +989,64 @@ describe("CIM related XML parser testing ", () => {
                 <g:EndOfSequence></g:EndOfSequence>
                 </g:PullResponse>
             </a:Body>
-        </a:Envelope>`;
-    
-        var wsresponse= ParseWsman(xmlOutput);
-        const outputJson =
+        </a:Envelope>`
+
+    const wsresponse = ParseWsman(xmlOutput)
+    const outputJson =
         {
-            "Header": {
-                "To": "http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous",
-                "RelatesTo": "2",
-                "Action": "http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse",
-                "MessageID": "uuid:00000000-8086-8086-8086-000000013487",
-                "ResourceURI": "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_SystemPackaging",
-                "Method": "PullResponse"
-            },
-            "Body": {
-                "Items": {
-                    "CIM_ComputerSystemPackage": {
-                        "Antecedent": {
-                            "Address": "http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous",
-                            "ReferenceParameters": {
-                                "ResourceURI": "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_Chassis",
-                                "SelectorSet": {
-                                    "Selector": [
-                                        {
-                                            "Value": "CIM_Chassis",
-                                            "@Name": "CreationClassName"
-                                        },
-                                        {
-                                            "Value": "CIM_Chassis",
-                                            "@Name": "Tag"
-                                        }
-                                    ]
-                                }
-                            }
+          Header: {
+            To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+            RelatesTo: '2',
+            Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse',
+            MessageID: 'uuid:00000000-8086-8086-8086-000000013487',
+            ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_SystemPackaging',
+            Method: 'PullResponse'
+          },
+          Body: {
+            Items: {
+              CIM_ComputerSystemPackage: {
+                Antecedent: {
+                  Address: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+                  ReferenceParameters: {
+                    ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_Chassis',
+                    SelectorSet: {
+                      Selector: [
+                        {
+                          Value: 'CIM_Chassis',
+                          '@Name': 'CreationClassName'
                         },
-                        "Dependent": {
-                            "Address": "http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous",
-                            "ReferenceParameters": {
-                                "ResourceURI": "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ComputerSystem",
-                                "SelectorSet": {
-                                    "Selector": [
-                                        {
-                                            "Value": "CIM_ComputerSystem",
-                                            "@Name": "CreationClassName"
-                                        },
-                                        {
-                                            "Value": "ManagedSystem",
-                                            "@Name": "Name"
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        "PlatformGUID": "8205E255227711E2897A505054503030"
+                        {
+                          Value: 'CIM_Chassis',
+                          '@Name': 'Tag'
+                        }
+                      ]
                     }
-                }
+                  }
+                },
+                Dependent: {
+                  Address: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+                  ReferenceParameters: {
+                    ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ComputerSystem',
+                    SelectorSet: {
+                      Selector: [
+                        {
+                          Value: 'CIM_ComputerSystem',
+                          '@Name': 'CreationClassName'
+                        },
+                        {
+                          Value: 'ManagedSystem',
+                          '@Name': 'Name'
+                        }
+                      ]
+                    }
+                  }
+                },
+                PlatformGUID: '8205E255227711E2897A505054503030'
+              }
             }
-        };
-  
-        expect(JSON.stringify(wsresponse)).toBe(JSON.stringify(outputJson));
-        
-        });
-    });
+          }
+        }
+
+    expect(JSON.stringify(wsresponse)).toBe(JSON.stringify(outputJson))
+  })
+})

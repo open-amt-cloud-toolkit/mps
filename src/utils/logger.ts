@@ -3,27 +3,27 @@
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
 
-import * as winston from 'winston';
+import * as winston from 'winston'
 
-const { combine, timestamp, printf } = winston.format;
+const { combine, timestamp, printf } = winston.format
 const myFormat = printf(info => {
-  return `${info.timestamp} ${info.level}: ${info.message}`;
-});
+  return `${info.timestamp} ${info.level}: ${info.message}`
+})
 
 export const logger = winston.createLogger({
-  level: process.env.MPS_LOG_LEVEL || "info",
+  level: process.env.MPS_LOG_LEVEL || 'info',
   format: combine(timestamp(), myFormat),
   transports: [
     new winston.transports.Console(),
     new winston.transports.File({
-      filename: __dirname + "/logs/debug.log"
+      filename: __dirname + '/logs/debug.log'
     })
   ],
   exceptionHandlers: [
     new winston.transports.Console(),
     new winston.transports.File({
-      filename: __dirname + "/logs/exceptions.log"
+      filename: __dirname + '/logs/exceptions.log'
     })
   ],
   exitOnError: false
-});
+})
