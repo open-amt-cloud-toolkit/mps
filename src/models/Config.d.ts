@@ -39,7 +39,7 @@ export type configType ={
 }
 
 export type certificatesType = {
-    mps_tls_config: mpsConfigType, 
+    mps_tls_config: mpsConfigType,
     web_tls_config: webConfigType
 }
 
@@ -55,8 +55,8 @@ export type mpsConfigType = {
 export type webConfigType = {
     ca: any,
     cert: any,
-    key: any, 
-    secureOptions?: any,  
+    key: any,
+    secureOptions?: any,
 }
 
 export type certAndKeyType = {
@@ -67,13 +67,13 @@ export type certAndKeyType = {
 export type directConfigType = {
     ca: any,
     cert: any,
-    key: any, 
+    key: any,
     ciphers: string,
     secureOptions?: any,
     rejectUnauthorized: boolean
 }
 
 export type apiResponseType ={
-    statuscode: number, 
+    statuscode: number,
     payload: any
 }

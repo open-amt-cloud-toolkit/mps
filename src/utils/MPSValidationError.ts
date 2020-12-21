@@ -4,11 +4,9 @@
  * Author: Madhavi Losetty
  **********************************************************************/
 export class MPSValidationError extends Error {
-    constructor(public message: string, public status?: number) {
-        super(message);
-        // Set the prototype explicitly.
-        Object.setPrototypeOf(this, MPSValidationError.prototype);
-    }
-
+  constructor (public message: string, public status?: number) {
+    super(message)
+    // Set the prototype explicitly.
+    Object.setPrototypeOf(this, MPSValidationError.prototype)
+  }
 }
-
