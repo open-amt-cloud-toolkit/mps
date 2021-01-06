@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Containerized MPS service",
   "scripts": {
-    "install": "cd webui && npm ci",
+    "install": "cd webui && npm install",
     "build": "tsc && (cd webui && npm run build)",
     "compile": "tsc",
     "lint": "eslint . --ext .ts",
@@ -28,9 +28,9 @@
     "@types/jest": "^24.0.18",
     "@types/node": "^11.13.20",
     "@types/node-forge": "^0.8.4",
-    "jest": "^24.8.0",
+    "jest": "26.6.0",
     "jest-transform-stub": "^2.0.0",
-    "ts-jest": "^26.2.0",
+    "ts-jest": "^26.4.4",
     "ts-node": "^8.1.0",
     "typescript": "^3.6.2"
   }
