@@ -15,3 +15,4 @@ export * from './landing/landing.container';
 export * from './profiles/profiles.container';
 export * from './ciraconfigs/ciraconfigs.container';
 export * from './domains/domains.container';
+export * from './networkconfigs/networkconfigs.container';
