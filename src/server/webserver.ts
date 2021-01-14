@@ -104,7 +104,6 @@ export class webServer {
       this.app.use(this.sessionParser)
 
       // Indicates to ExpressJS that the public folder should be used to serve static files.
-      this.app.use(express.static(path.join(__dirname, '../../webui/build')))
       this.app.use(parser.urlencoded({ extended: true }))
       // Handles the Bad JSON exceptions
       this.app.use(parser.json(), (err, req, res, next) => {
@@ -114,14 +113,6 @@ export class webServer {
         next()
       })
 
-      this.app.get('/', this.isAuthenticated, (req, res) => {
-        res.set({
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          Pragma: 'no-cache',
-          Expires: '0'
-        })
-        res.sendFile(path.join(__dirname, '../../webui/build', 'index.html'))
-      })
       this.app.post('/authorize', function (request, response) {
         const username = request.body.username
         const password = request.body.password

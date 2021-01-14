@@ -15,10 +15,6 @@ EXPOSE 3000
 COPY package*.json ./
 COPY tsconfig.json ./
 COPY src ./src/
-COPY webui/src ./webui/src
-COPY webui/public ./webui/public
-COPY webui/package*.json ./webui/
-COPY webui/jsconfig.json ./webui/
 COPY private/data.json ./private/ 
 COPY agent ./agent/
 COPY .mpsrc ./
