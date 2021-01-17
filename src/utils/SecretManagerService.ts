@@ -55,6 +55,19 @@ export class SecretManagerService implements ISecretManagerService {
       this.logger.error(error)
       return null
     }
+  }  
+
+  async getSecretAtPath(path:string): Promise<any> {
+    try {
+      this.logger.info('getting secrets from ' + path)
+      let data = await this.vaultClient.read(path);
+      // this.logger.info(`got data back from vault : ${data}`)
+      return data.data; 
+    } catch (error) {
+      this.logger.error('getSecretAtPath error \r\n')
+      this.logger.error(error)
+      return null;
+    }  
   }
 
   async readJsonFromKey (path: string, key: string): Promise<string> {

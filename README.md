@@ -1,5 +1,7 @@
 # Management Presence Server
 
+> Disclaimer: Production viable releases are tagged and listed under 'Releases'.  All other check-ins should be considered 'in-development' and should not be used in production
+
 The Management Presence Server (MPS) enables remote edge management of Intel vPro® Platforms featuring Intel® AMT.  MPS uses an Intel vPro® feature, Client Initiated Remote Access (CIRA), to maintain a persistent connection with managed devices. As a cloud-agnostic microservice, MPS provides out-of-band manageability features, such as power control or keyboard, video, and mouse (KVM) control.
 
 **For detailed documentation** about Getting Started with MPS or other features of the Open AMT Cloud Toolkit, see the [docs](https://open-amt-cloud-toolkit.github.io/docs).

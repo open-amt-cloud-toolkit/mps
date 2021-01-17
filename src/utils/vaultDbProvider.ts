@@ -58,8 +58,9 @@ export class secretsDbProvider implements IDbProvider {
   async getAmtPassword (guid: string): Promise<string[]> {
     try {
       const user = 'admin'
-      const pwd = await this.secretsManager.getSecretFromKey(`${this.secretsPath}devices/${guid}`, `${guid}`)
-      return [user, pwd]
+      let data: any = await this.secretsManager.getSecretAtPath(`${this.secretsPath}devices/${guid}`)  
+      let amtpass = data.data['AMT_PASSWORD']
+      return [user, amtpass]
     } catch (error) {
       this.logger.error('Error while retrieving device credentials\r\n')
       this.logger.error(error)
