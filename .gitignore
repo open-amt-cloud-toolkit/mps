@@ -6,11 +6,10 @@ mochawesome-report/
 test/private/*.cer
 test/private/*.crt
 test/private/*.key
-webui/src/**/*.css
 
 # build output folder
 dist/
-webui/build
+
 
 # Logs
 logs
