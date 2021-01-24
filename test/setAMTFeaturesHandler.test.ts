@@ -40,6 +40,9 @@ const config: configType = {
   web_admin_user: 'standalone',
   web_admin_password: 'G@ppm0ym',
   mpsxapikey: 'testapikey',
+  cors_origin:'*',
+  cors_headers:'*',
+  cors_methods:'*',
   mps_tls_config: {
     key: '../private/mpsserver-cert-private.key',
     cert: '../private/mpsserver-cert-public.crt',
