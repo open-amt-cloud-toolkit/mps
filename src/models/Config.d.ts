@@ -35,6 +35,21 @@ export type configType ={
     web_tls_config: any,
     session_encryption_key: string,
     mpsxapikey: string,
+    distributed_kv_ip? :string,
+    distributed_kv_port?: number,
+    startup_mode: string,
+    web_proxy_port?: number,
+    distributed_kv_name?: string,
+    network_adaptor?: string,
+    tls_cert?: string,
+    tls_cert_key?: string,
+    tls_cert_ca?: string,
+    web_tls_cert?: string,
+    web_tls_cert_key?: string,
+    web_tls_cert_ca?: string,
+    redis_password: string,
+    redis_host?:string,
+    redis_port?:string,
     auth_enabled?: boolean
 }
 

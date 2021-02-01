@@ -12,6 +12,8 @@ export const wsman = require('../amt_libraries/amt-wsman.js')
 export const amt = require('../amt_libraries/amt.js')
 export const amtPort = 16992
 
+export const default_networking_adaptor = `eth0`;
+
 export const UUIDRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/
 
 // require('constants') is deprecated from Node 11.10, require('crypto').constants instead

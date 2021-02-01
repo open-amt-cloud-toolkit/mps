@@ -26,12 +26,12 @@ export class PowerStateHandler implements IAmtHandler {
     try {
       const payload = req.body.payload
       if (payload.guid) {
-        const ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid]
+        let ciraconn = await this.mpsService.CiraConnectionFactory.getConnection(payload.guid)
         if (ciraconn && ciraconn.readyState == 'open') {
           const cred = await this.mpsService.db.getAmtPassword(payload.guid)
           const amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0)
           amtstack.Enum('CIM_ServiceAvailableToElement', (stack, name, responses, status) => {
-            stack.wsman.comm.socket.sendchannelclose()
+            //stack.wsman.comm.socket.sendchannelclose()
             if (status != 200) {
               log.error(`Request failed during powerstate fetch for guid : ${payload.guid}.`)
               return res.status(status).send(ErrorResponse(status, `Request failed during powerstate fetch for guid : ${payload.guid}.`))

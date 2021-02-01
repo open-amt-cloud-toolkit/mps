@@ -27,10 +27,14 @@ import { logger as log } from '../utils/logger'
 import { constants, UUIDRegex } from '../utils/constants'
 import { mpsMicroservice } from '../mpsMicroservice'
 import { IDbProvider } from '../models/IDbProvider'
+import { APFProtocol } from '../models/Mps'
+import { common } from '../utils/constants'
 
 const interceptor = require('../utils/interceptor.js')
 const WebSocket = require('ws')
 const URL = require('url').URL
+
+const MPS_MESSAGE_HEADER_LENGTH = 85;
 
 export class webServer {
   db: IDbProvider;
@@ -81,16 +85,8 @@ export class webServer {
         }
       })
 
-      // Session Configuration
-      const sess: any = {
-        // Strongly recommended to change this key for Production thru ENV variable MPS_SESSION_ENCRYPTION_KEY
-
-        secret: this.config.session_encryption_key || '<YourStrongRandomizedKey123!>',
-
-        resave: true,
-        saveUninitialized: true,
-        cookie: { secure: false } // by default false. use true for prod like below.
-      }
+      //Session Configuration
+      let sess = this.mpsService.sess
 
       // express-session config for production
       if (this.app.get('env') === 'production') {
@@ -148,6 +144,7 @@ export class webServer {
 
         ws.on('close', req => {
           // log.debug("Closing control websocket.");
+	log.debug(`close request from client`)
           delete this.users[ws]
         })
       })
@@ -170,6 +167,7 @@ export class webServer {
           // When data is received from the web socket, forward the data into the associated TCP connection.
           // If the TCP connection is pending, buffer up the data until it connects.
           ws.on('message', msg => {
+ 	  log.silly(`data on web socket ${msg}`)
             // Convert a buffer into a string, "msg = msg.toString('ascii');" does not work
             // var msg2 = "";
             // for (var i = 0; i < msg.length; i++) { msg2 += String.fromCharCode(msg[i]); }
@@ -184,7 +182,7 @@ export class webServer {
 
           // If the web socket is closed, close the associated TCP connection.
           ws.on('close', () => {
-            log.debug(
+          log.silly(
               `Closing web socket connection to  ${req.query.host}: ${req.query.port}.`
             )
             if (ws.forwardclient) {
@@ -200,7 +198,7 @@ export class webServer {
           })
 
           // We got a new web socket connection, initiate a TCP connection to the target Intel AMT host/port.
-          log.debug(
+          log.silly(
             `Opening web socket connection to ${req.query.host}: ${req.query.port}.`
           )
 
@@ -209,7 +207,7 @@ export class webServer {
           // obj.debug("Credential for " + req.query.host + " is " + JSON.stringify(credentials));
 
           if (credentials != null) {
-            log.debug('Creating credential')
+            log.silly("Creating credential")
             if (req.query.p == 1) {
               ws.interceptor = interceptor.CreateHttpInterceptor({
                 host: req.query.host,
@@ -229,15 +227,15 @@ export class webServer {
             // If this is TCP (without TLS) set a normal TCP socket
             // check if this is MPS connection
             const uuid = req.query.host
-            if (uuid && this.mpsService.mpsserver.ciraConnections[uuid]) {
-              const ciraconn = this.mpsService.mpsserver.ciraConnections[uuid]
-              ws.forwardclient = this.mpsService.mpsserver.SetupCiraChannel(
-                ciraconn,
-                req.query.port
-              )
+            const ciraConn = await this.mpsService.CiraConnectionFactory.getConnection(uuid)
+            if (uuid && ciraConn) {
+              log.silly(`go setup the CIRA channel for ${uuid}`)
+              // Setup CIRA channel for the device
+              ws.forwardclient = this.mpsService.CiraChannelFactory.getChannel(ciraConn, req.query.port)
 
               ws.forwardclient.xtls = 0
-              ws.forwardclient.onData = (ciraconn, data) => {
+              ws.forwardclient.onData = (ciraConn, data) => {
+                log.silly(`data received from device `)
                 // Run data thru interceptor
                 if (ws.interceptor) {
                   data = ws.interceptor.processAmtData(data)
@@ -250,7 +248,8 @@ export class webServer {
               }
 
               ws.forwardclient.onStateChange = (ciraconn, state) => {
-                // console.log('Relay CIRA state change:'+state);
+                //console.log('Relay CIRA state change:'+state);
+                log.silly(`stateChanged to ${state}`)
                 if (state == 0) {
                   try {
                     // console.log("Closing websocket.");
@@ -262,6 +261,7 @@ export class webServer {
               }
               ws._socket.resume()
             } else {
+	      log.silly('socket object or guid not valid. o create socket object')
               ws.forwardclient = new net.Socket()
               ws.forwardclient.setEncoding('binary')
               ws.forwardclient.forwardwsocket = ws
@@ -286,7 +286,7 @@ export class webServer {
               tlsoptions,
               () => {
                 // The TLS connection method is the same as TCP, but located a bit differently.
-                log.debug(`TLS connected to ${req.query.host}: ${req.query.port}.`)
+                log.silly(`TLS connected to ${req.query.host}: ${req.query.port}.`)
                 ws._socket.resume()
               }
             )
@@ -296,8 +296,10 @@ export class webServer {
 
           // Add handlers to socket.
           if (ws.forwardclient instanceof net.Socket) {
+    		log.silly('Add handlers to socket')
             // When we receive data on the TCP connection, forward it back into the web socket connection.
             ws.forwardclient.on('data', data => {
+   	    log.silly('receive data on the TCP connection, forward it back into the web socket connection')
               if (ws.interceptor) {
                 data = ws.interceptor.processAmtData(data)
               } // Run data thru interceptor
@@ -335,7 +337,7 @@ export class webServer {
             if (!this.mpsService.mpsComputerList[req.query.host]) {
               // A TCP connection to Intel AMT just connected, send any pending data and start forwarding.
               ws.forwardclient.connect(req.query.port, req.query.host, () => {
-                log.debug(`TCP connected to ${req.query.host}:${req.query.port}.`)
+                log.silly(`TCP connected to ${req.query.host}:${req.query.port}.`)
                 ws._socket.resume()
               })
             }
@@ -397,7 +399,7 @@ export class webServer {
         if (this.config.listen_any && this.config.listen_any == true) {
           this.server.listen(port, () => {
             log.info(
-              `MPS Microservice running on https://${
+              `Web Microservice running on https://${
               this.config.common_name
               }:${port}.`
             )
@@ -405,21 +407,21 @@ export class webServer {
         } else {
           // Only accept request from local host
           this.server.listen(port, '127.0.0.1', () => {
-            log.info(`MPS Microservice running on https://127.0.0.1:${port}.`)
+            log.info(`Web Microservice running on https://127.0.0.1:${port}.`)
           })
         }
       } else {
         if (this.config.listen_any && this.config.listen_any == true) {
           this.server.listen(port, () => {
             log.info(
-              `MPS Microservice running on http://${
+              `Web Microservice running on http://${
               this.config.common_name
               }:${port}.`
             )
           })
         } else {
           this.server.listen(port, '127.0.0.1', () => {
-            log.info(`MPS Microservice running on http://127.0.0.1:${port}.`)
+            log.info(`Web Microservice running on http://127.0.0.1:${port}.`)
           })
         }
       }

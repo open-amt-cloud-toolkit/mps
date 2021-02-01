@@ -9,6 +9,7 @@ import { IAdminHandler } from '../../models/IAdminHandler'
 import { Response, Request } from 'express'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { mpsMicroservice } from '../../mpsMicroservice'
+import { MpsProxy } from '../../server/proxies/MpsProxy'
 
 export class DisconnectHandler implements IAdminHandler {
   mps: mpsMicroservice;
@@ -27,7 +28,7 @@ export class DisconnectHandler implements IAdminHandler {
       // Check if request body contains guid information
       if (payload.guid) {
         // check if guid is connected
-        const ciraconn = this.mps.mpsserver.ciraConnections[payload.guid]
+        let ciraconn = await this.mps.CiraConnectionFactory.getConnection(payload.guid)
         if (ciraconn) {
           try {
             ciraconn.destroy()

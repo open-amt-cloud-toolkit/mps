@@ -26,7 +26,7 @@ export class HardwareInfoHandler implements IAmtHandler {
     try {
       const payload = req.body.payload
       if (payload.guid) {
-        const ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid]
+        let ciraconn = await this.mpsService.CiraConnectionFactory.getConnection(payload.guid)
         if (ciraconn && ciraconn.readyState == 'open') {
           const cred = await this.mpsService.db.getAmtPassword(payload.guid)
           const amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0)
@@ -34,7 +34,7 @@ export class HardwareInfoHandler implements IAmtHandler {
             'CIM_SystemPackaging', '*CIM_Chassis', 'CIM_Chip', '*CIM_Card', '*CIM_BIOSElement',
             'CIM_Processor', 'CIM_PhysicalMemory', 'CIM_MediaAccessDevice', 'CIM_PhysicalPackage'],
           (stack, name, responses, status) => {
-            stack.wsman.comm.socket.sendchannelclose()
+            //stack.wsman.comm.socket.sendchannelclose()
             if (status != 200) {
               log.error(`Request failed during AMTHardware Information BatchEnum Exec for guid : ${payload.guid}.`)
               return res.status(status).send(ErrorResponse(status, `Request failed during AMTHardware Information BatchEnum Exec for guid : ${payload.guid}.`))

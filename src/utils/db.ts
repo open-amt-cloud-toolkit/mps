@@ -160,7 +160,7 @@ export class dataBase implements IDbProvider {
     try {
       let result = false
       const cred = await this.getCredentialsForGuid(guid)
-      log.info(cred)
+      //log.info(cred)
       if (cred && cred.mpsuser == username && cred.mpspass == password) {
         result = true
       } else if (cred && this.config.use_global_mps_credentials) {
