@@ -35,7 +35,7 @@ export class AuditLogHandler implements IAmtHandler {
           const startIndex: number = payload.startIndex >= 1 ? payload.startIndex : 0
 
           amtstack.GetAuditLogChunks(startIndex, (stack, responses, status) => {
-            stack.wsman.comm.socket.sendchannelclose()
+            //stack.wsman.comm.socket.sendchannelclose()
             if (status == 200) {
               return res.send(responses)
             } else {
