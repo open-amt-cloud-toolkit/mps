@@ -166,7 +166,7 @@ function CreateWsmanComm(host, port, user, pass, tls, parent) {
 
     // Websocket relay specific private method
     function _OnSocketConnected() {
-        //obj.Debug("xxOnSocketConnected");
+        //obj.Silly("xxOnSocketConnected");
         obj.socketState = 2;
         for (i in obj.pendingAjaxCall) { obj.sendRequest(obj.pendingAjaxCall[i][0], obj.pendingAjaxCall[i][3], obj.pendingAjaxCall[i][4]); }
     }
@@ -259,7 +259,7 @@ function CreateWsmanComm(host, port, user, pass, tls, parent) {
 
     // Websocket relay specific private method
     function _OnSocketClosed(data) {
-        //obj.Debug("_OnSocketClosed");
+        //obj.Silly("_OnSocketClosed");
         obj.socketState = 0;
         if (obj.pendingAjaxCall.length > 0) {
             var r = obj.pendingAjaxCall.shift();
