@@ -64,10 +64,25 @@ export class webServer {
         this.server = http.createServer(this.app)
       }
 
-      // Clickjacking defence
+      
       this.app.use((req, res, next) => {
+        // Clickjacking defence
+        res.setHeader('X-Frame-Options', 'SAMEORIGIN')
         if (this.config.auth_enabled) {
-          res.setHeader('X-Frame-Options', 'SAMEORIGIN')
+          if(this.config.cors_origin != null && this.config.cors_origin != ''){
+            res.setHeader('Access-Control-Allow-Origin', this.config.cors_origin)
+          }
+          if(this.config.cors_headers != null && this.config.cors_headers != ''){
+            res.setHeader('Access-Control-Allow-Headers', this.config.cors_headers)
+          }
+          if (req.method === 'OPTIONS') {
+            if(this.config.cors_methods != null && this.config.cors_methods != ''){
+              res.setHeader('Access-Control-Allow-Methods', this.config.cors_methods)
+            } else {
+              res.setHeader('Access-Control-Allow-Methods', '*')
+            }
+            return res.status(200).end()
+          }
           next()
         } else {
           // DO NOT SET AUTH_ENABLED=FALSE IN PROD
@@ -75,7 +90,7 @@ export class webServer {
           res.header('Access-Control-Allow-Headers', '*')
           if (req.method === 'OPTIONS') {
             res.header('Access-Control-Allow-Methods', '*')
-            return res.status(200).json({})
+            return res.status(200).end()
           }
           next()
         }

@@ -4,7 +4,7 @@
 * Description: config type definitions
 **********************************************************************/
 
-export type configType ={
+export type configType = {
     use_allowlist: boolean,
     common_name: string,
     port: number,
@@ -35,7 +35,10 @@ export type configType ={
     web_tls_config: any,
     session_encryption_key: string,
     mpsxapikey: string,
-    auth_enabled?: boolean
+    auth_enabled?: boolean,
+    cors_origin:string,
+    cors_headers:string,
+    cors_methods:string
 }
 
 export type certificatesType = {
