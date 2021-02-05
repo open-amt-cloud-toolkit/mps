@@ -150,7 +150,7 @@ export class webServer {
         if (request.session) {
           request.session.destroy()
         }
-        response.redirect('/')
+        response.status(200).end()
       })
 
       // Console connects to this websocket for a persistent connection
