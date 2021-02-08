@@ -26,7 +26,7 @@
     "mpsxapikey": "APIKEYFORMPS123!",
     "auth_enabled": true,
     "cors_origin":"*",
-    "cors_headers":"*",
+    "cors_headers":"Origin, X-Requested-With, Accept, X-MPS-API-Key, Content-Type, csrf-token, authorization",
     "cors_methods":"*",
     "mps_tls_config" : {
       "key": "../private/mpsserver-cert-private.key",
