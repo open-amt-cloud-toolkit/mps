@@ -1,5 +1,5 @@
 {
-    "use_allowlist" : true,
+    "use_allowlist" : false,
     "common_name": "localhost",
     "port": 4433,
     "username": "standalone",
@@ -25,6 +25,9 @@
     "cert_path": "../private",
     "mpsxapikey": "APIKEYFORMPS123!",
     "auth_enabled": true,
+    "cors_origin":"*",
+    "cors_headers":"Origin, X-Requested-With, Accept, X-MPS-API-Key, Content-Type, csrf-token, authorization",
+    "cors_methods":"*",
     "mps_tls_config" : {
       "key": "../private/mpsserver-cert-private.key",
       "cert": "../private/mpsserver-cert-public.crt",

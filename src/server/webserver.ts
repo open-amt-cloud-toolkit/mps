@@ -33,18 +33,18 @@ const WebSocket = require('ws')
 const URL = require('url').URL
 
 export class webServer {
-  db: IDbProvider;
-  app: any;
-  users: any = {};
-  server = null;
-  notificationwss = null;
-  relaywss = null;
-  mpsService: mpsMicroservice;
-  config: configType;
-  certs: certificatesType;
-  sessionParser: any;
+  db: IDbProvider
+  app: any
+  users: any = {}
+  server = null
+  notificationwss = null
+  relaywss = null
+  mpsService: mpsMicroservice
+  config: configType
+  certs: certificatesType
+  sessionParser: any
 
-  constructor(mpsService: mpsMicroservice) {
+  constructor (mpsService: mpsMicroservice) {
     try {
       this.mpsService = mpsService
       this.db = this.mpsService.db
@@ -64,21 +64,32 @@ export class webServer {
         this.server = http.createServer(this.app)
       }
 
-      // Clickjacking defence
       this.app.use((req, res, next) => {
-        if (this.config.auth_enabled) {
-          res.setHeader('X-Frame-Options', 'SAMEORIGIN')
-          next()
-        } else {
-          // DO NOT SET AUTH_ENABLED=FALSE IN PROD
-          res.header('Access-Control-Allow-Origin', '*')
-          res.header('Access-Control-Allow-Headers', '*')
+        // Clickjacking defence
+        res.setHeader('X-Frame-Options', 'SAMEORIGIN')
+        const allowedOrigins: string[]= this.config.cors_origin.split(',').map((domain) => {
+          return domain.trim()
+        })
+          res.header('Access-Control-Allow-Credentials', 'true')
+          if (allowedOrigins.includes(req.headers.origin)) {
+            res.setHeader('Access-Control-Allow-Origin', req.headers.origin)
+          }else{
+            res.setHeader('Access-Control-Allow-Origin', "*")
+          }
+          if (this.config.cors_headers != null && this.config.cors_headers !== '') {
+            res.setHeader('Access-Control-Allow-Headers', this.config.cors_headers)
+          }else{
+            res.setHeader('Access-Control-Allow-Headers', "*")
+          }
           if (req.method === 'OPTIONS') {
-            res.header('Access-Control-Allow-Methods', '*')
-            return res.status(200).json({})
+            if (this.config.cors_methods != null && this.config.cors_methods !== '') {
+              res.setHeader('Access-Control-Allow-Methods', this.config.cors_methods)
+            } else {
+              res.setHeader('Access-Control-Allow-Methods', '*')
+            }
+            return res.status(200).end()
           }
           next()
-        }
       })
 
       // Session Configuration
@@ -86,10 +97,13 @@ export class webServer {
         // Strongly recommended to change this key for Production thru ENV variable MPS_SESSION_ENCRYPTION_KEY
 
         secret: this.config.session_encryption_key || '<YourStrongRandomizedKey123!>',
-
         resave: true,
         saveUninitialized: true,
         cookie: { secure: false } // by default false. use true for prod like below.
+      }
+      if (this.config.auth_enabled) {
+        sess.cookie.secure = true
+        sess.cookie.sameSite = 'none'
       }
 
       // express-session config for production
@@ -97,7 +111,6 @@ export class webServer {
         this.app.set('trust proxy', 1) // trust first proxy
         sess.cookie.secure = true // serve secure cookies
         sess.cookie.maxAge = 24 * 60 * 60 * 1000 // limiting cookie age to a day.
-        sess.cookie.sameSite = true // strictly same site
       }
       // Initialize session
       this.sessionParser = session(sess)
@@ -135,7 +148,7 @@ export class webServer {
         if (request.session) {
           request.session.destroy()
         }
-        response.redirect('/')
+        response.status(200).end()
       })
 
       // Console connects to this websocket for a persistent connection
@@ -394,7 +407,7 @@ export class webServer {
 
       // Start the ExpressJS web server
       if (this.config.https) {
-        if (this.config.listen_any && this.config.listen_any == true) {
+        if (this.config.listen_any && this.config.listen_any) {
           this.server.listen(port, () => {
             log.info(
               `MPS Microservice running on https://${
@@ -409,7 +422,7 @@ export class webServer {
           })
         }
       } else {
-        if (this.config.listen_any && this.config.listen_any == true) {
+        if (this.config.listen_any && this.config.listen_any) {
           this.server.listen(port, () => {
             log.info(
               `MPS Microservice running on http://${
@@ -438,8 +451,7 @@ export class webServer {
       // all browser calls that are not authenticated
       if (
         // This is to handle REST API calls from browser.
-        req.method == 'POST' &&
-        (req.originalUrl.indexOf('/amt') >= 0 || req.originalUrl.indexOf('/admin') >= 0)
+        req.method == 'POST' && (req.originalUrl.indexOf('/amt') >= 0 || req.originalUrl.indexOf('/admin') >= 0)
       ) {
         res.status(401).end('Authentication failed or Login Expired. Please try logging in again.')
         return
@@ -455,7 +467,7 @@ export class webServer {
   }
 
   // Handle Upgrade - WebSocket
-  handleUpgrade(request, socket, head) {
+  handleUpgrade (request, socket, head) {
     const base = `${this.config.https ? 'https' : 'http'}://${this.config.common_name}:${this.config.web_port}/`
     const pathname = (new URL(request.url, base)).pathname
     if (pathname === '/notifications/control.ashx') {
@@ -474,7 +486,7 @@ export class webServer {
   }
 
   // Notify clients connected through browser web socket
-  notifyUsers(msg) {
+  notifyUsers (msg) {
     for (const i in this.users) {
       try {
         this.users[i].send(JSON.stringify(msg))
