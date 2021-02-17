@@ -28,7 +28,7 @@ export class SetAMTFeaturesHandler implements IAmtHandler {
     this.amtFactory = new amtStackFactory(this.mpsService)
   }
 
-  async AmtAction (req: Request, res: Response) {
+  async AmtAction (req: Request, res: Response): Promise<void> {
     try {
       const payload = req.body.payload
       if (payload.guid) {
@@ -44,22 +44,23 @@ export class SetAMTFeaturesHandler implements IAmtHandler {
           res.status(200).send(JSON.stringify(response))
         } else {
           res.set({ 'Content-Type': 'application/json' })
-          return res.status(404).send(ErrorResponse(404, `guid : ${payload.guid}`, 'device'))
+          res.status(404).send(ErrorResponse(404, `guid : ${payload.guid}`, 'device'))
         }
       } else {
         res.set({ 'Content-Type': 'application/json' })
-        return res.status(404).send(ErrorResponse(404, null, 'guid'))
+        res.status(404).send(ErrorResponse(404, null, 'guid'))
       }
     } catch (error) {
       log.error(`Exception in set AMT Features: ${error}`)
       if (error instanceof MPSValidationError) {
-        return res.status(error.status || 400).send(ErrorResponse(error.status || 400, error.message))
+        res.status(error.status || 400).send(ErrorResponse(error.status || 400, error.message))
+      } else {
+        res.status(500).send(ErrorResponse(500, 'Request failed during set AMT Features.'))
       }
-      return res.status(500).send(ErrorResponse(500, 'Request failed during set AMT Features.'))
     }
   }
 
-  validatePayload (payload: any) {
+  validatePayload (payload: any): void {
     if (payload.userConsent === undefined && payload.enableSOL === undefined &&
             payload.enableIDER === undefined && payload.enableKVM === undefined) {
       throw new MPSValidationError(`Device : ${payload.guid} to set AMT features,at least on flag is mandatory.\n userConsent:"kvm/all/none" \n enableRedir: true/false \n enableSOL: true/false \n enableIDER: true/false \n enableKVM: true/false`)

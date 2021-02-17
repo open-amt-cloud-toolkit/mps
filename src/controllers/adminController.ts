@@ -13,12 +13,12 @@ import { RootContainer } from '../dependencyHandlers/RootContainer'
 export class AdminController {
   static container: RootContainer
 
-  static init (mps: mpsMicroservice) {
+  static init (mps: mpsMicroservice): void {
     AdminController.container = new RootContainer(mps)
     AdminController.container.adminBuild()
   }
 
-  static async HandlePostRoute (req: Request, res: Response) {
+  static async HandlePostRoute (req: Request, res: Response): Promise<void> {
     try {
       const method = req.body.method
       if (method) {
@@ -28,13 +28,13 @@ export class AdminController {
           if (handler) {
             await handler.adminAction(req, res)
           } else {
-            return res.status(404).send(ErrorResponse(404, null, 'noMethod'))
+            res.status(404).send(ErrorResponse(404, null, 'noMethod'))
           }
         } else {
-          return res.status(404).send(ErrorResponse(404, null, 'payload'))
+          res.status(404).send(ErrorResponse(404, null, 'payload'))
         }
       } else {
-        return res.status(404).send(ErrorResponse(404, null, 'method'))
+        res.status(404).send(ErrorResponse(404, null, 'method'))
       }
     } catch (error) {
       log.error(`HandlePostRoute : ${error}`)

@@ -18,7 +18,7 @@ export class secretsDbProvider implements IDbProvider {
     this.config = config
   }
 
-  async CIRAAuth (guid: string, username: string, password: string, cb: any) {
+  async CIRAAuth (guid: string, username: string, password: string, cb: any): Promise<boolean> {
     try {
       // let user = await this.secretsManager.getSecretFromKey(`${this.secretsPath}devices/${guid}`, `username`);
       // let pwd = await this.secretsManager.getSecretFromKey(`${this.secretsPath}devices/${guid}`, `password`);
@@ -68,7 +68,7 @@ export class secretsDbProvider implements IDbProvider {
     }
   }
 
-  async IsGUIDApproved (guid: string, cb: any) {
+  async IsGUIDApproved (guid: string, cb: any): Promise<void> {
     try {
       let result = false
       const guids = await this.secretsManager.getSecretFromKey(`${this.secretsPath}global`, 'guids_allowlist')
@@ -84,7 +84,7 @@ export class secretsDbProvider implements IDbProvider {
     }
   }
 
-  async IsOrgApproved (org: string, cb: any) {
+  async IsOrgApproved (org: string, cb: any): Promise<void> {
     try {
       let result = false
       const orgs = await this.secretsManager.getSecretFromKey(`${this.secretsPath}global`, 'orgs_allowlist')

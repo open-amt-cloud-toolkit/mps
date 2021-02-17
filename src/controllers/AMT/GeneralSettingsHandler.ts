@@ -23,7 +23,7 @@ export class GeneralSettingsHandler implements IAmtHandler {
     this.amtFactory = new amtStackFactory(this.mpsService)
   }
 
-  async AmtAction (req: Request, res: Response) {
+  async AmtAction (req: Request, res: Response): Promise<void> {
     try {
       const payload = req.body.payload
       if (payload.guid) {
@@ -35,24 +35,24 @@ export class GeneralSettingsHandler implements IAmtHandler {
             obj.wsman.comm.socket.sendchannelclose()
             if (status == 200) {
               res.set({ 'Content-Type': 'application/json' })
-              return res.send(response)
+              res.send(response)
             } else {
               res.set({ 'Content-Type': 'application/json' })
               log.error(`Request failed during GET AMT_GeneralSettings for guid : ${payload.guid}.`)
-              return res.status(status).send(ErrorResponse(status, `Request failed during GET AMT_GeneralSettings for guid : ${payload.guid}.`))
+              res.status(status).send(ErrorResponse(status, `Request failed during GET AMT_GeneralSettings for guid : ${payload.guid}.`))
             }
           }, 0, 1)
         } else {
           res.set({ 'Content-Type': 'application/json' })
-          return res.status(404).send(ErrorResponse(404, `guid : ${payload.guid}`, 'device'))
+          res.status(404).send(ErrorResponse(404, `guid : ${payload.guid}`, 'device'))
         }
       } else {
         res.set({ 'Content-Type': 'application/json' })
-        return res.status(404).send(ErrorResponse(404, null, 'guid'))
+        res.status(404).send(ErrorResponse(404, null, 'guid'))
       }
     } catch (error) {
       log.error(`Exception in AMT GeneralSettings: ${error}`)
-      return res.status(500).send(ErrorResponse(500, 'Request failed during AMT GeneralSettings.'))
+      res.status(500).send(ErrorResponse(500, 'Request failed during AMT GeneralSettings.'))
     }
   }
 }

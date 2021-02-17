@@ -22,7 +22,7 @@ export class HardwareInfoHandler implements IAmtHandler {
     this.amtFactory = new amtStackFactory(this.mpsService)
   }
 
-  async AmtAction (req: Request, res: Response) {
+  async AmtAction (req: Request, res: Response): Promise<void> {
     try {
       const payload = req.body.payload
       if (payload.guid) {
@@ -38,21 +38,22 @@ export class HardwareInfoHandler implements IAmtHandler {
             if (status != 200) {
               log.error(`Request failed during AMTHardware Information BatchEnum Exec for guid : ${payload.guid}.`)
               return res.status(status).send(ErrorResponse(status, `Request failed during AMTHardware Information BatchEnum Exec for guid : ${payload.guid}.`))
-            }
+            } else {
             // console.log("Hardware info of " + uuid + " sent.");
-            res.send(responses)
+              res.send(responses)
+            }
           })
         } else {
           res.set({ 'Content-Type': 'application/json' })
-          return res.status(404).send(ErrorResponse(404, `guid : ${payload.guid}`, 'device'))
+          res.status(404).send(ErrorResponse(404, `guid : ${payload.guid}`, 'device'))
         }
       } else {
         res.set({ 'Content-Type': 'application/json' })
-        return res.status(404).send(ErrorResponse(404, null, 'guid'))
+        res.status(404).send(ErrorResponse(404, null, 'guid'))
       }
     } catch (error) {
       log.error(`Exception in AMT HardwareInformation : ${error}`)
-      return res.status(500).send(ErrorResponse(500, 'Request failed during AMTHardware Information.'))
+      res.status(500).send(ErrorResponse(500, 'Request failed during AMTHardware Information.'))
     }
   }
 }

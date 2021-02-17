@@ -27,7 +27,7 @@ export class GetAMTFeaturesHandler implements IAmtHandler {
     this.amtFactory = new amtStackFactory(this.mpsService)
   }
 
-  async AmtAction (req: Request, res: Response) {
+  async AmtAction (req: Request, res: Response): Promise<void> {
     let redir, sol, ider, kvm, userConsent
     let amtFeatures: AMTFeatures
     try {
@@ -61,18 +61,19 @@ export class GetAMTFeaturesHandler implements IAmtHandler {
           }
         } else {
           res.set({ 'Content-Type': 'application/json' })
-          return res.status(404).send(ErrorResponse(404, `guid : ${payload.guid}`, 'device'))
+          res.status(404).send(ErrorResponse(404, `guid : ${payload.guid}`, 'device'))
         }
       } else {
         res.set({ 'Content-Type': 'application/json' })
-        return res.status(404).send(ErrorResponse(404, null, 'guid'))
+        res.status(404).send(ErrorResponse(404, null, 'guid'))
       }
     } catch (error) {
       log.error(`Exception in get AMT Features: ${error}`)
       if (error instanceof MPSValidationError) {
         return res.status(error.status || 400).send(ErrorResponse(error.status || 400, error.message))
+      } else {
+        return res.status(500).send(ErrorResponse(500, 'Request failed during get AMT Features.'))
       }
-      return res.status(500).send(ErrorResponse(500, 'Request failed during get AMT Features.'))
     }
   }
 }

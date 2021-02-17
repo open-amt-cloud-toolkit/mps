@@ -24,12 +24,13 @@ export class PowerActionHandler implements IAmtHandler {
     this.amtFactory = new amtStackFactory(this.mpsService)
   }
 
-  async AmtAction (req: Request, res: Response) {
+  async AmtAction (req: Request, res: Response): Promise<void> {
     try {
       const payload = req.body.payload
 
       if (payload.useSOL !== undefined && typeof payload.useSOL !== 'boolean') {
-        return res.status(400).send(ErrorResponse(400, `Device : ${payload.guid} useSOL should be boolean`))
+        res.status(400).send(ErrorResponse(400, `Device : ${payload.guid} useSOL should be boolean`))
+        return
       }
       this.useSOLFlag = payload.useSOL ? payload.useSOL : false
 
@@ -42,35 +43,35 @@ export class PowerActionHandler implements IAmtHandler {
               const amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0)
               this.getBootData(payload.guid, payload.action, amtstack, res)
             } else {
-              return res.status(404).send(ErrorResponse(404, `guid : ${payload.guid}`, 'device'))
+              res.status(404).send(ErrorResponse(404, `guid : ${payload.guid}`, 'device'))
             }
           } else {
             log.error(`Invalid Power state change request for guid : ${JSON.stringify(req.body, null, 2)}.`)
-            return res.status(400).send(ErrorResponse(400, 'Invalid Power state change request'))
+            res.status(400).send(ErrorResponse(400, 'Invalid Power state change request'))
           }
         } else {
           log.error(`Power action does not exists : ${JSON.stringify(req.body, null, 2)}.`)
-          return res.status(404).send(ErrorResponse(404, null, 'action'))
+          res.status(404).send(ErrorResponse(404, null, 'action'))
         }
       } else {
         res.set({ 'Content-Type': 'application/json' })
-        return res.status(404).send(ErrorResponse(404, null, 'guid'))
+        res.status(404).send(ErrorResponse(404, null, 'guid'))
       }
     } catch (error) {
       log.error(`Exception in Power action : ${error}`)
-      return res.status(500).send(ErrorResponse(500, 'Request failed during AMT Power action execution.'))
+      res.status(500).send(ErrorResponse(500, 'Request failed during AMT Power action execution.'))
     }
   }
 
   // Get AMT_BootSettingData
-  getBootData (uuid, action, amtstack, res) {
+  getBootData (uuid, action, amtstack, res): void {
     // TODO: Advanced Menu
     let amtPowerBootCapabilities
     amtstack.Get('AMT_BootSettingData', (stack, name, response, status) => {
       if (status != 200) {
-        log.error(`Power Action failed during PUT AMT_BootSettingData for guid : ${uuid}`
-        )
-        return res.status(status).send(ErrorResponse(status, 'Power Action failed during GET AMT_BootSettingData.'))
+        log.error(`Power Action failed during PUT AMT_BootSettingData for guid : ${uuid}`)
+        res.status(status).send(ErrorResponse(status, 'Power Action failed during GET AMT_BootSettingData.'))
+        return
       }
       const r = response.Body
       if (action == 999) {
@@ -122,13 +123,14 @@ export class PowerActionHandler implements IAmtHandler {
   }
 
   // Put AMT_BootSettingData
-  putBootData (uuid, action, amtstack, bootSettingData, res) {
+  putBootData (uuid, action, amtstack, bootSettingData, res): void {
     amtstack.Put('AMT_BootSettingData', bootSettingData, (stack, name, response, status, tag) => {
       if (status != 200) {
         log.error(
             `Power Action failed during PUT AMT_BootSettingData for guid : ${uuid}`
         )
-        return res.status(status).send(ErrorResponse(status, 'Power Action failed during PUT AMT_BootSettingData.'))
+        res.status(status).send(ErrorResponse(status, 'Power Action failed during PUT AMT_BootSettingData.'))
+        return
       }
       this.setBootConfRole(uuid, action, amtstack, res)
     },
@@ -138,7 +140,7 @@ export class PowerActionHandler implements IAmtHandler {
   }
 
   // SET BootConfigRole
-  setBootConfRole (uuid, action, amtstack, res) {
+  setBootConfRole (uuid, action, amtstack, res): void {
     // ToDo: Advance options
     let idx_d24ForceBootDevice
     amtstack.SetBootConfigRole(
@@ -147,7 +149,8 @@ export class PowerActionHandler implements IAmtHandler {
         if (status != 200) {
           log.error(`Power Action failed during SetBootConfigRole for guid : ${uuid}`
           )
-          return res.status(status).send(ErrorResponse(status, 'Power Action failed during SetBootConfigRole.'))
+          res.status(status).send(ErrorResponse(status, 'Power Action failed during SetBootConfigRole.'))
+          return
         }
         let bootSource = null
         if (action == 999) {
@@ -176,7 +179,7 @@ export class PowerActionHandler implements IAmtHandler {
   }
 
   // Change BootOrder
-  changeBootOrder (uuid, action, amtstack, bootSource, res) {
+  changeBootOrder (uuid, action, amtstack, bootSource, res): void {
     amtstack.CIM_BootConfigSetting_ChangeBootOrder(
       bootSource,
       (stack, name, response, status) => {
@@ -184,14 +187,8 @@ export class PowerActionHandler implements IAmtHandler {
           log.error(
             `Power Action failed during ChangeBootOrder for guid : ${uuid}`
           )
-          return res
-            .status(status)
-            .send(
-              ErrorResponse(
-                status,
-                'Power Action failed during ChangeBootOrder.'
-              )
-            )
+          res.status(status).send(ErrorResponse(status, 'Power Action failed during ChangeBootOrder.'))
+          return
         }
         if (action == 100 || action == 201 || action == 203 || action == 300 || action == 401) { action = 2 } // Power up
         if (action == 101 || action == 200 || action == 202 || action == 301 || action == 400) { action = 10 } // Reset
@@ -214,19 +211,17 @@ export class PowerActionHandler implements IAmtHandler {
   }
 
   // Request Power Change
-  powerStateChange (uuid, action, amtstack, res) {
+  powerStateChange (uuid, action, amtstack, res): void {
     amtstack.RequestPowerStateChange(
       action,
       (stack, name, response, status) => {
         stack.wsman.comm.socket.sendchannelclose()
         if (status == 200) {
           // log.info(`Power state change request successful for guid : ${uuid}`);
-          return res.send(response)
+          res.send(response)
         } else {
           log.error(`Power state change request failed for guid : ${uuid}`)
-          return res
-            .status(status)
-            .send(ErrorResponse(status, 'PowerStateChange request failed.'))
+          res.status(status).send(ErrorResponse(status, 'PowerStateChange request failed.'))
         }
       }
     )

@@ -22,7 +22,7 @@ export class ConnectedDeviceHandler implements IAdminHandler {
 
   // Get list of CIRA connected devices.
   // For the server version of Mesh Commander, we send the computer list without credential and insertion credentials in the stream.
-  async adminAction (req: Request, res: Response) {
+  async adminAction (req: Request, res: Response): Promise<void> {
     try {
       res.set({
         'Cache-Control': 'no-cache, no-store, must-revalidate',
