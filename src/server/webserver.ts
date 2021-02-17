@@ -250,7 +250,7 @@ export class webServer {
               )
 
               ws.forwardclient.xtls = 0
-              ws.forwardclient.onData = (ciraconn, data) => {
+              ws.forwardclient.onData = (ciraconn, data): void => {
                 // Run data thru interceptor
                 if (ws.interceptor) {
                   data = ws.interceptor.processAmtData(data)
@@ -262,7 +262,7 @@ export class webServer {
                 }
               }
 
-              ws.forwardclient.onStateChange = (ciraconn, state) => {
+              ws.forwardclient.onStateChange = (ciraconn, state): void => {
                 // console.log('Relay CIRA state change:'+state);
                 if (state == 0) {
                   try {
@@ -442,9 +442,10 @@ export class webServer {
   }
 
   // Authentication for REST API and Web User login
-  isAuthenticated = (req, res, next) => {
+  isAuthenticated = (req, res, next): void => {
     if (!this.config.auth_enabled || req.session.loggedin) {
-      return next()
+      next()
+      return
     }
 
     if (req.header('User-Agent').startsWith('Mozilla')) {
@@ -463,11 +464,11 @@ export class webServer {
     // other api calls
     if (req.header('X-MPS-API-Key') !== this.config.mpsxapikey) {
       res.status(401).end('API key authentication failed. Please try again.')
-    } else { return next() }
+    } else { next() }
   }
 
   // Handle Upgrade - WebSocket
-  handleUpgrade (request, socket, head) {
+  handleUpgrade (request, socket, head): void {
     const base = `${this.config.https ? 'https' : 'http'}://${this.config.common_name}:${this.config.web_port}/`
     const pathname = (new URL(request.url, base)).pathname
     if (pathname === '/notifications/control.ashx') {
@@ -486,7 +487,7 @@ export class webServer {
   }
 
   // Notify clients connected through browser web socket
-  notifyUsers (msg) {
+  notifyUsers (msg): void {
     for (const i in this.users) {
       try {
         this.users[i].send(JSON.stringify(msg))

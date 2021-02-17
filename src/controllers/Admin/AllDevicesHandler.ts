@@ -22,7 +22,7 @@ export class AllDevicesHandler implements IAdminHandler {
 
   // Get existing device list from credentials file.
   // For the server version of Mesh Commander, we send the computer list without credential and insertion credentials in the stream.
-  async adminAction (req: Request, res: Response) {
+  async adminAction (req: Request, res: Response): Promise<void> {
     try {
       res.set({
         'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -65,10 +65,10 @@ export class AllDevicesHandler implements IAdminHandler {
         list.push(entry)
       }
       res.set({ 'Content-Type': 'application/json' })
-      return res.send(JSON.stringify(list))
+      res.send(JSON.stringify(list))
     } catch (error) {
       log.error(`Exception in All devices : ${error}`)
-      return res.status(500).send(ErrorResponse(500, 'Request failed while it gets all devices.'))
+      res.status(500).send(ErrorResponse(500, 'Request failed while it gets all devices.'))
     }
   }
 }

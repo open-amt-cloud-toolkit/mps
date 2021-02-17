@@ -21,7 +21,7 @@ export class DisconnectHandler implements IAdminHandler {
 
   // Get existing device list from credentials file.
   // For the server version of Mesh Commander, we send the computer list without credential and insertion credentials in the stream.
-  async adminAction (req: Request, res: Response) {
+  async adminAction (req: Request, res: Response): Promise<void> {
     try {
       const payload = req.body.payload
       // Check if request body contains guid information
@@ -32,7 +32,7 @@ export class DisconnectHandler implements IAdminHandler {
           try {
             ciraconn.destroy()
             res.set({ 'Content-Type': 'application/json' })
-            return res.send(
+            res.send(
               JSON.stringify(
                 `{ success: 200, description: 'CIRA connection disconnected : ${payload.guid}'}`
               )
@@ -40,19 +40,19 @@ export class DisconnectHandler implements IAdminHandler {
           } catch (error) {
             log.error(error)
             res.set({ 'Content-Type': 'application/json' })
-            return res.status(500).send(ErrorResponse(500, error))
+            res.status(500).send(ErrorResponse(500, error))
           }
         } else {
           res.set({ 'Content-Type': 'application/json' })
-          return res.status(404).send(ErrorResponse(404, `guid : ${payload.guid}`, 'device'))
+          res.status(404).send(ErrorResponse(404, `guid : ${payload.guid}`, 'device'))
         }
       } else {
         res.set({ 'Content-Type': 'application/json' })
-        return res.status(404).send(ErrorResponse(404, null, 'guid'))
+        res.status(404).send(ErrorResponse(404, null, 'guid'))
       }
     } catch (error) {
       log.error(`Exception in Disconnect: ${JSON.stringify(error)} `)
-      return res.status(500).send(ErrorResponse(500, 'Request failed while disconnecting device.'))
+      res.status(500).send(ErrorResponse(500, 'Request failed while disconnecting device.'))
     }
   }
 }

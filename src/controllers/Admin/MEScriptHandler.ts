@@ -27,16 +27,17 @@ export class MEScriptHandler implements IAdminHandler {
 
   // Get list of CIRA connected devices.
   // For the server version of Mesh Commander, we send the computer list without credential and insertion credentials in the stream.
-  async adminAction (req: Request, res: Response) {
+  async adminAction (req: Request, res: Response): Promise<void> {
     try {
       const filepath = path.join(__dirname, '../../../agent/cira_setup_script_dns.mescript')
       if (fs.existsSync(filepath)) {
         fs.readFile(filepath, (err, data) => {
           if (err) {
             log.error(err)
-            return res
+            res
               .status(500)
               .send(ErrorResponse(500, 'Request failed while downloading MEScript.'))
+            return
           }
           const scriptFile = JSON.parse(data)
 
@@ -50,8 +51,7 @@ export class MEScriptHandler implements IAdminHandler {
           scriptFile.scriptBlocks[3].vars.Port.value = this.mps.config.port // Set the server MPS port
           scriptFile.scriptBlocks[3].vars.username.value = this.mps.config.username // Set the username
           scriptFile.scriptBlocks[3].vars.password.value = this.mps.config.pass // Set the password
-          scriptFile.scriptBlocks[4].vars.AccessInfo1.value =
-            this.mps.config.common_name + ':' + this.mps.config.port // Set the primary server name:port to set periodic timer
+          scriptFile.scriptBlocks[4].vars.AccessInfo1.value = this.mps.config.common_name + ':' + this.mps.config.port // Set the primary server name:port to set periodic timer
           scriptFile.scriptBlocks[6].vars.DetectionStrings.value = 'dummy.com' // Set the environment detection local FQDN's
 
           // Compile the script
@@ -67,13 +67,11 @@ export class MEScriptHandler implements IAdminHandler {
       }
     } catch (error) {
       log.error(`Exception while downloading MEScript: ${error}`)
-      return res
-        .status(500)
-        .send(ErrorResponse(500, 'Request failed while downloading MEScript.'))
+      res.status(500).send(ErrorResponse(500, 'Request failed while downloading MEScript.'))
     }
   }
 
-  base64 (rootcert) {
+  base64 (rootcert): string {
     try {
       // console.log(rootcert)
       let i: number = rootcert.indexOf('-----BEGIN CERTIFICATE-----')
@@ -98,17 +96,18 @@ export class MEScriptHandler implements IAdminHandler {
     } catch (error) {
       log.error(`Exception in getRootCertBase64 : ${error}`)
     }
+    return ''
   }
 
-  getRootCertBase64 (path) {
+  getRootCertBase64 (path): string {
     try {
       if (fs.existsSync(path)) {
         const rootcert = fs.readFileSync(path, 'utf8')
         return this.base64(rootcert)
       }
-      return
     } catch (error) {
       log.error(`Exception in getRootCertBase64 : ${error}`)
     }
+    return ''
   }
 }

@@ -30,19 +30,19 @@ export class mpsMicroservice {
     }
   }
 
-  start () {
+  start (): void {
     this.mpsserver = new mpsServer(this)
     this.webserver = new webServer(this)
   }
 
-  CIRAConnected (guid) {
+  CIRAConnected (guid): void {
     log.info(`CIRA connection established for ${guid}`)
     if (this.webserver) {
       this.webserver.notifyUsers({ host: guid, event: 'node_connection', status: 'connected' })
     }
   }
 
-  CIRADisconnected (guid) {
+  CIRADisconnected (guid): void {
     log.info(`Main:CIRA connection closed for ${guid}`)
     if (guid && this.mpsComputerList[guid]) {
       delete this.mpsComputerList[guid]
