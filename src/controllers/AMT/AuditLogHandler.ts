@@ -13,9 +13,9 @@ import { amtStackFactory, amtPort } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 
 export class AuditLogHandler implements IAmtHandler {
-  mpsService: mpsMicroservice;
-  name: string;
-  amtFactory: any;
+  mpsService: mpsMicroservice
+  name: string
+  amtFactory: any
 
   constructor (mpsService: mpsMicroservice) {
     this.name = 'AuditLog'

@@ -67,29 +67,29 @@ export class webServer {
       this.app.use((req, res, next) => {
         // Clickjacking defence
         res.setHeader('X-Frame-Options', 'SAMEORIGIN')
-        const allowedOrigins: string[]= this.config.cors_origin.split(',').map((domain) => {
+        const allowedOrigins: string[] = this.config.cors_origin.split(',').map((domain) => {
           return domain.trim()
         })
-          res.header('Access-Control-Allow-Credentials', 'true')
-          if (allowedOrigins.includes(req.headers.origin)) {
-            res.setHeader('Access-Control-Allow-Origin', req.headers.origin)
-          }else{
-            res.setHeader('Access-Control-Allow-Origin', "*")
+        res.header('Access-Control-Allow-Credentials', 'true')
+        if (allowedOrigins.includes(req.headers.origin)) {
+          res.setHeader('Access-Control-Allow-Origin', req.headers.origin)
+        } else {
+          res.setHeader('Access-Control-Allow-Origin', '*')
+        }
+        if (this.config.cors_headers != null && this.config.cors_headers !== '') {
+          res.setHeader('Access-Control-Allow-Headers', this.config.cors_headers)
+        } else {
+          res.setHeader('Access-Control-Allow-Headers', '*')
+        }
+        if (req.method === 'OPTIONS') {
+          if (this.config.cors_methods != null && this.config.cors_methods !== '') {
+            res.setHeader('Access-Control-Allow-Methods', this.config.cors_methods)
+          } else {
+            res.setHeader('Access-Control-Allow-Methods', '*')
           }
-          if (this.config.cors_headers != null && this.config.cors_headers !== '') {
-            res.setHeader('Access-Control-Allow-Headers', this.config.cors_headers)
-          }else{
-            res.setHeader('Access-Control-Allow-Headers', "*")
-          }
-          if (req.method === 'OPTIONS') {
-            if (this.config.cors_methods != null && this.config.cors_methods !== '') {
-              res.setHeader('Access-Control-Allow-Methods', this.config.cors_methods)
-            } else {
-              res.setHeader('Access-Control-Allow-Methods', '*')
-            }
-            return res.status(200).end()
-          }
-          next()
+          return res.status(200).end()
+        }
+        next()
       })
 
       // Session Configuration

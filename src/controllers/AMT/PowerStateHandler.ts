@@ -12,9 +12,9 @@ import { amtStackFactory, amtPort } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 
 export class PowerStateHandler implements IAmtHandler {
-  mpsService: mpsMicroservice;
-  name: string;
-  amtFactory: any;
+  mpsService: mpsMicroservice
+  name: string
+  amtFactory: any
 
   constructor (mpsService: mpsMicroservice) {
     this.name = 'PowerState'

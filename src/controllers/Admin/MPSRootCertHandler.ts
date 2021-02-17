@@ -12,7 +12,7 @@ import { Response, Request } from 'express'
 import { ErrorResponse } from '../../utils/amtHelper'
 
 export class MPSRootCertHandler implements IAdminHandler {
-  name: string;
+  name: string
 
   constructor () {
     this.name = 'MPSRootCertificate'

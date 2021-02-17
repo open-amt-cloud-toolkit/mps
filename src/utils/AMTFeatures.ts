@@ -10,7 +10,7 @@ import { AMTFeaturesConst, UserConsentOptions } from './constants'
 
 export class AMTFeatures {
   static async getAMTFeatures (amtstack: any, payload: any): Promise<any> {
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       amtstack.BatchEnum('', ['*IPS_OptInService', '*AMT_RedirectionService', '*CIM_KVMRedirectionSAP'], (stack, name, wsmanResponse, status) => {
         if (status != 200) {
           reject(new MPSValidationError(`Failed AMT features BatchEnum Exec for guid : ${payload.guid}.`))
@@ -78,7 +78,7 @@ export class AMTFeatures {
   }
 
   static async setRedirectionService (amtstack: any, amtRedirResponse: any, kvm: any, payload: any) {
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       amtstack.AMT_RedirectionService_RequestStateChange(amtRedirResponse.EnabledState, (stack, name, response, status) => {
         if (status != 200) {
           reject(new MPSValidationError(`Failed Redir Request State Change for guid : ${payload.guid}.`, status))
@@ -100,7 +100,7 @@ export class AMTFeatures {
   }
 
   static async setUserConsent (amtstack: any, optServiceRes: any, payload: any) {
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       amtstack.Put(AMTFeaturesConst.AMT_OPTIN_SERVICE, optServiceRes, (stack, name, response, status) => {
         if (status != 200) {
           reject(new MPSValidationError(`Failed to get OptInService guid : ${payload.guid}.`, status))

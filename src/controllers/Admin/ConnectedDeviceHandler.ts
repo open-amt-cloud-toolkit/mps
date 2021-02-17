@@ -12,8 +12,8 @@ import { mpsMicroservice } from '../../mpsMicroservice'
 const common = require('../../utils/common.js')
 
 export class ConnectedDeviceHandler implements IAdminHandler {
-  mpsService: mpsMicroservice;
-  name: string;
+  mpsService: mpsMicroservice
+  name: string
 
   constructor (mpsService: mpsMicroservice) {
     this.name = 'ConnectedDevices'

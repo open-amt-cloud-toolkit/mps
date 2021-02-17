@@ -8,9 +8,9 @@ import { mpsMicroservice } from '../mpsMicroservice'
 import * as express from 'express'
 
 export class adminRoutes {
-  mpsService: mpsMicroservice;
-  adminController: AdminController;
-  router: any;
+  mpsService: mpsMicroservice
+  adminController: AdminController
+  router: any
 
   constructor (mpsService: mpsMicroservice) {
     this.mpsService = mpsService
@@ -19,7 +19,7 @@ export class adminRoutes {
     this.buildRoutes()
   }
 
-  buildRoutes () : any {
+  buildRoutes (): any {
     this.router.post('/', AdminController.HandlePostRoute)
   }
 }

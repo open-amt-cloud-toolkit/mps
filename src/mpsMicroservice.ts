@@ -11,13 +11,13 @@ import { dataBase } from './utils/db'
 import { IDbProvider } from './models/IDbProvider'
 
 export class mpsMicroservice {
-  mpsserver : any;
-  webserver : any;
-  config: configType;
-  certs: certificatesType;
-  debugLevel: number = 1;
-  mpsComputerList = {};
-  db: IDbProvider;
+  mpsserver: any
+  webserver: any
+  config: configType
+  certs: certificatesType
+  debugLevel: number = 1
+  mpsComputerList = {}
+  db: IDbProvider
 
   constructor (config: configType, db: IDbProvider, certs: certificatesType) {
     try {

@@ -10,7 +10,7 @@ import { logger as log } from '../utils/logger'
 import { Response, Request } from 'express'
 
 export class amtController {
-  static container: RootContainer;
+  static container: RootContainer
 
   static init (mps) {
     amtController.container = new RootContainer(mps)

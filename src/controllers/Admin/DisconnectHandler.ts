@@ -11,8 +11,8 @@ import { ErrorResponse } from '../../utils/amtHelper'
 import { mpsMicroservice } from '../../mpsMicroservice'
 
 export class DisconnectHandler implements IAdminHandler {
-  mps: mpsMicroservice;
-  name: string;
+  mps: mpsMicroservice
+  name: string
 
   constructor (mps: mpsMicroservice) {
     this.name = 'Disconnect'

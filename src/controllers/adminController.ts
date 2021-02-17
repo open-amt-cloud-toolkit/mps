@@ -11,7 +11,7 @@ import { mpsMicroservice } from '../mpsMicroservice'
 import { RootContainer } from '../dependencyHandlers/RootContainer'
 
 export class AdminController {
-  static container: RootContainer;
+  static container: RootContainer
 
   static init (mps: mpsMicroservice) {
     AdminController.container = new RootContainer(mps)

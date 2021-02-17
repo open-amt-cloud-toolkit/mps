@@ -8,9 +8,9 @@ import { configType } from '../models/Config'
 
 export class secretsDbProvider implements IDbProvider {
   secretsManager: ISecretManagerService
-  secretsPath: string;
-  logger: any;
-  config: configType;
+  secretsPath: string
+  logger: any
+  config: configType
   constructor (secretsManager: ISecretManagerService, logger: any, config: configType) {
     this.secretsManager = secretsManager
     this.secretsPath = config.secrets_path
@@ -58,8 +58,8 @@ export class secretsDbProvider implements IDbProvider {
   async getAmtPassword (guid: string): Promise<string[]> {
     try {
       const user = 'admin'
-      let data: any = await this.secretsManager.getSecretAtPath(`${this.secretsPath}devices/${guid}`)  
-      let amtpass = data.data['AMT_PASSWORD']
+      const data: any = await this.secretsManager.getSecretAtPath(`${this.secretsPath}devices/${guid}`)
+      const amtpass = data.data.AMT_PASSWORD
       return [user, amtpass]
     } catch (error) {
       this.logger.error('Error while retrieving device credentials\r\n')
@@ -72,7 +72,7 @@ export class secretsDbProvider implements IDbProvider {
     try {
       let result = false
       const guids = await this.secretsManager.getSecretFromKey(`${this.secretsPath}global`, 'guids_allowlist')
-      if (guids.indexOf(guid) >= 0) {
+      if (guids.includes(guid)) {
         result = true
       }
       if (cb) {
@@ -89,7 +89,7 @@ export class secretsDbProvider implements IDbProvider {
       let result = false
       const orgs = await this.secretsManager.getSecretFromKey(`${this.secretsPath}global`, 'orgs_allowlist')
 
-      if (orgs.indexOf(org) >= 0) {
+      if (orgs.includes(org)) {
         result = true
       }
       if (cb) {
