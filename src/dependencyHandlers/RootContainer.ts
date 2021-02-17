@@ -29,45 +29,45 @@ import { SetAMTFeaturesHandler } from '../controllers/AMT/SetAMTFeaturesHandler'
 import { GetAMTFeaturesHandler } from '../controllers/AMT/GetAMTFeaturesHandler'
 
 export class RootContainer {
-    adminRegistrar : AdminHandlerRegistrar;
-    amtRegistrar : AMTHandlerRegistrar;
-    mpsService: mpsMicroservice;
+  adminRegistrar: AdminHandlerRegistrar
+  amtRegistrar: AMTHandlerRegistrar
+  mpsService: mpsMicroservice
 
-    /**
+  /**
      *
      */
-    constructor (mpsService: mpsMicroservice) {
-      this.mpsService = mpsService
-      this.adminRegistrar = new AdminHandlerRegistrar()
-      this.amtRegistrar = new AMTHandlerRegistrar()
-    }
+  constructor (mpsService: mpsMicroservice) {
+    this.mpsService = mpsService
+    this.adminRegistrar = new AdminHandlerRegistrar()
+    this.amtRegistrar = new AMTHandlerRegistrar()
+  }
 
-    addAdminHandler (handler : IAdminHandler) {
-      this.adminRegistrar.registerHandler(handler)
-    }
+  addAdminHandler (handler: IAdminHandler) {
+    this.adminRegistrar.registerHandler(handler)
+  }
 
-    addAmtHandler (handler : IAmtHandler) {
-      this.amtRegistrar.registerHandler(handler)
-    }
+  addAmtHandler (handler: IAmtHandler) {
+    this.amtRegistrar.registerHandler(handler)
+  }
 
-    adminBuild () {
-      this.addAdminHandler(new ConnectedDeviceHandler(this.mpsService))
-      this.addAdminHandler(new AllDevicesHandler(this.mpsService))
-      this.addAdminHandler(new DisconnectHandler(this.mpsService))
-      this.addAdminHandler(new MEScriptHandler(this.mpsService))
-      this.addAdminHandler(new MPSRootCertHandler())
-    }
+  adminBuild () {
+    this.addAdminHandler(new ConnectedDeviceHandler(this.mpsService))
+    this.addAdminHandler(new AllDevicesHandler(this.mpsService))
+    this.addAdminHandler(new DisconnectHandler(this.mpsService))
+    this.addAdminHandler(new MEScriptHandler(this.mpsService))
+    this.addAdminHandler(new MPSRootCertHandler())
+  }
 
-    amtBuild () {
-      this.addAmtHandler(new GeneralSettingsHandler(this.mpsService))
-      this.addAmtHandler(new HardwareInfoHandler(this.mpsService))
-      this.addAmtHandler(new VersionHandler(this.mpsService))
-      this.addAmtHandler(new PowerActionHandler(this.mpsService))
-      this.addAmtHandler(new PowerCapabilitiesHandler(this.mpsService))
-      this.addAmtHandler(new PowerStateHandler(this.mpsService))
-      this.addAmtHandler(new AuditLogHandler(this.mpsService))
-      this.addAmtHandler(new EventLogHandler(this.mpsService))
-      this.addAmtHandler(new SetAMTFeaturesHandler(this.mpsService))
-      this.addAmtHandler(new GetAMTFeaturesHandler(this.mpsService))
-    }
+  amtBuild () {
+    this.addAmtHandler(new GeneralSettingsHandler(this.mpsService))
+    this.addAmtHandler(new HardwareInfoHandler(this.mpsService))
+    this.addAmtHandler(new VersionHandler(this.mpsService))
+    this.addAmtHandler(new PowerActionHandler(this.mpsService))
+    this.addAmtHandler(new PowerCapabilitiesHandler(this.mpsService))
+    this.addAmtHandler(new PowerStateHandler(this.mpsService))
+    this.addAmtHandler(new AuditLogHandler(this.mpsService))
+    this.addAmtHandler(new EventLogHandler(this.mpsService))
+    this.addAmtHandler(new SetAMTFeaturesHandler(this.mpsService))
+    this.addAmtHandler(new GetAMTFeaturesHandler(this.mpsService))
+  }
 }

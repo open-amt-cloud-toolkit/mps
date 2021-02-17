@@ -13,10 +13,10 @@ import { amtStackFactory, DMTFPowerStates, amtPort } from '../../utils/constants
 import { ErrorResponse } from '../../utils/amtHelper'
 
 export class PowerActionHandler implements IAmtHandler {
-  mpsService: mpsMicroservice;
-  name: string;
-  amtFactory: any;
-  useSOLFlag: boolean;
+  mpsService: mpsMicroservice
+  name: string
+  amtFactory: any
+  useSOLFlag: boolean
 
   constructor (mpsService: mpsMicroservice) {
     this.name = 'PowerAction'

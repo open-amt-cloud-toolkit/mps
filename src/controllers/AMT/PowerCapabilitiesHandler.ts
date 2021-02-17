@@ -12,17 +12,17 @@ import { ErrorResponse } from '../../utils/amtHelper'
 import { amtStackFactory, amtPort } from '../../utils/constants'
 
 export class PowerCapabilitiesHandler implements IAmtHandler {
-  mpsService: mpsMicroservice;
-  name: string;
-  amtFactory: any;
+  mpsService: mpsMicroservice
+  name: string
+  amtFactory: any
 
-  constructor(mpsService: mpsMicroservice) {
+  constructor (mpsService: mpsMicroservice) {
     this.name = 'PowerCapabilities'
     this.mpsService = mpsService
     this.amtFactory = new amtStackFactory(this.mpsService)
   }
 
-  async AmtAction(req: Request, res: Response) {
+  async AmtAction (req: Request, res: Response) {
     try {
       const payload = req.body.payload
       if (payload.guid) {
@@ -57,7 +57,7 @@ export class PowerCapabilitiesHandler implements IAmtHandler {
   }
 
   // Return Boot Capabilities
-  bootCapabilities(amtVersionData, response) {
+  bootCapabilities (amtVersionData, response) {
     const amtversion = this.parseVersionData(amtVersionData)
     const data: any = { 'Power up': 2, 'Power cycle': 5, 'Power down': 8, Reset: 10 }
     if (amtversion > 9) {
@@ -87,7 +87,7 @@ export class PowerCapabilitiesHandler implements IAmtHandler {
   }
 
   // Parse Version Data
-  parseVersionData(amtVersionData) {
+  parseVersionData (amtVersionData) {
     const verList = amtVersionData.CIM_SoftwareIdentity.responses
     for (const i in verList) {
       if (verList[i].InstanceID == 'AMT') {
@@ -97,7 +97,7 @@ export class PowerCapabilitiesHandler implements IAmtHandler {
   }
 
   // Returns AMT version data
-  getVersion(amtstack, res, func) {
+  getVersion (amtstack, res, func) {
     try {
       amtstack.BatchEnum('', ['CIM_SoftwareIdentity', '*AMT_SetupAndConfigurationService'],
         function (stack, name, responses, status) {

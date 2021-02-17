@@ -23,8 +23,8 @@ import { loggers } from 'winston'
 const readFileAsync = util.promisify(fs.readFile)
 
 export class dataBase implements IDbProvider {
-  private config: configType;
-  private datapath: string;
+  private readonly config: configType
+  private readonly datapath: string
 
   constructor (config: configType) {
     try {
@@ -120,7 +120,7 @@ export class dataBase implements IDbProvider {
       let result = false
       if (this.config && this.config.use_allowlist) {
         const guids = await this.getAllGUIDS()
-        if (guids.indexOf(guid) >= 0) {
+        if (guids.includes(guid)) {
           result = true
           log.silly('Guid found.')
         }
@@ -141,7 +141,7 @@ export class dataBase implements IDbProvider {
       let result = false
       if (this.config && this.config.use_allowlist) {
         const orgs = await this.getAllOrgs()
-        if (orgs.indexOf(org) >= 0) {
+        if (orgs.includes(org)) {
           result = true
         }
       } else {

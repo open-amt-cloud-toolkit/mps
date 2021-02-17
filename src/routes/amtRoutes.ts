@@ -11,11 +11,11 @@ import { AMTHandlerRegistrar } from '../dependencyHandlers/AMTHandlerRegistrar'
 import * as express from 'express'
 
 export class amtRoutes {
-  mpsService: mpsMicroservice;
-  container: RootContainer;
-  amtController: amtController;
-  AMTHandlerRegistrar: AMTHandlerRegistrar;
-  router: any;
+  mpsService: mpsMicroservice
+  container: RootContainer
+  amtController: amtController
+  AMTHandlerRegistrar: AMTHandlerRegistrar
+  router: any
   constructor (mpsService: mpsMicroservice) {
     this.mpsService = mpsService
     amtController.init(this.mpsService)
@@ -23,7 +23,7 @@ export class amtRoutes {
     this.buildRoutes()
   }
 
-  buildRoutes () : any {
+  buildRoutes (): any {
     this.router.post('/', amtController.HandlePostRoute)
   }
 }

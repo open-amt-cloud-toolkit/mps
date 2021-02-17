@@ -17,8 +17,8 @@ const common = require('../../utils/common.js')
 const fs = require('fs')
 
 export class MEScriptHandler implements IAdminHandler {
-  mps: mpsMicroservice;
-  name: string;
+  mps: mpsMicroservice
+  name: string
 
   constructor (mps: mpsMicroservice) {
     this.name = 'MEScript'
@@ -41,9 +41,11 @@ export class MEScriptHandler implements IAdminHandler {
           const scriptFile = JSON.parse(data)
 
           // Change a few things in the script
-          scriptFile.scriptBlocks[2].vars.CertBin.value = (process.env.ROOT_CA_CERT ? this.base64(process.env.ROOT_CA_CERT) : this.getRootCertBase64(
-            path.join(__dirname, '../../../private/root-cert-public.crt')
-          )) // Set the root certificate
+          scriptFile.scriptBlocks[2].vars.CertBin.value = (process.env.ROOT_CA_CERT
+            ? this.base64(process.env.ROOT_CA_CERT)
+            : this.getRootCertBase64(
+              path.join(__dirname, '../../../private/root-cert-public.crt')
+            )) // Set the root certificate
           scriptFile.scriptBlocks[3].vars.FQDN.value = this.mps.config.common_name // Set the server DNS name
           scriptFile.scriptBlocks[3].vars.Port.value = this.mps.config.port // Set the server MPS port
           scriptFile.scriptBlocks[3].vars.username.value = this.mps.config.username // Set the username
