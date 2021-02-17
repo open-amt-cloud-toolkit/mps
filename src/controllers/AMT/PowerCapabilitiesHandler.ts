@@ -87,11 +87,11 @@ export class PowerCapabilitiesHandler implements IAmtHandler {
   }
 
   // Parse Version Data
-  parseVersionData (amtVersionData): string {
+  parseVersionData (amtVersionData): number {
     const verList = amtVersionData.CIM_SoftwareIdentity.responses
     for (const i in verList) {
       if (verList[i].InstanceID == 'AMT') {
-        return verList[i].VersionString.split('.')[0]
+        return parseInt(verList[i].VersionString.split('.')[0])
       }
     }
   }
