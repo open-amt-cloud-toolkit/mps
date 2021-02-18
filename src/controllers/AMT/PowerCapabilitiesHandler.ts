@@ -7,22 +7,22 @@
 import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
 import { IAmtHandler } from '../../models/IAmtHandler'
-import { mpsMicroservice } from '../../mpsMicroservice'
+import { MPSMicroservice } from '../../mpsMicroservice'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { amtStackFactory, amtPort } from '../../utils/constants'
 
 export class PowerCapabilitiesHandler implements IAmtHandler {
-  mpsService: mpsMicroservice
+  mpsService: MPSMicroservice
   name: string
   amtFactory: any
 
-  constructor (mpsService: mpsMicroservice) {
+  constructor (mpsService: MPSMicroservice) {
     this.name = 'PowerCapabilities'
     this.mpsService = mpsService
     this.amtFactory = new amtStackFactory(this.mpsService)
   }
 
-  async AmtAction (req: Request, res: Response) {
+  async AmtAction (req: Request, res: Response): Promise<void> {
     try {
       const payload = req.body.payload
       if (payload.guid) {
@@ -57,7 +57,7 @@ export class PowerCapabilitiesHandler implements IAmtHandler {
   }
 
   // Return Boot Capabilities
-  bootCapabilities (amtVersionData, response) {
+  bootCapabilities (amtVersionData, response): any {
     const amtversion = this.parseVersionData(amtVersionData)
     const data: any = { 'Power up': 2, 'Power cycle': 5, 'Power down': 8, Reset: 10 }
     if (amtversion > 9) {
@@ -87,28 +87,33 @@ export class PowerCapabilitiesHandler implements IAmtHandler {
   }
 
   // Parse Version Data
-  parseVersionData (amtVersionData) {
+  parseVersionData (amtVersionData): number {
     const verList = amtVersionData.CIM_SoftwareIdentity.responses
     for (const i in verList) {
       if (verList[i].InstanceID == 'AMT') {
-        return verList[i].VersionString.split('.')[0]
+        return parseInt(verList[i].VersionString.split('.')[0])
       }
     }
   }
 
   // Returns AMT version data
-  getVersion (amtstack, res, func) {
+  getVersion (amtstack, res, func): void {
     try {
       amtstack.BatchEnum('', ['CIM_SoftwareIdentity', '*AMT_SetupAndConfigurationService'],
         function (stack, name, responses, status) {
           stack.wsman.comm.socket.sendchannelclose()
           if (status != 200) {
-            return res.status(status).send(ErrorResponse(status, 'Request failed during AMTVersion BatchEnum Exec.'))
+            res.status(status).send(ErrorResponse(status, 'Request failed during AMTVersion BatchEnum Exec.'))
+            return
           }
-          if (!func) { return res.send(JSON.stringify(responses)) } else { func(responses, res) }
+          if (!func) {
+            res.send(JSON.stringify(responses))
+          } else {
+            func(responses, res)
+          }
         })
     } catch (ex) {
-      return res.status(500).send(ErrorResponse(500, 'Request failed during AMTVersion BatchEnum Exec.'))
+      res.status(500).send(ErrorResponse(500, 'Request failed during AMTVersion BatchEnum Exec.'))
     }
   }
 }

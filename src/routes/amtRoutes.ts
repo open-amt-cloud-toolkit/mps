@@ -5,18 +5,18 @@
 **********************************************************************/
 
 import { amtController } from '../controllers/amtController'
-import { mpsMicroservice } from '../mpsMicroservice'
+import { MPSMicroservice } from '../mpsMicroservice'
 import { RootContainer } from '../dependencyHandlers/RootContainer'
 import { AMTHandlerRegistrar } from '../dependencyHandlers/AMTHandlerRegistrar'
 import * as express from 'express'
 
 export class amtRoutes {
-  mpsService: mpsMicroservice
+  mpsService: MPSMicroservice
   container: RootContainer
   amtController: amtController
   AMTHandlerRegistrar: AMTHandlerRegistrar
   router: any
-  constructor (mpsService: mpsMicroservice) {
+  constructor (mpsService: MPSMicroservice) {
     this.mpsService = mpsService
     amtController.init(this.mpsService)
     this.router = express.Router()

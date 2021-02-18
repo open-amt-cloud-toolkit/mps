@@ -9,7 +9,7 @@ import { IAmtHandler } from '../models/IAmtHandler'
 
 import { AdminHandlerRegistrar } from '../dependencyHandlers/AdminHandlerRegistrar'
 import { AMTHandlerRegistrar } from '../dependencyHandlers/AMTHandlerRegistrar'
-import { mpsMicroservice } from '../mpsMicroservice'
+import { MPSMicroservice } from '../mpsMicroservice'
 
 import { ConnectedDeviceHandler } from '../controllers/Admin/ConnectedDeviceHandler'
 import { AllDevicesHandler } from '../controllers/Admin/AllDevicesHandler'
@@ -31,26 +31,26 @@ import { GetAMTFeaturesHandler } from '../controllers/AMT/GetAMTFeaturesHandler'
 export class RootContainer {
   adminRegistrar: AdminHandlerRegistrar
   amtRegistrar: AMTHandlerRegistrar
-  mpsService: mpsMicroservice
+  mpsService: MPSMicroservice
 
   /**
      *
      */
-  constructor (mpsService: mpsMicroservice) {
+  constructor (mpsService: MPSMicroservice) {
     this.mpsService = mpsService
     this.adminRegistrar = new AdminHandlerRegistrar()
     this.amtRegistrar = new AMTHandlerRegistrar()
   }
 
-  addAdminHandler (handler: IAdminHandler) {
+  addAdminHandler (handler: IAdminHandler): void {
     this.adminRegistrar.registerHandler(handler)
   }
 
-  addAmtHandler (handler: IAmtHandler) {
+  addAmtHandler (handler: IAmtHandler): void {
     this.amtRegistrar.registerHandler(handler)
   }
 
-  adminBuild () {
+  adminBuild (): void {
     this.addAdminHandler(new ConnectedDeviceHandler(this.mpsService))
     this.addAdminHandler(new AllDevicesHandler(this.mpsService))
     this.addAdminHandler(new DisconnectHandler(this.mpsService))
@@ -58,7 +58,7 @@ export class RootContainer {
     this.addAdminHandler(new MPSRootCertHandler())
   }
 
-  amtBuild () {
+  amtBuild (): void {
     this.addAmtHandler(new GeneralSettingsHandler(this.mpsService))
     this.addAmtHandler(new HardwareInfoHandler(this.mpsService))
     this.addAmtHandler(new VersionHandler(this.mpsService))

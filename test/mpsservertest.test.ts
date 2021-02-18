@@ -12,7 +12,7 @@ import { certificates } from '../src/utils/certificates'
 import { certificatesType, configType } from '../src/models/Config'
 import * as path from 'path'
 import { dataBase } from '../src/utils/db'
-import { mpsMicroservice } from '../src/mpsMicroservice'
+import { MPSMicroservice } from '../src/mpsMicroservice'
 import { mpsServer } from '../src/server/mpsserver'
 import { join } from 'path'
 
@@ -65,7 +65,7 @@ const pki = forge.pki
 let certs : certificatesType
 const certPath = config.cert_path
 let db: dataBase
-let mpsService: mpsMicroservice
+let mpsService: MPSMicroservice
 let mps: mpsServer
 
 describe('MPS Server', function () {
@@ -79,7 +79,7 @@ describe('MPS Server', function () {
     }
     certs = await certificates.generateCertificates(config, certPath)
     db = new dataBase(config)
-    mpsService = new mpsMicroservice(config, db, certs)
+    mpsService = new MPSMicroservice(config, db, certs)
     mps = new mpsServer(mpsService)
 
     // DB initialization

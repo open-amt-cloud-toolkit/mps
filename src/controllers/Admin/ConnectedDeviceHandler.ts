@@ -7,22 +7,22 @@
 import { logger as log } from '../../utils/logger'
 import { IAdminHandler } from '../../models/IAdminHandler'
 import { Response, Request } from 'express'
-import { mpsMicroservice } from '../../mpsMicroservice'
+import { MPSMicroservice } from '../../mpsMicroservice'
 
 const common = require('../../utils/common.js')
 
 export class ConnectedDeviceHandler implements IAdminHandler {
-  mpsService: mpsMicroservice
+  mpsService: MPSMicroservice
   name: string
 
-  constructor (mpsService: mpsMicroservice) {
+  constructor (mpsService: MPSMicroservice) {
     this.name = 'ConnectedDevices'
     this.mpsService = mpsService
   }
 
   // Get list of CIRA connected devices.
   // For the server version of Mesh Commander, we send the computer list without credential and insertion credentials in the stream.
-  async adminAction (req: Request, res: Response) {
+  async adminAction (req: Request, res: Response): Promise<void> {
     try {
       res.set({
         'Cache-Control': 'no-cache, no-store, must-revalidate',

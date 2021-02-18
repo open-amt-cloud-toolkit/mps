@@ -8,7 +8,7 @@ import * as path from 'path'
 
 import { certificatesType, configType } from '../src/models/Config'
 import { dataBase } from '../src/utils/db'
-import { mpsMicroservice } from '../src/mpsMicroservice'
+import { MPSMicroservice } from '../src/mpsMicroservice'
 import { mpsServer } from '../src/server/mpsserver'
 import { certificates } from '../src/utils/certificates'
 import { SetAMTFeaturesHandler } from '../src/controllers/AMT/SetAMTFeaturesHandler'
@@ -64,7 +64,7 @@ let certs : certificatesType
 const certPath = path.join(__dirname, 'private')
 const dbPath = path.join(__dirname, 'private')
 let db: dataBase
-let mpsService: mpsMicroservice
+let mpsService: MPSMicroservice
 let mps: mpsServer
 let amtFeatures: SetAMTFeaturesHandler
 
@@ -78,7 +78,7 @@ describe('AMTFeaturesHandler', function () {
     }
     certs = await certificates.generateCertificates(config, certPath)
     db = new dataBase(config)
-    mpsService = new mpsMicroservice(config, db, certs)
+    mpsService = new MPSMicroservice(config, db, certs)
     mps = new mpsServer(mpsService)
 
     amtFeatures = new SetAMTFeaturesHandler(mpsService)

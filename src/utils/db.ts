@@ -38,7 +38,7 @@ export class dataBase implements IDbProvider {
   }
 
   // Mock up code, real deployment must use proper data providers
-  async getAllGUIDS () {
+  getAllGUIDS (): string[] {
     let guids = []
     try {
       if (this.datapath && fs.existsSync(this.datapath)) {
@@ -56,7 +56,7 @@ export class dataBase implements IDbProvider {
   }
 
   // Check: why orgs
-  async getAllOrgs () {
+  getAllOrgs (): string[] {
     let orgs = []
     try {
       if (this.datapath && fs.existsSync(this.datapath)) {
@@ -71,7 +71,7 @@ export class dataBase implements IDbProvider {
     return orgs
   }
 
-  async getAllCredentials () {
+  getAllCredentials (): any {
     let credentials = {}
     try {
       if (this.datapath && fs.existsSync(this.datapath)) {
@@ -91,10 +91,10 @@ export class dataBase implements IDbProvider {
     return credentials
   }
 
-  async getCredentialsForGuid (guid) {
+  getCredentialsForGuid (guid): any {
     let credentials = {}
     try {
-      credentials = await this.getAllCredentials()
+      credentials = this.getAllCredentials()
     } catch (error) {
       log.error(`Exception in getCredentialsForGuid: ${error}`)
       credentials = {}
@@ -103,9 +103,9 @@ export class dataBase implements IDbProvider {
   }
 
   // get all credentials in credentials.json file
-  async getAllAmtCredentials () {
+  getAllAmtCredentials (): any {
     try {
-      const cred = await this.getAllCredentials()
+      const cred = this.getAllCredentials()
       // logger.debug(`All AMT credentials: ${JSON.stringify(cred, null, 4)}`);
       return cred
     } catch (error) {
@@ -115,11 +115,11 @@ export class dataBase implements IDbProvider {
   }
 
   // check if a GUID is allowed to connect
-  async IsGUIDApproved (guid, cb) {
+  IsGUIDApproved (guid, cb): void {
     try {
       let result = false
       if (this.config && this.config.use_allowlist) {
-        const guids = await this.getAllGUIDS()
+        const guids = this.getAllGUIDS()
         if (guids.includes(guid)) {
           result = true
           log.silly('Guid found.')
@@ -136,11 +136,11 @@ export class dataBase implements IDbProvider {
   }
 
   // check if a Organization is allowed to connect
-  async IsOrgApproved (org, cb) {
+  IsOrgApproved (org, cb): void {
     try {
       let result = false
       if (this.config && this.config.use_allowlist) {
-        const orgs = await this.getAllOrgs()
+        const orgs = this.getAllOrgs()
         if (orgs.includes(org)) {
           result = true
         }
@@ -156,10 +156,10 @@ export class dataBase implements IDbProvider {
   }
 
   // CIRA auth
-  async CIRAAuth (guid, username, password, func) {
+  CIRAAuth (guid, username, password, func): void {
     try {
       let result = false
-      const cred = await this.getCredentialsForGuid(guid)
+      const cred = this.getCredentialsForGuid(guid)
       log.info(cred)
       if (cred && cred.mpsuser == username && cred.mpspass == password) {
         result = true
@@ -175,10 +175,10 @@ export class dataBase implements IDbProvider {
     }
   }
 
-  async getAmtPassword (uuid) {
+  getAmtPassword (uuid): any {
     let result = ['admin', '']
     try {
-      const amtcreds = await this.getCredentialsForGuid(uuid)
+      const amtcreds = this.getCredentialsForGuid(uuid)
       if (amtcreds) {
         result = [amtcreds.amtuser, amtcreds.amtpass]
       }

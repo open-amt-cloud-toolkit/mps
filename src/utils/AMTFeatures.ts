@@ -21,7 +21,7 @@ export class AMTFeatures {
     })
   }
 
-  static async setAMTFeatures (amtstack: any, payload: any) {
+  static async setAMTFeatures (amtstack: any, payload: any): Promise<void> {
     const wsmanResponse = await AMTFeatures.getAMTFeatures(amtstack, payload)
     const amtRedirResponse = wsmanResponse[AMTFeaturesConst.AMT_REDIR_SERVICE].response
     const kvmRedirResponse = wsmanResponse[AMTFeaturesConst.AMT_KVM_REDIR].response
@@ -77,7 +77,7 @@ export class AMTFeatures {
     }
   }
 
-  static async setRedirectionService (amtstack: any, amtRedirResponse: any, kvm: any, payload: any) {
+  static async setRedirectionService (amtstack: any, amtRedirResponse: any, kvm: any, payload: any): Promise<boolean> {
     return await new Promise((resolve, reject) => {
       amtstack.AMT_RedirectionService_RequestStateChange(amtRedirResponse.EnabledState, (stack, name, response, status) => {
         if (status != 200) {
@@ -99,7 +99,7 @@ export class AMTFeatures {
     })
   }
 
-  static async setUserConsent (amtstack: any, optServiceRes: any, payload: any) {
+  static async setUserConsent (amtstack: any, optServiceRes: any, payload: any): Promise<boolean> {
     return await new Promise((resolve, reject) => {
       amtstack.Put(AMTFeaturesConst.AMT_OPTIN_SERVICE, optServiceRes, (stack, name, response, status) => {
         if (status != 200) {

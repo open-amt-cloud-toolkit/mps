@@ -25,7 +25,7 @@ import * as tls from 'tls'
 import { configType, certificatesType } from '../models/Config'
 import { APFProtocol, APFChannelOpenFailureReasonCode } from '../models/Mps'
 import { logger as log } from '../utils/logger'
-import { mpsMicroservice } from '../mpsMicroservice'
+import { MPSMicroservice } from '../mpsMicroservice'
 import { IDbProvider } from '../models/IDbProvider'
 
 const common = require('../utils/common.js')
@@ -34,13 +34,13 @@ const MAX_IDLE = 90000
 
 export class mpsServer {
   db: IDbProvider
-  mpsService: mpsMicroservice
+  mpsService: MPSMicroservice
   config: configType
   certs: certificatesType
   ciraConnections = {}
   server: any
 
-  constructor (mpsService: mpsMicroservice) {
+  constructor (mpsService: MPSMicroservice) {
     this.mpsService = mpsService
     this.db = mpsService.db
     this.config = mpsService.config
@@ -170,7 +170,7 @@ export class mpsServer {
   }
 
   // Process one APF command
-  processCommand = (socket) => {
+  processCommand = (socket): number => {
     const cmd = socket.tag.accumulator.charCodeAt(0)
     const len = socket.tag.accumulator.length
     const data = socket.tag.accumulator
@@ -471,13 +471,13 @@ export class mpsServer {
   }
 
   // Disconnect CIRA tunnel
-  close (socket) {
+  close (socket): void {
     try { socket.end() } catch (e) { }
     try { delete this.ciraConnections[socket.tag.nodeid] } catch (e) { }
     if (this.mpsService) { this.mpsService.CIRADisconnected(socket.tag.nodeid) }
   }
 
-  SendServiceAccept (socket, service) {
+  SendServiceAccept (socket, service): void {
     this.Write(
       socket,
       String.fromCharCode(APFProtocol.SERVICE_ACCEPT) +
@@ -486,18 +486,18 @@ export class mpsServer {
     )
   }
 
-  SendTcpForwardSuccessReply (socket, port) {
+  SendTcpForwardSuccessReply (socket, port): void {
     this.Write(
       socket,
       String.fromCharCode(APFProtocol.REQUEST_SUCCESS) + common.IntToStr(port)
     )
   }
 
-  SendTcpForwardCancelReply (socket) {
+  SendTcpForwardCancelReply (socket): void {
     this.Write(socket, String.fromCharCode(APFProtocol.REQUEST_SUCCESS))
   }
 
-  SendKeepAliveRequest (socket, cookie) {
+  SendKeepAliveRequest (socket, cookie): void {
     this.Write(
       socket,
       String.fromCharCode(APFProtocol.KEEPALIVE_REQUEST) +
@@ -505,14 +505,14 @@ export class mpsServer {
     )
   }
 
-  SendKeepAliveReply (socket, cookie) {
+  SendKeepAliveReply (socket, cookie): void {
     this.Write(
       socket,
       String.fromCharCode(APFProtocol.KEEPALIVE_REPLY) + common.IntToStr(cookie)
     )
   }
 
-  SendChannelOpenFailure (socket, senderChannel, reasonCode) {
+  SendChannelOpenFailure (socket, senderChannel, reasonCode): void {
     this.Write(
       socket,
       String.fromCharCode(APFProtocol.CHANNEL_OPEN_FAILURE) +
@@ -523,7 +523,7 @@ export class mpsServer {
     )
   }
 
-  SendChannelOpenConfirmation (socket, recipientChannelId, senderChannelId, initialWindowSize) {
+  SendChannelOpenConfirmation (socket, recipientChannelId, senderChannelId, initialWindowSize): void {
     this.Write(
       socket,
       String.fromCharCode(APFProtocol.CHANNEL_OPEN_CONFIRMATION) +
@@ -534,7 +534,7 @@ export class mpsServer {
     )
   }
 
-  SendChannelOpen (socket, direct, channelid, windowsize, target, targetport, source, sourceport) {
+  SendChannelOpen (socket, direct, channelid, windowsize, target, targetport, source, sourceport): void {
     const connectionType = direct == true ? 'direct-tcpip' : 'forwarded-tcpip'
     // TODO: Reports of target being undefined that causes target.length to fail. This is a hack.
     if (target == null || target == undefined) target = ''
@@ -555,7 +555,7 @@ export class mpsServer {
     )
   }
 
-  SendChannelClose (socket, channelid) {
+  SendChannelClose (socket, channelid): void {
     this.debug(2, 'MPS:SendChannelClose', channelid)
     this.Write(
       socket,
@@ -564,7 +564,7 @@ export class mpsServer {
     )
   }
 
-  SendChannelData (socket, channelid, data) {
+  SendChannelData (socket, channelid, data): void {
     this.Write(
       socket,
       String.fromCharCode(APFProtocol.CHANNEL_DATA) +
@@ -574,7 +574,7 @@ export class mpsServer {
     )
   }
 
-  SendChannelWindowAdjust (socket, channelid, bytestoadd) {
+  SendChannelWindowAdjust (socket, channelid, bytestoadd): void {
     this.debug(3, 'MPS:SendChannelWindowAdjust', channelid, bytestoadd)
     this.Write(
       socket,
@@ -584,7 +584,7 @@ export class mpsServer {
     )
   }
 
-  SendDisconnect (socket, reasonCode) {
+  SendDisconnect (socket, reasonCode): void {
     this.Write(
       socket,
       String.fromCharCode(APFProtocol.DISCONNECT) +
@@ -593,7 +593,7 @@ export class mpsServer {
     )
   }
 
-  SendUserAuthFail (socket) {
+  SendUserAuthFail (socket): void {
     this.Write(
       socket,
       String.fromCharCode(APFProtocol.USERAUTH_FAILURE) +
@@ -603,11 +603,11 @@ export class mpsServer {
     )
   }
 
-  SendUserAuthSuccess (socket) {
+  SendUserAuthSuccess (socket): void {
     this.Write(socket, String.fromCharCode(APFProtocol.USERAUTH_SUCCESS))
   }
 
-  Write (socket, data) {
+  Write (socket, data): void {
     // TODO: Add mpsdebug to config file.
     // if (this.config.mpsdebug) {
     //   // Print out sent bytes
@@ -619,14 +619,14 @@ export class mpsServer {
     // }
   }
 
-  SetupCommunication = (host, port) => {
+  SetupCommunication = (host, port): any => {
     const ciraconn = this.ciraConnections[host]
     const socket = this.SetupCiraChannel(ciraconn, port)
     return socket
   }
 
   // Setup CIRA Channel
-  SetupCiraChannel (socket, targetport) {
+  SetupCiraChannel (socket, targetport): any {
     const sourceport = (socket.tag.nextsourceport++ % 30000) + 1024
     const cirachannel = {
       targetport: targetport,
@@ -657,7 +657,7 @@ export class mpsServer {
     )
 
     // This function writes data to this CIRA channel
-    cirachannel.write = (data) => {
+    cirachannel.write = (data): boolean => {
       if (cirachannel.state == 0) return false
       if (cirachannel.state == 1 || cirachannel.sendcredits == 0 || cirachannel.sendBuffer != undefined) {
         if (cirachannel.sendBuffer == undefined) {
@@ -686,7 +686,7 @@ export class mpsServer {
     }
 
     // This function closes this CIRA channel
-    cirachannel.close = () => {
+    cirachannel.close = (): void => {
       if (cirachannel.state == 0 || cirachannel.closing == 1) return
       if (cirachannel.state == 1) {
         cirachannel.closing = 1
@@ -704,7 +704,7 @@ export class mpsServer {
       }
     }
 
-    cirachannel.sendchannelclose = () => {
+    cirachannel.sendchannelclose = (): void => {
       this.SendChannelClose(cirachannel.socket, cirachannel.amtchannelid)
     }
 
@@ -712,7 +712,7 @@ export class mpsServer {
     return cirachannel
   }
 
-  ChangeHostname (socket, host) {
+  ChangeHostname (socket, host): void {
     let computerEntry = {
       name: undefined,
       host: undefined,
@@ -737,7 +737,7 @@ export class mpsServer {
     }
   }
 
-  guidToStr (g) {
+  guidToStr (g): string {
     return (
       g.substring(6, 8) +
             g.substring(4, 6) +
@@ -757,7 +757,7 @@ export class mpsServer {
   }
 
   // Debug
-  debug (lvl: number, ...argArray: string[]) {
+  debug (lvl: number, ...argArray: string[]): void {
     if (lvl > this.mpsService.debugLevel) return
     if (argArray.length == 1) { log.debug(argArray[0]) } else if (argArray.length == 2) { log.debug(`${argArray[0]} ${argArray[1]}`) } else if (argArray.length == 3) { log.debug(`${argArray[0]} ${argArray[1]} ${argArray[2]}`) } else if (argArray.length == 4) { log.debug(`${argArray[0]} ${argArray[1]} ${argArray[2]} ${argArray[3]}`) } else if (argArray.length == 5) { log.debug(`${argArray[0]} ${argArray[1]} ${argArray[2]} ${argArray[3]} ${argArray[4]}`) } else if (argArray.length == 6) { log.debug(`${argArray[0]} ${argArray[1]} ${argArray[2]} ${argArray[3]} ${argArray[4]} ${argArray[5]}`) }
   }
