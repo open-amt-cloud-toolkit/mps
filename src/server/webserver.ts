@@ -24,13 +24,14 @@ import { amtRoutes } from '../routes/amtRoutes'
 import { adminRoutes } from '../routes/adminRoutes'
 import { ErrorResponse } from '../utils/amtHelper'
 import { logger as log } from '../utils/logger'
-import { constants, UUIDRegex } from '../utils/constants'
+import { UUIDRegex } from '../utils/constants'
+import { constants } from 'crypto'
 import { MPSMicroservice } from '../mpsMicroservice'
 import { IDbProvider } from '../models/IDbProvider'
 
-const interceptor = require('../utils/interceptor.js')
-const WebSocket = require('ws')
-const URL = require('url').URL
+import interceptor from '../utils/interceptor.js'
+import WebSocket from 'ws'
+import { URL } from 'url'
 
 export class webServer {
   db: IDbProvider

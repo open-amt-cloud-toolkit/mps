@@ -9,8 +9,8 @@ import * as fs from 'fs'
 
 import { logger as log } from './logger'
 import { mpsConfigType, webConfigType, directConfigType } from '../models/Config'
+import { constants } from 'crypto'
 
-const constants = require('crypto').constants ? require('crypto').constants : require('constants')
 const webTlsConfigPath = path.join(__dirname, '../../private/webtlsconfig.json')
 const mpsTlsConfigPath = path.join(__dirname, '../../private/mpstlsconfig.json')
 const directConnTlsConfigPath = path.join(__dirname, '../../private/directConntlsconfig.json')
@@ -49,7 +49,7 @@ export class tlsConfig {
           !fs.existsSync(path.join(__dirname, webConfig.key)) &&
           !fs.existsSync(path.join(__dirname, webConfig.cert))
         ) {
-          log.error('Error: TLS cerficate or private key does not exist.')
+          log.error('Error: TLS certificate or private key does not exist.')
           process.exit()
         } else {
           webConfig.key = fs.readFileSync(
@@ -93,11 +93,10 @@ export class tlsConfig {
       if (webConfig.secureOptions) {
         if (webConfig.secureOptions.length == 1) {
           // No need of 'OR' if only one option
-          webConfig.secureOptions = constants.webConfig.secureOptions[0]
+          webConfig.secureOptions = webConfig.secureOptions[0]
         } else {
           const optionArr = webConfig.secureOptions
-          let secoption: any =
-            constants[optionArr[0]] | constants[optionArr[1]]
+          let secoption: any = constants[optionArr[0]] | constants[optionArr[1]]
           for (let i: number = 2; i < optionArr.length; i++) {
             secoption = secoption | constants[optionArr[i]]
           }
@@ -171,7 +170,7 @@ export class tlsConfig {
       if (mpsConfig.secureOptions) {
         if (mpsConfig.secureOptions.length == 1) {
           // No need of 'OR' if only one option
-          mpsConfig.secureOptions = constants.mpsConfig.secureOptions[0]
+          mpsConfig.secureOptions = mpsConfig.secureOptions[0]
         } else {
           const optionArr = mpsConfig.secureOptions
           let secoption: any =

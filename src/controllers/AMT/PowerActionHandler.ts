@@ -8,8 +8,8 @@ import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
 import { IAmtHandler } from '../../models/IAmtHandler'
 import { MPSMicroservice } from '../../mpsMicroservice'
-
-import { amtStackFactory, DMTFPowerStates, amtPort } from '../../utils/constants'
+import amtStackFactory from '../../amt_libraries/amt-connection-factory.js'
+import { DMTFPowerStates, amtPort } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 
 export class PowerActionHandler implements IAmtHandler {

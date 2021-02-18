@@ -9,7 +9,8 @@ import { logger as log } from '../../utils/logger'
 import { IAmtHandler } from '../../models/IAmtHandler'
 import { MPSMicroservice } from '../../mpsMicroservice'
 import { ErrorResponse } from '../../utils/amtHelper'
-import { amtStackFactory, amtPort } from '../../utils/constants'
+import { amtPort } from '../../utils/constants'
+import amtStackFactory from '../../amt_libraries/amt-connection-factory.js'
 
 export class PowerCapabilitiesHandler implements IAmtHandler {
   mpsService: MPSMicroservice

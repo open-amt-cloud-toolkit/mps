@@ -10,9 +10,10 @@ import { logger as log } from '../../utils/logger'
 import { IAmtHandler } from '../../models/IAmtHandler'
 import { MPSMicroservice } from '../../mpsMicroservice'
 
-import { amtStackFactory, amtPort, UserConsentOptions } from '../../utils/constants'
+import { amtPort, UserConsentOptions } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { AMTFeatures } from '../../utils/AMTFeatures'
+import amtStackFactory from '../../amt_libraries/amt-connection-factory.js'
 
 import { MPSValidationError } from '../../utils/MPSValidationError'
 import { apiResponseType } from '../../models/Config'
