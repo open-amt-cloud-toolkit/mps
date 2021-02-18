@@ -25,7 +25,7 @@ import { adminRoutes } from '../routes/adminRoutes'
 import { ErrorResponse } from '../utils/amtHelper'
 import { logger as log } from '../utils/logger'
 import { constants, UUIDRegex } from '../utils/constants'
-import { mpsMicroservice } from '../mpsMicroservice'
+import { MPSMicroservice } from '../mpsMicroservice'
 import { IDbProvider } from '../models/IDbProvider'
 
 const interceptor = require('../utils/interceptor.js')
@@ -39,12 +39,12 @@ export class webServer {
   server = null
   notificationwss = null
   relaywss = null
-  mpsService: mpsMicroservice
+  mpsService: MPSMicroservice
   config: configType
   certs: certificatesType
   sessionParser: any
 
-  constructor (mpsService: mpsMicroservice) {
+  constructor (mpsService: MPSMicroservice) {
     try {
       this.mpsService = mpsService
       this.db = this.mpsService.db

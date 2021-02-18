@@ -7,15 +7,15 @@ import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
 import { IAdminHandler } from '../../models/IAdminHandler'
 import { ErrorResponse } from '../../utils/amtHelper'
-import { mpsMicroservice } from '../../mpsMicroservice'
+import { MPSMicroservice } from '../../mpsMicroservice'
 
 const common = require('../../utils/common.js')
 
 export class AllDevicesHandler implements IAdminHandler {
-  mpsService: mpsMicroservice
+  mpsService: MPSMicroservice
   name: string
 
-  constructor (mpsService: mpsMicroservice) {
+  constructor (mpsService: MPSMicroservice) {
     this.name = 'AllDevices'
     this.mpsService = mpsService
   }

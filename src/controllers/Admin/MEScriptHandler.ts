@@ -10,17 +10,17 @@ import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { IAdminHandler } from '../../models/IAdminHandler'
-import { mpsMicroservice } from '../../mpsMicroservice'
+import { MPSMicroservice } from '../../mpsMicroservice'
 
 const common = require('../../utils/common.js')
 // ToDo: Need to fix import fs issue
 const fs = require('fs')
 
 export class MEScriptHandler implements IAdminHandler {
-  mps: mpsMicroservice
+  mps: MPSMicroservice
   name: string
 
-  constructor (mps: mpsMicroservice) {
+  constructor (mps: MPSMicroservice) {
     this.name = 'MEScript'
     this.mps = mps
   }

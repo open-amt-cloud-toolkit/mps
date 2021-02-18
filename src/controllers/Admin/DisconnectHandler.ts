@@ -8,13 +8,13 @@ import { logger as log } from '../../utils/logger'
 import { IAdminHandler } from '../../models/IAdminHandler'
 import { Response, Request } from 'express'
 import { ErrorResponse } from '../../utils/amtHelper'
-import { mpsMicroservice } from '../../mpsMicroservice'
+import { MPSMicroservice } from '../../mpsMicroservice'
 
 export class DisconnectHandler implements IAdminHandler {
-  mps: mpsMicroservice
+  mps: MPSMicroservice
   name: string
 
-  constructor (mps: mpsMicroservice) {
+  constructor (mps: MPSMicroservice) {
     this.name = 'Disconnect'
     this.mps = mps
   }

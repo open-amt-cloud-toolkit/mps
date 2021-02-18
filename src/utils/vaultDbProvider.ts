@@ -6,7 +6,7 @@ import { IDbProvider } from '../models/IDbProvider'
 import { ISecretManagerService } from '../models/ISecretManagerService'
 import { configType } from '../models/Config'
 
-export class secretsDbProvider implements IDbProvider {
+export class SecretsDbProvider implements IDbProvider {
   secretsManager: ISecretManagerService
   secretsPath: string
   logger: any

@@ -7,18 +7,18 @@
 import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
 import { IAmtHandler } from '../../models/IAmtHandler'
-import { mpsMicroservice } from '../../mpsMicroservice'
+import { MPSMicroservice } from '../../mpsMicroservice'
 
 import { amtStackFactory, DMTFPowerStates, amtPort } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 
 export class PowerActionHandler implements IAmtHandler {
-  mpsService: mpsMicroservice
+  mpsService: MPSMicroservice
   name: string
   amtFactory: any
   useSOLFlag: boolean
 
-  constructor (mpsService: mpsMicroservice) {
+  constructor (mpsService: MPSMicroservice) {
     this.name = 'PowerAction'
     this.mpsService = mpsService
     this.amtFactory = new amtStackFactory(this.mpsService)

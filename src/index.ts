@@ -6,7 +6,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { logger as log } from './utils/logger'
-import { mpsMicroservice } from './mpsMicroservice'
+import { MPSMicroservice } from './mpsMicroservice'
 import { configType, certificatesType } from './models/Config'
 import { dataBase } from './utils/db'
 
@@ -15,7 +15,7 @@ import { tlsConfig } from './utils/tlsConfiguration'
 import { IDbProvider } from './models/IDbProvider'
 
 import { SecretManagerService } from './utils/SecretManagerService'
-import { secretsDbProvider } from './utils/vaultDbProvider'
+import { SecretsDbProvider } from './utils/vaultDbProvider'
 import { parseValue } from './utils/parseEnvValue'
 
 const rc = require('rc')
@@ -47,7 +47,7 @@ try {
   // DB initialization
   if (config.use_vault) {
     log.info('Using secrets db provider')
-    db = new secretsDbProvider(new SecretManagerService(config, log), log, config)
+    db = new SecretsDbProvider(new SecretManagerService(config, log), log, config)
   } else {
     db = new dataBase(config)
   }
@@ -70,7 +70,7 @@ try {
     // comment this out for release
     // log.info(JSON.stringify(certs));
 
-    const mps = new mpsMicroservice(config, db, certs)
+    const mps = new MPSMicroservice(config, db, certs)
     mps.start()
   }
 } catch (error) {

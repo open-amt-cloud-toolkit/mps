@@ -7,13 +7,13 @@
 import { ErrorResponse } from '../utils/amtHelper'
 import { logger as log } from '../utils/logger'
 import { Response, Request } from 'express'
-import { mpsMicroservice } from '../mpsMicroservice'
+import { MPSMicroservice } from '../mpsMicroservice'
 import { RootContainer } from '../dependencyHandlers/RootContainer'
 
 export class AdminController {
   static container: RootContainer
 
-  static init (mps: mpsMicroservice): void {
+  static init (mps: MPSMicroservice): void {
     AdminController.container = new RootContainer(mps)
     AdminController.container.adminBuild()
   }

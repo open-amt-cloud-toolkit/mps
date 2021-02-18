@@ -7,16 +7,16 @@
 import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
 import { IAmtHandler } from '../../models/IAmtHandler'
-import { mpsMicroservice } from '../../mpsMicroservice'
+import { MPSMicroservice } from '../../mpsMicroservice'
 import { amtStackFactory, amtPort } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 
 export class VersionHandler implements IAmtHandler {
-  mpsService: mpsMicroservice
+  mpsService: MPSMicroservice
   name: string
   amtFactory: any
 
-  constructor (mpsService: mpsMicroservice) {
+  constructor (mpsService: MPSMicroservice) {
     this.name = 'Version'
     this.mpsService = mpsService
     this.amtFactory = new amtStackFactory(this.mpsService)

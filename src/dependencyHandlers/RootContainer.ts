@@ -9,7 +9,7 @@ import { IAmtHandler } from '../models/IAmtHandler'
 
 import { AdminHandlerRegistrar } from '../dependencyHandlers/AdminHandlerRegistrar'
 import { AMTHandlerRegistrar } from '../dependencyHandlers/AMTHandlerRegistrar'
-import { mpsMicroservice } from '../mpsMicroservice'
+import { MPSMicroservice } from '../mpsMicroservice'
 
 import { ConnectedDeviceHandler } from '../controllers/Admin/ConnectedDeviceHandler'
 import { AllDevicesHandler } from '../controllers/Admin/AllDevicesHandler'
@@ -31,12 +31,12 @@ import { GetAMTFeaturesHandler } from '../controllers/AMT/GetAMTFeaturesHandler'
 export class RootContainer {
   adminRegistrar: AdminHandlerRegistrar
   amtRegistrar: AMTHandlerRegistrar
-  mpsService: mpsMicroservice
+  mpsService: MPSMicroservice
 
   /**
      *
      */
-  constructor (mpsService: mpsMicroservice) {
+  constructor (mpsService: MPSMicroservice) {
     this.mpsService = mpsService
     this.adminRegistrar = new AdminHandlerRegistrar()
     this.amtRegistrar = new AMTHandlerRegistrar()

@@ -8,7 +8,7 @@
 import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
 import { IAmtHandler } from '../../models/IAmtHandler'
-import { mpsMicroservice } from '../../mpsMicroservice'
+import { MPSMicroservice } from '../../mpsMicroservice'
 
 import { amtStackFactory, amtPort, UserConsentOptions } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
@@ -18,11 +18,11 @@ import { MPSValidationError } from '../../utils/MPSValidationError'
 import { apiResponseType } from '../../models/Config'
 
 export class SetAMTFeaturesHandler implements IAmtHandler {
-  mpsService: mpsMicroservice
+  mpsService: MPSMicroservice
   amtFactory: any
   name: string
 
-  constructor (mpsService: mpsMicroservice) {
+  constructor (mpsService: MPSMicroservice) {
     this.name = 'SetAMTFeatures'
     this.mpsService = mpsService
     this.amtFactory = new amtStackFactory(this.mpsService)

@@ -10,7 +10,7 @@ import { logger as log } from './utils/logger'
 import { dataBase } from './utils/db'
 import { IDbProvider } from './models/IDbProvider'
 
-export class mpsMicroservice {
+export class MPSMicroservice {
   mpsserver: any
   webserver: any
   config: configType
