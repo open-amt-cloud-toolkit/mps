@@ -18,7 +18,7 @@ import { SecretManagerService } from './utils/SecretManagerService'
 import { SecretsDbProvider } from './utils/vaultDbProvider'
 import { parseValue } from './utils/parseEnvValue'
 
-const rc = require('rc')
+import rc from 'rc'
 
 try {
 // To merge ENV variables. consider after lowercasing ENV since our config keys are lowercase

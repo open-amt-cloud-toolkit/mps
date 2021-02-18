@@ -9,7 +9,7 @@ import { IAdminHandler } from '../../models/IAdminHandler'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MPSMicroservice } from '../../mpsMicroservice'
 
-const common = require('../../utils/common.js')
+import * as common from '../../utils/common.js'
 
 export class AllDevicesHandler implements IAdminHandler {
   mpsService: MPSMicroservice

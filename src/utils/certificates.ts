@@ -11,7 +11,8 @@ import * as fs from 'fs'
 import { logger as log } from './logger'
 import { certificatesType, mpsConfigType, webConfigType, certAndKeyType } from '../models/Config'
 
-const certoperation = require('./certoperations.js').CertificateOperations()
+import { CertificateOperations } from './certoperations.js'
+const certoperation = CertificateOperations()
 
 export class certificates {
   static generateCertificates (config, certpath): certificatesType {

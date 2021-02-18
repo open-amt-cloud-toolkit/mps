@@ -9,7 +9,8 @@ import { logger as log } from '../../utils/logger'
 import { IAmtHandler } from '../../models/IAmtHandler'
 import { MPSMicroservice } from '../../mpsMicroservice'
 
-import { amtStackFactory, amtPort } from '../../utils/constants'
+import { amtPort } from '../../utils/constants'
+import amtStackFactory from '../../amt_libraries/amt-connection-factory.js'
 import { ErrorResponse } from '../../utils/amtHelper'
 
 export class GeneralSettingsHandler implements IAmtHandler {

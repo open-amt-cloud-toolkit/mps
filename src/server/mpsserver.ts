@@ -28,7 +28,7 @@ import { logger as log } from '../utils/logger'
 import { MPSMicroservice } from '../mpsMicroservice'
 import { IDbProvider } from '../models/IDbProvider'
 
-const common = require('../utils/common.js')
+import * as common from '../utils/common.js'
 // 90 seconds max idle time, higher than the typical KEEP-ALIVE period of 60 seconds
 const MAX_IDLE = 90000
 
