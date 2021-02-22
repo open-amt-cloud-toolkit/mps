@@ -30,7 +30,9 @@ export class dataBase implements IDbProvider {
     try {
       this.config = config
       this.datapath = config.data_path
-      if (!fs.existsSync(this.datapath)) { log.error(`DB Path is not valid. Check if ${this.datapath} exists.`) }
+      if (!fs.existsSync(this.datapath)) {
+        log.error(`DB Path is not valid. Check if ${this.datapath} exists.`)
+      }
     } catch (error) {
       log.error(error)
       throw error
@@ -45,7 +47,9 @@ export class dataBase implements IDbProvider {
         const fileData = fs.readFileSync(this.datapath, 'utf8')
         const jsonData = JSON.parse(fileData)
         // console.log(jsonData)
-        if (Array.isArray(jsonData.allowlist_guids)) { guids = guids.concat(jsonData.allowlist_guids) }
+        if (Array.isArray(jsonData.allowlist_guids)) {
+          guids = guids.concat(jsonData.allowlist_guids)
+        }
 
         log.silly(`Guids - ${JSON.stringify(guids)}`)
       }
@@ -62,7 +66,9 @@ export class dataBase implements IDbProvider {
       if (this.datapath && fs.existsSync(this.datapath)) {
         const fileData = fs.readFileSync(this.datapath, 'utf8')
         const jsonData = JSON.parse(fileData)
-        if (Array.isArray(jsonData.allowlist_orgs)) { orgs = orgs.concat(jsonData.allowlist_orgs) }
+        if (Array.isArray(jsonData.allowlist_orgs)) {
+          orgs = orgs.concat(jsonData.allowlist_orgs)
+        }
         log.silly(`Orgs - ${JSON.stringify(orgs)}`)
       }
     } catch (error) {
@@ -118,7 +124,8 @@ export class dataBase implements IDbProvider {
   IsGUIDApproved (guid, cb): void {
     try {
       let result = false
-      if (this.config && this.config.use_allowlist) {
+
+      if (this.config?.use_allowlist) {
         const guids = this.getAllGUIDS()
         if (guids.includes(guid)) {
           result = true
@@ -139,7 +146,7 @@ export class dataBase implements IDbProvider {
   IsOrgApproved (org, cb): void {
     try {
       let result = false
-      if (this.config && this.config.use_allowlist) {
+      if (this.config?.use_allowlist) {
         const orgs = this.getAllOrgs()
         if (orgs.includes(org)) {
           result = true

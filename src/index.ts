@@ -61,7 +61,9 @@ try {
       }
       log.info('Loaded existing certificates')
     } else {
-      if (!fs.existsSync(certPath)) { fs.mkdirSync(certPath, { recursive: true }) }
+      if (!fs.existsSync(certPath)) {
+        fs.mkdirSync(certPath, { recursive: true })
+      }
       certs = certificates.generateCertificates(config, certPath)
     }
 

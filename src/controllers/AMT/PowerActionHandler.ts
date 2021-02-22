@@ -167,9 +167,13 @@ export class PowerActionHandler implements IAmtHandler {
         }
         if (bootSource != null) {
           bootSource =
-            '<Address xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing">http://schemas.xmlsoap.org/ws/2004/08/addressing</Address><ReferenceParameters xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing"><ResourceURI xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootSourceSetting</ResourceURI><SelectorSet xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"><Selector Name="InstanceID">Intel(r) AMT: ' +
-            bootSource +
-            '</Selector></SelectorSet></ReferenceParameters>'
+            `<Address xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing">http://schemas.xmlsoap.org/ws/2004/08/addressing</Address>
+            <ReferenceParameters xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing">
+              <ResourceURI xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootSourceSetting</ResourceURI>
+              <SelectorSet xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">
+                <Selector Name="InstanceID">Intel(r) AMT: ${bootSource}</Selector>
+              </SelectorSet>
+            </ReferenceParameters>`
         }
         this.changeBootOrder(uuid, action, amtstack, bootSource, res)
       },
@@ -190,8 +194,12 @@ export class PowerActionHandler implements IAmtHandler {
           res.status(status).send(ErrorResponse(status, 'Power Action failed during ChangeBootOrder.'))
           return
         }
-        if (action == 100 || action == 201 || action == 203 || action == 300 || action == 401) { action = 2 } // Power up
-        if (action == 101 || action == 200 || action == 202 || action == 301 || action == 400) { action = 10 } // Reset
+        if (action == 100 || action == 201 || action == 203 || action == 300 || action == 401) {
+          action = 2
+        } // Power up
+        if (action == 101 || action == 200 || action == 202 || action == 301 || action == 400) {
+          action = 10
+        } // Reset
         if (action == 11) {
           action = 10
         }

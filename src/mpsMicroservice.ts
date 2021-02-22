@@ -26,7 +26,7 @@ export class MPSMicroservice {
       this.db = db
       this.certs = certs
     } catch (e) {
-      log.error('Exception in MPS Microservice: ' + e)
+      log.error(`Exception in MPS Microservice: ${e}`)
     }
   }
 
