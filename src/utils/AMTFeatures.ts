@@ -87,7 +87,7 @@ export class AMTFeatures {
             if (status !== 200) {
               reject(new MPSValidationError(`Failed to update KVM Redirection Service for guid : ${payload.guid}.`, status))
             }
-            amtstack.Put(AMTFeaturesConst.AMT_REDIR_SERVICE, amtRedirResponse, (stack, name, kvm_redir_response, status) => {
+            amtstack.Put(AMTFeaturesConst.AMT_REDIR_SERVICE, amtRedirResponse, (stack, name, kvmRedirResponse, status) => {
               if (status !== 200) {
                 reject(new MPSValidationError(`Failed AMT RedirectionService update for guid : ${payload.guid}.`, status))
               }

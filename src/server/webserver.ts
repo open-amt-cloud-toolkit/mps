@@ -11,7 +11,6 @@
 
 import * as net from 'net'
 import * as tls from 'tls'
-import * as path from 'path'
 import express from 'express'
 import * as https from 'https'
 import * as http from 'http'
@@ -33,7 +32,7 @@ import interceptor from '../utils/interceptor.js'
 import WebSocket from 'ws'
 import { URL } from 'url'
 
-export class webServer {
+export class WebServer {
   db: IDbProvider
   app: any
   users: any = {}
@@ -170,13 +169,13 @@ export class webServer {
       this.relaywss.on('connection', async (ws, req) => {
         try {
           const base = `${this.config.https ? 'https' : 'http'}://${this.config.common_name}:${this.config.web_port}/`
-          const req_query_url = new URL(req.url, base)
+          const reqQueryUrl = new URL(req.url, base)
           req.query = {
-            host: req_query_url.searchParams.get('host'),
-            port: req_query_url.searchParams.get('port'),
-            p: req_query_url.searchParams.get('p'),
-            tls: req_query_url.searchParams.get('tls'),
-            tls1only: req_query_url.searchParams.get('tls1only')
+            host: reqQueryUrl.searchParams.get('host'),
+            port: reqQueryUrl.searchParams.get('port'),
+            p: reqQueryUrl.searchParams.get('p'),
+            tls: reqQueryUrl.searchParams.get('tls'),
+            tls1only: reqQueryUrl.searchParams.get('tls1only')
           }
           ws._socket.pause()
           // console.log('Socket paused', ws._socket);

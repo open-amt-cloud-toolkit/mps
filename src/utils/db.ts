@@ -11,18 +11,13 @@
  * @version 0.0.1
  */
 
-import * as path from 'path'
 import * as fs from 'fs'
-import * as util from 'util'
 
 import { configType } from '../models/Config'
 import { logger as log } from './logger'
 import { IDbProvider } from '../models/IDbProvider'
-import { loggers } from 'winston'
 
-const readFileAsync = util.promisify(fs.readFile)
-
-export class dataBase implements IDbProvider {
+export class Database implements IDbProvider {
   private readonly config: configType
   private readonly datapath: string
 

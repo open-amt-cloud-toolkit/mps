@@ -12,7 +12,6 @@ import { ErrorResponse } from '../../utils/amtHelper'
 import { IAdminHandler } from '../../models/IAdminHandler'
 import { MPSMicroservice } from '../../mpsMicroservice'
 import { CreateAmtScriptEngine } from '../../utils/amtscript.js'
-import * as common from '../../utils/common.js'
 
 import fs from 'fs'
 const scriptEngine = CreateAmtScriptEngine()

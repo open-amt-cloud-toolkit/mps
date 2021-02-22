@@ -10,7 +10,7 @@ import { IAmtHandler } from '../../models/IAmtHandler'
 import { MPSMicroservice } from '../../mpsMicroservice'
 
 import { amtPort } from '../../utils/constants'
-import amtStackFactory from '../../amt_libraries/amt-connection-factory.js'
+import AMTStackFactory from '../../amt_libraries/amt-connection-factory.js'
 import { ErrorResponse } from '../../utils/amtHelper'
 
 export class GeneralSettingsHandler implements IAmtHandler {
@@ -21,7 +21,7 @@ export class GeneralSettingsHandler implements IAmtHandler {
   constructor (mpsService: MPSMicroservice) {
     this.name = 'GeneralSettings'
     this.mpsService = mpsService
-    this.amtFactory = new amtStackFactory(this.mpsService)
+    this.amtFactory = new AMTStackFactory(this.mpsService)
   }
 
   async AmtAction (req: Request, res: Response): Promise<void> {

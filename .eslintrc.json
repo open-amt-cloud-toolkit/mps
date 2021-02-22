@@ -5,7 +5,7 @@
         "jest": true
     },
     "extends": [
-       "standard-with-typescript"
+        "standard-with-typescript"
     ],
     "ignorePatterns": "**/*.js",
     "parser": "@typescript-eslint/parser",
@@ -19,6 +19,6 @@
     ],
     "rules": {
         "@typescript-eslint/strict-boolean-expressions": 0,
-        "@typescript-eslint/explicit-function-return-type": 1
+        "@typescript-eslint/restrict-template-expressions":0
     }
 }
