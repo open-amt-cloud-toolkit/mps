@@ -168,10 +168,10 @@ export class dataBase implements IDbProvider {
       let result = false
       const cred = this.getCredentialsForGuid(guid)
       log.info(cred)
-      if (cred && cred.mpsuser == username && cred.mpspass == password) {
+      if (cred && cred.mpsuser === username && cred.mpspass === password) {
         result = true
       } else if (cred && this.config.use_global_mps_credentials) {
-        if (this.config.username == username && this.config.pass == password) {
+        if (this.config.username === username && this.config.pass === password) {
           result = true
           log.silly(`CIRAAuth successful. ${username} ${password}`)
         }

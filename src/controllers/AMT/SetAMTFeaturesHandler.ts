@@ -36,7 +36,7 @@ export class SetAMTFeaturesHandler implements IAmtHandler {
         // Checks request input values
         this.validatePayload(payload)
         const ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid]
-        if (ciraconn && ciraconn.readyState == 'open') {
+        if (ciraconn && ciraconn.readyState === 'open') {
           const cred = await this.mpsService.db.getAmtPassword(payload.guid)
           const amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0)
           await AMTFeatures.setAMTFeatures(amtstack, payload)

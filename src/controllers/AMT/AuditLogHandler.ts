@@ -28,14 +28,14 @@ export class AuditLogHandler implements IAmtHandler {
       const payload = req.body.payload
       if (payload.guid) {
         const ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid]
-        if (ciraconn && ciraconn.readyState == 'open') {
+        if (ciraconn && ciraconn.readyState === 'open') {
           const cred = await this.mpsService.db.getAmtPassword(payload.guid)
           const amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0)
           const startIndex: number = payload.startIndex >= 1 ? payload.startIndex : 0
 
           amtstack.GetAuditLogChunks(startIndex, (stack, responses, status) => {
             stack.wsman.comm.socket.sendchannelclose()
-            if (status == 200) {
+            if (status === 200) {
               res.send(responses)
             } else {
               log.error(`Power Action failed during GETAudit log for guid : ${payload.guid}.`)

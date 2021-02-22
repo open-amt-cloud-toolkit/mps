@@ -36,7 +36,7 @@ export class tlsConfig {
           delete webConfig[i]
         }
         if (webConfig[i] instanceof Array) {
-          if (webConfig[i].length == 0) {
+          if (webConfig[i].length === 0) {
             delete webConfig[i]
             continue
           }
@@ -91,7 +91,7 @@ export class tlsConfig {
       // Perform 'OR' operation between SecureOptions
       // Example: { secureOptions: constants.SSL_OP_NO_SSLv2 | constants.SSL_OP_NO_SSLv3 |  constants.SSL_OP_NO_TLSv1 | constants.SSL_OP_NO_TLSv11}
       if (webConfig.secureOptions) {
-        if (webConfig.secureOptions.length == 1) {
+        if (webConfig.secureOptions.length === 1) {
           // No need of 'OR' if only one option
           webConfig.secureOptions = webConfig.secureOptions[0]
         } else {
@@ -133,7 +133,7 @@ export class tlsConfig {
           continue
         }
         if (mpsConfig[i] instanceof Array) {
-          if (mpsConfig[i].length == 0) {
+          if (mpsConfig[i].length === 0) {
             delete mpsConfig[i]
             continue
           }
@@ -168,7 +168,7 @@ export class tlsConfig {
       // Perform 'OR' operation between SecureOptions
       // Example: { secureOptions: constants.SSL_OP_NO_SSLv2 | constants.SSL_OP_NO_SSLv3 |  constants.SSL_OP_NO_TLSv1 | constants.SSL_OP_NO_TLSv11}
       if (mpsConfig.secureOptions) {
-        if (mpsConfig.secureOptions.length == 1) {
+        if (mpsConfig.secureOptions.length === 1) {
           // No need of 'OR' if only one option
           mpsConfig.secureOptions = mpsConfig.secureOptions[0]
         } else {

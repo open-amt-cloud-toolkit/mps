@@ -34,7 +34,7 @@ export class GetAMTFeaturesHandler implements IAmtHandler {
       const payload = req.body.payload
       if (payload.guid) {
         const ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid]
-        if (ciraconn && ciraconn.readyState == 'open') {
+        if (ciraconn && ciraconn.readyState === 'open') {
           const cred = await this.mpsService.db.getAmtPassword(payload.guid)
           const amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0)
           const wsmanResponse = await AMTFeatures.getAMTFeatures(amtstack, payload)
@@ -46,11 +46,11 @@ export class GetAMTFeaturesHandler implements IAmtHandler {
             const kvmRedirResponse = wsmanResponse[AMTFeaturesConst.AMT_KVM_REDIR].response
             const optServiceRes = wsmanResponse[AMTFeaturesConst.AMT_OPTIN_SERVICE].response
 
-            redir = (amtRedirResponse[AMTFeaturesConst.AMT_REDIR_LISTENER] == true)
-            sol = ((amtRedirResponse[AMTFeaturesConst.AMT_REDIR_STATE] & 2) != 0)
-            ider = ((amtRedirResponse[AMTFeaturesConst.AMT_REDIR_STATE] & 1) != 0)
-            kvm = ((kvmRedirResponse.EnabledState == 6 && kvmRedirResponse.RequestedState == 2) ||
-                            kvmRedirResponse.EnabledState == 2 || kvmRedirResponse.EnabledState == 6)
+            redir = (amtRedirResponse[AMTFeaturesConst.AMT_REDIR_LISTENER] === true)
+            sol = ((amtRedirResponse[AMTFeaturesConst.AMT_REDIR_STATE] & 2) !== 0)
+            ider = ((amtRedirResponse[AMTFeaturesConst.AMT_REDIR_STATE] & 1) !== 0)
+            kvm = ((kvmRedirResponse.EnabledState === 6 && kvmRedirResponse.RequestedState === 2) ||
+                            kvmRedirResponse.EnabledState === 2 || kvmRedirResponse.EnabledState === 6)
 
             const value = optServiceRes[AMTFeaturesConst.AMT_USER_CONSENT]
             userConsent = Object.keys(UserConsentOptions).find(key => UserConsentOptions[key] === value)
