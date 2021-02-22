@@ -108,10 +108,10 @@ export class mpsServer {
       socket.tag.accumulator += data
 
       // Detect if this is an HTTPS request, if it is, return a simple answer and disconnect. This is useful for debugging access to the MPS port.
-      if (socket.tag.first == true) {
+      if (socket.tag.first === true) {
         if (socket.tag.accumulator.length < 3) return
         // if (!socket.tag.clientCert.subject) { console.log("MPS Connection, no client cert: " + socket.remoteAddress); socket.write('HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\nMeshCentral2 MPS server.\r\nNo client certificate given.'); socket.end(); return; }
-        if (socket.tag.accumulator.substring(0, 3) == 'GET') {
+        if (socket.tag.accumulator.substring(0, 3) === 'GET') {
           log.debug(`MPS Connection, HTTP GET detected: ${socket.remoteAddress}`)
           socket.write('HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: close\r\n\r\n<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>Intel Management Presence Server (MPS).<br />Intel&reg; AMT computers must connect here using CIRA.</body></html>')
           socket.end()
@@ -178,7 +178,7 @@ export class mpsServer {
     const cmd = socket.tag.accumulator.charCodeAt(0)
     const len = socket.tag.accumulator.length
     const data = socket.tag.accumulator
-    if (len == 0) {
+    if (len === 0) {
       return 0
     }
 
@@ -234,7 +234,7 @@ export class mpsServer {
         const methodNameLen: number = common.ReadInt(data, 9 + usernameLen + serviceNameLen)
         const methodName: string = data.substring(13 + usernameLen + serviceNameLen, 13 + usernameLen + serviceNameLen + methodNameLen)
         let passwordLen = 0; let password: string = null
-        if (methodName == 'password') {
+        if (methodName === 'password') {
           passwordLen = common.ReadInt(data, 14 + usernameLen + serviceNameLen + methodNameLen)
           password = data.substring(18 + usernameLen + serviceNameLen + methodNameLen, 18 + usernameLen + serviceNameLen + methodNameLen + passwordLen)
         }
@@ -260,10 +260,10 @@ export class mpsServer {
         if (len < 5 + serviceNameLen) return 0
         const serviceName = data.substring(5, 5 + serviceNameLen)
         this.debug(3, 'MPS:SERVICE_REQUEST', serviceName)
-        if (serviceName == 'pfwd@amt.intel.com') {
+        if (serviceName === 'pfwd@amt.intel.com') {
           this.SendServiceAccept(socket, 'pfwd@amt.intel.com')
         }
-        if (serviceName == 'auth@amt.intel.com') {
+        if (serviceName === 'auth@amt.intel.com') {
           this.SendServiceAccept(socket, 'auth@amt.intel.com')
         }
         return 5 + serviceNameLen
@@ -275,22 +275,22 @@ export class mpsServer {
         const request: string = data.substring(5, 5 + requestLen)
         const wantResponse: string = data.charCodeAt(5 + requestLen)
 
-        if (request == 'tcpip-forward') {
+        if (request === 'tcpip-forward') {
           const addrLen: number = common.ReadInt(data, 6 + requestLen)
           if (len < 14 + requestLen + addrLen) return 0
           let addr = data.substring(10 + requestLen, 10 + requestLen + addrLen)
           const port = common.ReadInt(data, 10 + requestLen + addrLen)
-          if (addr == '') addr = undefined
+          if (addr === '') addr = undefined
           this.debug(2, 'MPS:GLOBAL_REQUEST', request, `${addr}:${port}`)
           this.ChangeHostname(socket, addr)
-          if (socket.tag.boundPorts.indexOf(port) == -1) {
+          if (socket.tag.boundPorts.indexOf(port) === -1) {
             socket.tag.boundPorts.push(port)
           }
           this.SendTcpForwardSuccessReply(socket, port)
           return 14 + requestLen + addrLen
         }
 
-        if (request == 'cancel-tcpip-forward') {
+        if (request === 'cancel-tcpip-forward') {
           const addrLen: number = common.ReadInt(data, 6 + requestLen)
           if (len < 14 + requestLen + addrLen) return 0
           const addr: string = data.substring(10 + requestLen, 10 + requestLen + addrLen)
@@ -304,7 +304,7 @@ export class mpsServer {
           return 14 + requestLen + addrLen
         }
 
-        if (request == 'udp-send-to@amt.intel.com') {
+        if (request === 'udp-send-to@amt.intel.com') {
           const addrLen: number = common.ReadInt(data, 6 + requestLen)
           if (len < 26 + requestLen + addrLen) return 0
           const addr: string = data.substring(10 + requestLen, 10 + requestLen + addrLen)
@@ -367,19 +367,20 @@ export class mpsServer {
         const WindowSize: number = common.ReadInt(data, 9)
         socket.tag.activetunnels++
         const cirachannel = socket.tag.channels[RecipientChannel]
-        if (cirachannel == undefined) {
-          /* console.log("MPS Error in CHANNEL_OPEN_CONFIRMATION: Unable to find channelid " + RecipientChannel); */ return 17
+        if (cirachannel == null) {
+          /* console.log("MPS Error in CHANNEL_OPEN_CONFIRMATION: Unable to find channelid " + RecipientChannel); */
+          return 17
         }
         cirachannel.amtchannelid = SenderChannel
         cirachannel.sendcredits = cirachannel.amtCiraWindow = WindowSize
         this.debug(3, 'MPS:CHANNEL_OPEN_CONFIRMATION', RecipientChannel.toString(), SenderChannel.toString(), WindowSize.toString())
-        if (cirachannel.closing == 1) {
+        if (cirachannel.closing === 1) {
           // Close this channel
           this.SendChannelClose(cirachannel.socket, cirachannel.amtchannelid)
         } else {
           cirachannel.state = 2
           // Send any pending data
-          if (cirachannel.sendBuffer != undefined) {
+          if (cirachannel.sendBuffer != null) {
             if (cirachannel.sendBuffer.length <= cirachannel.sendcredits) {
               // Send the entire pending buffer
               this.SendChannelData(cirachannel.socket, cirachannel.amtchannelid, cirachannel.sendBuffer)
@@ -408,7 +409,7 @@ export class mpsServer {
         const ReasonCode: number = common.ReadInt(data, 5)
         this.debug(3, 'MPS:CHANNEL_OPEN_FAILURE', RecipientChannel.toString(), ReasonCode.toString())
         const cirachannel = socket.tag.channels[RecipientChannel]
-        if (cirachannel == undefined) {
+        if (cirachannel == null) {
           log.debug(`MPS Error in CHANNEL_OPEN_FAILURE: Unable to find channelid ${RecipientChannel}`); return 17
         }
         if (cirachannel.state > 0) {
@@ -425,7 +426,7 @@ export class mpsServer {
         const RecipientChannel: number = common.ReadInt(data, 1)
         this.debug(3, 'MPS:CHANNEL_CLOSE', RecipientChannel.toString())
         const cirachannel = socket.tag.channels[RecipientChannel]
-        if (cirachannel == undefined) {
+        if (cirachannel == null) {
           log.debug(`MPS Error in CHANNEL_CLOSE: Unable to find channelid ${RecipientChannel}`); return 5
         }
         this.SendChannelClose(cirachannel.socket, cirachannel.amtchannelid)
@@ -444,12 +445,12 @@ export class mpsServer {
         const RecipientChannel: number = common.ReadInt(data, 1)
         const ByteToAdd: number = common.ReadInt(data, 5)
         const cirachannel = socket.tag.channels[RecipientChannel]
-        if (cirachannel == undefined) {
+        if (cirachannel == null) {
           log.debug(`MPS Error in CHANNEL_WINDOW_ADJUST: Unable to find channelid ${RecipientChannel}`); return 9
         }
         cirachannel.sendcredits += ByteToAdd
         this.debug(3, 'MPS:CHANNEL_WINDOW_ADJUST', RecipientChannel.toString(), ByteToAdd.toString(), cirachannel.sendcredits)
-        if (cirachannel.state == 2 && cirachannel.sendBuffer != undefined) {
+        if (cirachannel.state === 2 && cirachannel.sendBuffer != null) {
           // Compute how much data we can send
           if (cirachannel.sendBuffer.length <= cirachannel.sendcredits) {
             // Send the entire pending buffer
@@ -475,7 +476,7 @@ export class mpsServer {
         if (len < (9 + LengthOfData)) return 0
         this.debug(4, 'MPS:CHANNEL_DATA', RecipientChannel.toString(), LengthOfData.toString())
         const cirachannel = socket.tag.channels[RecipientChannel]
-        if (cirachannel == undefined) {
+        if (cirachannel == null) {
           log.debug(`MPS Error in CHANNEL_DATA: Unable to find channelid ${RecipientChannel}`); return 9 + LengthOfData
         }
         cirachannel.amtpendingcredits += LengthOfData
@@ -574,9 +575,9 @@ export class mpsServer {
   }
 
   SendChannelOpen (socket, direct, channelid: number, windowSize: number, target: string, targetPort: number, source: string, sourcePort: number): void {
-    const connectionType = direct == true ? 'direct-tcpip' : 'forwarded-tcpip'
+    const connectionType = direct === true ? 'direct-tcpip' : 'forwarded-tcpip'
     // TODO: Reports of target being undefined that causes target.length to fail. This is a hack.
-    if (target == null || target == undefined) target = ''
+    if (target == null) target = ''
     this.Write(
       socket,
       String.fromCharCode(APFProtocol.CHANNEL_OPEN) +
@@ -701,9 +702,9 @@ export class mpsServer {
 
     // This function writes data to this CIRA channel
     cirachannel.write = (data: string): boolean => {
-      if (cirachannel.state == 0) return false
-      if (cirachannel.state == 1 || cirachannel.sendcredits == 0 || cirachannel.sendBuffer != undefined) {
-        if (cirachannel.sendBuffer == undefined) {
+      if (cirachannel.state === 0) return false
+      if (cirachannel.state === 1 || cirachannel.sendcredits === 0 || cirachannel.sendBuffer != null) {
+        if (cirachannel.sendBuffer == null) {
           cirachannel.sendBuffer = data
         } else {
           cirachannel.sendBuffer += data
@@ -730,8 +731,8 @@ export class mpsServer {
 
     // This function closes this CIRA channel
     cirachannel.close = (): void => {
-      if (cirachannel.state == 0 || cirachannel.closing == 1) return
-      if (cirachannel.state == 1) {
+      if (cirachannel.state === 0 || cirachannel.closing === 1) return
+      if (cirachannel.state === 1) {
         cirachannel.closing = 1
         cirachannel.state = 0
         if (cirachannel.onStateChange) {
@@ -803,17 +804,17 @@ export class mpsServer {
   // Debug
   debug (lvl: number, ...argArray: string[]): void {
     if (lvl > this.mpsService.debugLevel) return
-    if (argArray.length == 1) {
+    if (argArray.length === 1) {
       log.debug(argArray[0])
-    } else if (argArray.length == 2) {
+    } else if (argArray.length === 2) {
       log.debug(`${argArray[0]} ${argArray[1]}`)
-    } else if (argArray.length == 3) {
+    } else if (argArray.length === 3) {
       log.debug(`${argArray[0]} ${argArray[1]} ${argArray[2]}`)
-    } else if (argArray.length == 4) {
+    } else if (argArray.length === 4) {
       log.debug(`${argArray[0]} ${argArray[1]} ${argArray[2]} ${argArray[3]}`)
-    } else if (argArray.length == 5) {
+    } else if (argArray.length === 5) {
       log.debug(`${argArray[0]} ${argArray[1]} ${argArray[2]} ${argArray[3]} ${argArray[4]}`)
-    } else if (argArray.length == 6) {
+    } else if (argArray.length === 6) {
       log.debug(`${argArray[0]} ${argArray[1]} ${argArray[2]} ${argArray[3]} ${argArray[4]} ${argArray[5]}`)
     }
   }

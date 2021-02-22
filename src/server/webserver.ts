@@ -226,14 +226,14 @@ export class webServer {
 
           if (credentials != null) {
             log.debug('Creating credential')
-            if (req.query.p == 1) {
+            if (req.query.p === 1) {
               ws.interceptor = interceptor.CreateHttpInterceptor({
                 host: req.query.host,
                 port: req.query.port,
                 user: credentials[0],
                 pass: credentials[1]
               })
-            } else if (req.query.p == 2) {
+            } else if (req.query.p === 2) {
               ws.interceptor = interceptor.CreateRedirInterceptor({
                 user: credentials[0],
                 pass: credentials[1]
@@ -241,7 +241,7 @@ export class webServer {
             }
           }
 
-          if (req.query.tls == 0) {
+          if (req.query.tls === 0) {
             // If this is TCP (without TLS) set a normal TCP socket
             // check if this is MPS connection
             const uuid = req.query.host
@@ -267,7 +267,7 @@ export class webServer {
 
               ws.forwardclient.onStateChange = (ciraconn, state): void => {
                 // console.log('Relay CIRA state change:'+state);
-                if (state == 0) {
+                if (state === 0) {
                   try {
                     // console.log("Closing websocket.");
                     ws.close()
@@ -287,7 +287,7 @@ export class webServer {
             log.info('TLS Enabled!')
             const tlsoptions = {
               secureProtocol:
-                req.query.tls1only == 1 ? 'TLSv1_method' : 'SSLv23_method',
+                req.query.tls1only === 1 ? 'TLSv1_method' : 'SSLv23_method',
               ciphers: 'RSA+AES:!aNULL:!MD5:!DSS',
               secureOptions:
                 constants.SSL_OP_NO_SSLv2 |
@@ -347,7 +347,7 @@ export class webServer {
             })
           }
 
-          if (req.query.tls == 0) {
+          if (req.query.tls === 0) {
             if (!this.mpsService.mpsComputerList[req.query.host]) {
               // A TCP connection to Intel AMT just connected, send any pending data and start forwarding.
               ws.forwardclient.connect(req.query.port, req.query.host, () => {
@@ -450,7 +450,7 @@ export class webServer {
       // all browser calls that are not authenticated
       if (
         // This is to handle REST API calls from browser.
-        req.method == 'POST' && (req.originalUrl.indexOf('/amt') >= 0 || req.originalUrl.indexOf('/admin') >= 0)
+        req.method === 'POST' && (req.originalUrl.indexOf('/amt') >= 0 || req.originalUrl.indexOf('/admin') >= 0)
       ) {
         res.status(401).end('Authentication failed or Login Expired. Please try logging in again.')
         return
