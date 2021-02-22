@@ -19,8 +19,8 @@ import * as parser from 'body-parser'
 import session from 'express-session'
 
 import { configType, certificatesType } from '../models/Config'
-import { amtRoutes } from '../routes/amtRoutes'
-import { adminRoutes } from '../routes/adminRoutes'
+import { AMTRoutes } from '../routes/amtRoutes'
+import { AdminRoutes } from '../routes/adminRoutes'
 import { ErrorResponse } from '../utils/amtHelper'
 import { logger as log } from '../utils/logger'
 import { UUIDRegex } from '../utils/constants'
@@ -53,8 +53,8 @@ export class WebServer {
       this.app = express()
       this.notificationwss = new WebSocket.Server({ noServer: true })
       this.relaywss = new WebSocket.Server({ noServer: true })
-      const amt = new amtRoutes(this.mpsService)
-      const admin = new adminRoutes(this.mpsService)
+      const amt = new AMTRoutes(this.mpsService)
+      const admin = new AdminRoutes(this.mpsService)
 
       // Create Server
       const appConfig = this.config
