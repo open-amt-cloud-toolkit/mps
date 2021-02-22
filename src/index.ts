@@ -8,7 +8,7 @@ import * as path from 'path'
 import { logger as log } from './utils/logger'
 import { MPSMicroservice } from './mpsMicroservice'
 import { configType, certificatesType } from './models/Config'
-import { dataBase } from './utils/db'
+import { Database } from './utils/db'
 
 import { certificates } from './utils/certificates'
 import { tlsConfig } from './utils/tlsConfiguration'
@@ -49,7 +49,7 @@ try {
     log.info('Using secrets db provider')
     db = new SecretsDbProvider(new SecretManagerService(config, log), log, config)
   } else {
-    db = new dataBase(config)
+    db = new Database(config)
   }
   // Certificate Configuration and Operations
   if (config.https || !config.tls_offload) {

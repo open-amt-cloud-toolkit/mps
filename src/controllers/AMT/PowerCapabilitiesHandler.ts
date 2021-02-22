@@ -10,7 +10,7 @@ import { IAmtHandler } from '../../models/IAmtHandler'
 import { MPSMicroservice } from '../../mpsMicroservice'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { amtPort } from '../../utils/constants'
-import amtStackFactory from '../../amt_libraries/amt-connection-factory.js'
+import AMTStackFactory from '../../amt_libraries/amt-connection-factory.js'
 
 export class PowerCapabilitiesHandler implements IAmtHandler {
   mpsService: MPSMicroservice
@@ -20,7 +20,7 @@ export class PowerCapabilitiesHandler implements IAmtHandler {
   constructor (mpsService: MPSMicroservice) {
     this.name = 'PowerCapabilities'
     this.mpsService = mpsService
-    this.amtFactory = new amtStackFactory(this.mpsService)
+    this.amtFactory = new AMTStackFactory(this.mpsService)
   }
 
   async AmtAction (req: Request, res: Response): Promise<void> {
@@ -39,8 +39,8 @@ export class PowerCapabilitiesHandler implements IAmtHandler {
                 return res.status(status).send(ErrorResponse(status, `Request failed during GET AMT_BootCapabilities for guid : ${payload.guid}`))
               }
               // console.log("AMT_BootCapabilities info of " + uuid + " sent.");
-              const power_cap = await this.bootCapabilities(versionData, responses.Body)
-              return res.send(power_cap)
+              const powerCap = await this.bootCapabilities(versionData, responses.Body)
+              return res.send(powerCap)
             }, 0, 1)
           })
         } else {

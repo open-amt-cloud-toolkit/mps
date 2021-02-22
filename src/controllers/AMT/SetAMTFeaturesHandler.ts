@@ -13,7 +13,7 @@ import { MPSMicroservice } from '../../mpsMicroservice'
 import { amtPort, UserConsentOptions } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { AMTFeatures } from '../../utils/AMTFeatures'
-import amtStackFactory from '../../amt_libraries/amt-connection-factory.js'
+import AMTStackFactory from '../../amt_libraries/amt-connection-factory.js'
 
 import { MPSValidationError } from '../../utils/MPSValidationError'
 import { apiResponseType } from '../../models/Config'
@@ -26,7 +26,7 @@ export class SetAMTFeaturesHandler implements IAmtHandler {
   constructor (mpsService: MPSMicroservice) {
     this.name = 'SetAMTFeatures'
     this.mpsService = mpsService
-    this.amtFactory = new amtStackFactory(this.mpsService)
+    this.amtFactory = new AMTStackFactory(this.mpsService)
   }
 
   async AmtAction (req: Request, res: Response): Promise<void> {

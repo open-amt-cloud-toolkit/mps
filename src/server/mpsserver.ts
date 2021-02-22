@@ -32,7 +32,7 @@ import * as common from '../utils/common.js'
 // 90 seconds max idle time, higher than the typical KEEP-ALIVE period of 60 seconds
 const MAX_IDLE = 90000
 
-export class mpsServer {
+export class MPSServer {
   db: IDbProvider
   mpsService: MPSMicroservice
   config: configType
@@ -273,7 +273,7 @@ export class mpsServer {
         const requestLen: number = common.ReadInt(data, 1)
         if (len < 14 + requestLen) return 0
         const request: string = data.substring(5, 5 + requestLen)
-        const wantResponse: string = data.charCodeAt(5 + requestLen)
+        // const wantResponse: string = data.charCodeAt(5 + requestLen)
 
         if (request === 'tcpip-forward') {
           const addrLen: number = common.ReadInt(data, 6 + requestLen)

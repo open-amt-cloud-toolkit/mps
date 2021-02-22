@@ -4,10 +4,9 @@
 **********************************************************************/
 
 import { configType, certificatesType } from './models/Config'
-import { webServer } from './server/webserver'
-import { mpsServer } from './server/mpsserver'
+import { WebServer } from './server/webserver'
+import { MPSServer } from './server/mpsserver'
 import { logger as log } from './utils/logger'
-import { dataBase } from './utils/db'
 import { IDbProvider } from './models/IDbProvider'
 
 export class MPSMicroservice {
@@ -31,8 +30,8 @@ export class MPSMicroservice {
   }
 
   start (): void {
-    this.mpsserver = new mpsServer(this)
-    this.webserver = new webServer(this)
+    this.mpsserver = new MPSServer(this)
+    this.webserver = new WebServer(this)
   }
 
   CIRAConnected (guid): void {

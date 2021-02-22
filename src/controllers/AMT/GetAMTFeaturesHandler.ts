@@ -9,7 +9,7 @@ import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
 import { IAmtHandler } from '../../models/IAmtHandler'
 import { MPSMicroservice } from '../../mpsMicroservice'
-import amtStackFactory from '../../amt_libraries/amt-connection-factory.js'
+import AMTStackFactory from '../../amt_libraries/amt-connection-factory.js'
 import { amtPort, AMTFeaturesConst, UserConsentOptions } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { AMTFeatures } from '../../utils/AMTFeatures'
@@ -24,7 +24,7 @@ export class GetAMTFeaturesHandler implements IAmtHandler {
   constructor (mpsService: MPSMicroservice) {
     this.name = 'GetAMTFeatures'
     this.mpsService = mpsService
-    this.amtFactory = new amtStackFactory(this.mpsService)
+    this.amtFactory = new AMTStackFactory(this.mpsService)
   }
 
   async AmtAction (req: Request, res: Response): Promise<void> {
