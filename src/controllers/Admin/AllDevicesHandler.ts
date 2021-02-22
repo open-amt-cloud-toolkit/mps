@@ -36,8 +36,8 @@ export class AllDevicesHandler implements IAdminHandler {
         log.error(e)
       }
       const list = []
-      for (var i in this.mpsService.mpsComputerList) {
-        var entry = common.Clone(this.mpsService.mpsComputerList[i])
+      for (const i in this.mpsService.mpsComputerList) {
+        const entry = common.Clone(this.mpsService.mpsComputerList[i])
         // add MPS and AMT username properies to json
         entry.mpsuser = amtcreds[i].mpsuser
         entry.amtuser = amtcreds[i].amtuser ? amtcreds[i].amtuser : this.mpsService.mpsComputerList[i].amtuser
@@ -45,15 +45,17 @@ export class AllDevicesHandler implements IAdminHandler {
         entry.icon = 1
         entry.conn = 1
         // add a name property to json
-        if (!entry.name) { entry.name = amtcreds[i].name }
+        if (!entry.name) {
+          entry.name = amtcreds[i].name
+        }
         list.push(entry)
         // remove device objects from credential json whose status is online
         if (amtcreds[i]) {
           delete amtcreds[i]
         }
       }
-      for (var i in amtcreds) {
-        var entry = common.Clone(amtcreds[i])
+      for (const i in amtcreds) {
+        const entry = common.Clone(amtcreds[i])
         // delete MPS and AMT password before sending it
         delete entry.mpspass
         delete entry.amtpass

@@ -45,7 +45,9 @@ export class ConnectedDeviceHandler implements IAdminHandler {
         entry.icon = 1
         entry.conn = 1
         // add a name property to json
-        if (!entry.name) { entry.name = amtcreds[i].name }
+        if (!entry.name) {
+          entry.name = amtcreds[i].name
+        }
         list.push(entry)
         // remove device objects from credential json whose status is online
         if (amtcreds[i]) {

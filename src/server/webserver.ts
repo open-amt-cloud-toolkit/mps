@@ -206,7 +206,9 @@ export class webServer {
                 ws.forwardclient.close()
               }
               try {
-                if (ws.forwardclient.destroy) { ws.forwardclient.destroy() }
+                if (ws.forwardclient.destroy) {
+                  ws.forwardclient.destroy()
+                }
               } catch (e) {
                 log.error(`Exception while destroying AMT CIRA channel: ${e}`)
               }
@@ -364,7 +366,7 @@ export class webServer {
         const method = req.body.method
         const payload = req.body.payload || {}
         if (method) {
-          if (payload && payload.guid !== undefined) {
+          if (payload?.guid !== undefined) {
             if (!UUIDRegex.test(payload.guid)) {
               return res.status(404).send(ErrorResponse(404, null, 'invalidGuid'))
             }
@@ -384,12 +386,7 @@ export class webServer {
         this.sessionParser(request, {}, () => {
           if (!this.config.auth_enabled || (request.session && request.session.loggedin === true)) { // Validate if the user session is active and valid. TODO: Add user validation if needed
             this.handleUpgrade(request, socket, head)
-          }
-          // else if (request.headers['X-MPS-API-Key'] && //Validate REST API key
-          //   request.headers['X-MPS-API-Key'] === this.config.mpsxapikey) {
-          //   this.handleUpgrade(request, socket, head)
-          // }
-          else { // Auth failed
+          } else { // Auth failed
             log.error('WebSocket authentication failed. Closing connection...')
             socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
             socket.destroy()
@@ -465,7 +462,9 @@ export class webServer {
     // other api calls
     if (req.header('X-MPS-API-Key') !== this.config.mpsxapikey) {
       res.status(401).end('API key authentication failed. Please try again.')
-    } else { next() }
+    } else {
+      next()
+    }
   }
 
   // Handle Upgrade - WebSocket

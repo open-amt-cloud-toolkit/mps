@@ -32,7 +32,9 @@ export class SecretsDbProvider implements IDbProvider {
         pwd = this.config.pass
 
         if (username === user && password === pwd) {
-          if (cb) { cb(true) }
+          if (cb) {
+            cb(true)
+          }
           return
         }
         this.logger.info('invalid mps credentials')
@@ -42,7 +44,9 @@ export class SecretsDbProvider implements IDbProvider {
         pwd = await this.secretsManager.getSecretFromKey(`${this.secretsPath}devices/${guid}`, 'mps_password')
 
         if (username === user && password === pwd) {
-          if (cb) { cb(true) }
+          if (cb) {
+            cb(true)
+          }
           return
         }
         this.logger.info('invalid mps credentials')
