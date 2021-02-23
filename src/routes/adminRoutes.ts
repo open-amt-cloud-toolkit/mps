@@ -7,7 +7,7 @@ import { AdminController } from '../controllers/adminController'
 import { MPSMicroservice } from '../mpsMicroservice'
 import * as express from 'express'
 
-export class adminRoutes {
+export class AdminRoutes {
   mpsService: MPSMicroservice
   adminController: AdminController
   router: any
