@@ -111,7 +111,6 @@ export class SecretsDbProvider implements IDbProvider {
   async getAllAmtCredentials (): Promise<any> {
     try {
       try {
-        const result = false
         const path = this.secretsPath.replace('data', 'metadata')
         const creds = await this.secretsManager.listSecretsAtPath(`${path}devices`)
 

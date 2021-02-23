@@ -7,9 +7,9 @@ import * as fs from 'fs'
 import * as path from 'path'
 
 import { certificatesType, configType } from '../src/models/Config'
-import { dataBase } from '../src/utils/db'
+import { Database } from '../src/utils/db'
 import { MPSMicroservice } from '../src/mpsMicroservice'
-import { mpsServer } from '../src/server/mpsserver'
+import { MPSServer } from '../src/server/mpsserver'
 import { certificates } from '../src/utils/certificates'
 import { SetAMTFeaturesHandler } from '../src/controllers/AMT/SetAMTFeaturesHandler'
 import { MPSValidationError } from '../src/utils/MPSValidationError'
@@ -63,9 +63,9 @@ const config: configType = {
 let certs : certificatesType
 const certPath = path.join(__dirname, 'private')
 const dbPath = path.join(__dirname, 'private')
-let db: dataBase
+let db: Database
 let mpsService: MPSMicroservice
-let mps: mpsServer
+let mps: MPSServer
 let amtFeatures: SetAMTFeaturesHandler
 
 describe('AMTFeaturesHandler', function () {
@@ -77,9 +77,9 @@ describe('AMTFeaturesHandler', function () {
       console.log(`Failed to create Cert path ${certPath}. Create if it doesnt exist`)
     }
     certs = await certificates.generateCertificates(config, certPath)
-    db = new dataBase(config)
+    db = new Database(config)
     mpsService = new MPSMicroservice(config, db, certs)
-    mps = new mpsServer(mpsService)
+    mps = new MPSServer(mpsService)
 
     amtFeatures = new SetAMTFeaturesHandler(mpsService)
   })

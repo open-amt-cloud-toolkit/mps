@@ -8,7 +8,7 @@ import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
 import { IAmtHandler } from '../../models/IAmtHandler'
 import { MPSMicroservice } from '../../mpsMicroservice'
-import amtStackFactory from '../../amt_libraries/amt-connection-factory.js'
+import AMTStackFactory from '../../amt_libraries/amt-connection-factory.js'
 import { DMTFPowerStates, amtPort } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 
@@ -21,7 +21,7 @@ export class PowerActionHandler implements IAmtHandler {
   constructor (mpsService: MPSMicroservice) {
     this.name = 'PowerAction'
     this.mpsService = mpsService
-    this.amtFactory = new amtStackFactory(this.mpsService)
+    this.amtFactory = new AMTStackFactory(this.mpsService)
   }
 
   async AmtAction (req: Request, res: Response): Promise<void> {
@@ -141,7 +141,7 @@ export class PowerActionHandler implements IAmtHandler {
   // SET BootConfigRole
   setBootConfRole (uuid, action, amtstack, res): void {
     // ToDo: Advance options
-    let idx_d24ForceBootDevice
+    let idxD24ForceBootDevice
     amtstack.SetBootConfigRole(
       1,
       (stack, name, response, status) => {
@@ -153,8 +153,8 @@ export class PowerActionHandler implements IAmtHandler {
         }
         let bootSource = null
         if (action === 999) {
-          if (idx_d24ForceBootDevice.value > 0) {
-            bootSource = ['Force CD/DVD Boot', 'Force PXE Boot', 'Force Hard-drive Boot', 'Force Diagnostic Boot'][idx_d24ForceBootDevice.value - 1]
+          if (idxD24ForceBootDevice.value > 0) {
+            bootSource = ['Force CD/DVD Boot', 'Force PXE Boot', 'Force Hard-drive Boot', 'Force Diagnostic Boot'][idxD24ForceBootDevice.value - 1]
           }
         } else {
           if (action === 300 || action === 301) {
