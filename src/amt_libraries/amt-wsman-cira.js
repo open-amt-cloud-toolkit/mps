@@ -73,7 +73,7 @@ function CreateWsmanComm(host, port, user, pass, tls, parent) {
     obj.PerformAjaxEx = function (postdata, callback, tag, url, action) {
         if (obj.FailAllError != 0) { obj.gotNextMessagesError({ status: obj.FailAllError }, 'error', null, [postdata, callback, tag, url, action]); return; }
         if (!postdata) postdata = "";
-        //obj.Silly("SEND: " + postdata); // DEBUG
+        obj.Silly("SEND: " + postdata); // DEBUG
 
         // We are in a websocket relay environment 
         obj.ActiveAjaxCount++;
@@ -112,7 +112,7 @@ function CreateWsmanComm(host, port, user, pass, tls, parent) {
         //h += 'Host: ' + obj.host + ':' + obj.port + '\r\nContent-Length: ' + postdata.length + '\r\n\r\n' + postdata; // Use Content-Length
         h += 'Host: ' + obj.host + ':' + obj.port + '\r\nTransfer-Encoding: chunked\r\n\r\n' + postdata.length.toString(16).toUpperCase() + '\r\n' + postdata + '\r\n0\r\n\r\n'; // Use Chunked-Encoding
         _Send(h);
-        //obj.Silly("SEND: " + h); // Display send packet
+        obj.Silly("SEND: " + h); // Display send packet
     }
 
     // Websocket relay specific private method
@@ -166,14 +166,16 @@ function CreateWsmanComm(host, port, user, pass, tls, parent) {
 
     // Websocket relay specific private method
     function _OnSocketConnected() {
-        //obj.Silly("xxOnSocketConnected");
+        obj.Silly("xxOnSocketConnected");
         obj.socketState = 2;
-        for (i in obj.pendingAjaxCall) { obj.sendRequest(obj.pendingAjaxCall[i][0], obj.pendingAjaxCall[i][3], obj.pendingAjaxCall[i][4]); }
+            for (let i in obj.pendingAjaxCall) {
+                obj.sendRequest(obj.pendingAjaxCall[i][0], obj.pendingAjaxCall[i][3], obj.pendingAjaxCall[i][4]);
+            }
     }
 
     // Websocket relay specific private method
     function _OnSocketData(data) {
-        //obj.Silly("_OnSocketData (" + data.length + "): " + data);
+        obj.Silly("_OnSocketData (" + data.length + "): " + data);
 
         if (typeof data === 'object') {
             // This is an ArrayBuffer, convert it to a string array (used in IE)
@@ -183,20 +185,20 @@ function CreateWsmanComm(host, port, user, pass, tls, parent) {
         }
         else if (typeof data !== 'string') return;
 
-        //obj.Silly("RECV: " + data); // DEBUG
+        obj.Silly("RECV: " + data); // DEBUG
 
         obj.socketAccumulator += data;
         while (true) {
             if (obj.socketParseState == 0) {
                 var headersize = obj.socketAccumulator.indexOf("\r\n\r\n");
                 if (headersize < 0) return;
-                //obj.Silly(obj.socketAccumulator.substring(0, headersize)); // Display received HTTP header
+                obj.Silly(obj.socketAccumulator.substring(0, headersize)); // Display received HTTP header
                 obj.socketHeader = obj.socketAccumulator.substring(0, headersize).split("\r\n");
                 obj.socketAccumulator = obj.socketAccumulator.substring(headersize + 4);
                 obj.socketParseState = 1;
                 obj.socketData = '';
                 obj.socketXHeader = { Directive: obj.socketHeader[0].split(' ') };
-                for (i in obj.socketHeader) {
+                for (let i in obj.socketHeader) {
                     if (i != 0) {
                         var x2 = obj.socketHeader[i].indexOf(':');
                         obj.socketXHeader[obj.socketHeader[i].substring(0, x2).toLowerCase()] = obj.socketHeader[i].substring(x2 + 2);
@@ -230,7 +232,7 @@ function CreateWsmanComm(host, port, user, pass, tls, parent) {
                     obj.socketData += data;
                 }
                 if (csize == 0) {
-                    //obj.Silly("_OnSocketData DONE: (" + obj.socketData.length + "): " + obj.socketData);
+                    obj.Silly("_OnSocketData DONE: (" + obj.socketData.length + "): " + obj.socketData);
                     _ProcessHttpResponse(obj.socketXHeader, obj.socketData);
                     obj.socketParseState = 0;
                     obj.socketHeader = null;
@@ -241,7 +243,7 @@ function CreateWsmanComm(host, port, user, pass, tls, parent) {
 
     // Websocket relay specific private method
     function _ProcessHttpResponse(header, data) {
-        //obj.Silly("_ProcessHttpResponse: " + header.Directive[1]);
+        obj.Silly("_ProcessHttpResponse: " + header.Directive[1]);
 
         var s = parseInt(header.Directive[1]);
         if (isNaN(s)) s = 602;
@@ -249,7 +251,7 @@ function CreateWsmanComm(host, port, user, pass, tls, parent) {
             obj.challengeParams = obj.parseDigest(header['www-authenticate']); // Set the digest parameters, after this, the socket will close and we will auto-retry
         } else {
             var r = obj.pendingAjaxCall.shift();
-            //if (s != 200) { obj.Error("Error, status=" + s + "\r\n\r\nreq=" + r[0] + "\r\n\r\nresp=" + data); } // Debug: Display the request & response if something did not work.
+            if (s != 200) { obj.Error("Error, status=" + s + "\r\n\r\nreq=" + r[0] + "\r\n\r\nresp=" + data); } // Debug: Display the request & response if something did not work.
             obj.authcounter = 0;
             obj.ActiveAjaxCount--;
             obj.gotNextMessages(data, 'success', { status: s }, r);
@@ -259,7 +261,7 @@ function CreateWsmanComm(host, port, user, pass, tls, parent) {
 
     // Websocket relay specific private method
     function _OnSocketClosed(data) {
-        //obj.Silly("_OnSocketClosed");
+        obj.Silly("_OnSocketClosed");
         obj.socketState = 0;
         if (obj.pendingAjaxCall.length > 0) {
             var r = obj.pendingAjaxCall.shift();
@@ -270,7 +272,7 @@ function CreateWsmanComm(host, port, user, pass, tls, parent) {
 
     // Websocket relay specific private method
     function _Send(x) {
-        //obj.Silly("SEND: " + x); // DEBUG
+        obj.Silly("SEND: " + x); // DEBUG
         if (obj.socketState == 2 && obj.socket != null) {
             obj.Silly('write data on the mpsproxy');
             try {
