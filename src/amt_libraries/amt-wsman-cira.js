@@ -113,14 +113,14 @@ function CreateWsmanComm(host, port, user, pass, tls, parent) {
     // Websocket relay specific private method
     obj.parseDigest = function (header) {
         var t = header.substring(7).split(',');
-        for (i in t) t[i] = t[i].trim();
+        for (let i in t) t[i] = t[i].trim();
         return t.reduce(function (obj, s) { var parts = s.split('='); obj[parts[0]] = parts[1].replace(/"/g, ''); return obj; }, {})
     }
 
     // Websocket relay specific private method
     obj.renderDigest = function (params) {
         var paramsnames = [];
-        for (i in params) { paramsnames.push(i); }
+        for (let i in params) { paramsnames.push(i); }
         return 'Digest ' + paramsnames.reduce(function (s1, ii) { return s1 + ',' + ii + '="' + params[ii] + '"' }, '').substring(1);
     }
 
@@ -161,7 +161,7 @@ function CreateWsmanComm(host, port, user, pass, tls, parent) {
     function _OnSocketConnected() {
         //obj.Debug("xxOnSocketConnected");
         obj.socketState = 2;
-        for (i in obj.pendingAjaxCall) { obj.sendRequest(obj.pendingAjaxCall[i][0], obj.pendingAjaxCall[i][3], obj.pendingAjaxCall[i][4]); }
+        for (let i in obj.pendingAjaxCall) { obj.sendRequest(obj.pendingAjaxCall[i][0], obj.pendingAjaxCall[i][3], obj.pendingAjaxCall[i][4]); }
     }
 
     // Websocket relay specific private method
@@ -189,7 +189,7 @@ function CreateWsmanComm(host, port, user, pass, tls, parent) {
                 obj.socketParseState = 1;
                 obj.socketData = '';
                 obj.socketXHeader = { Directive: obj.socketHeader[0].split(' ') };
-                for (i in obj.socketHeader) {
+                for (let i in obj.socketHeader) {
                     if (i != 0) {
                         var x2 = obj.socketHeader[i].indexOf(':');
                         obj.socketXHeader[obj.socketHeader[i].substring(0, x2).toLowerCase()] = obj.socketHeader[i].substring(x2 + 2);
