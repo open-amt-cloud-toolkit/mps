@@ -18,7 +18,7 @@ import * as parser from 'body-parser'
 
 import session from 'express-session'
 
-import { configType, certificatesType } from '../models/Config'
+import { configType, certificatesType, queryParams } from '../models/Config'
 import { AMTRoutes } from '../routes/amtRoutes'
 import { AdminRoutes } from '../routes/adminRoutes'
 import { ErrorResponse } from '../utils/amtHelper'
@@ -169,13 +169,13 @@ export class WebServer {
       this.relaywss.on('connection', async (ws, req) => {
         try {
           const base = `${this.config.https ? 'https' : 'http'}://${this.config.common_name}:${this.config.web_port}/`
-          const reqQueryUrl = new URL(req.url, base)
-          req.query = {
-            host: reqQueryUrl.searchParams.get('host'),
-            port: reqQueryUrl.searchParams.get('port'),
-            p: reqQueryUrl.searchParams.get('p'),
-            tls: reqQueryUrl.searchParams.get('tls'),
-            tls1only: reqQueryUrl.searchParams.get('tls1only')
+          const reqQueryURL = new URL(req.url, base)
+          const params: queryParams = {
+            host: reqQueryURL.searchParams.get('host'),
+            port: Number(reqQueryURL.searchParams.get('port')),
+            p: Number(reqQueryURL.searchParams.get('p')),
+            tls: Number(reqQueryURL.searchParams.get('tls')),
+            tls1only: Number(reqQueryURL.searchParams.get('tls1only'))
           }
           ws._socket.pause()
           // console.log('Socket paused', ws._socket);
@@ -198,7 +198,7 @@ export class WebServer {
           // If the web socket is closed, close the associated TCP connection.
           ws.on('close', () => {
             log.debug(
-              `Closing web socket connection to  ${req.query.host}: ${req.query.port}.`
+              `Closing web socket connection to  ${params.host}: ${params.port}.`
             )
             if (ws.forwardclient) {
               if (ws.forwardclient.close) {
@@ -216,23 +216,23 @@ export class WebServer {
 
           // We got a new web socket connection, initiate a TCP connection to the target Intel AMT host/port.
           log.debug(
-            `Opening web socket connection to ${req.query.host}: ${req.query.port}.`
+            `Opening web socket connection to ${params.host}: ${params.port}.`
           )
 
           // Fetch Intel AMT credentials & Setup interceptor
-          const credentials = await this.db.getAmtPassword(req.query.host)
-          // obj.debug("Credential for " + req.query.host + " is " + JSON.stringify(credentials));
+          const credentials = await this.db.getAmtPassword(params.host)
+          // obj.debug("Credential for " + params.host + " is " + JSON.stringify(credentials));
 
           if (credentials != null) {
             log.debug('Creating credential')
-            if (req.query.p === 1) {
+            if (params.p === 1) {
               ws.interceptor = interceptor.CreateHttpInterceptor({
-                host: req.query.host,
-                port: req.query.port,
+                host: params.host,
+                port: params.port,
                 user: credentials[0],
                 pass: credentials[1]
               })
-            } else if (req.query.p === 2) {
+            } else if (params.p === 2) {
               ws.interceptor = interceptor.CreateRedirInterceptor({
                 user: credentials[0],
                 pass: credentials[1]
@@ -240,15 +240,15 @@ export class WebServer {
             }
           }
 
-          if (req.query.tls === 0) {
+          if (params.tls === 0) {
             // If this is TCP (without TLS) set a normal TCP socket
             // check if this is MPS connection
-            const uuid = req.query.host
+            const uuid = params.host
             if (uuid && this.mpsService.mpsserver.ciraConnections[uuid]) {
               const ciraconn = this.mpsService.mpsserver.ciraConnections[uuid]
               ws.forwardclient = this.mpsService.mpsserver.SetupCiraChannel(
                 ciraconn,
-                req.query.port
+                params.port
               )
 
               ws.forwardclient.xtls = 0
@@ -286,7 +286,7 @@ export class WebServer {
             log.info('TLS Enabled!')
             const tlsoptions = {
               secureProtocol:
-                req.query.tls1only === 1 ? 'TLSv1_method' : 'SSLv23_method',
+                params.tls1only === 1 ? 'TLSv1_method' : 'SSLv23_method',
               ciphers: 'RSA+AES:!aNULL:!MD5:!DSS',
               secureOptions:
                 constants.SSL_OP_NO_SSLv2 |
@@ -296,12 +296,12 @@ export class WebServer {
               rejectUnauthorized: false
             }
             ws.forwardclient = tls.connect(
-              req.query.port,
-              req.query.host,
+              params.port,
+              params.host,
               tlsoptions,
               () => {
                 // The TLS connection method is the same as TCP, but located a bit differently.
-                log.debug(`TLS connected to ${req.query.host}: ${req.query.port}.`)
+                log.debug(`TLS connected to ${params.host}: ${params.port}.`)
                 ws._socket.resume()
               }
             )
@@ -326,7 +326,7 @@ export class WebServer {
             // If the TCP connection closes, disconnect the associated web socket.
             ws.forwardclient.on('close', () => {
               log.debug(
-                `TCP disconnected from ${req.query.host} : ${req.query.port}.`
+                `TCP disconnected from ${params.host} : ${params.port}.`
               )
               try {
                 ws.close()
@@ -336,8 +336,8 @@ export class WebServer {
             // If the TCP connection causes an error, disconnect the associated web socket.
             ws.forwardclient.on('error', err => {
               log.debug(
-                `TCP disconnected with error from ${req.query.host}:${
-                req.query.port
+                `TCP disconnected with error from ${params.host}:${
+                  params.port
                 }:${err.code},${req.url}`
               )
               try {
@@ -346,11 +346,11 @@ export class WebServer {
             })
           }
 
-          if (req.query.tls === 0) {
-            if (!this.mpsService.mpsComputerList[req.query.host]) {
+          if (params.tls === 0) {
+            if (!this.mpsService.mpsComputerList[params.host]) {
               // A TCP connection to Intel AMT just connected, send any pending data and start forwarding.
-              ws.forwardclient.connect(req.query.port, req.query.host, () => {
-                log.debug(`TCP connected to ${req.query.host}:${req.query.port}.`)
+              ws.forwardclient.connect(params.port, params.host, () => {
+                log.debug(`TCP connected to ${params.host}:${params.port}.`)
                 ws._socket.resume()
               })
             }
