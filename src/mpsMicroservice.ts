@@ -10,8 +10,8 @@ import { logger as log } from './utils/logger'
 import { IDbProvider } from './models/IDbProvider'
 
 export class MPSMicroservice {
-  mpsserver: any
-  webserver: any
+  mpsserver: MPSServer
+  webserver: WebServer
   config: configType
   certs: certificatesType
   debugLevel: number = 1
@@ -34,14 +34,14 @@ export class MPSMicroservice {
     this.webserver = new WebServer(this)
   }
 
-  CIRAConnected (guid): void {
+  CIRAConnected (guid: string): void {
     log.info(`CIRA connection established for ${guid}`)
     if (this.webserver) {
       this.webserver.notifyUsers({ host: guid, event: 'node_connection', status: 'connected' })
     }
   }
 
-  CIRADisconnected (guid): void {
+  CIRADisconnected (guid: string): void {
     log.info(`Main:CIRA connection closed for ${guid}`)
     if (guid && this.mpsComputerList[guid]) {
       delete this.mpsComputerList[guid]

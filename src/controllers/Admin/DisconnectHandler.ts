@@ -31,28 +31,20 @@ export class DisconnectHandler implements IAdminHandler {
         if (ciraconn) {
           try {
             ciraconn.destroy()
-            res.set({ 'Content-Type': 'application/json' })
-            res.send(
-              JSON.stringify(
-                `{ success: 200, description: 'CIRA connection disconnected : ${payload.guid}'}`
-              )
-            )
+            res.json({ success: 200, description: `CIRA connection disconnected : ${payload.guid}` })
           } catch (error) {
             log.error(error)
-            res.set({ 'Content-Type': 'application/json' })
-            res.status(500).send(ErrorResponse(500, error))
+            res.status(500).json(ErrorResponse(500, error))
           }
         } else {
-          res.set({ 'Content-Type': 'application/json' })
-          res.status(404).send(ErrorResponse(404, `guid : ${payload.guid}`, 'device'))
+          res.status(404).json(ErrorResponse(404, `guid : ${payload.guid}`, 'device'))
         }
       } else {
-        res.set({ 'Content-Type': 'application/json' })
-        res.status(404).send(ErrorResponse(404, null, 'guid'))
+        res.status(404).json(ErrorResponse(404, null, 'guid'))
       }
     } catch (error) {
       log.error(`Exception in Disconnect: ${JSON.stringify(error)} `)
-      res.status(500).send(ErrorResponse(500, 'Request failed while disconnecting device.'))
+      res.status(500).json(ErrorResponse(500, 'Request failed while disconnecting device.'))
     }
   }
 }

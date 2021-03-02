@@ -43,6 +43,7 @@ const config: configType = {
   cors_origin:'*',
   cors_headers:'*',
   cors_methods:'*',
+  connection_string: '',
   mps_tls_config: {
     key: '../private/mpsserver-cert-private.key',
     cert: '../private/mpsserver-cert-public.crt',
@@ -74,7 +75,7 @@ describe('AMTFeaturesHandler', function () {
     try {
       if (!fs.existsSync(certPath)) { fs.mkdirSync(certPath, { recursive: true }) }
     } catch (e) {
-      console.log(`Failed to create Cert path ${certPath}. Create if it doesnt exist`)
+      console.log(`Failed to create Cert path ${certPath}. Create if it doesn't exist`)
     }
     certs = await certificates.generateCertificates(config, certPath)
     db = new Database(config)
