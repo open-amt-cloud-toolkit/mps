@@ -80,3 +80,11 @@ export interface apiResponseType {
   statuscode: number
   payload: any
 }
+
+export interface queryParams {
+  host: string
+  port: number
+  p: number
+  tls: number
+  tls1only: number
+}
