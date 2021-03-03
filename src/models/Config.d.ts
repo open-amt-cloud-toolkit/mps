@@ -50,7 +50,8 @@ export type configType ={
     redis_password: string,
     redis_host?:string,
     redis_port?:string,
-    auth_enabled?: boolean
+    auth_enabled?: boolean,
+    redis_enable?: boolean
 }
 
 export type certificatesType = {

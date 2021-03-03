@@ -55,7 +55,8 @@ export class mpsMicroservice {
       this.CiraChannelFactory = new CiraChannelFactory((socket, port) => this.mpsserver.SetupCiraChannel(socket, port))
     }
     else if (this.config.startup_mode === 'web') { // Running in distributed mode
-
+      if (this.config.redis_enable) {
+        log.silly('Redis enabled')
       // Session handling with Redis - in scale mode
       const redis = require('redis')
       const redisClient = redis.createClient({ port: this.config.redis_port, host: this.config.redis_host, password: this.config.redis_password }) // "redis" container
@@ -75,6 +76,19 @@ export class mpsMicroservice {
         cookie: { secure: false }, // by default false. use true for prod like below.
         store: new redisStore({ host: this.config.redis_host, port: this.config.redis_port, client: redisClient, ttl: 86400 })
       };
+      }
+      else {
+        log.silly('Redis disabled')
+        //Session Configuration
+        this.sess = {
+          // Strongly recommended to change this key for Production thru ENV variable MPS_SESSION_ENCRYPTION_KEY
+          secret: this.config.session_encryption_key || '<YourStrongRandomizedKey123!>',
+          name: 'SessionSupport',
+          resave: true,
+          saveUninitialized: true,
+          cookie: { secure: false }, // by default false. use true for prod like below.              
+        };
+      }
 
       this.webserver = new webServer(this)
       getDistributedKV(this).addEventWatch()
