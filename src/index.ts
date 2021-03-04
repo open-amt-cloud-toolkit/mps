@@ -19,6 +19,7 @@ import { SecretsDbProvider } from './utils/vaultDbProvider'
 import { parseValue } from './utils/parseEnvValue'
 
 import rc from 'rc'
+import { Environment } from './utils/Environment'
 
 try {
 // To merge ENV variables. consider after lowercasing ENV since our config keys are lowercase
@@ -39,10 +40,10 @@ try {
   // path where Self-signed certificates are generated
   const certPath = path.join(__dirname, config.cert_path)
   config.data_path = path.join(__dirname, config.data_path)
-
   let certs: certificatesType
   let db: IDbProvider
   log.silly(`Updated config... ${JSON.stringify(config, null, 2)}`)
+  Environment.Config = config
 
   // DB initialization
   if (config.use_vault) {
@@ -76,6 +77,6 @@ try {
     mps.start()
   }
 } catch (error) {
-  log.error('Error starting mps Microservice. Check server logs.')
+  log.error('Error starting MPS microservice. Check server logs.')
   log.error(error)
 }

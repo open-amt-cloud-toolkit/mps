@@ -5,6 +5,7 @@
 import { IDbProvider } from '../models/IDbProvider'
 import { ISecretManagerService } from '../models/ISecretManagerService'
 import { configType } from '../models/Config'
+import { Credentials } from '../models/models'
 
 export class SecretsDbProvider implements IDbProvider {
   secretsManager: ISecretManagerService
@@ -108,7 +109,7 @@ export class SecretsDbProvider implements IDbProvider {
     }
   }
 
-  async getAllAmtCredentials (): Promise<any> {
+  async getAllAmtCredentials (): Promise<Credentials> {
     try {
       try {
         const path = this.secretsPath.replace('data', 'metadata')

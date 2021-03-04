@@ -21,9 +21,9 @@ import session from 'express-session'
 import { configType, certificatesType, queryParams } from '../models/Config'
 import { AMTRoutes } from '../routes/amtRoutes'
 import { AdminRoutes } from '../routes/adminRoutes'
+import router from '../routes/index'
 import { ErrorResponse } from '../utils/amtHelper'
 import { logger as log } from '../utils/logger'
-import { UUIDRegex } from '../utils/constants'
 import { constants } from 'crypto'
 import { MPSMicroservice } from '../mpsMicroservice'
 import { IDbProvider } from '../models/IDbProvider'
@@ -361,22 +361,23 @@ export class WebServer {
       })
 
       // Validates GUID format
-      this.app.use((req, res, next) => {
-        const method = req.body.method
-        const payload = req.body.payload || {}
-        if (method) {
-          if (payload?.guid !== undefined) {
-            if (!UUIDRegex.test(payload.guid)) {
-              return res.status(404).send(ErrorResponse(404, null, 'invalidGuid'))
-            }
-          }
-          next()
-        } else {
-          return res.status(404).send(ErrorResponse(404, null, 'method'))
-        }
-      })
+      // this.app.use((req, res, next) => {
+      //   const method = req.body.method
+      //   const payload = req.body.payload || {}
+      //   if (method) {
+      //     if (payload?.guid !== undefined) {
+      //       if (!UUIDRegex.test(payload.guid)) {
+      //         return res.status(404).send(ErrorResponse(404, null, 'invalidGuid'))
+      //       }
+      //     }
+      //     next()
+      //   } else {
+      //     return res.status(404).send(ErrorResponse(404, null, 'method'))
+      //   }
+      // })
 
       // Routes
+      this.app.use('/devices', this.isAuthenticated, router)
       this.app.use('/amt', this.isAuthenticated, amt.router)
       this.app.use('/admin', this.isAuthenticated, admin.router)
 

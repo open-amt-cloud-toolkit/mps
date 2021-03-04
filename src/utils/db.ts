@@ -11,16 +11,15 @@
  * @version 0.0.1
  */
 
-import * as fs from 'fs'
-
+import fs from 'fs'
 import { configType } from '../models/Config'
 import { logger as log } from './logger'
 import { IDbProvider } from '../models/IDbProvider'
+import { Credentials } from '../models/models'
 
 export class Database implements IDbProvider {
   private readonly config: configType
   private readonly datapath: string
-
   constructor (config: configType) {
     try {
       this.config = config
@@ -72,8 +71,8 @@ export class Database implements IDbProvider {
     return orgs
   }
 
-  getAllCredentials (): any {
-    let credentials = {}
+  getAllCredentials (): Credentials {
+    let credentials: Credentials = {}
     try {
       if (this.datapath && fs.existsSync(this.datapath)) {
         const fileData = fs.readFileSync(this.datapath, 'utf8')
@@ -104,7 +103,7 @@ export class Database implements IDbProvider {
   }
 
   // get all credentials in credentials.json file
-  getAllAmtCredentials (): any {
+  getAllAmtCredentials (): Credentials {
     try {
       const cred = this.getAllCredentials()
       // logger.debug(`All AMT credentials: ${JSON.stringify(cred, null, 4)}`);

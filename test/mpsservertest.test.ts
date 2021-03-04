@@ -41,6 +41,7 @@ const config: configType = {
   web_admin_password: 'G@ppm0ym',
   session_encryption_key: 'key',
   mpsxapikey: 'testkey',
+  connection_string: '',
   cors_origin:'*',
   cors_headers:'*',
   cors_methods:'*',
@@ -75,7 +76,7 @@ describe('MPS Server', function () {
     try {
       if (!fs.existsSync(certPath)) { fs.mkdirSync(certPath, { recursive: true }) }
     } catch (e) {
-      console.log(`Failed to create Cert path ${certPath}. Create if it doesnt exist`)
+      console.log(`Failed to create Cert path ${certPath}. Create if it doesn't exist`)
     }
     certs = await certificates.generateCertificates(config, certPath)
     db = new Database(config)

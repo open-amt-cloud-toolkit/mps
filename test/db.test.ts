@@ -34,6 +34,7 @@ describe('Use GUID allowlisting: ', () => {
     cors_origin: '*',
     cors_headers: '*',
     cors_methods: '*',
+    connection_string: '',
     mps_tls_config: {
       key: '../private/mpsserver-cert-private.key',
       cert: '../private/mpsserver-cert-public.crt',
@@ -119,6 +120,7 @@ describe('Do not use GUID allowlisting: ', () => {
     cors_origin: '*',
     cors_headers: '*',
     cors_methods: '*',
+    connection_string: '',
     mps_tls_config: {
       key: '../private/mpsserver-cert-private.key',
       cert: '../private/mpsserver-cert-public.crt',
