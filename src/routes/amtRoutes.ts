@@ -10,7 +10,7 @@ import { RootContainer } from '../dependencyHandlers/RootContainer'
 import { AMTHandlerRegistrar } from '../dependencyHandlers/AMTHandlerRegistrar'
 import * as express from 'express'
 
-export class amtRoutes {
+export class AMTRoutes {
   mpsService: MPSMicroservice
   container: RootContainer
   amtController: amtController

@@ -5,6 +5,7 @@
 import { IDbProvider } from '../models/IDbProvider'
 import { ISecretManagerService } from '../models/ISecretManagerService'
 import { configType } from '../models/Config'
+import { Credentials } from '../models/models'
 
 export class SecretsDbProvider implements IDbProvider {
   secretsManager: ISecretManagerService
@@ -32,7 +33,9 @@ export class SecretsDbProvider implements IDbProvider {
         pwd = this.config.pass
 
         if (username === user && password === pwd) {
-          if (cb) { cb(true) }
+          if (cb) {
+            cb(true)
+          }
           return
         }
         this.logger.info('invalid mps credentials')
@@ -42,7 +45,9 @@ export class SecretsDbProvider implements IDbProvider {
         pwd = await this.secretsManager.getSecretFromKey(`${this.secretsPath}devices/${guid}`, 'mps_password')
 
         if (username === user && password === pwd) {
-          if (cb) { cb(true) }
+          if (cb) {
+            cb(true)
+          }
           return
         }
         this.logger.info('invalid mps credentials')
@@ -104,10 +109,9 @@ export class SecretsDbProvider implements IDbProvider {
     }
   }
 
-  async getAllAmtCredentials (): Promise<any> {
+  async getAllAmtCredentials (): Promise<Credentials> {
     try {
       try {
-        const result = false
         const path = this.secretsPath.replace('data', 'metadata')
         const creds = await this.secretsManager.listSecretsAtPath(`${path}devices`)
 

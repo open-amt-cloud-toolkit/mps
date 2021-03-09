@@ -10,7 +10,7 @@ import { IAmtHandler } from '../../models/IAmtHandler'
 import { MPSMicroservice } from '../../mpsMicroservice'
 import { amtPort } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
-import amtStackFactory from '../../amt_libraries/amt-connection-factory.js'
+import AMTStackFactory from '../../amt_libraries/amt-connection-factory.js'
 
 export class PowerStateHandler implements IAmtHandler {
   mpsService: MPSMicroservice
@@ -20,7 +20,7 @@ export class PowerStateHandler implements IAmtHandler {
   constructor (mpsService: MPSMicroservice) {
     this.name = 'PowerState'
     this.mpsService = mpsService
-    this.amtFactory = new amtStackFactory(this.mpsService)
+    this.amtFactory = new AMTStackFactory(this.mpsService)
   }
 
   async AmtAction (req: Request, res: Response): Promise<void> {
@@ -28,12 +28,12 @@ export class PowerStateHandler implements IAmtHandler {
       const payload = req.body.payload
       if (payload.guid) {
         const ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid]
-        if (ciraconn && ciraconn.readyState == 'open') {
+        if (ciraconn && ciraconn.readyState === 'open') {
           const cred = await this.mpsService.db.getAmtPassword(payload.guid)
           const amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0)
           amtstack.Enum('CIM_ServiceAvailableToElement', (stack, name, responses, status) => {
             stack.wsman.comm.socket.sendchannelclose()
-            if (status != 200) {
+            if (status !== 200) {
               log.error(`Request failed during powerstate fetch for guid : ${payload.guid}.`)
               return res.status(status).send(ErrorResponse(status, `Request failed during powerstate fetch for guid : ${payload.guid}.`))
             } else {

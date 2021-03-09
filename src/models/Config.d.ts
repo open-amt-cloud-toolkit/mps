@@ -26,6 +26,7 @@ export interface configType {
   cert_path: string
   cert_format: string
   use_vault?: boolean
+  use_db?: boolean
   vault_address?: string
   vault_token?: string
   debug_level: number
@@ -39,6 +40,7 @@ export interface configType {
   cors_origin: string
   cors_headers: string
   cors_methods: string
+  connection_string: string
 }
 
 export interface certificatesType {
@@ -79,4 +81,12 @@ export interface directConfigType {
 export interface apiResponseType {
   statuscode: number
   payload: any
+}
+
+export interface queryParams {
+  host: string
+  port: number
+  p: number
+  tls: number
+  tls1only: number
 }

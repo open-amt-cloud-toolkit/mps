@@ -6,7 +6,6 @@
 
 import { RootContainer } from '../dependencyHandlers/RootContainer'
 import { ErrorResponse } from '../utils/amtHelper'
-import { logger as log } from '../utils/logger'
 import { Response, Request } from 'express'
 
 export class amtController {

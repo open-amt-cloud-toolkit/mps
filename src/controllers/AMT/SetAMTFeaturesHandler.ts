@@ -13,7 +13,7 @@ import { MPSMicroservice } from '../../mpsMicroservice'
 import { amtPort, UserConsentOptions } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { AMTFeatures } from '../../utils/AMTFeatures'
-import amtStackFactory from '../../amt_libraries/amt-connection-factory.js'
+import AMTStackFactory from '../../amt_libraries/amt-connection-factory.js'
 
 import { MPSValidationError } from '../../utils/MPSValidationError'
 import { apiResponseType } from '../../models/Config'
@@ -26,7 +26,7 @@ export class SetAMTFeaturesHandler implements IAmtHandler {
   constructor (mpsService: MPSMicroservice) {
     this.name = 'SetAMTFeatures'
     this.mpsService = mpsService
-    this.amtFactory = new amtStackFactory(this.mpsService)
+    this.amtFactory = new AMTStackFactory(this.mpsService)
   }
 
   async AmtAction (req: Request, res: Response): Promise<void> {
@@ -36,7 +36,7 @@ export class SetAMTFeaturesHandler implements IAmtHandler {
         // Checks request input values
         this.validatePayload(payload)
         const ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid]
-        if (ciraconn && ciraconn.readyState == 'open') {
+        if (ciraconn && ciraconn.readyState === 'open') {
           const cred = await this.mpsService.db.getAmtPassword(payload.guid)
           const amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0)
           await AMTFeatures.setAMTFeatures(amtstack, payload)

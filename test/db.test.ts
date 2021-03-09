@@ -2,7 +2,7 @@
 * Copyright (c) Intel Corporation 2019
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
-import { dataBase } from '../src/utils/db'
+import { Database } from '../src/utils/db'
 import { configType } from '../src/models/Config'
 import { join } from 'path'
 
@@ -34,6 +34,7 @@ describe('Use GUID allowlisting: ', () => {
     cors_origin: '*',
     cors_headers: '*',
     cors_methods: '*',
+    connection_string: '',
     mps_tls_config: {
       key: '../private/mpsserver-cert-private.key',
       cert: '../private/mpsserver-cert-public.crt',
@@ -50,7 +51,7 @@ describe('Use GUID allowlisting: ', () => {
       secureOptions: ['SSL_OP_NO_SSLv2', 'SSL_OP_NO_SSLv3', 'SSL_OP_NO_COMPRESSION', 'SSL_OP_CIPHER_SERVER_PREFERENCE', 'SSL_OP_NO_TLSv1', 'SSL_OP_NO_TLSv11']
     }
   }
-  const db = new dataBase(config)
+  const db = new Database(config)
   // console.log(config)
   // console.log(db.getAllGUIDS())
   it('Test if listed GUID is allowed', (done) => {
@@ -119,6 +120,7 @@ describe('Do not use GUID allowlisting: ', () => {
     cors_origin: '*',
     cors_headers: '*',
     cors_methods: '*',
+    connection_string: '',
     mps_tls_config: {
       key: '../private/mpsserver-cert-private.key',
       cert: '../private/mpsserver-cert-public.crt',
@@ -135,7 +137,7 @@ describe('Do not use GUID allowlisting: ', () => {
       secureOptions: ['SSL_OP_NO_SSLv2', 'SSL_OP_NO_SSLv3', 'SSL_OP_NO_COMPRESSION', 'SSL_OP_CIPHER_SERVER_PREFERENCE', 'SSL_OP_NO_TLSv1', 'SSL_OP_NO_TLSv11']
     }
   }
-  const db = new dataBase(config)
+  const db = new Database(config)
   it('Test if listed GUID is allowed', () => {
     db.IsGUIDApproved('12345678-9abc-def1-2345-123456789000', (ret) => {
       expect(ret).toBe(true)

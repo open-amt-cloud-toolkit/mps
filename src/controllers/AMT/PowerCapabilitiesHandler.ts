@@ -10,7 +10,7 @@ import { IAmtHandler } from '../../models/IAmtHandler'
 import { MPSMicroservice } from '../../mpsMicroservice'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { amtPort } from '../../utils/constants'
-import amtStackFactory from '../../amt_libraries/amt-connection-factory.js'
+import AMTStackFactory from '../../amt_libraries/amt-connection-factory.js'
 
 export class PowerCapabilitiesHandler implements IAmtHandler {
   mpsService: MPSMicroservice
@@ -20,7 +20,7 @@ export class PowerCapabilitiesHandler implements IAmtHandler {
   constructor (mpsService: MPSMicroservice) {
     this.name = 'PowerCapabilities'
     this.mpsService = mpsService
-    this.amtFactory = new amtStackFactory(this.mpsService)
+    this.amtFactory = new AMTStackFactory(this.mpsService)
   }
 
   async AmtAction (req: Request, res: Response): Promise<void> {
@@ -28,19 +28,19 @@ export class PowerCapabilitiesHandler implements IAmtHandler {
       const payload = req.body.payload
       if (payload.guid) {
         const ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid]
-        if (ciraconn && ciraconn.readyState == 'open') {
+        if (ciraconn && ciraconn.readyState === 'open') {
           const cred = await this.mpsService.db.getAmtPassword(payload.guid)
           const amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0)
           this.getVersion(amtstack, res, (responses, res) => {
             const versionData = responses
             amtstack.Get('AMT_BootCapabilities', async (stack, name, responses, status) => {
-              if (status != 200) {
+              if (status !== 200) {
                 log.error(`Request failed during GET AMT_BootCapabilities for guid : ${payload.guid}`)
                 return res.status(status).send(ErrorResponse(status, `Request failed during GET AMT_BootCapabilities for guid : ${payload.guid}`))
               }
               // console.log("AMT_BootCapabilities info of " + uuid + " sent.");
-              const power_cap = await this.bootCapabilities(versionData, responses.Body)
-              return res.send(power_cap)
+              const powerCap = await this.bootCapabilities(versionData, responses.Body)
+              return res.send(powerCap)
             }, 0, 1)
           })
         } else {
@@ -67,18 +67,18 @@ export class PowerCapabilitiesHandler implements IAmtHandler {
       data.Sleep = 4
       data.Hibernate = 7
     }
-    if (response.BIOSSetup == true) {
+    if (response.BIOSSetup === true) {
       data['Power up to BIOS'] = 100
       data['Reset to BIOS'] = 101
     }
-    if (response.SecureErase == true) {
+    if (response.SecureErase === true) {
       data['Reset to Secure Erase'] = 104
     }
     data['Reset to IDE-R Floppy'] = 200
     data['Power on to IDE-R Floppy'] = 201
     data['Reset to IDE-R CDROM'] = 202
     data['Power on to IDE-R CDROM'] = 203
-    if (response.ForceDiagnosticBoot == true) {
+    if (response.ForceDiagnosticBoot === true) {
       data['Power on to diagnostic'] = 300
       data['Reset to diagnostic'] = 301
     }
@@ -91,7 +91,7 @@ export class PowerCapabilitiesHandler implements IAmtHandler {
   parseVersionData (amtVersionData): number {
     const verList = amtVersionData.CIM_SoftwareIdentity.responses
     for (const i in verList) {
-      if (verList[i].InstanceID == 'AMT') {
+      if (verList[i].InstanceID === 'AMT') {
         return parseInt(verList[i].VersionString.split('.')[0])
       }
     }
@@ -103,7 +103,7 @@ export class PowerCapabilitiesHandler implements IAmtHandler {
       amtstack.BatchEnum('', ['CIM_SoftwareIdentity', '*AMT_SetupAndConfigurationService'],
         function (stack, name, responses, status) {
           stack.wsman.comm.socket.sendchannelclose()
-          if (status != 200) {
+          if (status !== 200) {
             res.status(status).send(ErrorResponse(status, 'Request failed during AMTVersion BatchEnum Exec.'))
             return
           }

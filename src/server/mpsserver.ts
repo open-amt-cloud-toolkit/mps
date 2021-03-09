@@ -32,7 +32,7 @@ import * as common from '../utils/common.js'
 // 90 seconds max idle time, higher than the typical KEEP-ALIVE period of 60 seconds
 const MAX_IDLE = 90000
 
-export class mpsServer {
+export class MPSServer {
   db: IDbProvider
   mpsService: MPSMicroservice
   config: configType
@@ -98,7 +98,7 @@ export class mpsServer {
       }
     })
 
-    socket.addListener('data', (data) => {
+    socket.addListener('data', (data: string) => {
       // TODO: mpsdebug should be added to the config file
       // if (this.config.mpsdebug) {
       //     let buf = Buffer.from(data, "binary");
@@ -108,11 +108,11 @@ export class mpsServer {
       socket.tag.accumulator += data
 
       // Detect if this is an HTTPS request, if it is, return a simple answer and disconnect. This is useful for debugging access to the MPS port.
-      if (socket.tag.first == true) {
+      if (socket.tag.first === true) {
         if (socket.tag.accumulator.length < 3) return
         // if (!socket.tag.clientCert.subject) { console.log("MPS Connection, no client cert: " + socket.remoteAddress); socket.write('HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\nMeshCentral2 MPS server.\r\nNo client certificate given.'); socket.end(); return; }
-        if (socket.tag.accumulator.substring(0, 3) == 'GET') {
-          log.debug('MPS Connection, HTTP GET detected: ' + socket.remoteAddress)
+        if (socket.tag.accumulator.substring(0, 3) === 'GET') {
+          log.debug(`MPS Connection, HTTP GET detected: ${socket.remoteAddress}`)
           socket.write('HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: close\r\n\r\n<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>Intel Management Presence Server (MPS).<br />Intel&reg; AMT computers must connect here using CIRA.</body></html>')
           socket.end()
           return
@@ -120,14 +120,14 @@ export class mpsServer {
         socket.tag.first = false
 
         // Setup this node with certificate authentication
-        if (socket.tag.clientCert && socket.tag.clientCert.subject && socket.tag.clientCert.subject.O) {
+        if (socket.tag.clientCert?.subject?.O) {
           // This is a node where the organization is indicated within the CIRA certificate
           this.db.IsOrgApproved(socket.tag.clientCert.subject.O, (allowed) => {
             if (allowed) {
-              this.debug(1, 'CIRA connection for organization: ' + socket.tag.clientCert.subject.O)
+              this.debug(1, `CIRA connection for organization: ${socket.tag.clientCert.subject.O}`)
               socket.tag.certauth = true
             } else {
-              this.debug(1, 'CIRA connection for unknown node with incorrect organization: ' + socket.tag.clientCert.subject.O)
+              this.debug(1, `CIRA connection for unknown node with incorrect organization: ${socket.tag.clientCert.subject.O}`)
               socket.end()
             }
           })
@@ -142,9 +142,13 @@ export class mpsServer {
         let l = 0
         do {
           l = this.processCommand(socket)
-          if (l > 0) { socket.tag.accumulator = socket.tag.accumulator.substring(l) }
+          if (l > 0) {
+            socket.tag.accumulator = socket.tag.accumulator.substring(l)
+          }
         } while (l > 0)
-        if (l < 0) { socket.end() }
+        if (l < 0) {
+          socket.end()
+        }
       } catch (e) {
         log.debug(e)
       }
@@ -165,7 +169,7 @@ export class mpsServer {
     })
 
     socket.addListener('error', () => {
-      log.debug('MPS Error: ' + socket.remoteAddress)
+      log.debug(`MPS Error: ${socket.remoteAddress}`)
     })
   }
 
@@ -174,7 +178,9 @@ export class mpsServer {
     const cmd = socket.tag.accumulator.charCodeAt(0)
     const len = socket.tag.accumulator.length
     const data = socket.tag.accumulator
-    if (len == 0) { return 0 }
+    if (len === 0) {
+      return 0
+    }
 
     switch (cmd) {
       case APFProtocol.KEEPALIVE_REQUEST: {
@@ -205,7 +211,7 @@ export class mpsServer {
               }
             } else {
               try {
-                this.debug(1, 'MPS:GUID ' + socket.tag.SystemId + ' is not allowed to connect.')
+                this.debug(1, `MPS:GUID ${socket.tag.SystemId} is not allowed to connect.`)
                 socket.end()
               } catch (e) { }
             }
@@ -221,19 +227,19 @@ export class mpsServer {
       }
       case APFProtocol.USERAUTH_REQUEST: {
         if (len < 13) return 0
-        const usernameLen = common.ReadInt(data, 1)
-        const username = data.substring(5, 5 + usernameLen)
-        var serviceNameLen = common.ReadInt(data, 5 + usernameLen)
-        var serviceName = data.substring(9 + usernameLen, 9 + usernameLen + serviceNameLen)
-        const methodNameLen = common.ReadInt(data, 9 + usernameLen + serviceNameLen)
-        const methodName = data.substring(13 + usernameLen + serviceNameLen, 13 + usernameLen + serviceNameLen + methodNameLen)
-        let passwordLen = 0; let password = null
-        if (methodName == 'password') {
+        const usernameLen: number = common.ReadInt(data, 1)
+        const username: string = data.substring(5, 5 + usernameLen)
+        const serviceNameLen: number = common.ReadInt(data, 5 + usernameLen)
+        const serviceName: string = data.substring(9 + usernameLen, 9 + usernameLen + serviceNameLen)
+        const methodNameLen: number = common.ReadInt(data, 9 + usernameLen + serviceNameLen)
+        const methodName: string = data.substring(13 + usernameLen + serviceNameLen, 13 + usernameLen + serviceNameLen + methodNameLen)
+        let passwordLen = 0; let password: string = null
+        if (methodName === 'password') {
           passwordLen = common.ReadInt(data, 14 + usernameLen + serviceNameLen + methodNameLen)
           password = data.substring(18 + usernameLen + serviceNameLen + methodNameLen, 18 + usernameLen + serviceNameLen + methodNameLen + passwordLen)
         }
-        this.debug(3, 'MPS:USERAUTH_REQUEST usernameLen ' + usernameLen + ' serviceNameLen ' + serviceNameLen + ' methodNameLen ' + methodNameLen)
-        this.debug(3, 'MPS:USERAUTH_REQUEST user=' + username + ', service=' + serviceName + ', method=' + methodName + ', password=' + password)
+        this.debug(3, `MPS:USERAUTH_REQUEST usernameLen=${usernameLen} serviceNameLen=${serviceNameLen} methodNameLen=${methodNameLen}`)
+        this.debug(3, `MPS:USERAUTH_REQUEST user=${username} service=${serviceName} method=${methodName} password=${password}`)
         // Authenticate device connection using username and password
         this.db.CIRAAuth(socket.tag.SystemId, username, password, (allowed) => {
           if (allowed) {
@@ -250,58 +256,66 @@ export class mpsServer {
       }
       case APFProtocol.SERVICE_REQUEST: {
         if (len < 5) return 0
-        var serviceNameLen = common.ReadInt(data, 1)
+        const serviceNameLen: number = common.ReadInt(data, 1)
         if (len < 5 + serviceNameLen) return 0
-        var serviceName = data.substring(5, 5 + serviceNameLen)
+        const serviceName = data.substring(5, 5 + serviceNameLen)
         this.debug(3, 'MPS:SERVICE_REQUEST', serviceName)
-        if (serviceName == 'pfwd@amt.intel.com') { this.SendServiceAccept(socket, 'pfwd@amt.intel.com') }
-        if (serviceName == 'auth@amt.intel.com') { this.SendServiceAccept(socket, 'auth@amt.intel.com') }
+        if (serviceName === 'pfwd@amt.intel.com') {
+          this.SendServiceAccept(socket, 'pfwd@amt.intel.com')
+        }
+        if (serviceName === 'auth@amt.intel.com') {
+          this.SendServiceAccept(socket, 'auth@amt.intel.com')
+        }
         return 5 + serviceNameLen
       }
       case APFProtocol.GLOBAL_REQUEST: {
         if (len < 14) return 0
-        const requestLen = common.ReadInt(data, 1)
+        const requestLen: number = common.ReadInt(data, 1)
         if (len < 14 + requestLen) return 0
-        const request = data.substring(5, 5 + requestLen)
-        const wantResponse = data.charCodeAt(5 + requestLen)
+        const request: string = data.substring(5, 5 + requestLen)
+        // const wantResponse: string = data.charCodeAt(5 + requestLen)
 
-        if (request == 'tcpip-forward') {
-          var addrLen = common.ReadInt(data, 6 + requestLen)
+        if (request === 'tcpip-forward') {
+          const addrLen: number = common.ReadInt(data, 6 + requestLen)
           if (len < 14 + requestLen + addrLen) return 0
-          var addr = data.substring(10 + requestLen, 10 + requestLen + addrLen)
-          var port = common.ReadInt(data, 10 + requestLen + addrLen)
-          if (addr == '') addr = undefined
-          this.debug(2, 'MPS:GLOBAL_REQUEST', request, addr + ':' + port)
+          let addr = data.substring(10 + requestLen, 10 + requestLen + addrLen)
+          const port = common.ReadInt(data, 10 + requestLen + addrLen)
+          if (addr === '') addr = undefined
+          this.debug(2, 'MPS:GLOBAL_REQUEST', request, `${addr}:${port}`)
           this.ChangeHostname(socket, addr)
-          if (socket.tag.boundPorts.indexOf(port) == -1) { socket.tag.boundPorts.push(port) }
+          if (socket.tag.boundPorts.indexOf(port) === -1) {
+            socket.tag.boundPorts.push(port)
+          }
           this.SendTcpForwardSuccessReply(socket, port)
           return 14 + requestLen + addrLen
         }
 
-        if (request == 'cancel-tcpip-forward') {
-          var addrLen = common.ReadInt(data, 6 + requestLen)
+        if (request === 'cancel-tcpip-forward') {
+          const addrLen: number = common.ReadInt(data, 6 + requestLen)
           if (len < 14 + requestLen + addrLen) return 0
-          var addr = data.substring(10 + requestLen, 10 + requestLen + addrLen)
-          var port = common.ReadInt(data, 10 + requestLen + addrLen)
-          this.debug(2, 'MPS:GLOBAL_REQUEST', request, addr + ':' + port)
+          const addr: string = data.substring(10 + requestLen, 10 + requestLen + addrLen)
+          const port: number = common.ReadInt(data, 10 + requestLen + addrLen)
+          this.debug(2, 'MPS:GLOBAL_REQUEST', request, `${addr}:${port}`)
           const portindex = socket.tag.boundPorts.indexOf(port)
-          if (portindex >= 0) { socket.tag.boundPorts.splice(portindex, 1) }
+          if (portindex >= 0) {
+            socket.tag.boundPorts.splice(portindex, 1)
+          }
           this.SendTcpForwardCancelReply(socket)
           return 14 + requestLen + addrLen
         }
 
-        if (request == 'udp-send-to@amt.intel.com') {
-          var addrLen = common.ReadInt(data, 6 + requestLen)
+        if (request === 'udp-send-to@amt.intel.com') {
+          const addrLen: number = common.ReadInt(data, 6 + requestLen)
           if (len < 26 + requestLen + addrLen) return 0
-          var addr = data.substring(10 + requestLen, 10 + requestLen + addrLen)
-          var port = common.ReadInt(data, 10 + requestLen + addrLen)
-          const oaddrLen = common.ReadInt(data, 14 + requestLen + addrLen)
+          const addr: string = data.substring(10 + requestLen, 10 + requestLen + addrLen)
+          const port: number = common.ReadInt(data, 10 + requestLen + addrLen)
+          const oaddrLen: number = common.ReadInt(data, 14 + requestLen + addrLen)
           if (len < 26 + requestLen + addrLen + oaddrLen) return 0
-          const oaddr = data.substring(18 + requestLen, 18 + requestLen + addrLen)
-          const oport = common.ReadInt(data, 18 + requestLen + addrLen + oaddrLen)
-          const datalen = common.ReadInt(data, 22 + requestLen + addrLen + oaddrLen)
+          const oaddr: string = data.substring(18 + requestLen, 18 + requestLen + addrLen)
+          const oport: number = common.ReadInt(data, 18 + requestLen + addrLen + oaddrLen)
+          const datalen: number = common.ReadInt(data, 22 + requestLen + addrLen + oaddrLen)
           if (len < 26 + requestLen + addrLen + oaddrLen + datalen) return 0
-          this.debug(2, 'MPS:GLOBAL_REQUEST', request, addr + ':' + port, oaddr + ':' + oport, datalen)
+          this.debug(2, 'MPS:GLOBAL_REQUEST', request, `${addr}:${port}`, `${oaddr}:${oport}`, datalen.toString())
           // TODO
           return 26 + requestLen + addrLen + oaddrLen + datalen
         }
@@ -310,69 +324,71 @@ export class mpsServer {
       }
       case APFProtocol.CHANNEL_OPEN: {
         if (len < 33) return 0
-        const ChannelTypeLength = common.ReadInt(data, 1)
+        const ChannelTypeLength: number = common.ReadInt(data, 1)
         if (len < (33 + ChannelTypeLength)) return 0
 
         // Decode channel identifiers and window size
-        const ChannelType = data.substring(5, 5 + ChannelTypeLength)
-        var SenderChannel = common.ReadInt(data, 5 + ChannelTypeLength)
-        var WindowSize = common.ReadInt(data, 9 + ChannelTypeLength)
+        const ChannelType: string = data.substring(5, 5 + ChannelTypeLength)
+        const SenderChannel: number = common.ReadInt(data, 5 + ChannelTypeLength)
+        const WindowSize: number = common.ReadInt(data, 9 + ChannelTypeLength)
 
         // Decode the target
-        const TargetLen = common.ReadInt(data, 17 + ChannelTypeLength)
+        const TargetLen: number = common.ReadInt(data, 17 + ChannelTypeLength)
         if (len < (33 + ChannelTypeLength + TargetLen)) return 0
-        const Target = data.substring(21 + ChannelTypeLength, 21 + ChannelTypeLength + TargetLen)
-        const TargetPort = common.ReadInt(data, 21 + ChannelTypeLength + TargetLen)
+        const Target: string = data.substring(21 + ChannelTypeLength, 21 + ChannelTypeLength + TargetLen)
+        const TargetPort: number = common.ReadInt(data, 21 + ChannelTypeLength + TargetLen)
 
         // Decode the source
-        const SourceLen = common.ReadInt(data, 25 + ChannelTypeLength + TargetLen)
+        const SourceLen: number = common.ReadInt(data, 25 + ChannelTypeLength + TargetLen)
         if (len < (33 + ChannelTypeLength + TargetLen + SourceLen)) return 0
-        const Source = data.substring(29 + ChannelTypeLength + TargetLen, 29 + ChannelTypeLength + TargetLen + SourceLen)
-        const SourcePort = common.ReadInt(data, 29 + ChannelTypeLength + TargetLen + SourceLen)
+        const Source: string = data.substring(29 + ChannelTypeLength + TargetLen, 29 + ChannelTypeLength + TargetLen + SourceLen)
+        const SourcePort: number = common.ReadInt(data, 29 + ChannelTypeLength + TargetLen + SourceLen)
 
-        this.debug(3, 'MPS:CHANNEL_OPEN', ChannelType, SenderChannel, WindowSize, Target + ':' + TargetPort, Source + ':' + SourcePort)
+        this.debug(3, 'MPS:CHANNEL_OPEN', ChannelType, SenderChannel.toString(), WindowSize.toString(), `${Target}:${TargetPort}`, `${Source}:${SourcePort}`)
 
         // Check if we understand this channel type
         // if (ChannelType.toLowerCase() == "direct-tcpip")
-        {
-          // We don't understand this channel type, send an error back
-          this.SendChannelOpenFailure(socket, SenderChannel, APFChannelOpenFailureReasonCode.UnknownChannelType)
-          return 33 + ChannelTypeLength + TargetLen + SourceLen
-        }
+
+        // We don't understand this channel type, send an error back
+        this.SendChannelOpenFailure(socket, SenderChannel, APFChannelOpenFailureReasonCode.UnknownChannelType)
+        return 33 + ChannelTypeLength + TargetLen + SourceLen
 
         /*
-                // This is a correct connection. Lets get it setup
-                var MeshAmtEventEndpoint = { ServerChannel: GetNextBindId(), AmtChannel: SenderChannel, MaxWindowSize: 2048, CurrentWindowSize:2048, SendWindow: WindowSize, InfoHeader: "Target: " + Target + ":" + TargetPort + ", Source: " + Source + ":" + SourcePort};
-                // TODO: Connect this socket for a WSMAN event
-                SendChannelOpenConfirmation(socket, SenderChannel, MeshAmtEventEndpoint.ServerChannel, MeshAmtEventEndpoint.MaxWindowSize);
-                */
-
-        return 33 + ChannelTypeLength + TargetLen + SourceLen
+        // This is a correct connection. Lets get it setup
+        var MeshAmtEventEndpoint = { ServerChannel: GetNextBindId(), AmtChannel: SenderChannel, MaxWindowSize: 2048, CurrentWindowSize:2048, SendWindow: WindowSize, InfoHeader: "Target: " + Target + ":" + TargetPort + ", Source: " + Source + ":" + SourcePort};
+        // TODO: Connect this socket for a WSMAN event
+        SendChannelOpenConfirmation(socket, SenderChannel, MeshAmtEventEndpoint.ServerChannel, MeshAmtEventEndpoint.MaxWindowSize);
+        */
       }
       case APFProtocol.CHANNEL_OPEN_CONFIRMATION: {
         if (len < 17) return 0
-        var RecipientChannel = common.ReadInt(data, 1)
-        var SenderChannel = common.ReadInt(data, 5)
-        var WindowSize = common.ReadInt(data, 9)
+        const RecipientChannel: number = common.ReadInt(data, 1)
+        const SenderChannel: number = common.ReadInt(data, 5)
+        const WindowSize: number = common.ReadInt(data, 9)
         socket.tag.activetunnels++
-        var cirachannel = socket.tag.channels[RecipientChannel]
-        if (cirachannel == undefined) { /* console.log("MPS Error in CHANNEL_OPEN_CONFIRMATION: Unable to find channelid " + RecipientChannel); */ return 17 }
+        const cirachannel = socket.tag.channels[RecipientChannel]
+        if (cirachannel == null) {
+          /* console.log("MPS Error in CHANNEL_OPEN_CONFIRMATION: Unable to find channelid " + RecipientChannel); */
+          return 17
+        }
         cirachannel.amtchannelid = SenderChannel
         cirachannel.sendcredits = cirachannel.amtCiraWindow = WindowSize
-        this.debug(3, 'MPS:CHANNEL_OPEN_CONFIRMATION', RecipientChannel, SenderChannel, WindowSize)
-        if (cirachannel.closing == 1) {
+        this.debug(3, 'MPS:CHANNEL_OPEN_CONFIRMATION', RecipientChannel.toString(), SenderChannel.toString(), WindowSize.toString())
+        if (cirachannel.closing === 1) {
           // Close this channel
           this.SendChannelClose(cirachannel.socket, cirachannel.amtchannelid)
         } else {
           cirachannel.state = 2
           // Send any pending data
-          if (cirachannel.sendBuffer != undefined) {
+          if (cirachannel.sendBuffer != null) {
             if (cirachannel.sendBuffer.length <= cirachannel.sendcredits) {
               // Send the entire pending buffer
               this.SendChannelData(cirachannel.socket, cirachannel.amtchannelid, cirachannel.sendBuffer)
               cirachannel.sendcredits -= cirachannel.sendBuffer.length
               delete cirachannel.sendBuffer
-              if (cirachannel.onSendOk) { cirachannel.onSendOk(cirachannel) }
+              if (cirachannel.onSendOk) {
+                cirachannel.onSendOk(cirachannel)
+              }
             } else {
               // Send a part of the pending buffer
               this.SendChannelData(cirachannel.socket, cirachannel.amtchannelid, cirachannel.sendBuffer.substring(0, cirachannel.sendcredits))
@@ -381,55 +397,69 @@ export class mpsServer {
             }
           }
           // Indicate the channel is open
-          if (cirachannel.onStateChange) { cirachannel.onStateChange(cirachannel, cirachannel.state) }
+          if (cirachannel.onStateChange) {
+            cirachannel.onStateChange(cirachannel, cirachannel.state)
+          }
         }
         return 17
       }
       case APFProtocol.CHANNEL_OPEN_FAILURE: {
         if (len < 17) return 0
-        var RecipientChannel = common.ReadInt(data, 1)
-        var ReasonCode = common.ReadInt(data, 5)
-        this.debug(3, 'MPS:CHANNEL_OPEN_FAILURE', RecipientChannel, ReasonCode)
-        var cirachannel = socket.tag.channels[RecipientChannel]
-        if (cirachannel == undefined) { log.debug('MPS Error in CHANNEL_OPEN_FAILURE: Unable to find channelid ' + RecipientChannel); return 17 }
+        const RecipientChannel: number = common.ReadInt(data, 1)
+        const ReasonCode: number = common.ReadInt(data, 5)
+        this.debug(3, 'MPS:CHANNEL_OPEN_FAILURE', RecipientChannel.toString(), ReasonCode.toString())
+        const cirachannel = socket.tag.channels[RecipientChannel]
+        if (cirachannel == null) {
+          log.debug(`MPS Error in CHANNEL_OPEN_FAILURE: Unable to find channelid ${RecipientChannel}`); return 17
+        }
         if (cirachannel.state > 0) {
           cirachannel.state = 0
-          if (cirachannel.onStateChange) { cirachannel.onStateChange(cirachannel, cirachannel.state) }
+          if (cirachannel.onStateChange) {
+            cirachannel.onStateChange(cirachannel, cirachannel.state)
+          }
           delete socket.tag.channels[RecipientChannel]
         }
         return 17
       }
       case APFProtocol.CHANNEL_CLOSE: {
         if (len < 5) return 0
-        var RecipientChannel = common.ReadInt(data, 1)
-        this.debug(3, 'MPS:CHANNEL_CLOSE', RecipientChannel)
-        var cirachannel = socket.tag.channels[RecipientChannel]
-        if (cirachannel == undefined) { log.debug('MPS Error in CHANNEL_CLOSE: Unable to find channelid ' + RecipientChannel); return 5 }
+        const RecipientChannel: number = common.ReadInt(data, 1)
+        this.debug(3, 'MPS:CHANNEL_CLOSE', RecipientChannel.toString())
+        const cirachannel = socket.tag.channels[RecipientChannel]
+        if (cirachannel == null) {
+          log.debug(`MPS Error in CHANNEL_CLOSE: Unable to find channelid ${RecipientChannel}`); return 5
+        }
         this.SendChannelClose(cirachannel.socket, cirachannel.amtchannelid)
         socket.tag.activetunnels--
         if (cirachannel.state > 0) {
           cirachannel.state = 0
-          if (cirachannel.onStateChange) { cirachannel.onStateChange(cirachannel, cirachannel.state) }
+          if (cirachannel.onStateChange) {
+            cirachannel.onStateChange(cirachannel, cirachannel.state)
+          }
           delete socket.tag.channels[RecipientChannel]
         }
         return 5
       }
       case APFProtocol.CHANNEL_WINDOW_ADJUST: {
         if (len < 9) return 0
-        var RecipientChannel = common.ReadInt(data, 1)
-        const ByteToAdd = common.ReadInt(data, 5)
-        var cirachannel = socket.tag.channels[RecipientChannel]
-        if (cirachannel == undefined) { log.debug('MPS Error in CHANNEL_WINDOW_ADJUST: Unable to find channelid ' + RecipientChannel); return 9 }
+        const RecipientChannel: number = common.ReadInt(data, 1)
+        const ByteToAdd: number = common.ReadInt(data, 5)
+        const cirachannel = socket.tag.channels[RecipientChannel]
+        if (cirachannel == null) {
+          log.debug(`MPS Error in CHANNEL_WINDOW_ADJUST: Unable to find channelid ${RecipientChannel}`); return 9
+        }
         cirachannel.sendcredits += ByteToAdd
-        this.debug(3, 'MPS:CHANNEL_WINDOW_ADJUST', RecipientChannel, ByteToAdd, cirachannel.sendcredits)
-        if (cirachannel.state == 2 && cirachannel.sendBuffer != undefined) {
+        this.debug(3, 'MPS:CHANNEL_WINDOW_ADJUST', RecipientChannel.toString(), ByteToAdd.toString(), cirachannel.sendcredits)
+        if (cirachannel.state === 2 && cirachannel.sendBuffer != null) {
           // Compute how much data we can send
           if (cirachannel.sendBuffer.length <= cirachannel.sendcredits) {
             // Send the entire pending buffer
             this.SendChannelData(cirachannel.socket, cirachannel.amtchannelid, cirachannel.sendBuffer)
             cirachannel.sendcredits -= cirachannel.sendBuffer.length
             delete cirachannel.sendBuffer
-            if (cirachannel.onSendOk) { cirachannel.onSendOk(cirachannel) }
+            if (cirachannel.onSendOk) {
+              cirachannel.onSendOk(cirachannel)
+            }
           } else {
             // Send a part of the pending buffer
             this.SendChannelData(cirachannel.socket, cirachannel.amtchannelid, cirachannel.sendBuffer.substring(0, cirachannel.sendcredits))
@@ -441,12 +471,14 @@ export class mpsServer {
       }
       case APFProtocol.CHANNEL_DATA: {
         if (len < 9) return 0
-        var RecipientChannel = common.ReadInt(data, 1)
-        const LengthOfData = common.ReadInt(data, 5)
+        const RecipientChannel: number = common.ReadInt(data, 1)
+        const LengthOfData: number = common.ReadInt(data, 5)
         if (len < (9 + LengthOfData)) return 0
-        this.debug(4, 'MPS:CHANNEL_DATA', RecipientChannel, LengthOfData)
-        var cirachannel = socket.tag.channels[RecipientChannel]
-        if (cirachannel == undefined) { log.debug('MPS Error in CHANNEL_DATA: Unable to find channelid ' + RecipientChannel); return 9 + LengthOfData }
+        this.debug(4, 'MPS:CHANNEL_DATA', RecipientChannel.toString(), LengthOfData.toString())
+        const cirachannel = socket.tag.channels[RecipientChannel]
+        if (cirachannel == null) {
+          log.debug(`MPS Error in CHANNEL_DATA: Unable to find channelid ${RecipientChannel}`); return 9 + LengthOfData
+        }
         cirachannel.amtpendingcredits += LengthOfData
         if (cirachannel.onData) cirachannel.onData(cirachannel, data.substring(9, 9 + LengthOfData))
         if (cirachannel.amtpendingcredits > (cirachannel.ciraWindow / 2)) {
@@ -457,14 +489,16 @@ export class mpsServer {
       }
       case APFProtocol.DISCONNECT: {
         if (len < 7) return 0
-        var ReasonCode = common.ReadInt(data, 1)
-        this.debug(3, 'MPS:DISCONNECT', ReasonCode)
-        try { delete this.ciraConnections[socket.tag.nodeid] } catch (e) { }
+        const ReasonCode: number = common.ReadInt(data, 1)
+        this.debug(3, 'MPS:DISCONNECT', ReasonCode.toString())
+        try {
+          delete this.ciraConnections[socket.tag.nodeid]
+        } catch (e) { }
         this.mpsService.CIRADisconnected(socket.tag.nodeid)
         return 7
       }
       default: {
-        this.debug(1, 'MPS:Unknown CIRA command: ' + cmd)
+        this.debug(1, `MPS:Unknown CIRA command: ${cmd}`)
         return -1
       }
     }
@@ -472,12 +506,18 @@ export class mpsServer {
 
   // Disconnect CIRA tunnel
   close (socket): void {
-    try { socket.end() } catch (e) { }
-    try { delete this.ciraConnections[socket.tag.nodeid] } catch (e) { }
-    if (this.mpsService) { this.mpsService.CIRADisconnected(socket.tag.nodeid) }
+    try {
+      socket.end()
+    } catch (e) { }
+    try {
+      delete this.ciraConnections[socket.tag.nodeid]
+    } catch (e) { }
+    if (this.mpsService) {
+      this.mpsService.CIRADisconnected(socket.tag.nodeid)
+    }
   }
 
-  SendServiceAccept (socket, service): void {
+  SendServiceAccept (socket, service: string): void {
     this.Write(
       socket,
       String.fromCharCode(APFProtocol.SERVICE_ACCEPT) +
@@ -534,24 +574,24 @@ export class mpsServer {
     )
   }
 
-  SendChannelOpen (socket, direct, channelid, windowsize, target, targetport, source, sourceport): void {
-    const connectionType = direct == true ? 'direct-tcpip' : 'forwarded-tcpip'
+  SendChannelOpen (socket, direct, channelid: number, windowSize: number, target: string, targetPort: number, source: string, sourcePort: number): void {
+    const connectionType = direct === true ? 'direct-tcpip' : 'forwarded-tcpip'
     // TODO: Reports of target being undefined that causes target.length to fail. This is a hack.
-    if (target == null || target == undefined) target = ''
+    if (target == null) target = ''
     this.Write(
       socket,
       String.fromCharCode(APFProtocol.CHANNEL_OPEN) +
             common.IntToStr(connectionType.length) +
             connectionType +
             common.IntToStr(channelid) +
-            common.IntToStr(windowsize) +
+            common.IntToStr(windowSize) +
             common.IntToStr(-1) +
             common.IntToStr(target.length) +
             target +
-            common.IntToStr(targetport) +
+            common.IntToStr(targetPort) +
             common.IntToStr(source.length) +
             source +
-            common.IntToStr(sourceport)
+            common.IntToStr(sourcePort)
     )
   }
 
@@ -567,6 +607,7 @@ export class mpsServer {
   SendChannelData (socket, channelid, data): void {
     this.Write(
       socket,
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       String.fromCharCode(APFProtocol.CHANNEL_DATA) +
             common.IntToStr(channelid) +
             common.IntToStr(data.length) +
@@ -578,6 +619,7 @@ export class mpsServer {
     this.debug(3, 'MPS:SendChannelWindowAdjust', channelid, bytestoadd)
     this.Write(
       socket,
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       String.fromCharCode(APFProtocol.CHANNEL_WINDOW_ADJUST) +
             common.IntToStr(channelid) +
             common.IntToStr(bytestoadd)
@@ -587,6 +629,7 @@ export class mpsServer {
   SendDisconnect (socket, reasonCode): void {
     this.Write(
       socket,
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       String.fromCharCode(APFProtocol.DISCONNECT) +
             common.IntToStr(reasonCode) +
             common.ShortToStr(0)
@@ -596,6 +639,7 @@ export class mpsServer {
   SendUserAuthFail (socket): void {
     this.Write(
       socket,
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       String.fromCharCode(APFProtocol.USERAUTH_FAILURE) +
             common.IntToStr(8) +
             'password' +
@@ -657,10 +701,10 @@ export class mpsServer {
     )
 
     // This function writes data to this CIRA channel
-    cirachannel.write = (data): boolean => {
-      if (cirachannel.state == 0) return false
-      if (cirachannel.state == 1 || cirachannel.sendcredits == 0 || cirachannel.sendBuffer != undefined) {
-        if (cirachannel.sendBuffer == undefined) {
+    cirachannel.write = (data: string): boolean => {
+      if (cirachannel.state === 0) return false
+      if (cirachannel.state === 1 || cirachannel.sendcredits === 0 || cirachannel.sendBuffer != null) {
+        if (cirachannel.sendBuffer == null) {
           cirachannel.sendBuffer = data
         } else {
           cirachannel.sendBuffer += data
@@ -687,8 +731,8 @@ export class mpsServer {
 
     // This function closes this CIRA channel
     cirachannel.close = (): void => {
-      if (cirachannel.state == 0 || cirachannel.closing == 1) return
-      if (cirachannel.state == 1) {
+      if (cirachannel.state === 0 || cirachannel.closing === 1) return
+      if (cirachannel.state === 1) {
         cirachannel.closing = 1
         cirachannel.state = 0
         if (cirachannel.onStateChange) {
@@ -739,6 +783,7 @@ export class mpsServer {
 
   guidToStr (g): string {
     return (
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       g.substring(6, 8) +
             g.substring(4, 6) +
             g.substring(2, 4) +
@@ -759,6 +804,18 @@ export class mpsServer {
   // Debug
   debug (lvl: number, ...argArray: string[]): void {
     if (lvl > this.mpsService.debugLevel) return
-    if (argArray.length == 1) { log.debug(argArray[0]) } else if (argArray.length == 2) { log.debug(`${argArray[0]} ${argArray[1]}`) } else if (argArray.length == 3) { log.debug(`${argArray[0]} ${argArray[1]} ${argArray[2]}`) } else if (argArray.length == 4) { log.debug(`${argArray[0]} ${argArray[1]} ${argArray[2]} ${argArray[3]}`) } else if (argArray.length == 5) { log.debug(`${argArray[0]} ${argArray[1]} ${argArray[2]} ${argArray[3]} ${argArray[4]}`) } else if (argArray.length == 6) { log.debug(`${argArray[0]} ${argArray[1]} ${argArray[2]} ${argArray[3]} ${argArray[4]} ${argArray[5]}`) }
+    if (argArray.length === 1) {
+      log.debug(argArray[0])
+    } else if (argArray.length === 2) {
+      log.debug(`${argArray[0]} ${argArray[1]}`)
+    } else if (argArray.length === 3) {
+      log.debug(`${argArray[0]} ${argArray[1]} ${argArray[2]}`)
+    } else if (argArray.length === 4) {
+      log.debug(`${argArray[0]} ${argArray[1]} ${argArray[2]} ${argArray[3]}`)
+    } else if (argArray.length === 5) {
+      log.debug(`${argArray[0]} ${argArray[1]} ${argArray[2]} ${argArray[3]} ${argArray[4]}`)
+    } else if (argArray.length === 6) {
+      log.debug(`${argArray[0]} ${argArray[1]} ${argArray[2]} ${argArray[3]} ${argArray[4]} ${argArray[5]}`)
+    }
   }
 }

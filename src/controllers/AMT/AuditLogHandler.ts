@@ -8,7 +8,7 @@ import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
 import { IAmtHandler } from '../../models/IAmtHandler'
 import { MPSMicroservice } from '../../mpsMicroservice'
-import amtStackFactory from '../../amt_libraries/amt-connection-factory.js'
+import AMTStackFactory from '../../amt_libraries/amt-connection-factory.js'
 import { amtPort } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 
@@ -20,7 +20,7 @@ export class AuditLogHandler implements IAmtHandler {
   constructor (mpsService: MPSMicroservice) {
     this.name = 'AuditLog'
     this.mpsService = mpsService
-    this.amtFactory = new amtStackFactory(this.mpsService)
+    this.amtFactory = new AMTStackFactory(this.mpsService)
   }
 
   async AmtAction (req: Request, res: Response): Promise<void> {
@@ -28,14 +28,14 @@ export class AuditLogHandler implements IAmtHandler {
       const payload = req.body.payload
       if (payload.guid) {
         const ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid]
-        if (ciraconn && ciraconn.readyState == 'open') {
+        if (ciraconn && ciraconn.readyState === 'open') {
           const cred = await this.mpsService.db.getAmtPassword(payload.guid)
           const amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0)
           const startIndex: number = payload.startIndex >= 1 ? payload.startIndex : 0
 
           amtstack.GetAuditLogChunks(startIndex, (stack, responses, status) => {
             stack.wsman.comm.socket.sendchannelclose()
-            if (status == 200) {
+            if (status === 200) {
               res.send(responses)
             } else {
               log.error(`Power Action failed during GETAudit log for guid : ${payload.guid}.`)

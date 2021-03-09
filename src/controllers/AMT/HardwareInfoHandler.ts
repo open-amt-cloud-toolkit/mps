@@ -10,7 +10,7 @@ import { IAmtHandler } from '../../models/IAmtHandler'
 import { MPSMicroservice } from '../../mpsMicroservice'
 import { amtPort } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
-import amtStackFactory from '../../amt_libraries/amt-connection-factory.js'
+import AMTStackFactory from '../../amt_libraries/amt-connection-factory.js'
 
 export class HardwareInfoHandler implements IAmtHandler {
   mpsService: MPSMicroservice
@@ -20,7 +20,7 @@ export class HardwareInfoHandler implements IAmtHandler {
   constructor (mpsService: MPSMicroservice) {
     this.name = 'HardwareInformation'
     this.mpsService = mpsService
-    this.amtFactory = new amtStackFactory(this.mpsService)
+    this.amtFactory = new AMTStackFactory(this.mpsService)
   }
 
   async AmtAction (req: Request, res: Response): Promise<void> {
@@ -28,7 +28,7 @@ export class HardwareInfoHandler implements IAmtHandler {
       const payload = req.body.payload
       if (payload.guid) {
         const ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid]
-        if (ciraconn && ciraconn.readyState == 'open') {
+        if (ciraconn && ciraconn.readyState === 'open') {
           const cred = await this.mpsService.db.getAmtPassword(payload.guid)
           const amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0)
           amtstack.BatchEnum('', ['*CIM_ComputerSystemPackage',
@@ -36,7 +36,7 @@ export class HardwareInfoHandler implements IAmtHandler {
             'CIM_Processor', 'CIM_PhysicalMemory', 'CIM_MediaAccessDevice', 'CIM_PhysicalPackage'],
           (stack, name, responses, status) => {
             stack.wsman.comm.socket.sendchannelclose()
-            if (status != 200) {
+            if (status !== 200) {
               log.error(`Request failed during AMTHardware Information BatchEnum Exec for guid : ${payload.guid}.`)
               return res.status(status).send(ErrorResponse(status, `Request failed during AMTHardware Information BatchEnum Exec for guid : ${payload.guid}.`))
             } else {

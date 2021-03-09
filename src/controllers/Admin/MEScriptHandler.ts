@@ -12,6 +12,7 @@ import { ErrorResponse } from '../../utils/amtHelper'
 import { IAdminHandler } from '../../models/IAdminHandler'
 import { MPSMicroservice } from '../../mpsMicroservice'
 import { CreateAmtScriptEngine } from '../../utils/amtscript.js'
+
 import fs from 'fs'
 const scriptEngine = CreateAmtScriptEngine()
 
@@ -50,7 +51,7 @@ export class MEScriptHandler implements IAdminHandler {
           scriptFile.scriptBlocks[3].vars.Port.value = this.mps.config.port // Set the server MPS port
           scriptFile.scriptBlocks[3].vars.username.value = this.mps.config.username // Set the username
           scriptFile.scriptBlocks[3].vars.password.value = this.mps.config.pass // Set the password
-          scriptFile.scriptBlocks[4].vars.AccessInfo1.value = this.mps.config.common_name + ':' + this.mps.config.port // Set the primary server name:port to set periodic timer
+          scriptFile.scriptBlocks[4].vars.AccessInfo1.value = `${this.mps.config.common_name}:${this.mps.config.port}` // Set the primary server name:port to set periodic timer
           scriptFile.scriptBlocks[6].vars.DetectionStrings.value = 'dummy.com' // Set the environment detection local FQDN's
 
           // Compile the script

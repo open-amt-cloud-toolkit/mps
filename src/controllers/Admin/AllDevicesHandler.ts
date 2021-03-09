@@ -8,8 +8,9 @@ import { logger as log } from '../../utils/logger'
 import { IAdminHandler } from '../../models/IAdminHandler'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MPSMicroservice } from '../../mpsMicroservice'
-
-import * as common from '../../utils/common.js'
+import { Credentials, Device, DeviceMetadata } from '../../models/models'
+import { Environment } from '../../utils/Environment'
+import { DeviceDb } from '../../db/devices'
 
 export class AllDevicesHandler implements IAdminHandler {
   mpsService: MPSMicroservice
@@ -29,43 +30,30 @@ export class AllDevicesHandler implements IAdminHandler {
         Pragma: 'no-cache',
         Expires: '0'
       })
-      let amtcreds = {}
+      let amtCredentials: Credentials = {}
       try {
-        amtcreds = await this.mpsService.db.getAllAmtCredentials()
+        amtCredentials = await this.mpsService.db.getAllAmtCredentials()
       } catch (e) {
         log.error(e)
       }
-      const list = []
-      for (var i in this.mpsService.mpsComputerList) {
-        var entry = common.Clone(this.mpsService.mpsComputerList[i])
-        // add MPS and AMT username properies to json
-        entry.mpsuser = amtcreds[i].mpsuser
-        entry.amtuser = amtcreds[i].amtuser ? amtcreds[i].amtuser : this.mpsService.mpsComputerList[i].amtuser
-        // add icon and conn properties to json
-        entry.icon = 1
-        entry.conn = 1
-        // add a name property to json
-        if (!entry.name) { entry.name = amtcreds[i].name }
-        list.push(entry)
-        // remove device objects from credential json whose status is online
-        if (amtcreds[i]) {
-          delete amtcreds[i]
-        }
+      let metadata: DeviceMetadata[] = []
+      if (Environment.Config.use_db) {
+        const db = new DeviceDb()
+        metadata = await db.get()
       }
-      for (var i in amtcreds) {
-        var entry = common.Clone(amtcreds[i])
-        // delete MPS and AMT password before sending it
-        delete entry.mpspass
-        delete entry.amtpass
-        // add host to the entry
-        entry.host = i
-        // add icon and conn
-        entry.icon = 1
-        entry.conn = 0
-        list.push(entry)
+      const list: Device[] = []
+
+      for (const i in amtCredentials) {
+        list.push({
+          amtuser: amtCredentials[i].amtuser,
+          conn: this.mpsService.mpsComputerList[i] == null ? 0 : 1,
+          host: i,
+          mpsuser: amtCredentials[i].mpsuser,
+          name: amtCredentials[i].name,
+          metadata: metadata.find(z => z.guid === i) ?? {}
+        })
       }
-      res.set({ 'Content-Type': 'application/json' })
-      res.send(JSON.stringify(list))
+      res.json(list)
     } catch (error) {
       log.error(`Exception in All devices : ${error}`)
       res.status(500).send(ErrorResponse(500, 'Request failed while it gets all devices.'))

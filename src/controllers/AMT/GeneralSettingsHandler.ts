@@ -10,7 +10,7 @@ import { IAmtHandler } from '../../models/IAmtHandler'
 import { MPSMicroservice } from '../../mpsMicroservice'
 
 import { amtPort } from '../../utils/constants'
-import amtStackFactory from '../../amt_libraries/amt-connection-factory.js'
+import AMTStackFactory from '../../amt_libraries/amt-connection-factory.js'
 import { ErrorResponse } from '../../utils/amtHelper'
 
 export class GeneralSettingsHandler implements IAmtHandler {
@@ -21,7 +21,7 @@ export class GeneralSettingsHandler implements IAmtHandler {
   constructor (mpsService: MPSMicroservice) {
     this.name = 'GeneralSettings'
     this.mpsService = mpsService
-    this.amtFactory = new amtStackFactory(this.mpsService)
+    this.amtFactory = new AMTStackFactory(this.mpsService)
   }
 
   async AmtAction (req: Request, res: Response): Promise<void> {
@@ -34,7 +34,7 @@ export class GeneralSettingsHandler implements IAmtHandler {
           const amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0)
           await amtstack.Get('AMT_GeneralSettings', (obj, name, response, status) => {
             obj.wsman.comm.socket.sendchannelclose()
-            if (status == 200) {
+            if (status === 200) {
               res.set({ 'Content-Type': 'application/json' })
               res.send(response)
             } else {

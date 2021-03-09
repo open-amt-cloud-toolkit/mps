@@ -11,26 +11,22 @@
  * @version 0.0.1
  */
 
-import * as path from 'path'
-import * as fs from 'fs'
-import * as util from 'util'
-
+import fs from 'fs'
 import { configType } from '../models/Config'
 import { logger as log } from './logger'
 import { IDbProvider } from '../models/IDbProvider'
-import { loggers } from 'winston'
+import { Credentials } from '../models/models'
 
-const readFileAsync = util.promisify(fs.readFile)
-
-export class dataBase implements IDbProvider {
+export class Database implements IDbProvider {
   private readonly config: configType
   private readonly datapath: string
-
   constructor (config: configType) {
     try {
       this.config = config
       this.datapath = config.data_path
-      if (!fs.existsSync(this.datapath)) { log.error(`DB Path is not valid. Check if ${this.datapath} exists.`) }
+      if (!fs.existsSync(this.datapath)) {
+        log.error(`DB Path is not valid. Check if ${this.datapath} exists.`)
+      }
     } catch (error) {
       log.error(error)
       throw error
@@ -45,7 +41,9 @@ export class dataBase implements IDbProvider {
         const fileData = fs.readFileSync(this.datapath, 'utf8')
         const jsonData = JSON.parse(fileData)
         // console.log(jsonData)
-        if (Array.isArray(jsonData.allowlist_guids)) { guids = guids.concat(jsonData.allowlist_guids) }
+        if (Array.isArray(jsonData.allowlist_guids)) {
+          guids = guids.concat(jsonData.allowlist_guids)
+        }
 
         log.silly(`Guids - ${JSON.stringify(guids)}`)
       }
@@ -62,7 +60,9 @@ export class dataBase implements IDbProvider {
       if (this.datapath && fs.existsSync(this.datapath)) {
         const fileData = fs.readFileSync(this.datapath, 'utf8')
         const jsonData = JSON.parse(fileData)
-        if (Array.isArray(jsonData.allowlist_orgs)) { orgs = orgs.concat(jsonData.allowlist_orgs) }
+        if (Array.isArray(jsonData.allowlist_orgs)) {
+          orgs = orgs.concat(jsonData.allowlist_orgs)
+        }
         log.silly(`Orgs - ${JSON.stringify(orgs)}`)
       }
     } catch (error) {
@@ -71,8 +71,8 @@ export class dataBase implements IDbProvider {
     return orgs
   }
 
-  getAllCredentials (): any {
-    let credentials = {}
+  getAllCredentials (): Credentials {
+    let credentials: Credentials = {}
     try {
       if (this.datapath && fs.existsSync(this.datapath)) {
         const fileData = fs.readFileSync(this.datapath, 'utf8')
@@ -103,7 +103,7 @@ export class dataBase implements IDbProvider {
   }
 
   // get all credentials in credentials.json file
-  getAllAmtCredentials (): any {
+  getAllAmtCredentials (): Credentials {
     try {
       const cred = this.getAllCredentials()
       // logger.debug(`All AMT credentials: ${JSON.stringify(cred, null, 4)}`);
@@ -118,7 +118,8 @@ export class dataBase implements IDbProvider {
   IsGUIDApproved (guid, cb): void {
     try {
       let result = false
-      if (this.config && this.config.use_allowlist) {
+
+      if (this.config?.use_allowlist) {
         const guids = this.getAllGUIDS()
         if (guids.includes(guid)) {
           result = true
@@ -139,7 +140,7 @@ export class dataBase implements IDbProvider {
   IsOrgApproved (org, cb): void {
     try {
       let result = false
-      if (this.config && this.config.use_allowlist) {
+      if (this.config?.use_allowlist) {
         const orgs = this.getAllOrgs()
         if (orgs.includes(org)) {
           result = true
@@ -161,10 +162,10 @@ export class dataBase implements IDbProvider {
       let result = false
       const cred = this.getCredentialsForGuid(guid)
       log.info(cred)
-      if (cred && cred.mpsuser == username && cred.mpspass == password) {
+      if (cred && cred.mpsuser === username && cred.mpspass === password) {
         result = true
       } else if (cred && this.config.use_global_mps_credentials) {
-        if (this.config.username == username && this.config.pass == password) {
+        if (this.config.username === username && this.config.pass === password) {
           result = true
           log.silly(`CIRAAuth successful. ${username} ${password}`)
         }

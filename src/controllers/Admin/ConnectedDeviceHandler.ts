@@ -8,8 +8,7 @@ import { logger as log } from '../../utils/logger'
 import { IAdminHandler } from '../../models/IAdminHandler'
 import { Response, Request } from 'express'
 import { MPSMicroservice } from '../../mpsMicroservice'
-
-import * as common from '../../utils/common.js'
+import { Credentials } from '../../models/models'
 
 export class ConnectedDeviceHandler implements IAdminHandler {
   mpsService: MPSMicroservice
@@ -29,33 +28,23 @@ export class ConnectedDeviceHandler implements IAdminHandler {
         Pragma: 'no-cache',
         Expires: '0'
       })
-      let amtcreds = {}
+      let amtCredentials: Credentials = {}
       try {
-        amtcreds = await this.mpsService.db.getAllAmtCredentials()
+        amtCredentials = await this.mpsService.db.getAllAmtCredentials()
       } catch (e) {
         log.error(e)
       }
       const list = []
       for (const i in this.mpsService.mpsComputerList) {
-        const entry = common.Clone(this.mpsService.mpsComputerList[i])
-        // add MPS and AMT username properies to json
-        entry.mpsuser = amtcreds[i].mpsuser
-        entry.amtuser = amtcreds[i].amtuser ? amtcreds[i].amtuser : this.mpsService.mpsComputerList[i].amtuser
-        // add icon and conn properties to json
-        entry.icon = 1
-        entry.conn = 1
-        // add a name property to json
-        if (!entry.name) { entry.name = amtcreds[i].name }
-        list.push(entry)
-        // remove device objects from credential json whose status is online
-        if (amtcreds[i]) {
-          delete amtcreds[i]
-        }
+        list.push({
+          amtuser: amtCredentials[i].amtuser,
+          conn: 1,
+          host: i,
+          mpsuser: amtCredentials[i].amtuser ?? this.mpsService.mpsComputerList[i].amtuser,
+          name: amtCredentials[i].name
+        })
       }
-      res.set({
-        'Content-Type': 'application/json'
-      })
-      res.send(JSON.stringify(list))
+      res.json(list)
     } catch (error) {
       log.error(`Exception in Connected devices: ${error}`)
     }
