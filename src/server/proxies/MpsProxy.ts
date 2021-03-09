@@ -213,9 +213,9 @@ export class MpsProxy implements IMpsProxy {
         l = this.processCommand(mpsServerSocket);
         if (l > 0) { mpsServerSocket.tag.accumulator = mpsServerSocket.tag.accumulator.substring(l); }
       } while (l > 0);
-      if (l < 0) { mpsServerSocket.end(); }
+      if (l < 0) { mpsServerSocket.end() }
     } catch (e) {
-      log.error(e);
+      log.error(`MpsProxy:onData: ${e}`)
     }
   }
 
@@ -233,22 +233,24 @@ export class MpsProxy implements IMpsProxy {
       ciraWindow: 32768,
       write: (data) => {
         log.silly(`write data on socket ${data}`)
+        try {
+          this.socket.write(// message header length      
+            Buffer.from(
+              common.IntToStr(MPS_MESSAGE_HEADER_LENGTH + data.length) +
+              // Channel Open
+              String.fromCharCode(APFProtocol.CHANNEL_DATA) +
+              // UUID
+              common.rstr2hex(ciraChannel.nodeId) +
+              //  target port
+              common.IntToStr(ciraChannel.channelid) +
 
-        this.socket.write(// message header length      
-          Buffer.from(
+              common.IntToStr(data.length) +
 
-            common.IntToStr(MPS_MESSAGE_HEADER_LENGTH + data.length) +
-            // Channel Open
-            String.fromCharCode(APFProtocol.CHANNEL_DATA) +
-            // UUID
-            common.rstr2hex(ciraChannel.nodeId) +
-            //  target port
-            common.IntToStr(ciraChannel.channelid) +
-
-            common.IntToStr(data.length) +
-
-            data, 'binary')
-        )
+              data, 'binary')
+          )
+        } catch (error) {
+          log.error(`SetupCiraChannel write exception: ${error}`);
+        }
       },
       sendBuffer: undefined,
       amtchannelid: undefined,
@@ -273,55 +275,68 @@ export class MpsProxy implements IMpsProxy {
   }
 
   WriteSetupChannel(ciraChannel, targetport) {
-    this.socket.write(
-      Buffer.from(
-        // message header length
-        common.IntToStr(MPS_MESSAGE_HEADER_LENGTH) +
-        // Channel Open
-        String.fromCharCode(APFProtocol.CHANNEL_OPEN) +
-        // UUID
-        common.rstr2hex(ciraChannel.nodeId) +
-        //  target port
-        common.IntToStr(ciraChannel.channelid) +
-        //  Channelid
-        common.IntToStr(targetport), 'binary')
-    )
+    try {
+      this.socket.write(
+        Buffer.from(
+          // message header length
+          common.IntToStr(MPS_MESSAGE_HEADER_LENGTH) +
+          // Channel Open
+          String.fromCharCode(APFProtocol.CHANNEL_OPEN) +
+          // UUID
+          common.rstr2hex(ciraChannel.nodeId) +
+          //  target port
+          common.IntToStr(ciraChannel.channelid) +
+          //  Channelid
+          common.IntToStr(targetport), 'binary')
+      )
+    } catch (error) {
+      log.error(`WriteSetupChannel exception: ${error}`);
+    }
   }
 
   WriteCloseChannel(ciraChannel) {
-    this.socket.write(
-      Buffer.from(
-        // message header length
-        common.IntToStr(MPS_MESSAGE_HEADER_LENGTH) +
-        // Channel Open
-        String.fromCharCode(APFProtocol.CHANNEL_CLOSE) +
-        // UUID
-        common.rstr2hex(ciraChannel.nodeId) +
-        //  target port
-        common.IntToStr(ciraChannel.channelid), 'binary')
-    )
+    try {
+      this.socket.write(
+        Buffer.from(
+          // message header length
+          common.IntToStr(MPS_MESSAGE_HEADER_LENGTH) +
+          // Channel Open
+          String.fromCharCode(APFProtocol.CHANNEL_CLOSE) +
+          // UUID
+          common.rstr2hex(ciraChannel.nodeId) +
+          //  target port
+          common.IntToStr(ciraChannel.channelid), 'binary')
+      )
+    } catch (error) {
+      log.error(`WriteCloseChannel exception`);
+    }
   }
 
   static async getSocketForGuid(hostGuid: string, mpsservice: mpsMicroservice) {
 
     // get MPS server IP
-    let mpsServerIP: string = await getDistributedKV(mpsservice).lookup(hostGuid);
+    let mpsServerIP: string = await getDistributedKV(mpsservice).lookup(hostGuid)
     log.silly(`MPS Server IP fetched from distrubuted KV: ${mpsServerIP}`);
 
     // Global is a list of Global static variables
     if (typeof MpsProxy.sockets[mpsServerIP] === 'undefined') {
       log.silly(`Create socket for ${mpsServerIP}`);
-
       let mpsServerSocket: any = new net.Socket();
       mpsServerSocket.setEncoding('binary');
       // connect on the device
+
       mpsServerSocket.connect(mpsservice.config.web_proxy_port, mpsServerIP, function () {
         // add accumulator
         mpsServerSocket.tag = {};
         mpsServerSocket.tag.accumulator = '';
         mpsServerSocket.tag.ip = mpsServerIP;
         log.silly(`Connected to mpsServer on socket for device ${hostGuid} at IP ${mpsServerIP}`)
-      });
+      })
+
+      mpsServerSocket.on('error', (err) => {
+        log.error(`mps proxy error: ${err}`)
+      })
+
       mpsServerSocket.on('close', () => {
         log.silly(`MPS Server Socket closed. Clean up MPS Proxy state.`)
         if (!mpsServerSocket.destroyed) {
@@ -365,7 +380,7 @@ export class MpsProxy implements IMpsProxy {
     // get socket; talk to webProxy
     let socket = await MpsProxy.getSocketForGuid(guid, mpsService);
 
-    if (typeof MpsProxy.proxies[guid] === 'undefined') {
+    if (typeof MpsProxy.proxies[guid] === 'undefined' || MpsProxy.proxies[guid].socket?.destroyed) {
       log.silly(`Create new MpsProxy object for ${guid}`)
       MpsProxy.proxies[guid] = new MpsProxy(guid, mpsService, socket);
       MpsProxy.proxies[guid].readyState = 'open';

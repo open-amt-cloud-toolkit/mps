@@ -82,20 +82,24 @@ export class mpsServer {
           delete this.ciraConnections[nodeid]
         }
       }
-      catch (e) { }
+      catch (e) { log.error(`onCiraDisconnect: ${e}`) }
 
       Object.keys(this.allSockets).map((key) => {
         let socket = this.allSockets[key] // todo: check if socket is open
 
-        // Write connection state back to the web proxy using helper methods
-        this.Write(
-          socket,
-          common.IntToStr(MPS_DEVICE_DISCONNECT_LENGTH) +
-          String.fromCharCode(APFProtocol.DISCONNECT) +
-          common.rstr2hex(nodeid)
-        );
-        log.silly(`${socket.remoteAddress}:${socket.remotePort}: device disconnected for ${nodeid}`)
 
+        try {
+          // Write connection state back to the web proxy using helper methods
+          this.Write(
+            socket,
+            common.IntToStr(MPS_DEVICE_DISCONNECT_LENGTH) +
+            String.fromCharCode(APFProtocol.DISCONNECT) +
+            common.rstr2hex(nodeid)
+          );
+          log.silly(`${socket.remoteAddress}:${socket.remotePort}: device disconnected for ${nodeid}`)
+        } catch (e) {
+          log.error(`write connection state back to web proxy error: ${e}`);
+        }
         try {
           log.silly(`${socket.remoteAddress}:${socket.remotePort}: onCiraDisconnect:delete amtMpsproxyChannelMapping and mpsproxyAmtChannelMapping`)
           // delete mapping for the uuid
@@ -108,7 +112,7 @@ export class mpsServer {
           log.silly(`${socket.remoteAddress}:${socket.remotePort}: onCiraDisconnect:deleted amtMpsproxyChannelMapping and mpsproxyAmtChannelMapping`)
         }
         catch (e) {
-          log.silly(`${socket.remoteAddress}:${socket.remotePort}: onCiraDisconnect: exception caught while deleting amtMpsproxyChannelMapping`)
+          log.error(`${socket.remoteAddress}:${socket.remotePort}: onCiraDisconnect: exception caught while deleting amtMpsproxyChannelMapping`)
         }
         log.silly(`${socket.remoteAddress}:${socket.remotePort}: onCiraDisconnect for nodeid=${nodeid}`)
 
@@ -131,14 +135,17 @@ export class mpsServer {
     }
     else {
       this.onCiraDisconnect = (nodeid) => {
-        delete this.ciraConnections[nodeid];
+        if (this.ciraConnections[nodeid]) {
+          delete this.ciraConnections[nodeid];
+        }
+
         if (this.mpsService.CIRADisconnected != null) {
           this.mpsService.CIRADisconnected(nodeid)
         }
       }
     }
     if (this.config.startup_mode == 'mps') {
-      // Listening for device connections
+      // Listening for web server 
       this.webProxy.listen(this.config.web_proxy_port, () => {
         log.info(`Listening for Proxy Connections on ${this.config.common_name}:${this.config.web_proxy_port}.`);
       });
@@ -231,7 +238,7 @@ export class mpsServer {
           let ciraconn;
           if (typeof this.ciraConnections !== 'undefined') {
             if ((typeof this.ciraConnections[uuid]) === 'undefined') {
-              log.debug(`(${socketIPPort}): ciraConnections is undefined for ${uuid}`);
+              log.error(`(${socketIPPort}): ciraConnections is undefined for ${uuid}`);
               return;
             }
             else {
@@ -240,12 +247,12 @@ export class mpsServer {
             }
           }
           else {
-            log.debug(`(${socketIPPort}): ciraConnections object is undefined`)
+            log.error(`(${socketIPPort}): ciraConnections object is undefined`)
             return
           }
           // todo - communicate back to mpsProxy if error
           if (APFProtocol.DISCONNECT === requestType) {
-            ciraconn.destroy()
+            ciraconn?.destroy()
             this.onCiraDisconnect(uuid)
           }
           // Channel Open request
@@ -444,7 +451,7 @@ export class mpsServer {
     })
 
     socket.addListener('error', () => {
-      log.debug('onWebConnection error');
+      log.error('onWebConnection error');
     });
   }
 
@@ -546,10 +553,10 @@ export class mpsServer {
         }
       })
 
-      socket.addListener('error', () => {
-        log.debug('MPS Error: ' + socket.remoteAddress)
-      })
-    }
+    socket.addListener('error', () => {
+      log.debug(`MPS Error ${socket.tag.nodeid}: ${socket.remoteAddress}`)
+    })
+  }
 
     // Process one APF command
     processCommand = (socket) => {
@@ -558,136 +565,141 @@ export class mpsServer {
       const data = socket.tag.accumulator
       if (len == 0) { return 0 }
 
-      switch (cmd) {
-        case APFProtocol.KEEPALIVE_REQUEST: {
-          if (len < 5) return 0
-          this.debug(3, 'MPS:KEEPALIVE_REQUEST')
-          this.SendKeepAliveReply(socket, common.ReadInt(data, 1))
-          return 5
+    switch (cmd) {
+      case APFProtocol.KEEPALIVE_REQUEST: {
+        if (len < 5) {
+          return 0
         }
-        case APFProtocol.KEEPALIVE_REPLY: {
-          if (len < 5) return 0
-          this.debug(3, 'MPS:KEEPALIVE_REPLY')
-          return 5
-        }
-        case APFProtocol.PROTOCOLVERSION: {
-          if (len < 93) return 0
-          socket.tag.MajorVersion = common.ReadInt(data, 1)
-          socket.tag.MinorVersion = common.ReadInt(data, 5)
-          socket.tag.SystemId = this.guidToStr(common.rstr2hex(data.substring(13, 29))).toLowerCase()
-          this.debug(3, 'MPS:PROTOCOLVERSION', socket.tag.MajorVersion, socket.tag.MinorVersion, socket.tag.SystemId)
-          // Check if the device is allowlisted to connect. Only checked when 'use_allowlist' is set to true in config.json.
-          if (this.config.use_allowlist) {
-            this.db.IsGUIDApproved(socket.tag.SystemId, (allowed) => {
-              socket.tag.nodeid = socket.tag.SystemId
-              if (allowed) {
-                if (socket.tag.certauth) {
-                  this.ciraConnections[socket.tag.SystemId] = socket
-                  this.mpsService.CIRAConnected(socket.tag.nodeid)
-                }
-              } else {
-                try {
-                  this.debug(1, 'MPS:GUID ' + socket.tag.SystemId + ' is not allowed to connect.')
-                  socket.end()
-                } catch (e) { }
-              }
-            })
-          } else {
+        log.debug(`MPS: KEEPALIVE_REQUEST: ${socket.tag.nodeid}`);
+        this.SendKeepAliveReply(socket, common.ReadInt(data, 1))
+        return 5
+      }
+      case APFProtocol.KEEPALIVE_REPLY: {
+        if (len < 5) return 0
+        this.debug(3, 'MPS:KEEPALIVE_REPLY')
+        return 5
+      }
+      case APFProtocol.PROTOCOLVERSION: {
+        if (len < 93) return 0
+        socket.tag.MajorVersion = common.ReadInt(data, 1)
+        socket.tag.MinorVersion = common.ReadInt(data, 5)
+        socket.tag.SystemId = this.guidToStr(common.rstr2hex(data.substring(13, 29))).toLowerCase()
+        this.debug(3, 'MPS:PROTOCOLVERSION', socket.tag.MajorVersion, socket.tag.MinorVersion, socket.tag.SystemId)
+        // Check if the device is allowlisted to connect. Only checked when 'use_allowlist' is set to true in config.json.
+        if (this.config.use_allowlist) {
+          this.db.IsGUIDApproved(socket.tag.SystemId, (allowed) => {
             socket.tag.nodeid = socket.tag.SystemId
-            if (socket.tag.certauth) {
-              this.ciraConnections[socket.tag.SystemId] = socket
-              this.mpsService.CIRAConnected(socket.tag.nodeid)
-            }
-          }
-        log.debug(`device uuid: ${socket.tag.SystemId}`)
-          return 93
-        }
-        case APFProtocol.USERAUTH_REQUEST: {
-          if (len < 13) return 0
-          const usernameLen = common.ReadInt(data, 1)
-          const username = data.substring(5, 5 + usernameLen)
-          var serviceNameLen = common.ReadInt(data, 5 + usernameLen)
-          var serviceName = data.substring(9 + usernameLen, 9 + usernameLen + serviceNameLen)
-          const methodNameLen = common.ReadInt(data, 9 + usernameLen + serviceNameLen)
-          const methodName = data.substring(13 + usernameLen + serviceNameLen, 13 + usernameLen + serviceNameLen + methodNameLen)
-          let passwordLen = 0; let password = null
-          if (methodName == 'password') {
-            passwordLen = common.ReadInt(data, 14 + usernameLen + serviceNameLen + methodNameLen)
-            password = data.substring(18 + usernameLen + serviceNameLen + methodNameLen, 18 + usernameLen + serviceNameLen + methodNameLen + passwordLen)
-          }
-          this.debug(3, 'MPS:USERAUTH_REQUEST usernameLen ' + usernameLen + ' serviceNameLen ' + serviceNameLen + ' methodNameLen ' + methodNameLen)
-          this.debug(3, 'MPS:USERAUTH_REQUEST user=' + username + ', service=' + serviceName + ', method=' + methodName + ', password=' + password)
-          // Authenticate device connection using username and password
-          this.db.CIRAAuth(socket.tag.SystemId, username, password, (allowed) => {
             if (allowed) {
-              this.debug(1, 'MPS:CIRA Authentication successful for ', username)
-              this.ciraConnections[socket.tag.SystemId] = socket
-              this.mpsService.CIRAConnected(socket.tag.SystemId) // Notify that a connection is successful to console
-              this.SendUserAuthSuccess(socket) // Notify the auth success on the CIRA connection
+              if (socket.tag.certauth) {
+                this.ciraConnections[socket.tag.SystemId] = socket
+                this.mpsService.CIRAConnected(socket.tag.nodeid)
+              }
             } else {
-              this.debug(1, 'MPS:CIRA Authentication failed for ', username)
-              this.SendUserAuthFail(socket); return -1
+              try {
+                this.debug(1, 'MPS:GUID ' + socket.tag.SystemId + ' is not allowed to connect.')
+                socket.end()
+              } catch (e) { }
             }
           })
-          return 18 + usernameLen + serviceNameLen + methodNameLen + passwordLen
+        } else {
+          socket.tag.nodeid = socket.tag.SystemId
+          if (socket.tag.certauth) {
+            this.ciraConnections[socket.tag.SystemId] = socket
+            this.mpsService.CIRAConnected(socket.tag.nodeid)
+          }
         }
-        case APFProtocol.SERVICE_REQUEST: {
-          if (len < 5) return 0
-          var serviceNameLen = common.ReadInt(data, 1)
-          if (len < 5 + serviceNameLen) return 0
-          var serviceName = data.substring(5, 5 + serviceNameLen)
-          this.debug(3, 'MPS:SERVICE_REQUEST', serviceName)
-          if (serviceName == 'pfwd@amt.intel.com') { this.SendServiceAccept(socket, 'pfwd@amt.intel.com') }
-          if (serviceName == 'auth@amt.intel.com') { this.SendServiceAccept(socket, 'auth@amt.intel.com') }
-          return 5 + serviceNameLen
+        log.debug(`device uuid: ${socket.tag.SystemId}`)
+        return 93
+      }
+      case APFProtocol.USERAUTH_REQUEST: {
+        if (len < 13) return 0
+        const usernameLen = common.ReadInt(data, 1)
+        const username = data.substring(5, 5 + usernameLen)
+        var serviceNameLen = common.ReadInt(data, 5 + usernameLen)
+        var serviceName = data.substring(9 + usernameLen, 9 + usernameLen + serviceNameLen)
+        const methodNameLen = common.ReadInt(data, 9 + usernameLen + serviceNameLen)
+        const methodName = data.substring(13 + usernameLen + serviceNameLen, 13 + usernameLen + serviceNameLen + methodNameLen)
+        let passwordLen = 0; let password = null
+        if (methodName == 'password') {
+          passwordLen = common.ReadInt(data, 14 + usernameLen + serviceNameLen + methodNameLen)
+          password = data.substring(18 + usernameLen + serviceNameLen + methodNameLen, 18 + usernameLen + serviceNameLen + methodNameLen + passwordLen)
         }
-        case APFProtocol.GLOBAL_REQUEST: {
-          if (len < 14) return 0
-          const requestLen = common.ReadInt(data, 1)
-          if (len < 14 + requestLen) return 0
-          const request = data.substring(5, 5 + requestLen)
-          const wantResponse = data.charCodeAt(5 + requestLen)
-
-          if (request == 'tcpip-forward') {
-            var addrLen = common.ReadInt(data, 6 + requestLen)
-            if (len < 14 + requestLen + addrLen) return 0
-            var addr = data.substring(10 + requestLen, 10 + requestLen + addrLen)
-            var port = common.ReadInt(data, 10 + requestLen + addrLen)
-            if (addr == '') addr = undefined
-            this.debug(2, 'MPS:GLOBAL_REQUEST', request, addr + ':' + port)
-            this.ChangeHostname(socket, addr)
-            if (socket.tag.boundPorts.indexOf(port) == -1) { socket.tag.boundPorts.push(port) }
-            this.SendTcpForwardSuccessReply(socket, port)
-            return 14 + requestLen + addrLen
+        this.debug(3, 'MPS:USERAUTH_REQUEST usernameLen ' + usernameLen + ' serviceNameLen ' + serviceNameLen + ' methodNameLen ' + methodNameLen)
+        this.debug(3, 'MPS:USERAUTH_REQUEST user=' + username + ', service=' + serviceName + ', method=' + methodName + ', password=' + password)
+        // Authenticate device connection using username and password
+        this.db.CIRAAuth(socket.tag.SystemId, username, password, (allowed) => {
+          if (allowed) {
+            this.debug(1, 'MPS:CIRA Authentication successful for ', username)
+            this.ciraConnections[socket.tag.SystemId] = socket
+            this.mpsService.CIRAConnected(socket.tag.SystemId) // Notify that a connection is successful to console
+            this.SendUserAuthSuccess(socket) // Notify the auth success on the CIRA connection
+          } else {
+            log.warn(`MPS: CIRA Authentication failed for: ${username} `);
+            this.SendUserAuthFail(socket); return -1
           }
+        })
+        return 18 + usernameLen + serviceNameLen + methodNameLen + passwordLen
+      }
+      case APFProtocol.SERVICE_REQUEST: {
+        if (len < 5) return 0
+        var serviceNameLen = common.ReadInt(data, 1)
+        if (len < 5 + serviceNameLen) return 0
+        var serviceName = data.substring(5, 5 + serviceNameLen)
+        this.debug(3, 'MPS:SERVICE_REQUEST', serviceName)
+        if (serviceName == 'pfwd@amt.intel.com') { this.SendServiceAccept(socket, 'pfwd@amt.intel.com') }
+        if (serviceName == 'auth@amt.intel.com') { this.SendServiceAccept(socket, 'auth@amt.intel.com') }
+        return 5 + serviceNameLen
+      }
+      case APFProtocol.GLOBAL_REQUEST: {
+        if (len < 14) return 0
+        const requestLen = common.ReadInt(data, 1)
+        if (len < 14 + requestLen) return 0
+        const request = data.substring(5, 5 + requestLen)
+        const wantResponse = data.charCodeAt(5 + requestLen)
 
-          if (request == 'cancel-tcpip-forward') {
-            var addrLen = common.ReadInt(data, 6 + requestLen)
-            if (len < 14 + requestLen + addrLen) return 0
-            var addr = data.substring(10 + requestLen, 10 + requestLen + addrLen)
-            var port = common.ReadInt(data, 10 + requestLen + addrLen)
-            this.debug(2, 'MPS:GLOBAL_REQUEST', request, addr + ':' + port)
-            const portindex = socket.tag.boundPorts.indexOf(port)
-            if (portindex >= 0) { socket.tag.boundPorts.splice(portindex, 1) }
-            this.SendTcpForwardCancelReply(socket)
-            return 14 + requestLen + addrLen
-          }
+        if (request == 'tcpip-forward') {
+          var addrLen = common.ReadInt(data, 6 + requestLen)
+          if (len < 14 + requestLen + addrLen) return 0
+          var addr = data.substring(10 + requestLen, 10 + requestLen + addrLen)
+          var port = common.ReadInt(data, 10 + requestLen + addrLen)
+          if (addr == '') addr = undefined
+          log.debug(`MPS: GLOBAL_REQUEST ${socket.tag.nodeid} ${request} ${addr}: ${port} `)
+          //this.debug(2, 'MPS:GLOBAL_REQUEST', request, addr + ':' + port)
+          this.ChangeHostname(socket, addr)
+          if (socket.tag.boundPorts.indexOf(port) == -1) { socket.tag.boundPorts.push(port) }
+          this.SendTcpForwardSuccessReply(socket, port)
+          return 14 + requestLen + addrLen
+        }
 
-          if (request == 'udp-send-to@amt.intel.com') {
-            var addrLen = common.ReadInt(data, 6 + requestLen)
-            if (len < 26 + requestLen + addrLen) return 0
-            var addr = data.substring(10 + requestLen, 10 + requestLen + addrLen)
-            var port = common.ReadInt(data, 10 + requestLen + addrLen)
-            const oaddrLen = common.ReadInt(data, 14 + requestLen + addrLen)
-            if (len < 26 + requestLen + addrLen + oaddrLen) return 0
-            const oaddr = data.substring(18 + requestLen, 18 + requestLen + addrLen)
-            const oport = common.ReadInt(data, 18 + requestLen + addrLen + oaddrLen)
-            const datalen = common.ReadInt(data, 22 + requestLen + addrLen + oaddrLen)
-            if (len < 26 + requestLen + addrLen + oaddrLen + datalen) return 0
-            this.debug(2, 'MPS:GLOBAL_REQUEST', request, addr + ':' + port, oaddr + ':' + oport, datalen)
-            // TODO
-            return 26 + requestLen + addrLen + oaddrLen + datalen
-          }
+        if (request == 'cancel-tcpip-forward') {
+          var addrLen = common.ReadInt(data, 6 + requestLen)
+          if (len < 14 + requestLen + addrLen) return 0
+          var addr = data.substring(10 + requestLen, 10 + requestLen + addrLen)
+          var port = common.ReadInt(data, 10 + requestLen + addrLen)
+          //this.debug(2, 'MPS:GLOBAL_REQUEST', request, addr + ':' + port)
+          log.debug(`MPS: GLOBAL_REQUEST ${socket.tag.nodeid} ${request} ${addr}: ${port} `)
+          const portindex = socket.tag.boundPorts.indexOf(port)
+          if (portindex >= 0) { socket.tag.boundPorts.splice(portindex, 1) }
+          this.SendTcpForwardCancelReply(socket)
+          return 14 + requestLen + addrLen
+        }
+
+        if (request == 'udp-send-to@amt.intel.com') {
+          var addrLen = common.ReadInt(data, 6 + requestLen)
+          if (len < 26 + requestLen + addrLen) return 0
+          var addr = data.substring(10 + requestLen, 10 + requestLen + addrLen)
+          var port = common.ReadInt(data, 10 + requestLen + addrLen)
+          const oaddrLen = common.ReadInt(data, 14 + requestLen + addrLen)
+          if (len < 26 + requestLen + addrLen + oaddrLen) return 0
+          const oaddr = data.substring(18 + requestLen, 18 + requestLen + addrLen)
+          const oport = common.ReadInt(data, 18 + requestLen + addrLen + oaddrLen)
+          const datalen = common.ReadInt(data, 22 + requestLen + addrLen + oaddrLen)
+          if (len < 26 + requestLen + addrLen + oaddrLen + datalen) return 0
+          //this.debug(2, 'MPS:GLOBAL_REQUEST', request, addr + ':' + port, oaddr + ':' + oport, datalen)
+          log.debug(`MPS: GLOBAL_REQUEST ${socket.tag.nodeid} ${request} ${addr}: ${port} ${oaddr}: ${oport} ${datalen} `)
+          // TODO
+          return 26 + requestLen + addrLen + oaddrLen + datalen
+        }
 
           return 6 + requestLen
         }
@@ -1089,8 +1101,8 @@ export class mpsServer {
         }
       }
 
-    //TODO verify this belongs
-    cirachannel.sendchannelclose = () => {
+    cirachannel.sendchannelclose = (): void => {
+      log.silly(`sendchannelclose called`)
       this.SendChannelClose(cirachannel.socket, cirachannel.amtchannelid)
     }
 

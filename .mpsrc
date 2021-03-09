@@ -19,6 +19,7 @@
     "vault_address": "http://localhost:8200",
     "vault_token": "myroot",
     "use_vault": true,
+    "use_db": false,
     "secrets_path": "secret/data/",
     "cert_format" : "file",
     "data_path" : "../private/data.json",

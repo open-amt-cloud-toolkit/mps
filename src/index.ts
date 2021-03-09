@@ -55,7 +55,7 @@ try {
   if (config.https || !config.tls_offload) {
     if (!config.generate_certificates) {
       if (config.cert_format === 'raw') { // if you want to read the cert raw from variable.
-        log.info(`using cert format raw`);
+        log.debug(`using cert format raw`);
 
         if(config.mps_tls_config){
           config.mps_tls_config.key =  config.tls_cert_key;
@@ -75,7 +75,7 @@ try {
         certs = { mps_tls_config: config.mps_tls_config, web_tls_config: config.web_tls_config };
       }
       else { // else read the certs from files
-        log.info(`using cert from file`);
+        log.debug(`using cert from file`);
         certs = { mps_tls_config: tlsConfig.mps(), web_tls_config: tlsConfig.web() };
       }
       log.info('Loaded existing certificates')
@@ -87,7 +87,7 @@ try {
     log.info('certs loaded..')
 
     // TODO: comment this out for release
-     log.silly(`certs: ` + JSON.stringify(certs,null, 4));
+     //log.silly(`certs: ` + JSON.stringify(certs,null, 4));
 
     const mps = new mpsMicroservice(config, db, certs)
     mps.start()

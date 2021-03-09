@@ -47,11 +47,14 @@ export type configType ={
     web_tls_cert?: string,
     web_tls_cert_key?: string,
     web_tls_cert_ca?: string,
-    redis_password: string,
+    redis_enable?: boolean,
+    redis_password?: string,
     redis_host?:string,
     redis_port?:string,
     auth_enabled?: boolean,
-    redis_enable?: boolean
+    cors_origin:string,
+    cors_headers:string,
+    cors_methods:string
 }
 
 export type certificatesType = {

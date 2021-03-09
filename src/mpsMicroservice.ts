@@ -34,7 +34,7 @@ export class mpsMicroservice {
       this.db = db
       this.certs = certs
     } catch (e) {
-      log.error('Exception in MPS Microservice: ' + e)
+      log.error(`Exception in MPS Microservice: ${e}`)
     }
   }
 
@@ -93,7 +93,12 @@ export class mpsMicroservice {
       this.webserver = new webServer(this)
       getDistributedKV(this).addEventWatch()
       this.CiraConnectionFactory = new CiraConnectionFactory(async (hostGuid) => {
-        let socket = MpsProxy.getSocketForGuid(hostGuid, this)
+        let socket = await MpsProxy.getSocketForGuid(hostGuid, this).then(ok => {
+          log.debug(`retreived socket for guid: ${hostGuid}, result: ${JSON.stringify(ok, null, 4)}`)
+        })
+          .catch(err => {
+            log.error(`failed to retreive socket for guid: ${hostGuid}, result: ${err}`)
+          })
         let mpsProxy = await MpsProxy.get(this, hostGuid)
         mpsProxy.nodeid = hostGuid
         return mpsProxy
@@ -115,7 +120,7 @@ export class mpsMicroservice {
     if ('mps' === this.config.startup_mode) {
       // update DistributedKV with key as device UUID
       // and value as Server IP.f
-      getDistributedKV(this).updateKV(guid).then((v) => console.log(v)).catch((reason) => console.error(reason))
+      getDistributedKV(this).updateKV(guid).then((v) => log.debug(v)).catch((reason) => log.error(reason))
     }
 
     if (this.webserver) {
@@ -124,11 +129,11 @@ export class mpsMicroservice {
   }
 
   CIRADisconnected(guid) {
-    log.info(`Main:CIRA connection closed for ${guid}`);
+    log.info(`Main:CIRA connection closed for ${guid}`)
 
     if ('mps' === this.config.startup_mode) {
       // delete the KV pair in DistributedKV
-      getDistributedKV(this).deleteKV(guid).then((v) => console.log(v)).catch((reason) => console.error(reason))
+      getDistributedKV(this).deleteKV(guid).then((v) => log.debug(v)).catch((reason) => log.error(reason))
     }
     else if ('web' === this.config.startup_mode) {
       if (MpsProxy.guidSockets[guid]) {

@@ -57,7 +57,7 @@ export class Consul implements IDistributedKV {
         // handle event on 'update' from server
         watchUpdate.on('change', async function (data, res) {
             if ('undefined' === data) {
-                log.silly('data undefined')
+                log.error('consul watchUpdate.on change data undefined')
             }
             else {
                 // When we receive event list first time
@@ -106,7 +106,7 @@ export class Consul implements IDistributedKV {
                                 // then update connectedDevices
                                 if (that.disconnectedDevices[recvObject.guid].timeStamp < recvObject.timeStamp) {
                                     // update the connectedDevices with Server IP and timestamp
-                                    log.silly(`timeStamp receved is latest than in disconnectedDevices`)
+                                    log.silly(`timeStamp received is later than in disconnectedDevices`)
                                     const reqObject = {
                                         serverIP: recvObject.serverIP,
                                         timeStamp: recvObject.timeStamp
@@ -130,7 +130,7 @@ export class Consul implements IDistributedKV {
                             amtuser: undefined
                         };
                         if ('undefined' !== typeof that.mpsService.mpsComputerList[index]) {
-                            log.silly(`already in mpsComputerList`)
+                            log.silly(`already in mpsComputerList: ${that.mpsService.mpsComputerList[index]}`)
                         } else {
                             log.silly(`populate in mpsComputerList`)
                             computerEntry = {
@@ -398,19 +398,22 @@ export class Consul implements IDistributedKV {
             });
         });
 
+        if (!ipAddress) {
+            log.error(`no ip address found for interface: ${desiredInterface}`);
+        }
+
         return ipAddress
     }
     // Register the UUID as Consul Key and Server IP as the value
     async updateKV(guid: string): Promise<any> {
 
         return new Promise((resolve, reject) => {
-            // let serverIP = this.config.common_name; // this wont work todo: put mps behind a load balancer
             let serverIP = this.getIpAddress();
-            log.silly('IP Address from OS Interface: ', serverIP)
+            log.silly(`IP Address from OS Interface: ${serverIP}`)
             // set Value for key:guid on HashiCorp Consul Server
             this.consul.kv.set(guid, serverIP, function (err, result) {
                 if (err) {
-                    log.debug('error updating Consul server')
+                    log.error(`error updating Consul server for ${guid}`)
                     reject(err)
                 }
             });
@@ -423,7 +426,7 @@ export class Consul implements IDistributedKV {
                 JSON.stringify(objToSend),
                 function (err, result) {
                     if (err) {
-                        log.debug(`error event.fire for ${guid} on Consul server`)
+                        log.error(`error event.fire for ${guid} on Consul server`)
                         reject(err);
                     }
                 })
@@ -441,7 +444,7 @@ export class Consul implements IDistributedKV {
             // delete Value for key:guid on HashiCorp Consul Server
             this.consul.kv.del(guid, function (err) {
                 if (err) {
-                    log.debug('error deleting KV pair in  Consul server')
+                    log.error(`error deleting KV pair for ${guid} in Consul server`)
                     reject(err)
                 }
             });
@@ -455,7 +458,7 @@ export class Consul implements IDistributedKV {
                 JSON.stringify(objToSend),
                 function (err, result) {
                     if (err) {
-                        log.debug(`error event.fire for ${guid} on Consul server`)
+                        log.error(`error event.fire for ${guid} on Consul server`)
                         reject(err);
                     }
                 })
