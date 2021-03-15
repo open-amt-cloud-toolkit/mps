@@ -42,7 +42,6 @@ export class AllDevicesHandler implements IAdminHandler {
         metadata = await db.get()
       }
       const list: Device[] = []
-
       for (const i in amtCredentials) {
         list.push({
           amtuser: amtCredentials[i].amtuser,

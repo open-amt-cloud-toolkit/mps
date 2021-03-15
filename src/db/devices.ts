@@ -35,6 +35,28 @@ export class DeviceDb implements IDeviceDb {
     })
   }
 
+  async getDistinctTags (): Promise<string[]> {
+    if (!Environment.Config.use_db) return []
+    const results = await this.db.query('SELECT DISTINCT unnest(tags) as tag FROM Devices')
+    return results.rows.map(p => {
+      return p.tag
+    })
+  }
+
+  async getByTags (tags: string[], method: string): Promise<DeviceMetadata[]> {
+    if (!Environment.Config.use_db) return []
+    let results
+    if (method === 'AND') {
+      results = await this.db.query('SELECT * FROM devices WHERE tags @> $1', [tags])
+    } else { // assume OR
+      results = await this.db.query('SELECT * FROM devices WHERE tags && $1', [tags])
+    }
+    return results.rows.map(p => {
+      const result = mapToMetadata(p)
+      return result
+    })
+  }
+
   /**
    * @description Get from DB by name
    * @param {string} guid
