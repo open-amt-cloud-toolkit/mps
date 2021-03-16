@@ -1,0 +1,153 @@
+openapi: 3.0.0
+info:
+  version: 1.2.0
+  title: Managed Prescence Server (MPS) API
+  description: ''
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/rbheopenamt/mps/1.2.0
+paths:
+  /devices:
+    get:
+      tags:
+        - Devices
+      responses:
+        200:
+          description: 'successful operation'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeviceResponse'
+        500:
+          description: 'internal server error'
+  /devices/{guid}:
+    get:
+      tags:
+        - Devices
+      parameters:
+      - name: guid
+        in: path
+        description: GUID of device to return
+        required: true
+        schema:
+          type: string
+      responses:
+        404:
+          description: 'Device does not exist'
+        200:
+          description: 'successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceResponse'
+  /metadata:
+    get:
+      tags:
+        - Metadata
+      responses:
+        200:
+          description: 'successful operation'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Metadata'
+    post:
+      tags:
+        - Metadata
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Metadata'
+      responses:
+        201:
+          description: 'Created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metadata'
+    patch:
+      tags:
+        - Metadata
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Metadata'
+      responses:
+        200:
+          description: 'successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metadata'
+  /metadata/{guid}:
+    get:
+      tags:
+        - Metadata
+      parameters:
+      - name: guid
+        in: path
+        description: GUID of device to return
+        required: true
+        schema:
+          type: string
+      responses:
+        404:
+          description: 'Metadata for device does not exist'
+        200:
+          description: 'successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metadata'
+    delete:
+      tags:
+        - Metadata
+      parameters:
+      - name: guid
+        in: path
+        description: GUID of device to return
+        required: true
+        schema:
+          type: string
+      responses:
+        204:
+          description: 'no content'
+components:
+  schemas:
+    DeviceResponse:
+      title: DeviceResponse
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        
+    Metadata:
+      title: Metadata
+      required:
+        - guid
+        - tags
+      type: object 
+      example:
+        guid: '123e4567-e89b-12d3-a456-426614174000'
+        hostname: 'AMTDEVICENUC1'
+        tags: ['Texas','NUC','Store #123']
+      properties:
+        guid:
+          type: string
+          description: The unique identifier for a given device
+        hostname: 
+          type: string
+          description: The hostname of the device
+        tags:
+          type: array
+          description: An Array of tags to associate to this device. Can be an empty array
+          items:
+            type: string
