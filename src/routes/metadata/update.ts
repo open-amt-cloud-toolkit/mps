@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 import { validationResult } from 'express-validator'
-import { DeviceDb } from '../../db/devices'
+import { MetadataDb } from '../../db/metadata'
 import { logger as log } from '../../utils/logger'
 
 export async function updateDevice (req, res): Promise<void> {
-  const db = new DeviceDb()
+  const db = new MetadataDb()
   try {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {

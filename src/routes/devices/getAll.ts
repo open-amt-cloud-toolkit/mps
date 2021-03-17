@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 import { validationResult } from 'express-validator'
-import { DeviceDb } from '../../db/devices'
+import { MetadataDb } from '../../db/metadata'
 import { Credentials, Device, DeviceMetadata } from '../../models/models'
 import { logger as log } from '../../utils/logger'
 
@@ -21,7 +21,7 @@ export async function getAll (req, res): Promise<void> {
 
     let metadata: DeviceMetadata[] = []
     const list: Device[] = []
-    const db = new DeviceDb()
+    const db = new MetadataDb()
 
     if (req.query.tags != null) {
       const tags = req.query.tags.split(',')
@@ -29,11 +29,11 @@ export async function getAll (req, res): Promise<void> {
 
       for (const m of metadata) {
         list.push({
-          amtuser: amtCredentials[m.guid]?.amtuser,
+          amtuser: amtCredentials ? amtCredentials[m.guid]?.amtuser : null,
           conn: req.mpsService.mpsComputerList[m.guid] == null ? 0 : 1,
           host: m.guid,
-          mpsuser: amtCredentials[m.guid]?.mpsuser,
-          name: amtCredentials[m.guid]?.name,
+          mpsuser: amtCredentials ? amtCredentials[m.guid]?.mpsuser : null,
+          name: amtCredentials ? amtCredentials[m.guid]?.name : null,
           metadata: m
         })
       }

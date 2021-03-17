@@ -11,10 +11,10 @@ import { mapToMetadata } from './mapToMetadata'
 import { logger as log } from '../utils/logger'
 import { DeviceMetadata } from '../models/models'
 import { PostgresDb } from '.'
-import { IDeviceDb } from '../interfaces/IDeviceDb'
+import { IMetadataDb } from '../interfaces/IDeviceDb'
 import { Environment } from '../utils/Environment'
 
-export class DeviceDb implements IDeviceDb {
+export class MetadataDb implements IMetadataDb {
   db: PostgresDb
   constructor (db?: PostgresDb) {
     if (Environment.Config.use_db) {
@@ -129,8 +129,8 @@ export class DeviceDb implements IDeviceDb {
           deviceMetadata.tags
         ])
       if (results.rowCount > 0) {
-        const domain = await this.getById(deviceMetadata.guid)
-        return domain
+        const metadata = await this.getById(deviceMetadata.guid)
+        return metadata
       }
       return null
     } catch (error) {

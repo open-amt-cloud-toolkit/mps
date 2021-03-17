@@ -4,7 +4,7 @@
  **********************************************************************/
 import { DeviceMetadata } from '../models/models'
 
-export interface IDeviceDb {
+export interface IMetadataDb {
   get: () => Promise<DeviceMetadata[]>
   getDistinctTags: () => Promise<String[]>
   getById: (guid: string) => Promise<DeviceMetadata>
