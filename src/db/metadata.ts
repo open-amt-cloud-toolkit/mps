@@ -11,10 +11,10 @@ import { mapToMetadata } from './mapToMetadata'
 import { logger as log } from '../utils/logger'
 import { DeviceMetadata } from '../models/models'
 import { PostgresDb } from '.'
-import { IDeviceDb } from '../interfaces/IDeviceDb'
+import { IMetadataDb } from '../interfaces/IDeviceDb'
 import { Environment } from '../utils/Environment'
 
-export class DeviceDb implements IDeviceDb {
+export class MetadataDb implements IMetadataDb {
   db: PostgresDb
   constructor (db?: PostgresDb) {
     if (Environment.Config.use_db) {
@@ -29,6 +29,28 @@ export class DeviceDb implements IDeviceDb {
   async get (): Promise<DeviceMetadata[]> {
     if (!Environment.Config.use_db) return []
     const results = await this.db.query('SELECT * FROM devices')
+    return results.rows.map(p => {
+      const result = mapToMetadata(p)
+      return result
+    })
+  }
+
+  async getDistinctTags (): Promise<string[]> {
+    if (!Environment.Config.use_db) return []
+    const results = await this.db.query('SELECT DISTINCT unnest(tags) as tag FROM Devices')
+    return results.rows.map(p => {
+      return p.tag
+    })
+  }
+
+  async getByTags (tags: string[], method: string): Promise<DeviceMetadata[]> {
+    if (!Environment.Config.use_db) return []
+    let results
+    if (method === 'AND') {
+      results = await this.db.query('SELECT * FROM devices WHERE tags @> $1', [tags])
+    } else { // assume OR
+      results = await this.db.query('SELECT * FROM devices WHERE tags && $1', [tags])
+    }
     return results.rows.map(p => {
       const result = mapToMetadata(p)
       return result
@@ -107,8 +129,8 @@ export class DeviceDb implements IDeviceDb {
           deviceMetadata.tags
         ])
       if (results.rowCount > 0) {
-        const domain = await this.getById(deviceMetadata.guid)
-        return domain
+        const metadata = await this.getById(deviceMetadata.guid)
+        return metadata
       }
       return null
     } catch (error) {

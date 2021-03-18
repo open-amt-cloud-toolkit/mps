@@ -4,9 +4,11 @@
 **********************************************************************/
 
 import { Router } from 'express'
-import deviceRouter from './device/index'
+import metadataRouter from './metadata/index'
+import deviceRouter from './devices/index'
 
 const router: Router = Router()
-router.use('/', deviceRouter)
+router.use('/devices', deviceRouter)
+router.use('/metadata', metadataRouter)
 
 export default router

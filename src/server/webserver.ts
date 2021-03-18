@@ -377,7 +377,7 @@ export class WebServer {
       // })
 
       // Routes
-      this.app.use('/devices', this.isAuthenticated, router)
+      this.app.use('/', this.isAuthenticated, this.attachMpsService, router)
       this.app.use('/amt', this.isAuthenticated, amt.router)
       this.app.use('/admin', this.isAuthenticated, admin.router)
 
@@ -437,6 +437,11 @@ export class WebServer {
     } catch (error) {
       log.error(`Exception in webserver: ${error}`)
     }
+  }
+
+  attachMpsService = (req, res, next): void => {
+    req.mpsService = this.mpsService
+    next()
   }
 
   // Authentication for REST API and Web User login
