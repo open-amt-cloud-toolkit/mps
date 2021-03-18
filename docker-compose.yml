@@ -1,0 +1,23 @@
+#/*********************************************************************
+# Copyright (c) Intel Corporation 2020
+# SPDX-License-Identifier: Apache-2.0
+#**********************************************************************/
+version: '3.4'
+services:
+  mps:
+    image: mps:${GITHUB_SHA}
+    network_mode: host
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      MPS_CONNECTION_STRING: "postgresql://postgresadmin:admin123@db:5432/mpsdb"
+  db:
+    image: postgres
+    network_mode: host
+    restart: always
+    environment:
+      POSTGRES_USER: postgresadmin
+      POSTGRES_PASSWORD: admin123
+    volumes: 
+      - ./data:/docker-entrypoint-initdb.d
