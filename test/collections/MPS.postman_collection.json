@@ -339,6 +339,86 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Authorize",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"standalone\",\r\n    \"password\":\"password\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{protocol}}://{{host}}:3000/authorize",
+					"protocol": "{{protocol}}",
+					"host": [
+						"{{host}}"
+					],
+					"port": "3000",
+					"path": [
+						"authorize"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Stats",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Expect to have 3 properties\",function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.totalCount).to.be.above(-1)\r",
+							"    pm.expect(jsonData.connectedCount).to.be.above(-1)\r",
+							"    pm.expect(jsonData.disconnectedCount).to.be.above(-1)\r",
+							"    \r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{protocol}}://{{host}}:3000/devices/stats",
+					"protocol": "{{protocol}}",
+					"host": [
+						"{{host}}"
+					],
+					"port": "3000",
+					"path": [
+						"devices",
+						"stats"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"auth": {
