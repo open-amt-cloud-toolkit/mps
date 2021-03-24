@@ -16,6 +16,6 @@ export async function stats (req, res): Promise<void> {
   res.json({
     totalCount,
     connectedCount,
-    disconnectedCount: totalCount - connectedCount
+    disconnectedCount: Math.max(totalCount - connectedCount, 0)
   })
 }
