@@ -32,6 +32,8 @@ import interceptor from '../utils/interceptor.js'
 import WebSocket from 'ws'
 import { URL } from 'url'
 
+// const MPS_MESSAGE_HEADER_LENGTH = 85;
+
 export class WebServer {
   db: IDbProvider
   app: any
@@ -93,18 +95,7 @@ export class WebServer {
       })
 
       // Session Configuration
-      const sess: any = {
-        // Strongly recommended to change this key for Production thru ENV variable MPS_SESSION_ENCRYPTION_KEY
-
-        secret: this.config.session_encryption_key || '<YourStrongRandomizedKey123!>',
-        resave: true,
-        saveUninitialized: true,
-        cookie: { secure: false } // by default false. use true for prod like below.
-      }
-      if (this.config.auth_enabled) {
-        sess.cookie.secure = true
-        sess.cookie.sameSite = 'none'
-      }
+      const sess = this.mpsService.sess
 
       // express-session config for production
       if (this.app.get('env') === 'production') {
@@ -244,10 +235,12 @@ export class WebServer {
             // If this is TCP (without TLS) set a normal TCP socket
             // check if this is MPS connection
             const uuid = params.host
-            if (uuid && this.mpsService.mpsserver.ciraConnections[uuid]) {
-              const ciraconn = this.mpsService.mpsserver.ciraConnections[uuid]
+            const ciraConn = await this.mpsService.CiraConnectionFactory.getConnection(uuid)
+            if (uuid && ciraConn) {
+              log.silly(`go setup the CIRA channel for ${uuid}`)
+              // Setup CIRA channel for the device
               ws.forwardclient = this.mpsService.mpsserver.SetupCiraChannel(
-                ciraconn,
+                ciraConn,
                 params.port
               )
 

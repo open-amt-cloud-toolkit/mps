@@ -35,12 +35,12 @@ export class SetAMTFeaturesHandler implements IAmtHandler {
       if (payload.guid) {
         // Checks request input values
         this.validatePayload(payload)
-        const ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid]
+        const ciraconn = await this.mpsService.CiraConnectionFactory.getConnection(payload.guid)
         if (ciraconn && ciraconn.readyState === 'open') {
           const cred = await this.mpsService.db.getAmtPassword(payload.guid)
           const amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0)
           await AMTFeatures.setAMTFeatures(amtstack, payload)
-          amtstack.wsman.comm.socket.sendchannelclose()
+          // amtstack.wsman.comm.socket.sendchannelclose()
           const response: apiResponseType = { statuscode: 200, payload: { status: 'Updated AMT Features' } }
           res.status(200).send(JSON.stringify(response))
         } else {

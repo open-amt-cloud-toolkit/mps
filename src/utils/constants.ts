@@ -3,8 +3,9 @@
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
 
-// WS-MAN libraries
 export const amtPort = 16992
+
+export const DefaultNetworkingAdaptor = 'eth0'
 
 export const UUIDRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/
 

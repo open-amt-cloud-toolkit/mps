@@ -33,12 +33,12 @@ export class GetAMTFeaturesHandler implements IAmtHandler {
     try {
       const payload = req.body.payload
       if (payload.guid) {
-        const ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid]
+        const ciraconn = await this.mpsService.CiraConnectionFactory.getConnection(payload.guid)
         if (ciraconn && ciraconn.readyState === 'open') {
           const cred = await this.mpsService.db.getAmtPassword(payload.guid)
           const amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0)
           const wsmanResponse = await AMTFeatures.getAMTFeatures(amtstack, payload)
-          amtstack.wsman.comm.socket.sendchannelclose()
+          // amtstack.wsman.comm.socket.sendchannelclose()
           if (wsmanResponse[AMTFeaturesConst.AMT_REDIR_SERVICE] &&
                         wsmanResponse[AMTFeaturesConst.AMT_KVM_REDIR] &&
                         wsmanResponse[AMTFeaturesConst.AMT_OPTIN_SERVICE]) {

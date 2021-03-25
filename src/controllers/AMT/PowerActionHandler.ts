@@ -36,7 +36,7 @@ export class PowerActionHandler implements IAmtHandler {
 
       if (payload.guid) {
         if (payload.action) {
-          const ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid]
+          const ciraconn = await this.mpsService.CiraConnectionFactory.getConnection(payload.guid)
           if (!isNaN(payload.action) && DMTFPowerStates.includes(parseInt(payload.action))) {
             if (ciraconn && ciraconn.readyState === 'open') {
               const cred = await this.mpsService.db.getAmtPassword(payload.guid)
@@ -222,7 +222,7 @@ export class PowerActionHandler implements IAmtHandler {
     amtstack.RequestPowerStateChange(
       action,
       (stack, name, response, status) => {
-        stack.wsman.comm.socket.sendchannelclose()
+        // stack.wsman.comm.socket.sendchannelclose()
         if (status === 200) {
           // log.info(`Power state change request successful for guid : ${uuid}`);
           res.send(response)

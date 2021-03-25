@@ -27,12 +27,12 @@ export class EventLogHandler implements IAmtHandler {
     try {
       const payload = req.body.payload
       if (payload.guid) {
-        const ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid]
+        const ciraconn = await this.mpsService.CiraConnectionFactory.getConnection(payload.guid)
         if (ciraconn && ciraconn.readyState === 'open') {
           const cred = await this.mpsService.db.getAmtPassword(payload.guid)
           const amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0)
           amtstack.GetMessageLog(function (stack, responses, tag, status) {
-            stack.wsman.comm.socket.sendchannelclose()
+            // stack.wsman.comm.socket.sendchannelclose()
             if (status === 200) {
               res.send(responses)
             } else {

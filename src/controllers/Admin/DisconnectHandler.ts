@@ -27,7 +27,7 @@ export class DisconnectHandler implements IAdminHandler {
       // Check if request body contains guid information
       if (payload.guid) {
         // check if guid is connected
-        const ciraconn = this.mps.mpsserver.ciraConnections[payload.guid]
+        const ciraconn = await this.mps.CiraConnectionFactory.getConnection(payload.guid)
         if (ciraconn) {
           try {
             ciraconn.destroy()
