@@ -4,18 +4,15 @@
  **********************************************************************/
 
 import { Router } from 'express'
-import { insertDevice } from './create'
-import { deleteDevice } from './delete'
-import { get } from './get'
+import { metadataQueryValidator } from './deviceValidator'
+
 import { getAll } from './getAll'
-import { updateDevice } from './update'
+import { stats } from './stats'
 
 const deviceRouter: Router = Router()
 
-deviceRouter.get('/', getAll)
-deviceRouter.get('/:id', get)
-deviceRouter.post('/', insertDevice)
-deviceRouter.patch('/', updateDevice)
-deviceRouter.delete('/:id', deleteDevice)
+deviceRouter.get('/', metadataQueryValidator(), getAll)
+deviceRouter.get('/stats', stats)
+// deviceRouter.get('/:id', get)
 
 export default deviceRouter
