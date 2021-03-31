@@ -67,6 +67,13 @@ paths:
     get:
       tags:
         - Devices
+      parameters:
+      - name: tags
+        in: query
+        description: Comma-delimited list of tags to query for
+        required: false
+        schema:
+          type: string
       responses:
         200:
           description: 'successful operation'
@@ -176,6 +183,20 @@ paths:
       responses:
         204:
           description: 'no content'
+  /metadata/tags:
+    get:
+      description: Returns a list of unique tags across all devices in MPS
+      tags:
+        - Metadata
+      responses:
+        200:
+          description: 'successful operation'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
 components:
   schemas:
     AMTRequest:
