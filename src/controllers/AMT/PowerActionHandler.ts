@@ -9,7 +9,7 @@ import { logger as log } from '../../utils/logger'
 import { IAmtHandler } from '../../models/IAmtHandler'
 import { MPSMicroservice } from '../../mpsMicroservice'
 import AMTStackFactory from '../../amt_libraries/amt-connection-factory.js'
-import { DMTFPowerStates, amtPort } from '../../utils/constants'
+import { DMTFPowerStates, amtPort, MPSMode } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 
 export class PowerActionHandler implements IAmtHandler {
@@ -36,7 +36,7 @@ export class PowerActionHandler implements IAmtHandler {
 
       if (payload.guid) {
         if (payload.action) {
-          const ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid]
+          const ciraconn = await this.mpsService.ciraConnectionFactory.getConnection(payload.guid)
           if (!isNaN(payload.action) && DMTFPowerStates.includes(parseInt(payload.action))) {
             if (ciraconn && ciraconn.readyState === 'open') {
               const cred = await this.mpsService.db.getAmtPassword(payload.guid)
@@ -222,7 +222,9 @@ export class PowerActionHandler implements IAmtHandler {
     amtstack.RequestPowerStateChange(
       action,
       (stack, name, response, status) => {
-        stack.wsman.comm.socket.sendchannelclose()
+        if (this.mpsService.config.startup_mode === MPSMode.Standalone) {
+          stack.wsman.comm.socket.sendchannelclose()
+        }
         if (status === 200) {
           // log.info(`Power state change request successful for guid : ${uuid}`);
           res.send(response)

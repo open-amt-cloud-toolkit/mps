@@ -10,7 +10,7 @@ import { logger as log } from '../../utils/logger'
 import { IAmtHandler } from '../../models/IAmtHandler'
 import { MPSMicroservice } from '../../mpsMicroservice'
 import AMTStackFactory from '../../amt_libraries/amt-connection-factory.js'
-import { amtPort, AMTFeaturesConst, UserConsentOptions } from '../../utils/constants'
+import { amtPort, AMTFeaturesConst, UserConsentOptions, MPSMode } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { AMTFeatures } from '../../utils/AMTFeatures'
 import { MPSValidationError } from '../../utils/MPSValidationError'
@@ -33,12 +33,14 @@ export class GetAMTFeaturesHandler implements IAmtHandler {
     try {
       const payload = req.body.payload
       if (payload.guid) {
-        const ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid]
+        const ciraconn = await this.mpsService.ciraConnectionFactory.getConnection(payload.guid)
         if (ciraconn && ciraconn.readyState === 'open') {
           const cred = await this.mpsService.db.getAmtPassword(payload.guid)
           const amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0)
           const wsmanResponse = await AMTFeatures.getAMTFeatures(amtstack, payload)
-          amtstack.wsman.comm.socket.sendchannelclose()
+          if (this.mpsService.config.startup_mode === MPSMode.Standalone) {
+            amtstack.wsman.comm.socket.sendchannelclose()
+          }
           if (wsmanResponse[AMTFeaturesConst.AMT_REDIR_SERVICE] &&
                         wsmanResponse[AMTFeaturesConst.AMT_KVM_REDIR] &&
                         wsmanResponse[AMTFeaturesConst.AMT_OPTIN_SERVICE]) {

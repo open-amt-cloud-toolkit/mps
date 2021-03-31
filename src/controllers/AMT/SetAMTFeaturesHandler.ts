@@ -10,7 +10,7 @@ import { logger as log } from '../../utils/logger'
 import { IAmtHandler } from '../../models/IAmtHandler'
 import { MPSMicroservice } from '../../mpsMicroservice'
 
-import { amtPort, UserConsentOptions } from '../../utils/constants'
+import { amtPort, MPSMode, UserConsentOptions } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { AMTFeatures } from '../../utils/AMTFeatures'
 import AMTStackFactory from '../../amt_libraries/amt-connection-factory.js'
@@ -35,12 +35,14 @@ export class SetAMTFeaturesHandler implements IAmtHandler {
       if (payload.guid) {
         // Checks request input values
         this.validatePayload(payload)
-        const ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid]
+        const ciraconn = await this.mpsService.ciraConnectionFactory.getConnection(payload.guid)
         if (ciraconn && ciraconn.readyState === 'open') {
           const cred = await this.mpsService.db.getAmtPassword(payload.guid)
           const amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0)
           await AMTFeatures.setAMTFeatures(amtstack, payload)
-          amtstack.wsman.comm.socket.sendchannelclose()
+          if (this.mpsService.config.startup_mode === MPSMode.Standalone) {
+            amtstack.wsman.comm.socket.sendchannelclose()
+          }
           const response: apiResponseType = { statuscode: 200, payload: { status: 'Updated AMT Features' } }
           res.status(200).send(JSON.stringify(response))
         } else {

@@ -9,7 +9,7 @@ import { logger as log } from '../../utils/logger'
 import { IAmtHandler } from '../../models/IAmtHandler'
 import { MPSMicroservice } from '../../mpsMicroservice'
 import AMTStackFactory from '../../amt_libraries/amt-connection-factory.js'
-import { amtPort } from '../../utils/constants'
+import { amtPort, MPSMode } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 
 export class EventLogHandler implements IAmtHandler {
@@ -27,12 +27,14 @@ export class EventLogHandler implements IAmtHandler {
     try {
       const payload = req.body.payload
       if (payload.guid) {
-        const ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid]
+        const ciraconn = await this.mpsService.ciraConnectionFactory.getConnection(payload.guid)
         if (ciraconn && ciraconn.readyState === 'open') {
           const cred = await this.mpsService.db.getAmtPassword(payload.guid)
           const amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0)
           amtstack.GetMessageLog(function (stack, responses, tag, status) {
-            stack.wsman.comm.socket.sendchannelclose()
+            if (this.mpsService.config.startup_mode === MPSMode.Standalone) {
+              stack.wsman.comm.socket.sendchannelclose()
+            }
             if (status === 200) {
               res.send(responses)
             } else {
