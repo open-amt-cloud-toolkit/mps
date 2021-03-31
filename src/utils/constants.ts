@@ -3,8 +3,9 @@
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
 
-// WS-MAN libraries
 export const amtPort = 16992
+
+export const DefaultNetworkingAdaptor = 'eth0'
 
 export const UUIDRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/
 
@@ -50,4 +51,16 @@ export const AMTFeaturesConst = {
   AMT_KVM_REQUESTED_STATE: 'RequestedState',
   AMT_OPTIN_SERVICE: 'IPS_OptInService',
   AMT_USER_CONSENT: 'OptInRequired'
+}
+
+export enum KeyValueStore {
+  Unknown = 'Unknown',
+  HashiCorpConsul = 'HashiCorpConsul'
+}
+
+export enum MPSMode {
+  Unknown = 'Unknown',
+  Standalone = 'standalone',
+  MPS = 'mps',
+  WEB = 'web'
 }

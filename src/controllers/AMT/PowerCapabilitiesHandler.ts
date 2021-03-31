@@ -9,7 +9,7 @@ import { logger as log } from '../../utils/logger'
 import { IAmtHandler } from '../../models/IAmtHandler'
 import { MPSMicroservice } from '../../mpsMicroservice'
 import { ErrorResponse } from '../../utils/amtHelper'
-import { amtPort } from '../../utils/constants'
+import { amtPort, MPSMode } from '../../utils/constants'
 import AMTStackFactory from '../../amt_libraries/amt-connection-factory.js'
 
 export class PowerCapabilitiesHandler implements IAmtHandler {
@@ -27,7 +27,7 @@ export class PowerCapabilitiesHandler implements IAmtHandler {
     try {
       const payload = req.body.payload
       if (payload.guid) {
-        const ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid]
+        const ciraconn = await this.mpsService.ciraConnectionFactory.getConnection(payload.guid)
         if (ciraconn && ciraconn.readyState === 'open') {
           const cred = await this.mpsService.db.getAmtPassword(payload.guid)
           const amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0)
@@ -102,7 +102,9 @@ export class PowerCapabilitiesHandler implements IAmtHandler {
     try {
       amtstack.BatchEnum('', ['CIM_SoftwareIdentity', '*AMT_SetupAndConfigurationService'],
         function (stack, name, responses, status) {
-          stack.wsman.comm.socket.sendchannelclose()
+          if (this.mpsService.config.startup_mode === MPSMode.Standalone) {
+            stack.wsman.comm.socket.sendchannelclose()
+          }
           if (status !== 200) {
             res.status(status).send(ErrorResponse(status, 'Request failed during AMTVersion BatchEnum Exec.'))
             return

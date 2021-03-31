@@ -9,7 +9,7 @@ import { logger as log } from '../../utils/logger'
 import { IAmtHandler } from '../../models/IAmtHandler'
 import { MPSMicroservice } from '../../mpsMicroservice'
 
-import { amtPort } from '../../utils/constants'
+import { amtPort, MPSMode } from '../../utils/constants'
 import AMTStackFactory from '../../amt_libraries/amt-connection-factory.js'
 import { ErrorResponse } from '../../utils/amtHelper'
 
@@ -28,12 +28,14 @@ export class GeneralSettingsHandler implements IAmtHandler {
     try {
       const payload = req.body.payload
       if (payload.guid) {
-        const ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid]
+        const ciraconn = await this.mpsService.ciraConnectionFactory.getConnection(payload.guid)
         if (ciraconn) {
           const cred = await this.mpsService.db.getAmtPassword(payload.guid)
           const amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0)
           await amtstack.Get('AMT_GeneralSettings', (obj, name, response, status) => {
-            obj.wsman.comm.socket.sendchannelclose()
+            if (this.mpsService.config.startup_mode === MPSMode.Standalone) {
+              obj.wsman.comm.socket.sendchannelclose()
+            }
             if (status === 200) {
               res.set({ 'Content-Type': 'application/json' })
               res.send(response)

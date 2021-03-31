@@ -40,7 +40,6 @@ export class Database implements IDbProvider {
       if (this.datapath && fs.existsSync(this.datapath)) {
         const fileData = fs.readFileSync(this.datapath, 'utf8')
         const jsonData = JSON.parse(fileData)
-        // console.log(jsonData)
         if (Array.isArray(jsonData.allowlist_guids)) {
           guids = guids.concat(jsonData.allowlist_guids)
         }

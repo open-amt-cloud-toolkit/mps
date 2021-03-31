@@ -8,7 +8,7 @@ import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
 import { IAmtHandler } from '../../models/IAmtHandler'
 import { MPSMicroservice } from '../../mpsMicroservice'
-import { amtPort } from '../../utils/constants'
+import { amtPort, MPSMode } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 import AMTStackFactory from '../../amt_libraries/amt-connection-factory.js'
 
@@ -27,7 +27,7 @@ export class HardwareInfoHandler implements IAmtHandler {
     try {
       const payload = req.body.payload
       if (payload.guid) {
-        const ciraconn = this.mpsService.mpsserver.ciraConnections[payload.guid]
+        const ciraconn = await this.mpsService.ciraConnectionFactory.getConnection(payload.guid)
         if (ciraconn && ciraconn.readyState === 'open') {
           const cred = await this.mpsService.db.getAmtPassword(payload.guid)
           const amtstack = this.amtFactory.getAmtStack(payload.guid, amtPort, cred[0], cred[1], 0)
@@ -35,12 +35,13 @@ export class HardwareInfoHandler implements IAmtHandler {
             'CIM_SystemPackaging', '*CIM_Chassis', 'CIM_Chip', '*CIM_Card', '*CIM_BIOSElement',
             'CIM_Processor', 'CIM_PhysicalMemory', 'CIM_MediaAccessDevice', 'CIM_PhysicalPackage'],
           (stack, name, responses, status) => {
-            stack.wsman.comm.socket.sendchannelclose()
+            if (this.mpsService.config.startup_mode === MPSMode.Standalone) {
+              stack.wsman.comm.socket.sendchannelclose()
+            }
             if (status !== 200) {
               log.error(`Request failed during AMTHardware Information BatchEnum Exec for guid : ${payload.guid}.`)
               return res.status(status).send(ErrorResponse(status, `Request failed during AMTHardware Information BatchEnum Exec for guid : ${payload.guid}.`))
             } else {
-            // console.log("Hardware info of " + uuid + " sent.");
               res.send(responses)
             }
           })
