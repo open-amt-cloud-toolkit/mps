@@ -42,11 +42,8 @@ function CreateWsmanComm(host, port, user, pass, tls, parent) {
     obj.cnonce = Math.random().toString(36).substring(7); // Generate a random client nonce
 
     // Private method
-    obj.Debug = function (msg) { log.debug(msg); }
-    obj.Info = function (msg) { log.info(msg); }
-    obj.Error = function (msg) { log.error(msg); }
-    obj.Silly = function (msg) { log.silly(msg); }
-    
+    obj.Debug = function (msg) { console.log(msg); }
+
     // Private method
     //   pri = priority, if set to 1, the call is high priority and put on top of the stack.
     obj.PerformAjax = function (postdata, callback, tag, pri, url, action) {
@@ -134,7 +131,7 @@ function CreateWsmanComm(host, port, user, pass, tls, parent) {
         obj.socketState = 1;
 
         obj.parent.ciraConnectionFactory.getConnection(obj.host).then((ciraconn) => {
-            obj.socket = obj.parent.CiraChannelFactory.getChannel(ciraconn, obj.port);
+            obj.socket = obj.parent.ciraChannelFactory.getChannel(ciraconn, obj.port);
 
             obj.socket.onData = function (ccon, data) {
                 _OnSocketData(data);
