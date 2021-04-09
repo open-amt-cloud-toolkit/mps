@@ -5,8 +5,8 @@ export async function login (req, res): Promise<void> {
   if (username && password) {
     // todo: implement a more advanced authentication system and RBAC
     if (username === req.mpsService.config.web_admin_user && password === req.mpsService.config.web_admin_password) {
-      const expirationhours = Number(req.mpsService.config.jwt_expiration)
-      const expiration = Date.now() + (1000 * 60 * 60 * expirationhours)
+      const expirationMinutes = Number(req.mpsService.config.jwt_expiration)
+      const expiration = Math.floor((Date.now() + (1000 * 60 * expirationMinutes)) / 1000)
       const signature = jws.sign({
         header: { alg: 'HS256', typ: 'JWT' },
         payload: {
