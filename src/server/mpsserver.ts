@@ -163,9 +163,6 @@ export class MPSServer {
     this.server.on('error', (err) => {
       log.error(`ERROR: Intel(R) AMT server port ${this.config.port} is not available.`)
       if (err) log.error(err)
-      // if (this.config.exactports) {
-      //     process.exit();
-      // }
     })
   }
 

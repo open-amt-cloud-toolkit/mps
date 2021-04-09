@@ -5,19 +5,38 @@
 version: '3.4'
 services:
   mps:
-    image: mps:${GITHUB_SHA}
-    network_mode: host
+    image: mps
+    networks:
+      - openamtnetwork
+    ports:
+      - 3000:3000
     build:
       context: .
       dockerfile: ./Dockerfile
     environment:
       MPS_CONNECTION_STRING: "postgresql://postgresadmin:admin123@db:5432/mpsdb"
+      MPS_VAULT_ADDRESS: "http://vault:8200"
   db:
     image: postgres
-    network_mode: host
+    networks:
+      - openamtnetwork
     restart: always
     environment:
       POSTGRES_USER: postgresadmin
       POSTGRES_PASSWORD: admin123
     volumes: 
       - ./data:/docker-entrypoint-initdb.d
+  vault:
+    image: "vault"
+    networks:
+      - openamtnetwork
+    ports: 
+      - "8200:8200"
+    environment: 
+      VAULT_DEV_ROOT_TOKEN_ID: myroot
+      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+    cap_add: 
+      - IPC_LOCK
+networks: 
+  openamtnetwork:
+    driver: "bridge"

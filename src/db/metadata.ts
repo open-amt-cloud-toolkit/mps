@@ -17,9 +17,7 @@ import { Environment } from '../utils/Environment'
 export class MetadataDb implements IMetadataDb {
   db: PostgresDb
   constructor (db?: PostgresDb) {
-    if (Environment.Config.use_db) {
-      this.db = db ?? new PostgresDb(Environment.Config.connection_string)
-    }
+    this.db = db ?? new PostgresDb(Environment.Config.connection_string)
   }
 
   /**
@@ -27,7 +25,6 @@ export class MetadataDb implements IMetadataDb {
    * @returns {DeviceMetadata[]} returns an array of objects
    */
   async get (): Promise<DeviceMetadata[]> {
-    if (!Environment.Config.use_db) return []
     const results = await this.db.query('SELECT * FROM devices')
     return results.rows.map(p => {
       const result = mapToMetadata(p)
@@ -36,7 +33,6 @@ export class MetadataDb implements IMetadataDb {
   }
 
   async getDistinctTags (): Promise<string[]> {
-    if (!Environment.Config.use_db) return []
     const results = await this.db.query('SELECT DISTINCT unnest(tags) as tag FROM Devices')
     return results.rows.map(p => {
       return p.tag
@@ -44,7 +40,6 @@ export class MetadataDb implements IMetadataDb {
   }
 
   async getByTags (tags: string[], method: string): Promise<DeviceMetadata[]> {
-    if (!Environment.Config.use_db) return []
     let results
     if (method === 'AND') {
       results = await this.db.query('SELECT * FROM devices WHERE tags @> $1', [tags])
@@ -63,7 +58,6 @@ export class MetadataDb implements IMetadataDb {
    * @returns {DeviceMetadata} Domain object
    */
   async getById (guid: string): Promise<DeviceMetadata> {
-    if (!Environment.Config.use_db) return null
     const results = await this.db.query('SELECT * FROM devices WHERE guid = $1', [guid])
     let domain: DeviceMetadata = null
     if (results.rowCount > 0) {
@@ -78,7 +72,6 @@ export class MetadataDb implements IMetadataDb {
    * @returns {boolean} Return true on successful deletion
    */
   async delete (guid): Promise<boolean> {
-    if (!Environment.Config.use_db) return true
     const results = await this.db.query('DELETE FROM devices WHERE guid = $1', [guid])
     if (results.rowCount > 0) {
       return true
@@ -92,7 +85,6 @@ export class MetadataDb implements IMetadataDb {
    * @returns {boolean} Return true on successful insertion
    */
   async insert (deviceMetadata: DeviceMetadata): Promise<DeviceMetadata> {
-    if (!Environment.Config.use_db) return null
     try {
       const results = await this.db.query('INSERT INTO devices(guid, hostname, tags) values($1, $2, ARRAY(SELECT json_array_elements_text($3)))',
         [
@@ -120,7 +112,6 @@ export class MetadataDb implements IMetadataDb {
    * @returns {boolean} Return true on successful update
    */
   async update (deviceMetadata: DeviceMetadata): Promise <DeviceMetadata> {
-    if (!Environment.Config.use_db) return null
     try {
       const results = await this.db.query('UPDATE devices SET name=$2, tags=$3 WHERE guid=$1',
         [

@@ -12,9 +12,6 @@ import { getDistributedKV } from './utils/IDistributedKV'
 import { MpsProxy } from './server/proxies/MpsProxy'
 import { CiraConnectionFactory } from './CiraConnectionFactory'
 import { CiraChannelFactory } from './CiraChannelFactory'
-import session from 'express-session'
-import redis from 'redis'
-import connectRedis from 'connect-redis'
 import { MPSMode } from './utils/constants'
 
 export class MPSMicroservice {
@@ -27,7 +24,6 @@ export class MPSMicroservice {
   db: IDbProvider
   ciraConnectionFactory: CiraConnectionFactory
   ciraChannelFactory: CiraChannelFactory
-  sess: any
 
   constructor (config: configType, db: IDbProvider, certs: certificatesType) {
     try {
@@ -42,53 +38,11 @@ export class MPSMicroservice {
 
   start (): void {
     if (this.config.startup_mode === MPSMode.Standalone) {
-      // Session Configuration
-      this.sess = {
-        // Strongly recommended to change this key for Production thru ENV variable MPS_SESSION_ENCRYPTION_KEY
-        secret: this.config.session_encryption_key || '<YourStrongRandomizedKey123!>',
-        name: 'SessionSupport',
-        resave: true,
-        saveUninitialized: true,
-        cookie: { secure: false } // by default false. use true for prod like below.
-      }
       this.webserver = new WebServer(this)
       this.mpsserver = new MPSServer(this)
       this.ciraConnectionFactory = new CiraConnectionFactory(async (hostGuid) => this.mpsserver.ciraConnections[hostGuid])
       this.ciraChannelFactory = new CiraChannelFactory((socket, port) => this.mpsserver.SetupCiraChannel(socket, port))
     } else if (this.config.startup_mode === MPSMode.WEB) { // Running in distributed mode
-      if (this.config.redis_enable) {
-        log.silly('Redis enabled')
-        // Session handling with Redis - in scale mode
-        const redisClient = redis.createClient({ port: this.config.redis_port, host: this.config.redis_host, password: this.config.redis_password }) // "redis" container
-        const RedisStore = connectRedis(session)
-        log.silly('connect to Redis')
-        redisClient.on('error', (err) => {
-          console.log('Redis error: ', err)
-        })
-
-        // Session Configuration
-        this.sess = {
-          // Strongly recommended to change this key for Production thru ENV variable MPS_SESSION_ENCRYPTION_KEY
-          secret: this.config.session_encryption_key || '<YourStrongRandomizedKey123!>',
-          name: 'SessionSupport',
-          resave: true,
-          saveUninitialized: true,
-          cookie: { secure: false }, // by default false. use true for prod like below.
-          store: new RedisStore({ host: this.config.redis_host, port: this.config.redis_port, client: redisClient, ttl: 86400 })
-        }
-      } else {
-        log.silly('Redis disabled')
-        // Session Configuration
-        this.sess = {
-          // Strongly recommended to change this key for Production thru ENV variable MPS_SESSION_ENCRYPTION_KEY
-          secret: this.config.session_encryption_key || '<YourStrongRandomizedKey123!>',
-          name: 'SessionSupport',
-          resave: true,
-          saveUninitialized: true,
-          cookie: { secure: false } // by default false. use true for prod like below.
-        }
-      }
-
       this.webserver = new WebServer(this)
       getDistributedKV(this).addEventWatch()
       this.ciraConnectionFactory = new CiraConnectionFactory(async (hostGuid) => {
