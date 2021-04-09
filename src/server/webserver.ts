@@ -12,11 +12,8 @@
 import * as net from 'net'
 import * as tls from 'tls'
 import express from 'express'
-import * as https from 'https'
 import * as http from 'http'
 import * as parser from 'body-parser'
-
-import session from 'express-session'
 
 import { configType, certificatesType, queryParams } from '../models/Config'
 import { AMTRoutes } from '../routes/amtRoutes'
@@ -31,6 +28,7 @@ import { IDbProvider } from '../models/IDbProvider'
 import interceptor from '../utils/interceptor.js'
 import WebSocket from 'ws'
 import { URL } from 'url'
+import cors from 'cors'
 
 export class WebServer {
   db: IDbProvider
@@ -57,87 +55,15 @@ export class WebServer {
       const admin = new AdminRoutes(this.mpsService)
 
       // Create Server
-      const appConfig = this.config
-      if (this.config.https) {
-        this.server = https.createServer(this.certs.web_tls_config, this.app)
-      } else {
-        this.server = http.createServer(this.app)
-      }
+      this.server = http.createServer(this.app)
+      this.app.use(cors())
 
-      this.app.use((req, res, next) => {
-        // Clickjacking defence
-        res.setHeader('X-Frame-Options', 'SAMEORIGIN')
-        const allowedOrigins: string[] = this.config.cors_origin.split(',').map((domain) => {
-          return domain.trim()
-        })
-        res.header('Access-Control-Allow-Credentials', 'true')
-        if (allowedOrigins.includes(req.headers.origin)) {
-          res.setHeader('Access-Control-Allow-Origin', req.headers.origin)
-        } else {
-          res.setHeader('Access-Control-Allow-Origin', '*')
-        }
-        if (this.config.cors_headers != null && this.config.cors_headers !== '') {
-          res.setHeader('Access-Control-Allow-Headers', this.config.cors_headers)
-        } else {
-          res.setHeader('Access-Control-Allow-Headers', '*')
-        }
-        if (req.method === 'OPTIONS') {
-          if (this.config.cors_methods != null && this.config.cors_methods !== '') {
-            res.setHeader('Access-Control-Allow-Methods', this.config.cors_methods)
-          } else {
-            res.setHeader('Access-Control-Allow-Methods', '*')
-          }
-          return res.status(200).end()
-        }
-        next()
-      })
-
-      // Session Configuration
-      const sess = this.mpsService.sess
-
-      // express-session config for production
-      if (this.app.get('env') === 'production') {
-        this.app.set('trust proxy', 1) // trust first proxy
-        sess.cookie.secure = true // serve secure cookies
-        sess.cookie.maxAge = 24 * 60 * 60 * 1000 // limiting cookie age to a day.
-      }
-      // Initialize session
-      this.sessionParser = session(sess)
-      this.app.use(this.sessionParser)
-
-      // Indicates to ExpressJS that the public folder should be used to serve static files.
-      this.app.use(parser.urlencoded({ extended: true }))
       // Handles the Bad JSON exceptions
       this.app.use(parser.json(), (err, req, res, next) => {
         if (err instanceof SyntaxError) {
           return res.status(400).send(ErrorResponse(400))
         }
         next()
-      })
-
-      this.app.post('/authorize', function (request, response) {
-        const username = request.body.username
-        const password = request.body.password
-        if (username && password) {
-          // todo: implement a more advanced authentication system and RBAC
-          if (username === appConfig.web_admin_user && password === appConfig.web_admin_password) {
-            request.session.loggedin = true
-            request.session.username = username
-            response.status(200).send()
-          } else {
-            response.status(403).send('Incorrect Username and/or Password!')
-          }
-          response.end()
-        } else {
-          response.send('Please enter Username and Password!')
-          response.end()
-        }
-      })
-      this.app.get('/logout', function (request, response) {
-        if (request.session) {
-          request.session.destroy()
-        }
-        response.status(200).end()
       })
 
       // Console connects to this websocket for a persistent connection
@@ -204,9 +130,7 @@ export class WebServer {
           })
 
           // We got a new web socket connection, initiate a TCP connection to the target Intel AMT host/port.
-          log.debug(
-            `Opening web socket connection to ${params.host}: ${params.port}.`
-          )
+          log.debug(`Opening web socket connection to ${params.host}: ${params.port}.`)
 
           // Fetch Intel AMT credentials & Setup interceptor
           const credentials = await this.db.getAmtPassword(params.host)
@@ -351,38 +275,14 @@ export class WebServer {
         }
       })
 
-      // Validates GUID format
-      // this.app.use((req, res, next) => {
-      //   const method = req.body.method
-      //   const payload = req.body.payload || {}
-      //   if (method) {
-      //     if (payload?.guid !== undefined) {
-      //       if (!UUIDRegex.test(payload.guid)) {
-      //         return res.status(404).send(ErrorResponse(404, null, 'invalidGuid'))
-      //       }
-      //     }
-      //     next()
-      //   } else {
-      //     return res.status(404).send(ErrorResponse(404, null, 'method'))
-      //   }
-      // })
-
       // Routes
-      this.app.use('/', this.isAuthenticated, this.attachMpsService, router)
-      this.app.use('/amt', this.isAuthenticated, amt.router)
-      this.app.use('/admin', this.isAuthenticated, admin.router)
+      this.app.use('/', this.attachMpsService, router)
+      this.app.use('/amt', amt.router)
+      this.app.use('/admin', admin.router)
 
       // Handle upgrade on websocket
       this.server.on('upgrade', (request, socket, head) => {
-        this.sessionParser(request, {}, () => {
-          if (!this.config.auth_enabled || (request.session && request.session.loggedin === true)) { // Validate if the user session is active and valid. TODO: Add user validation if needed
-            this.handleUpgrade(request, socket, head)
-          } else { // Auth failed
-            log.error('WebSocket authentication failed. Closing connection...')
-            socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
-            socket.destroy()
-          }
-        })
+        this.handleUpgrade(request, socket, head)
       })
 
       // Validate port number
@@ -395,36 +295,10 @@ export class WebServer {
       }
 
       // Start the ExpressJS web server
-      if (this.config.https) {
-        if (this.config.listen_any && this.config.listen_any) {
-          this.server.listen(port, () => {
-            log.info(
-              `MPS Microservice running on https://${
-              this.config.common_name
-              }:${port}.`
-            )
-          })
-        } else {
-          // Only accept request from local host
-          this.server.listen(port, '127.0.0.1', () => {
-            log.info(`MPS Microservice running on https://127.0.0.1:${port}.`)
-          })
-        }
-      } else {
-        if (this.config.listen_any && this.config.listen_any) {
-          this.server.listen(port, () => {
-            log.info(
-              `MPS Microservice running on http://${
-              this.config.common_name
-              }:${port}.`
-            )
-          })
-        } else {
-          this.server.listen(port, '127.0.0.1', () => {
-            log.info(`MPS Microservice running on http://127.0.0.1:${port}.`)
-          })
-        }
-      }
+
+      this.server.listen(port, () => {
+        log.info(`MPS Microservice running on ${this.config.common_name}:${port}.`)
+      })
     } catch (error) {
       log.error(`Exception in webserver: ${error}`)
     }
@@ -433,34 +307,6 @@ export class WebServer {
   attachMpsService = (req, res, next): void => {
     req.mpsService = this.mpsService
     next()
-  }
-
-  // Authentication for REST API and Web User login
-  isAuthenticated = (req, res, next): void => {
-    if (!this.config.auth_enabled || req.session.loggedin) {
-      next()
-      return
-    }
-
-    if (req.header('User-Agent').startsWith('Mozilla')) {
-      // all browser calls that are not authenticated
-      if (
-        // This is to handle REST API calls from browser.
-        req.method === 'POST' && (req.originalUrl.indexOf('/amt') >= 0 || req.originalUrl.indexOf('/admin') >= 0)
-      ) {
-        res.status(401).end('Authentication failed or Login Expired. Please try logging in again.')
-        return
-      }
-      res.redirect('/')
-      return
-    }
-
-    // other api calls
-    if (req.header('X-MPS-API-Key') !== this.config.mpsxapikey) {
-      res.status(401).end('API key authentication failed. Please try again.')
-    } else {
-      next()
-    }
   }
 
   // Handle Upgrade - WebSocket

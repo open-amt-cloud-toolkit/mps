@@ -9,7 +9,6 @@ import { IAdminHandler } from '../../models/IAdminHandler'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MPSMicroservice } from '../../mpsMicroservice'
 import { Credentials, Device, DeviceMetadata } from '../../models/models'
-import { Environment } from '../../utils/Environment'
 import { MetadataDb } from '../../db/metadata'
 
 export class AllDevicesHandler implements IAdminHandler {
@@ -37,10 +36,10 @@ export class AllDevicesHandler implements IAdminHandler {
         log.error(e)
       }
       let metadata: DeviceMetadata[] = []
-      if (Environment.Config.use_db) {
-        const db = new MetadataDb()
-        metadata = await db.get()
-      }
+
+      const db = new MetadataDb()
+      metadata = await db.get()
+
       const list: Device[] = []
       for (const i in amtCredentials) {
         list.push({
