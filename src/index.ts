@@ -8,7 +8,6 @@ import * as path from 'path'
 import { logger as log } from './utils/logger'
 import { MPSMicroservice } from './mpsMicroservice'
 import { configType, certificatesType } from './models/Config'
-import { Database } from './utils/db'
 
 import { certificates } from './utils/certificates'
 import { tlsConfig } from './utils/tlsConfiguration'
@@ -32,7 +31,7 @@ try {
   // build config object
   const config: configType = rc('mps')
 
-  if (!config.web_admin_password || !config.web_admin_user || !config.mpsxapikey) {
+  if (!config.web_admin_password || !config.web_admin_user) {
     log.error('Web admin username, password and API key are mandatory. Make sure to set values for these variables.')
     process.exit(1)
   }
@@ -41,17 +40,14 @@ try {
   const certPath = path.join(__dirname, config.cert_path)
   config.data_path = path.join(__dirname, config.data_path)
   let certs: certificatesType
-  let db: IDbProvider
+
   log.silly(`Updated config... ${JSON.stringify(config, null, 2)}`)
   Environment.Config = config
 
   // DB initialization
-  if (config.use_vault) {
-    log.info('Using secrets db provider')
-    db = new SecretsDbProvider(new SecretManagerService(config, log), log, config)
-  } else {
-    db = new Database(config)
-  }
+
+  const db: IDbProvider = new SecretsDbProvider(new SecretManagerService(config, log), log, config)
+
   // Certificate Configuration and Operations
   if (config.https || !config.tls_offload) {
     if (!config.generate_certificates) {
@@ -87,9 +83,6 @@ try {
     }
 
     log.info('certs loaded..')
-
-    // comment this out for release
-    // log.info(JSON.stringify(certs));
 
     const mps = new MPSMicroservice(config, db, certs)
     mps.start()

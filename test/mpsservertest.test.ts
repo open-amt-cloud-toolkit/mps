@@ -10,7 +10,6 @@ import * as https from 'https'
 import * as forge from 'node-forge'
 import { certificates } from '../src/utils/certificates'
 import { certificatesType, configType } from '../src/models/Config'
-import * as path from 'path'
 import { Database } from '../src/utils/db'
 import { MPSMicroservice } from '../src/mpsMicroservice'
 import { MPSServer } from '../src/server/mpsserver'
@@ -39,8 +38,9 @@ const config: configType = {
   data_path: join(__dirname, 'private', 'data.json'),
   web_admin_user: 'standalone',
   web_admin_password: 'G@ppm0ym',
-  session_encryption_key: 'key',
-  mpsxapikey: 'testkey',
+  jwt_secret: "secret",
+  jwt_issuer: "issuer",
+  jwt_expiration: 24,
   connection_string: '',
   cors_origin:'*',
   cors_headers:'*',
@@ -72,10 +72,6 @@ const config: configType = {
   web_tls_cert: "",
   web_tls_cert_key: "",
   web_tls_cert_ca: "",
-  redis_enable: false,
-  redis_password: "Intel@123",
-  redis_host: "",
-  redis_port: "6180"
 }
 
 const pki = forge.pki

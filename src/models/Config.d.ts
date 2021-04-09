@@ -25,17 +25,16 @@ export interface configType {
   data_path?: string
   cert_path: string
   cert_format: string
-  use_vault?: boolean
-  use_db?: boolean
   vault_address?: string
   vault_token?: string
   debug_level: number
+  jwt_secret: string
+  jwt_issuer: string
+  jwt_expiration: number
   web_admin_user: string
   web_admin_password: string
   mps_tls_config: any
   web_tls_config: any
-  session_encryption_key: string
-  mpsxapikey: string
   distributed_kv_name: string
   distributed_kv_ip?: string
   distributed_kv_port?: number
@@ -48,11 +47,6 @@ export interface configType {
   web_tls_cert: string
   web_tls_cert_key: string
   web_tls_cert_ca: string
-  redis_enable: boolean
-  redis_password?: string
-  redis_host?: string
-  redis_port?: string
-  auth_enabled?: boolean
   cors_origin: string
   cors_headers: string
   cors_methods: string

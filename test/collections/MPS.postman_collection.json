@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e69ed8e3-1570-41b5-adea-4867e6dcc59e",
+		"_postman_id": "fc56b9cb-afb3-4f0d-8dd2-5f8f4a5f6f0f",
 		"name": "MPS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -347,7 +347,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\":\"standalone\",\r\n    \"password\":\"password\"\r\n}",
+					"raw": "{\r\n    \"username\":\"standalone\",\r\n    \"password\":\"G@ppm0ym\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -421,21 +421,6 @@
 			"response": []
 		}
 	],
-	"auth": {
-		"type": "apikey",
-		"apikey": [
-			{
-				"key": "value",
-				"value": "APIKEYFORMPS123!",
-				"type": "string"
-			},
-			{
-				"key": "key",
-				"value": "X-MPS-API-Key",
-				"type": "string"
-			}
-		]
-	},
 	"event": [
 		{
 			"listen": "prerequest",
