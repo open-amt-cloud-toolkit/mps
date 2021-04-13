@@ -24,6 +24,8 @@ import { logger as log } from '../utils/logger'
 import { constants } from 'crypto'
 import { MPSMicroservice } from '../mpsMicroservice'
 import { IDbProvider } from '../models/IDbProvider'
+import { AMTStackFactory } from '../amt_libraries/amt-connection-factory'
+import routes from '../routes'
 
 import interceptor from '../utils/interceptor.js'
 import WebSocket from 'ws'
@@ -275,6 +277,13 @@ export class WebServer {
         }
       })
 
+      this.app.use('/api/v1', (req, res, next) => {
+        (req).mpsService = this.mpsService
+        next()
+      }, (req, res, next) => {
+        (req).amtFactory = new AMTStackFactory(this.mpsService)
+        next()
+      }, routes)
       // Routes
       this.app.use('/', this.attachMpsService, router)
       this.app.use('/amt', amt.router)

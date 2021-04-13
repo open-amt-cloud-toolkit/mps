@@ -6,11 +6,12 @@
 import { Router } from 'express'
 import metadataRouter from './metadata/index'
 import deviceRouter from './devices/index'
-import { login } from './auth/login'
+import amtRouter from './amt/index'
 
 const router: Router = Router()
 router.post('/authorize', login)
 router.use('/devices', deviceRouter)
 router.use('/metadata', metadataRouter)
+router.use('/amt', amtRouter)
 
 export default router
