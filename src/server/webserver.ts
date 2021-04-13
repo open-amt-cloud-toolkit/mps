@@ -24,7 +24,7 @@ import { logger as log } from '../utils/logger'
 import { constants } from 'crypto'
 import { MPSMicroservice } from '../mpsMicroservice'
 import { IDbProvider } from '../models/IDbProvider'
-import { AMTStackFactory } from '../amt_libraries/amt-connection-factory'
+import AMTStackFactory from '../amt_libraries/amt-connection-factory'
 import routes from '../routes'
 
 import interceptor from '../utils/interceptor.js'
