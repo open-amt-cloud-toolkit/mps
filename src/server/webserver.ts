@@ -16,14 +16,13 @@ import * as http from 'http'
 import * as parser from 'body-parser'
 
 import { configType, certificatesType, queryParams } from '../models/Config'
-import { AMTRoutes } from '../routes/amtRoutes'
-import { AdminRoutes } from '../routes/adminRoutes'
-import router from '../routes/index'
 import { ErrorResponse } from '../utils/amtHelper'
 import { logger as log } from '../utils/logger'
 import { constants } from 'crypto'
 import { MPSMicroservice } from '../mpsMicroservice'
 import { IDbProvider } from '../models/IDbProvider'
+import AMTStackFactory from '../amt_libraries/amt-connection-factory'
+import routes from '../routes'
 
 import interceptor from '../utils/interceptor.js'
 import WebSocket from 'ws'
@@ -51,8 +50,6 @@ export class WebServer {
       this.app = express()
       this.notificationwss = new WebSocket.Server({ noServer: true })
       this.relaywss = new WebSocket.Server({ noServer: true })
-      const amt = new AMTRoutes(this.mpsService)
-      const admin = new AdminRoutes(this.mpsService)
 
       // Create Server
       this.server = http.createServer(this.app)
@@ -275,10 +272,13 @@ export class WebServer {
         }
       })
 
-      // Routes
-      this.app.use('/', this.attachMpsService, router)
-      this.app.use('/amt', amt.router)
-      this.app.use('/admin', admin.router)
+      this.app.use('/api/v1', (req, res, next) => {
+        (req).mpsService = this.mpsService
+        next()
+      }, (req, res, next) => {
+        (req).amtFactory = new AMTStackFactory(this.mpsService)
+        next()
+      }, routes)
 
       // Handle upgrade on websocket
       this.server.on('upgrade', (request, socket, head) => {
@@ -290,23 +290,23 @@ export class WebServer {
       if (this.config.web_port != null) {
         port = this.config.web_port
       }
-      if (isNaN(port) || port == null || typeof port !== 'number' || port < 0 || port > 65536) {
-        port = 3000
-      }
 
       // Start the ExpressJS web server
 
       this.server.listen(port, () => {
         log.info(`MPS Microservice running on ${this.config.common_name}:${port}.`)
+      }).on('error', function (err) {
+        if (err.code === 'EADDRINUSE' || err.code === 'EACCES') {
+          log.error('Chosen web port is invalid or not available')
+        } else {
+          log.error(err)
+        }
+        process.exit(0)
       })
     } catch (error) {
       log.error(`Exception in webserver: ${error}`)
+      process.exit(0)
     }
-  }
-
-  attachMpsService = (req, res, next): void => {
-    req.mpsService = this.mpsService
-    next()
   }
 
   // Handle Upgrade - WebSocket

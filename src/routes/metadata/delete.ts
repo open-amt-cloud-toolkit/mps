@@ -8,7 +8,7 @@ import { logger as log } from '../../utils/logger'
 export async function deleteDevice (req, res): Promise<void> {
   const db = new MetadataDb()
   try {
-    await db.delete(req.params.id)
+    await db.delete(req.params.guid)
     res.status(204).end()
   } catch (err) {
     log.error(err)

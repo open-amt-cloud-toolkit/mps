@@ -7,7 +7,7 @@ import { logger as log } from '../../utils/logger'
 export async function get (req, res): Promise<void> {
   const db = new MetadataDb()
   try {
-    const results = await db.getById(req.params.id)
+    const results = await db.getById(req.params.guid)
     if (results != null) {
       res.status(200).json(results).end()
     } else {
