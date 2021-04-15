@@ -23,7 +23,6 @@ export async function generalSettings (req: Request, res: Response): Promise<voi
         if (status === 200) {
           res.status(200).json(response).end()
         } else {
-          res.set({ 'Content-Type': 'application/json' })
           log.error(`Request failed during GET AMT_GeneralSettings for guid : ${guid}.`)
           res.status(status).json(ErrorResponse(status, `Request failed during GET AMT_GeneralSettings for guid : ${guid}.`)).end()
         }

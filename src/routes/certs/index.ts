@@ -13,10 +13,10 @@ export async function mpsrootcert (req, res): Promise<void> {
     if (fs.existsSync(certPath)) {
       res.send(fs.readFileSync(certPath))
     } else {
-      res.status(500).send(ErrorResponse(500, 'MPS root certificate does not exists.'))
+      res.status(500).json(ErrorResponse(500, 'MPS root certificate does not exists.')).end()
     }
   } catch (error) {
     log.error(`Exception while downloading MPS root certificate: ${error}`)
-    res.status(500).send(ErrorResponse(500, 'Request failed while downloading MPS root certificate.'))
+    res.status(500).json(ErrorResponse(500, 'Request failed while downloading MPS root certificate.')).end()
   }
 }
