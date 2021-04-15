@@ -13,6 +13,7 @@ const deviceRouter: Router = Router()
 
 deviceRouter.get('/', metadataQueryValidator(), getAll)
 deviceRouter.get('/stats', stats)
+// deviceRouter.get('/:id', get) TODO: Add single device route
 deviceRouter.delete('/disconnect/:guid', disconnect)
 
 export default deviceRouter

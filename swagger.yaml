@@ -1,70 +1,255 @@
 openapi: 3.0.0
 info:
-  version: 1.2.0
+  version: 1.3.0
   title: Managed Prescence Server (MPS) API
   description: |
     This section is a reference to the MPS API methods available in the Open AMT Cloud Toolkit, and to some commands it provides. 
   
-    There are two types of method paths for the MPS Server:
-  
-    - AMT path methods - Allow you to send device-specific calls for things such as power actions or audit logs. Utilize these methods by setting the path to **amt** in your API call.
-    - Admin path methods - Allow you to send calls for info for all devices or for MPS configuration information. Utilize these methods by setting the path to **admin** in your API call.
-  
 servers:
   # Added by API Auto Mocking Plugin
+  # Added by API Auto Mocking Plugin
   - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/rbheopenamt/mps/1.2.0
+    url: https://virtserver.swaggerhub.com/rbheopenamt/mps/1.3.0
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/api/v1/
+security:
+  - BearerAuth: []
 paths:
-  /admin:
-    post:
-      tags:
-        - Admin
-      requestBody:
-        description: Payload that contains what method to execute
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AdminPayload'
-      responses:
-        200:
-          description: 'successful operation'
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - type: string
-                    description: MPS Root Certificate
-                  - $ref: '#/components/schemas/DisconnectResponse'
-                  - type: array
-                    items:
-                      $ref: '#/components/schemas/DeviceResponse'
-        404:
-          description: 'error response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DisconnectErrorResponse'
-  /amt:
-     post:
+  /amt/log/audit/{guid}:
+    get:
+      description: Returns a requested amount or time range of Intel® AMT Audit Log data for a specified guid
       tags:
         - AMT
-      requestBody:
-        description: Payload that contains what method to execute
+      parameters:
+      - name: guid
+        in: path
+        description: GUID of device
         required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AMTRequest'
+        schema:
+          type: string
       responses:
         200:
           description: 'successful operation'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AMTResponse'
+                $ref: '#/components/schemas/AuditLogResponse'
+  /amt/log/event/{guid}:
+    get:
+      description: Return sensor and hardware event data
+      tags:
+        - AMT
+      parameters:
+      - name: guid
+        in: path
+        description: GUID of device
+        example: "038d0240-045c-05f4-7706-980700080009"
+        required: true
+        schema:
+          type: string
+      # - name: startDate
+      #   in: query
+      #   description: Start date of log to retrieve
+      #   required: true
+      #   example: "2019-04-11"
+      #   schema:
+      #     type: string
+      # - name: endDate
+      #   in: query
+      #   description: End date of log to retrieve
+      #   required: true
+      #   example: "2019-04-18"
+      #   schema:
+      #     type: string
+      # - name: logsPerPage
+      #   in: query
+      #   description: Number of logs to return for this page
+      #   required: true
+      #   example: 10
+      #   schema:
+      #     type: number
+      # - name: page
+      #   in: query
+      #   description: Page of logs to retrieve
+      #   required: true
+      #   example: 5
+      #   schema:
+      #     type: number
+      responses:
+        200:
+          description: 'successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventLogResponse'
+  /amt/version/{guid}:
+    get:
+      description: Retrieve AMT version of device
+      tags:
+        - AMT
+      parameters:
+      - name: guid
+        in: path
+        description: GUID of device
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: 'successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionResponse'
+  /amt/generalSettings/{guid}:
+    get:
+      description: View general network settings
+      tags:
+        - AMT
+      parameters:
+      - name: guid
+        in: path
+        description: GUID of device
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: 'successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralSettingsResponse'
+  /amt/hardwareInfo/{guid}:
+    get:
+      description: Retrieve hardware information such as processor or storage
+      tags:
+        - AMT
+      parameters:
+      - name: guid
+        in: path
+        description: GUID of device
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: 'successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HardwareInfoResponse'
+  /amt/features/{guid}:
+    post:
+      description: Enable/Disable AMT features such as KVM, SOL, and IDE-R
+      tags:
+        - AMT
+      parameters:
+      - name: guid
+        in: path
+        description: GUID of device
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Payload to set AMT Features
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetAMTFeaturesRequest'
+      responses:
+        200:
+          description: 'successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SetAMTFeaturesResponse'
+    get:
+      description: View what AMT out-of-band features are enabled/disabled
+      tags:
+        - AMT
+      parameters:
+      - name: guid
+        in: path
+        description: GUID of device
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: 'successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAMTFeaturesResponse'
+  /amt/power/state/{guid}:
+    get:
+      description: Retrieve current state of AMT device, returns a number that maps to an AMT Power State
+      tags:
+        - AMT
+      parameters:
+      - name: guid
+        in: path
+        description: GUID of device
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: 'successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PowerStateResponse'
+  /amt/power/capabilities/{guid}:
+    get:
+      description: View what OOB power actions are available for that device
+      tags:
+        - AMT
+      parameters:
+      - name: guid
+        in: path
+        description: GUID of device
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: 'successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PowerCapabilitiesResponse'
+  /amt/power/action/{guid}:
+    post:
+      description: Perform an OOB power action
+      tags:
+        - AMT
+      parameters:
+      - name: guid
+        in: path
+        description: GUID of device
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Payload to perform a power action
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PowerActionRequest'
+      responses:
+        200:
+          description: 'successful operation'
+          content:
+           application/json:
+             schema:
+               $ref: '#/components/schemas/PowerActionResponse'
   /devices:
     get:
+      description: Lists all devices known to MPS, regardless of connected status
       tags:
         - Devices
       parameters:
@@ -85,6 +270,14 @@ paths:
                   $ref: '#/components/schemas/DeviceResponse'
         500:
           description: 'internal server error'
+  /devices/stats:
+    get:
+      description: Retrieve the current count of all registered, connected, and disconnected devices
+      tags:
+        - Devices
+      responses:
+        200:
+          description: 'successful operation'  
   /devices/{guid}:
     get:
       tags:
@@ -105,6 +298,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DeviceResponse'
+  /devices/disconnect/{guid}:
+    delete:
+      description: Forces a CIRA disconnection for a specified device. Device will reconnect again shortly.
+      tags:
+        - Devices
+      parameters:
+      - name: guid
+        in: path
+        description: GUID of device to return
+        required: true
+        schema:
+          type: string
+      responses:
+        404:
+          description: 'Device does not exist'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisconnectErrorResponse'
+        200:
+          description: 'successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisconnectResponse'
   /metadata:
     get:
       tags:
@@ -198,35 +416,21 @@ paths:
                 items:
                   type: string
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
-    AMTRequest:
-      title: AMTRequest
-      example: 
-        method: "GeneralSettings"
-        payload:
-          guid:  "038d0240-045c-05f4-7706-980700080009"
-      properties:
-        method:
-          type: string
-          enum: ["AuditLog","EventLog","GeneralSettings","GetAMTFeatures","SetAMTFeatures","HardwareInformation","PowerAction","PowerCapabilities","PowerState","Version"]
-        payload:
-          type: object
-          oneOf:
-            -  $ref: '#/components/schemas/EventLogPayload'
-            -  $ref: '#/components/schemas/SetAMTFeaturesRequest'
-            -  $ref: '#/components/schemas/GuidRequest'
-    GuidRequest:
-      title: GuidRequest
-      properties:
-        guid:
-          type: string
     SetAMTFeaturesRequest:
       title: SetAMTFeaturesRequest
       properties:
-        guid:
-          type: string
         userConsent:
           type: string
+          enum: 
+            - kvm
+            - all
+            - none
         enableSOL:
           type: boolean
         enableIDER:
@@ -236,7 +440,7 @@ components:
     DisconnectResponse:
       title: DisconnectResponse
       example:
-        success: 200,
+        success: 200
         description: "CIRA connection disconnected : 038d0240-045c-05f4-7706-980700080009"
       properties:
         success:
@@ -256,57 +460,6 @@ components:
           type: string
         errorDescription:
           type: string
-    AdminPayload:
-      title: AdminPayload
-      example: 
-        method: "Disconnect"
-        payload:
-          guid:  "038d0240-045c-05f4-7706-980700080009"
-      properties:
-        method:
-          type: string
-          enum: ["AllDevices","ConnectedDevices","MPSRootCertificate","MEScript","Disconnect"]
-        payload:
-          type: object
-          properties:
-            guid:
-              type: string
-    EventLogPayload:
-      title: EventLogPayload
-      example: 
-          guid:  "038d0240-045c-05f4-7706-980700080009"
-          logsPerPage: 10
-          page: 5
-          startDate: "2019-04-11"
-          endDate: "2019-04-18"
-      properties:
-          guid:
-            type: string
-          logsPerPage:
-            type: number
-          page:
-            type: number
-          startDate:
-            type: string
-          endDate: 
-            type: string
-    AMTResponse:
-      properties:
-        statusCode:
-          type: number
-        payload:
-          type: object
-          oneOf:
-            - $ref: '#/components/schemas/AuditLogResponse' 
-            - $ref: '#/components/schemas/EventLogResponse' 
-            - $ref: '#/components/schemas/GeneralSettingsResponse' 
-            - $ref: '#/components/schemas/GetAMTFeaturesResponse' 
-            - $ref: '#/components/schemas/HardwareInfoResponse' 
-            - $ref: '#/components/schemas/PowerActionResponse' 
-            - $ref: '#/components/schemas/PowerCapabilitiesResponse' 
-            - $ref: '#/components/schemas/PowerStateResponse' 
-            - $ref: '#/components/schemas/SetAMTFeaturesResponse' 
-            - $ref: '#/components/schemas/VersionResponse' 
     AuditLogResponse:
       title: AuditLogResponse
       example:
@@ -406,6 +559,35 @@ components:
           time: '2019-04-11T17:57:40.000Z'
           entityStr: Add in card
           desc: Option ROM initialization
+      properties:
+        deviceAddress:
+          type: number
+        eventSensorType:
+          type: number
+        eventType:
+          type: number
+        eventOffset:
+          type: number
+        eventSourceType:
+          type: number
+        eventSeverity:
+          type: number
+        sensorNumber:
+          type: number
+        entity: 
+          type: number
+        entityInstance:
+          type: number
+        eventData:
+          type: array
+          items:
+            type: integer
+        time: 
+          type: string
+        entityStr:
+          type: string
+        desc:
+          type: string
     GeneralSettingsResponse:
       title: GeneralSettingsResponse
       example:
@@ -417,7 +599,7 @@ components:
         dhcpv6ConfigurationTimeout: 0
         digestRealm: Digest:A4070000000000000000000000000000
         elementName: 'Intel(r) AMT: General Settings'
-        hostName: Madhavi
+        hostName: MACHINE1
         hostOSFQDN: DESKTOP-1A99FM4
         idleWakeTimeout: 65535
         instanceID: 'Intel(r) AMT: General Settings'
@@ -430,8 +612,22 @@ components:
         rmcpPingResponseEnabled: true
         sharedFQDN: true
         wsmanOnlyMode: false
+      properties:
+        amtNetworkEnabled:
+          type: number
     GetAMTFeaturesResponse:
       title: GetAMTFeaturesResponse
+      properties:
+        userConsent:
+          type: number
+        redirection:
+          type: boolean
+        KVM:
+          type: boolean
+        SOL: 
+          type: boolean
+        IDER: 
+          type: boolean
       example: 
         userConsent: all
         redirection: true
@@ -653,6 +849,36 @@ components:
             tag: CIM_Chassis
             version: J57828-503
           status: 200
+    PowerActionRequest:
+      title: PowerActionRequest
+      example:
+        action: 8
+        useSOL: false
+      properties:
+        action:
+          type: number
+          enum: 
+            - 2
+            - 5
+            - 8
+            - 10
+            - 4
+            - 7
+            - 12
+            - 14
+            - 100
+            - 101
+            - 104
+            - 200
+            - 201
+            - 202
+            - 203
+            - 300
+            - 301
+            - 400
+            - 401
+        useSOL:
+          type: boolean
     PowerActionResponse:
       title: PowerActionResponse
       example:
@@ -718,7 +944,6 @@ components:
         powerOnToIDE-RCDROM: 203
         resetToPXE: 400
         powerOnToPXE: 401
-
     PowerStateResponse:
       title: PowerStateResponse
       example:
@@ -728,7 +953,11 @@ components:
           type: number
     SetAMTFeaturesResponse:
       type: string
-      example: 'Updated'    
+      example: 
+        status: 'Updated AMT Features'    
+      properties:
+        status:
+          type: string
     VersionResponse:
       title: VersionResponse
       example:
@@ -783,7 +1012,6 @@ components:
             systemName: Intel(r) AMT
             zeroTouchConfigurationEnabled: true
           status: 200
-
     DeviceResponse:
       title: DeviceResponse
       properties:
@@ -799,7 +1027,6 @@ components:
           type: number
         metadata:
           $ref: '#/components/schemas/Metadata'
-          
     Metadata:
       title: Metadata
       required:
