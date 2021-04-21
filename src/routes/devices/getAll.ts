@@ -20,36 +20,31 @@ export async function getAll (req, res): Promise<void> {
     amtCredentials = await req.mpsService.db.getAllAmtCredentials()
 
     let metadata: DeviceMetadata[] = []
-    const list: Device[] = []
+    let list: Device[] = []
     const db = new MetadataDb()
 
     if (req.query.tags != null) {
       const tags = req.query.tags.split(',')
       metadata = await db.getByTags(tags, req.query.method)
-
-      for (const m of metadata) {
-        list.push({
-          amtuser: amtCredentials ? amtCredentials[m.guid]?.amtuser : null,
-          conn: req.mpsService.mpsComputerList[m.guid] == null ? 0 : 1,
-          host: m.guid,
-          mpsuser: amtCredentials ? amtCredentials[m.guid]?.mpsuser : null,
-          name: amtCredentials ? amtCredentials[m.guid]?.name : null,
-          metadata: m
-        })
-      }
     } else {
       metadata = await db.get()
-      for (const i in amtCredentials) {
-        list.push({
-          amtuser: amtCredentials[i].amtuser,
-          conn: req.mpsService.mpsComputerList[i] == null ? 0 : 1,
-          host: i,
-          mpsuser: amtCredentials[i].mpsuser,
-          name: amtCredentials[i].name,
-          metadata: metadata.find(z => z.guid === i) ?? {}
-        })
-      }
     }
+
+    for (const m of metadata) {
+      list.push({
+        amtuser: amtCredentials ? amtCredentials[m.guid]?.amtuser : null,
+        conn: req.mpsService.mpsComputerList[m.guid] == null ? 0 : 1,
+        host: m.guid,
+        mpsuser: amtCredentials ? amtCredentials[m.guid]?.mpsuser : null,
+        name: amtCredentials ? amtCredentials[m.guid]?.name : null,
+        metadata: m
+      })
+    }
+
+    if (req.query.status != null) {
+      list = list.filter(x => x.conn === req.query.status)
+    }
+
     res.status(200).json(list).end()
   } catch (err) {
     log.error(err)

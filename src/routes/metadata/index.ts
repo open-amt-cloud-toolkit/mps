@@ -16,9 +16,9 @@ const metadataRouter: Router = Router()
 
 metadataRouter.get('/', getAll)
 metadataRouter.get('/tags', tags)
-metadataRouter.get('/:id', get)
+metadataRouter.get('/:guid', get)
 metadataRouter.post('/', metadataInsertValidator(), insertDevice)
 metadataRouter.patch('/', metadataUpdateValidator(), updateDevice)
-metadataRouter.delete('/:id', deleteDevice)
+metadataRouter.delete('/:guid', deleteDevice)
 
 export default metadataRouter

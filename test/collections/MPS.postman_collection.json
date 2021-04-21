@@ -27,13 +27,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/metadata",
+							"raw": "{{protocol}}://{{host}}:3000/api/v1/metadata",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
 							"port": "3000",
 							"path": [
+								"api",
+								"v1",
 								"metadata"
 							]
 						}
@@ -59,13 +61,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/metadata",
+							"raw": "{{protocol}}://{{host}}:3000/api/v1/metadata",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
 							"port": "3000",
 							"path": [
+								"api",
+								"v1",
 								"metadata"
 							]
 						}
@@ -100,13 +104,15 @@
 							}
 						},
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/metadata",
+							"raw": "{{protocol}}://{{host}}:3000/api/v1/metadata",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
 							"port": "3000",
 							"path": [
+								"api",
+								"v1",
 								"metadata"
 							]
 						}
@@ -139,13 +145,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/metadata/dc09fce2-a602-11ea-90a8-90cf9ac8ee00",
+							"raw": "{{protocol}}://{{host}}:3000/api/v1/metadata/dc09fce2-a602-11ea-90a8-90cf9ac8ee00",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
 							"port": "3000",
 							"path": [
+								"api",
+								"v1",
 								"metadata",
 								"dc09fce2-a602-11ea-90a8-90cf9ac8ee00"
 							]
@@ -172,13 +180,15 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/metadata/143e4567-e89b-12d3-a456-426614174000",
+							"raw": "{{protocol}}://{{host}}:3000/api/v1/metadata/143e4567-e89b-12d3-a456-426614174000",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
 							"port": "3000",
 							"path": [
+								"api",
+								"v1",
 								"metadata",
 								"143e4567-e89b-12d3-a456-426614174000"
 							]
@@ -209,139 +219,777 @@
 			]
 		},
 		{
-			"name": "All Devices",
-			"event": [
+			"name": "Certs",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
+					"name": "Get MPS Root Cert for CIRA",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.text()).to.contain(\"-----BEGIN CERTIFICATE-----\")\r",
+									"    pm.expect(pm.response.text()).to.contain(\"-----END CERTIFICATE-----\")\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
 						}
-					}
-				},
-				"url": {
-					"raw": "{{protocol}}://{{host}}:3000/devices",
-					"protocol": "{{protocol}}",
-					"host": [
-						"{{host}}"
 					],
-					"port": "3000",
-					"path": [
-						"devices"
-					]
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:3000/api/v1/ciracert",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"ciracert"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "All Devices with tag filter",
-			"event": [
+			"name": "Devices",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
+					"name": "All Devices",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
 						}
-					}
-				},
-				"url": {
-					"raw": "{{protocol}}://{{host}}:3000/devices",
-					"protocol": "{{protocol}}",
-					"host": [
-						"{{host}}"
 					],
-					"port": "3000",
-					"path": [
-						"devices"
-					]
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:3000/api/v1/devices",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All Devices with status filter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:3000/api/v1/devices",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Stats",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Expect to have 3 properties\",function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.totalCount).to.be.above(-1)\r",
+									"    pm.expect(jsonData.connectedCount).to.be.above(-1)\r",
+									"    pm.expect(jsonData.disconnectedCount).to.be.above(-1)\r",
+									"    \r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:3000/api/v1/devices/stats",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"devices",
+								"stats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All Devices with tag filter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:3000/api/v1/devices",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Disconnect CIRA Device",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Device should not be found\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eq(\"Device not found/connected. Please connect again using CIRA.\")\r",
+									"    pm.expect(jsonData.errorDescription).to.eq(\"guid : 1\")\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:3000/api/v1/devices/disconnect/1",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"devices",
+								"disconnect",
+								"1"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "All Devices with status filter",
-			"event": [
+			"name": "AMT",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
+					"name": "Get Audit Log",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Device should not be found\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eq(\"Device not found/connected. Please connect again using CIRA.\")\r",
+									"    pm.expect(jsonData.errorDescription).to.eq(\"guid : 1\")\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
 						}
-					}
-				},
-				"url": {
-					"raw": "{{protocol}}://{{host}}:3000/devices",
-					"protocol": "{{protocol}}",
-					"host": [
-						"{{host}}"
 					],
-					"port": "3000",
-					"path": [
-						"devices"
-					]
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:3000/api/v1/amt/log/audit/1?startIndex=0",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"amt",
+								"log",
+								"audit",
+								"1"
+							],
+							"query": [
+								{
+									"key": "startIndex",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Event Log",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Device should not be found\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eq(\"Device not found/connected. Please connect again using CIRA.\")\r",
+									"    pm.expect(jsonData.errorDescription).to.eq(\"guid : 1\")\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:3000/api/v1/amt/log/event/1",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"amt",
+								"log",
+								"event",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Hardware Info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Device should not be found\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eq(\"Device not found/connected. Please connect again using CIRA.\")\r",
+									"    pm.expect(jsonData.errorDescription).to.eq(\"guid : 1\")\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:3000/api/v1/amt/hardwareInfo/1",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"amt",
+								"hardwareInfo",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get General Settings",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Device should not be found\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eq(\"Device not found/connected. Please connect again using CIRA.\")\r",
+									"    pm.expect(jsonData.errorDescription).to.eq(\"guid : 1\")\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:3000/api/v1/amt/generalSettings/1",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"amt",
+								"generalSettings",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Power Capabilities",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Device should not be found\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eq(\"Device not found/connected. Please connect again using CIRA.\")\r",
+									"    pm.expect(jsonData.errorDescription).to.eq(\"guid : 1\")\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:3000/api/v1/amt/power/capabilities/1",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"amt",
+								"power",
+								"capabilities",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Power State",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Device should not be found\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eq(\"Device not found/connected. Please connect again using CIRA.\")\r",
+									"    pm.expect(jsonData.errorDescription).to.eq(\"guid : 1\")\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:3000/api/v1/amt/power/state/1",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"amt",
+								"power",
+								"state",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send Power Action",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Device should not be found\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eq(\"Device not found/connected. Please connect again using CIRA.\")\r",
+									"    pm.expect(jsonData.errorDescription).to.eq(\"guid : 1\")\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"action\": 8,\r\n    \"useSOL\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:3000/api/v1/amt/power/action/1",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"amt",
+								"power",
+								"action",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get AMT Features",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Device should not be found\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eq(\"Device not found/connected. Please connect again using CIRA.\")\r",
+									"    pm.expect(jsonData.errorDescription).to.eq(\"guid : 1\")\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:3000/api/v1/amt/features/1",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"amt",
+								"features",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Set AMT Features",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Device should not be found\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eq(\"Device not found/connected. Please connect again using CIRA.\")\r",
+									"    pm.expect(jsonData.errorDescription).to.eq(\"guid : 1\")\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userConsent\": \"none\",\r\n    \"enableSOL\": \"false\",\r\n    \"enableIDER\": \"false\",\r\n    \"enableKVM\": \"false\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:3000/api/v1/amt/features/1",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"amt",
+								"features",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Version",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Device should not be found\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eq(\"Device not found/connected. Please connect again using CIRA.\")\r",
+									"    pm.expect(jsonData.errorDescription).to.eq(\"guid : 1\")\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:3000/api/v1/amt/power/state/1",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"amt",
+								"power",
+								"state",
+								"1"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
 			"name": "Authorize",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body should have JWT Token\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.token).to.be.not.null;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -355,72 +1003,25 @@
 					}
 				},
 				"url": {
-					"raw": "{{protocol}}://{{host}}:3000/authorize",
+					"raw": "{{protocol}}://{{host}}:3000/api/v1/authorize",
 					"protocol": "{{protocol}}",
 					"host": [
 						"{{host}}"
 					],
 					"port": "3000",
 					"path": [
+						"api",
+						"v1",
 						"authorize"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Stats",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"pm.test(\"Expect to have 3 properties\",function(){\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.totalCount).to.be.above(-1)\r",
-							"    pm.expect(jsonData.connectedCount).to.be.above(-1)\r",
-							"    pm.expect(jsonData.disconnectedCount).to.be.above(-1)\r",
-							"    \r",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{protocol}}://{{host}}:3000/devices/stats",
-					"protocol": "{{protocol}}",
-					"host": [
-						"{{host}}"
-					],
-					"port": "3000",
-					"path": [
-						"devices",
-						"stats"
 					]
 				}
 			},
 			"response": []
 		}
 	],
+	"auth": {
+		"type": "bearer"
+	},
 	"event": [
 		{
 			"listen": "prerequest",

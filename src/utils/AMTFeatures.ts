@@ -9,11 +9,11 @@ import { MPSValidationError } from './MPSValidationError'
 import { AMTFeaturesConst, UserConsentOptions } from './constants'
 
 export class AMTFeatures {
-  static async getAMTFeatures (amtstack: any, payload: any): Promise<any> {
+  static async getAMTFeatures (amtstack: any, deviceGuid: string): Promise<any> {
     return await new Promise((resolve, reject) => {
       amtstack.BatchEnum('', ['*IPS_OptInService', '*AMT_RedirectionService', '*CIM_KVMRedirectionSAP'], (stack, name, wsmanResponse, status) => {
         if (status !== 200) {
-          reject(new MPSValidationError(`Failed AMT features BatchEnum Exec for guid : ${payload.guid}.`))
+          reject(new MPSValidationError(`Failed AMT features BatchEnum Exec for guid : ${deviceGuid}.`))
         } else {
           resolve(wsmanResponse)
         }

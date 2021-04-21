@@ -7,7 +7,7 @@
     "compile": "tsc",
     "lint": "eslint . --ext .ts",
     "start": "npm run build && node ./dist/index.js",
-    "test": "jest --detectOpenHandles --forceExit"
+    "test": "jest --detectOpenHandles --forceExit --coverage"
   },
   "author": "",
   "license": "Apache-2.0",

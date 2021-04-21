@@ -9,9 +9,9 @@ export const ErrorResponse = (status: number, errDesc?: string, error?: string):
   let response
   if (error) {
     const errorMessage = httpErrorTable[status]
-    response = { status: status, error: errorMessage[error] }
+    response = { error: errorMessage[error] }
   } else {
-    response = { status: status, error: httpErrorTable[status] }
+    response = { error: httpErrorTable[status] }
   }
   if (errDesc) {
     response.errorDescription = errDesc
