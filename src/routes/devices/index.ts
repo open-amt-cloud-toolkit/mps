@@ -13,8 +13,8 @@ import { get } from './get'
 const deviceRouter: Router = Router()
 
 deviceRouter.get('/', metadataQueryValidator(), getAll)
-//deviceRouter.get('/:guid', deviceGetValidator(), get)
 deviceRouter.get('/stats', stats)
 deviceRouter.delete('/disconnect/:guid', disconnect)
+deviceRouter.get('/:guid', deviceGetValidator(), get)
 
 export default deviceRouter
