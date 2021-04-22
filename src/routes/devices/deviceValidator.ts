@@ -16,3 +16,10 @@ export const metadataQueryValidator = (): any => {
       .isString()
   ]
 }
+
+export const deviceGetValidator = (): any => {
+  return [
+    check('guid')
+      .isUUID()
+  ]
+}

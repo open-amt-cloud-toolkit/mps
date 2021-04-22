@@ -4,7 +4,7 @@
  **********************************************************************/
 import { validationResult } from 'express-validator'
 import { MetadataDb } from '../../db/metadata'
-import { Credentials, Device, DeviceMetadata } from '../../models/models'
+import { Device, DeviceMetadata } from '../../models/models'
 import { logger as log } from '../../utils/logger'
 
 export async function getAll (req, res): Promise<void> {
@@ -14,10 +14,6 @@ export async function getAll (req, res): Promise<void> {
       res.status(400).json({ errors: errors.array() })
       return
     }
-
-    let amtCredentials: Credentials = {}
-    // TODO: Address being able to query specific guids from VAULT
-    amtCredentials = await req.mpsService.db.getAllAmtCredentials()
 
     let metadata: DeviceMetadata[] = []
     let list: Device[] = []
@@ -32,17 +28,15 @@ export async function getAll (req, res): Promise<void> {
 
     for (const m of metadata) {
       list.push({
-        amtuser: amtCredentials ? amtCredentials[m.guid]?.amtuser : null,
-        conn: req.mpsService.mpsComputerList[m.guid] == null ? 0 : 1,
-        host: m.guid,
-        mpsuser: amtCredentials ? amtCredentials[m.guid]?.mpsuser : null,
-        name: amtCredentials ? amtCredentials[m.guid]?.name : null,
+        connectionStatus: req.mpsService.mpsComputerList[m.guid] == null ? 0 : 1,
+        hostname: m.hostname,
+        guid: m.guid,
         metadata: m
       })
     }
 
     if (req.query.status != null) {
-      list = list.filter(x => x.conn === req.query.status)
+      list = list.filter(x => x.connectionStatus === req.query.status) // verify this works
     }
 
     res.status(200).json(list).end()
