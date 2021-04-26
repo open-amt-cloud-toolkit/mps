@@ -113,7 +113,7 @@ export class MetadataDb implements IMetadataDb {
    */
   async update (deviceMetadata: DeviceMetadata): Promise <DeviceMetadata> {
     try {
-      const results = await this.db.query('UPDATE devices SET name=$2, tags=$3 WHERE guid=$1',
+      const results = await this.db.query('UPDATE devices SET hostname=$2, tags=$3 WHERE guid=$1',
         [
           deviceMetadata.guid,
           deviceMetadata.hostname,
