@@ -27,12 +27,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/api/v1/metadata",
+							"raw": "{{protocol}}://{{host}}/api/v1/metadata",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
@@ -61,12 +60,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/api/v1/metadata",
+							"raw": "{{protocol}}://{{host}}/api/v1/metadata",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
@@ -104,12 +102,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/api/v1/metadata",
+							"raw": "{{protocol}}://{{host}}/api/v1/metadata",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
@@ -145,12 +142,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/api/v1/metadata/dc09fce2-a602-11ea-90a8-90cf9ac8ee00",
+							"raw": "{{protocol}}://{{host}}/api/v1/metadata/dc09fce2-a602-11ea-90a8-90cf9ac8ee00",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
@@ -180,12 +176,11 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/api/v1/metadata/143e4567-e89b-12d3-a456-426614174000",
+							"raw": "{{protocol}}://{{host}}/api/v1/metadata/143e4567-e89b-12d3-a456-426614174000",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
@@ -247,12 +242,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/api/v1/ciracert",
+							"raw": "{{protocol}}://{{host}}/api/v1/ciracert",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
@@ -298,12 +292,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/api/v1/devices",
+							"raw": "{{protocol}}://{{host}}/api/v1/devices",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
@@ -344,12 +337,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/api/v1/devices",
+							"raw": "{{protocol}}://{{host}}/api/v1/devices",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
@@ -397,12 +389,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/api/v1/devices/stats",
+							"raw": "{{protocol}}://{{host}}/api/v1/devices/stats",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
@@ -444,12 +435,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/api/v1/devices",
+							"raw": "{{protocol}}://{{host}}/api/v1/devices",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
@@ -485,12 +475,11 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/api/v1/devices/disconnect/1",
+							"raw": "{{protocol}}://{{host}}/api/v1/devices/disconnect/1",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
@@ -533,12 +522,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/api/v1/amt/log/audit/1?startIndex=0",
+							"raw": "{{protocol}}://{{host}}/api/v1/amt/log/audit/1?startIndex=0",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
@@ -583,12 +571,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/api/v1/amt/log/event/1",
+							"raw": "{{protocol}}://{{host}}/api/v1/amt/log/event/1",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
@@ -627,12 +614,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/api/v1/amt/hardwareInfo/1",
+							"raw": "{{protocol}}://{{host}}/api/v1/amt/hardwareInfo/1",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
@@ -670,12 +656,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/api/v1/amt/generalSettings/1",
+							"raw": "{{protocol}}://{{host}}/api/v1/amt/generalSettings/1",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
@@ -713,12 +698,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/api/v1/amt/power/capabilities/1",
+							"raw": "{{protocol}}://{{host}}/api/v1/amt/power/capabilities/1",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
@@ -757,12 +741,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/api/v1/amt/power/state/1",
+							"raw": "{{protocol}}://{{host}}/api/v1/amt/power/state/1",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
@@ -810,12 +793,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/api/v1/amt/power/action/1",
+							"raw": "{{protocol}}://{{host}}/api/v1/amt/power/action/1",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
@@ -854,12 +836,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/api/v1/amt/features/1",
+							"raw": "{{protocol}}://{{host}}/api/v1/amt/features/1",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
@@ -906,12 +887,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/api/v1/amt/features/1",
+							"raw": "{{protocol}}://{{host}}/api/v1/amt/features/1",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
@@ -949,12 +929,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{host}}:3000/api/v1/amt/power/state/1",
+							"raw": "{{protocol}}://{{host}}/api/v1/amt/power/state/1",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
@@ -1003,12 +982,11 @@
 					}
 				},
 				"url": {
-					"raw": "{{protocol}}://{{host}}:3000/api/v1/authorize",
+					"raw": "{{protocol}}://{{host}}/api/v1/authorize",
 					"protocol": "{{protocol}}",
 					"host": [
 						"{{host}}"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"v1",
