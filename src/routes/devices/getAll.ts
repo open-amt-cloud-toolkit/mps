@@ -36,7 +36,7 @@ export async function getAll (req, res): Promise<void> {
     }
 
     if (req.query.status != null) {
-      list = list.filter(x => x.connectionStatus === parseInt(req.query.status))
+      list = list.filter(x => x.connectionStatus === req.query.status)
     }
 
     res.status(200).json(list).end()

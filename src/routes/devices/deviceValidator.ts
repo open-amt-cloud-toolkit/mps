@@ -12,7 +12,9 @@ export const metadataQueryValidator = (): any => {
       .isString(),
     check('status')
       .optional()
-      .isNumeric(),
+      .isNumeric()
+      .isIn([0, 1])
+      .toInt(),
     check('method')
       .optional()
       .isIn(['AND', 'OR'])
