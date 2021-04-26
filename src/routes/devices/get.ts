@@ -7,7 +7,7 @@ import { MetadataDb } from '../../db/metadata'
 import { Device, DeviceMetadata } from '../../models/models'
 import { logger as log } from '../../utils/logger'
 
-export async function getAll (req, res): Promise<void> {
+export async function get (req, res): Promise<void> {
   try {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -15,31 +15,18 @@ export async function getAll (req, res): Promise<void> {
       return
     }
 
-    let metadata: DeviceMetadata[] = []
-    let list: Device[] = []
+    const guid = req.params.guid
     const db = new MetadataDb()
+    const metadata: DeviceMetadata = await db.getById(guid)
 
-    if (req.query.tags != null) {
-      const tags = req.query.tags.split(',')
-      metadata = await db.getByTags(tags, req.query.method)
-    } else {
-      metadata = await db.get()
+    const device: Device = {
+      connectionStatus: req.mpsService.mpsComputerList[guid] == null ? 0 : 1,
+      guid: guid,
+      hostname: metadata.hostname,
+      metadata: metadata
     }
 
-    for (const m of metadata) {
-      list.push({
-        connectionStatus: req.mpsService.mpsComputerList[m.guid] == null ? 0 : 1,
-        hostname: m.hostname,
-        guid: m.guid,
-        metadata: m
-      })
-    }
-
-    if (req.query.status != null) {
-      list = list.filter(x => x.connectionStatus === req.query.status)
-    }
-
-    res.status(200).json(list).end()
+    res.status(200).json(device).end()
   } catch (err) {
     log.error(err)
     res.status(500).end()

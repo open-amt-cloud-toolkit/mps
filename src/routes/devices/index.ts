@@ -4,16 +4,17 @@
  **********************************************************************/
 
 import { Router } from 'express'
-import { metadataQueryValidator } from './deviceValidator'
+import { deviceGetValidator, metadataQueryValidator } from './deviceValidator'
 import { disconnect } from './disconnect'
 import { getAll } from './getAll'
 import { stats } from './stats'
+import { get } from './get'
 
 const deviceRouter: Router = Router()
 
 deviceRouter.get('/', metadataQueryValidator(), getAll)
 deviceRouter.get('/stats', stats)
-// deviceRouter.get('/:id', get) TODO: Add single device route
 deviceRouter.delete('/disconnect/:guid', disconnect)
+deviceRouter.get('/:guid', deviceGetValidator(), get)
 
 export default deviceRouter
