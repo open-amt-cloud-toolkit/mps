@@ -10,9 +10,21 @@ export const metadataQueryValidator = (): any => {
     check('tags')
       .optional()
       .isString(),
+    check('status')
+      .optional()
+      .isNumeric()
+      .isIn([0, 1])
+      .toInt(),
     check('method')
       .optional()
       .isIn(['AND', 'OR'])
       .isString()
+  ]
+}
+
+export const deviceGetValidator = (): any => {
+  return [
+    check('guid')
+      .isUUID()
   ]
 }
