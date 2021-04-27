@@ -249,7 +249,7 @@ paths:
                $ref: '#/components/schemas/PowerActionResponse'
   /devices:
     get:
-      description: Lists all devices known to MPS, regardless of connected status
+      description: Lists all devices known to MPS
       tags:
         - Devices
       parameters:
@@ -261,10 +261,10 @@ paths:
           type: string
       - name: status
         in: query
-        description: Status of device being '0' for off or '1' for on
+        description: Specify '0' to query for disconnected devices or specify '1' for connected devices. To return all devices, omit this query parameter.
         required: false
         schema:
-          type: string
+          type: number
       responses:
         200:
           description: 'successful operation'
