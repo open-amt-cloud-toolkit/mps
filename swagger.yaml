@@ -1025,7 +1025,7 @@ components:
           type: string
         hostname:
           type: string
-        connectionstatus:
+        connectionStatus:
           type: number
         metadata:
           $ref: '#/components/schemas/Metadata'
