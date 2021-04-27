@@ -259,6 +259,12 @@ paths:
         required: false
         schema:
           type: string
+      - name: status
+        in: query
+        description: Status of device being '0' for off or '1' for on
+        required: false
+        schema:
+          type: string
       responses:
         200:
           description: 'successful operation'
@@ -267,7 +273,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/DeviceResponse'
+                  $ref: '#/components/schemas/Device'
         500:
           description: 'internal server error'
   /devices/stats:
@@ -297,7 +303,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DeviceResponse'
+                $ref: '#/components/schemas/Device'
   /devices/disconnect/{guid}:
     delete:
       description: Forces a CIRA disconnection for a specified device. Device will reconnect again shortly.
@@ -1012,18 +1018,14 @@ components:
             systemName: Intel(r) AMT
             zeroTouchConfigurationEnabled: true
           status: 200
-    DeviceResponse:
-      title: DeviceResponse
+    Device:
+      title: Device
       properties:
-        name:
+        guid:
           type: string
-        mpsuser:
+        hostname:
           type: string
-        amtuser:
-          type: string
-        host:
-          type: string
-        conn:
+        connectionstatus:
           type: number
         metadata:
           $ref: '#/components/schemas/Metadata'
