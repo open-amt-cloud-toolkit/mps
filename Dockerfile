@@ -6,6 +6,8 @@
 #First stage copy and install dependencies
 ARG BASE=node:14-buster-slim
 FROM ${BASE} as builder
+LABEL license='SPDX-License-Identifier: Apache-2.0' \
+      copyright='Copyright (c) 2021: Intel'
 
 WORKDIR /mps-microservice
 
