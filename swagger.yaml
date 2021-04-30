@@ -15,6 +15,33 @@ servers:
 security:
   - BearerAuth: []
 paths:
+  /authorize:
+    post:
+      description: Generates a JWT token that can be used for authentication against APIs
+      tags:
+        - Auth
+      requestBody:
+        description: Payload with username and password
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        401:
+          description: 'Incorrect Username and/or Password'
+        200:
+          description: 'success'
+          content:
+            application/json:
+              schema:
+                properties:
+                  token:
+                    type: string
   /amt/log/audit/{guid}:
     get:
       description: Returns a requested amount or time range of Intel® AMT Audit Log data for a specified guid
