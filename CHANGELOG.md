@@ -1,6 +1,58 @@
-<a name="v1.2.0"></a>
-## v1.2.0
+<a name="v1.3.0"></a>
+## [v1.3.0] - 2021-05-06
 
+### Build
+- bump package.json version to 1.3.0
+- **deps:** bump express-validator from 6.10.0 to 6.10.1
+- **deps:** bump redis from 3.0.2 to 3.1.0
+- **deps:** bump pg from 8.5.1 to 8.6.0
+- **deps:** bump ws from 7.4.4 to 7.4.5
+- **deps-dev:** bump [@types](https://github.com/types)/node from 14.14.37 to 14.14.39
+- **deps-dev:** bump eslint from 7.24.0 to 7.25.0
+- **deps-dev:** bump ts-jest from 26.5.4 to 26.5.5
+- **deps-dev:** bump [@types](https://github.com/types)/node from 14.14.39 to 14.14.41
+- **deps-dev:** bump [@types](https://github.com/types)/jest from 26.0.22 to 26.0.23
+- **deps-dev:** bump [@types](https://github.com/types)/node from 14.14.41 to 14.14.43
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 4.21.0 to 4.22.0
+- **deps-dev:** bump eslint from 7.23.0 to 7.24.0
+- **deps-dev:** bump eslint-plugin-promise from 4.3.1 to 5.1.0
+- **deps-dev:** bump typescript from 4.2.3 to 4.2.4
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 4.20.0 to 4.21.0
+- **dockerfile:** add license label
+
+### Ci
+- add test coverage requirement
+
+### Docs
+- add changelog
+- **api:** pr updates
+- **api:** corrected case
+- **api:** updated device and status query
+- **api:** update swagger definition
+- **swagger:** add login API info
+
+### Feat
+- **api:** added device get ([#167](https://github.com/open-amt-cloud-toolkit/mps/issues/167))
+
+
+### Fix
+- **api:** fix for jwt token expiration time
+- **metadata:** update SQL column name to hostname
+
+### Refactor
+- **api:** PR162 updates
+- **api:** **BREAKING CHANGE:** align mps and rps api architecture. See [release notes](https://open-amt-cloud-toolkit.github.io/docs/1.3/release-notes/) for complete details. 
+- **proxy:** remove tls from app. 
+
+### Test
+- **api:** move host port to postman env
+- **api:** update API tests
+
+
+<a name="v1.2.0"></a>
+## [v1.2.0] - 2021-04-02
 ### Build
 - **dep:** force lodash to latest
 - **deps:** bump ws from 7.4.2 to 7.4.3
@@ -159,3 +211,4 @@
 ### Refactor
 - **docker:** remove build pre-build step
 - **docker:** optimize dockerfile
+
