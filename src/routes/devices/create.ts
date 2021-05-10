@@ -3,24 +3,35 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 import { validationResult } from 'express-validator'
-import { MetadataDb } from '../../db/metadata'
+import { DeviceDb } from '../../db/device'
+import { Device } from '../../models/models'
 import { logger as log } from '../../utils/logger'
 
 export async function insertDevice (req, res): Promise<void> {
-  const db = new MetadataDb()
+  const db = new DeviceDb()
+  let device: Device
   try {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
       res.status(400).json({ errors: errors.array() })
       return
     }
-    // replace behavior if metadata already exists
-    const exists = await db.getById(req.body.guid)
-    if (exists != null) {
-      const results = await db.update(req.body)
+    device = await db.getById(req.body.guid)
+    if (device != null) {
+      device.hostname = req.body.hostname ?? device.hostname
+      device.tags = req.body.tags ?? device.tags
+      device.connectionStatus = device.connectionStatus ?? false
+      const results = await db.update(device)
       res.status(200).json(results)
     } else {
-      const results = await db.insert(req.body)
+      device = {
+        connectionStatus: false,
+        guid: req.body.guid,
+        hostname: req.body.hostname ?? null,
+        tags: req.body.tags ?? null,
+        mpsInstance: null
+      }
+      const results = await db.insert(device)
       res.status(201).json(results)
     }
   } catch (err) {
