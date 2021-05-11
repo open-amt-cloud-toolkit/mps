@@ -15,7 +15,7 @@ import express from 'express'
 import * as http from 'http'
 import * as parser from 'body-parser'
 
-import { ErrorResponse } from '../utils/amtHelper'
+import { ErrorResponse } from '../utils/ErrorResponse'
 import { logger as log } from '../utils/logger'
 import { constants } from 'crypto'
 import { MPSMicroservice } from '../mpsMicroservice'

@@ -8,7 +8,7 @@
 import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
 import { amtPort, AMTFeaturesConst, UserConsentOptions, MPSMode } from '../../utils/constants'
-import { ErrorResponse } from '../../utils/amtHelper'
+import { ErrorResponse } from '../../utils/ErrorResponse'
 import { AMTFeatures } from '../../utils/AMTFeatures'
 import { MPSValidationError } from '../../utils/MPSValidationError'
 

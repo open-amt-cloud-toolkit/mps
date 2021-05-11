@@ -6,7 +6,7 @@
 
 import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
-import { ErrorResponse } from '../../utils/amtHelper'
+import { ErrorResponse } from '../../utils/ErrorResponse'
 import { amtPort, MPSMode } from '../../utils/constants'
 
 export async function powerCapabilities (req: Request, res: Response): Promise<void> {
