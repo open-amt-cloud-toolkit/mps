@@ -1,6 +1,6 @@
 {
     "use_allowlist" : false,
-    "common_name": "localhost",
+    "common_name": "192.168.1.34",
     "port": 4433,
     "username": "standalone",
     "pass": "G@ppm0ym",
@@ -31,10 +31,7 @@
     "web_proxy_port": "8100",
     "network_adaptor": "eth0",
     "startup_mode": "standalone",
-    "cors_origin":"*",
-    "cors_headers":"*",
-    "cors_methods":"*",
-    "connection_string": "postgresql://postgresadmin:admin123@localhost:5432/mpsdb",
+    "connection_string": "postgresql://postgresadmin@oactdb:kS1k6URMv3I1@oactdb.postgres.database.azure.com:5432/mpsdb?ssl=true",
     "mps_tls_config" : {
       "key": "../private/mpsserver-cert-private.key",
       "cert": "../private/mpsserver-cert-public.crt",

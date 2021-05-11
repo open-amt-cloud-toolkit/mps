@@ -6,14 +6,14 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { logger as log } from './utils/logger'
-import { MPSMicroservice } from './mpsMicroservice'
+import { MPSMicroservice } from './MPSMicroservice'
 
-import { certificates } from './utils/certificates'
-import { tlsConfig } from './utils/tlsConfiguration'
+import { Certificates } from './utils/Certificates'
+import { TLSConfiguration } from './utils/TLSConfiguration'
 import { IDbProvider } from './interfaces/IDbProvider'
 
 import { SecretManagerService } from './utils/SecretManagerService'
-import { SecretsDbProvider } from './utils/vaultDbProvider'
+import { SecretsDbProvider } from './utils/VaultDbProvider'
 import { parseValue } from './utils/parseEnvValue'
 
 import rc from 'rc'
@@ -32,7 +32,7 @@ try {
   const config: MPSConfig = rc('mps')
 
   if (!config.web_admin_password || !config.web_admin_user) {
-    log.error('Web admin username, password and API key are mandatory. Make sure to set values for these variables.')
+    log.error('Web admin username and password are mandatory. Make sure to set values for these variables.')
     process.exit(1)
   }
 
@@ -72,14 +72,14 @@ try {
         certs = { mps_tls_config: config.mps_tls_config, web_tls_config: config.web_tls_config }
       } else { // else read the certs from files
         log.debug('using cert from file')
-        certs = { mps_tls_config: tlsConfig.mps(), web_tls_config: tlsConfig.web() }
+        certs = { mps_tls_config: TLSConfiguration.mps(), web_tls_config: TLSConfiguration.web() }
       }
       log.info('Loaded existing certificates')
     } else {
       if (!fs.existsSync(certPath)) {
         fs.mkdirSync(certPath, { recursive: true })
       }
-      certs = certificates.generateCertificates(config, certPath)
+      certs = Certificates.generateCertificates(config, certPath)
     }
 
     log.info('certs loaded..')

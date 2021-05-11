@@ -6,7 +6,7 @@
     "build": "tsc",
     "compile": "tsc",
     "lint": "eslint . --ext .ts",
-    "start": "npm run build && node ./dist/index.js",
+    "start": "set MPS_LOG_LEVEL=silly&& npm run build && node ./dist/index.js",
     "test": "jest --detectOpenHandles --forceExit --coverage"
   },
   "author": "",

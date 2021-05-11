@@ -6,7 +6,7 @@
 
 import { IDistributedKV } from './IDistributedKV'
 import { logger as log } from './logger'
-import { MPSMicroservice } from '../mpsMicroservice'
+import { MPSMicroservice } from '../MPSMicroservice'
 import { MpsProxy } from '../server/proxies/MpsProxy'
 import * as os from 'os'
 import { DefaultNetworkingAdaptor } from './constants'

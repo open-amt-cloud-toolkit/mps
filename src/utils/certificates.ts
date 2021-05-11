@@ -14,7 +14,7 @@ import { certAndKeyType, MPSCertificates, MPSCertConfig, WebCertConfig } from '.
 
 const certoperation = CertificateOperations()
 
-export class certificates {
+export class Certificates {
   static generateCertificates (config, certpath): MPSCertificates {
     let mpsCertAndKey: certAndKeyType
     let rootCertificate, rootPrivateKey

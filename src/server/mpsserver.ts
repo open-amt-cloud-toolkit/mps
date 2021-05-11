@@ -23,7 +23,7 @@ import * as net from 'net'
 import * as tls from 'tls'
 
 import { logger as log } from '../utils/logger'
-import { MPSMicroservice } from '../mpsMicroservice'
+import { MPSMicroservice } from '../MPSMicroservice'
 import { IDbProvider } from '../interfaces/IDbProvider'
 
 import * as common from '../utils/common.js'

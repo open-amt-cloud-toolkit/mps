@@ -2,7 +2,7 @@ import * as net from 'net'
 import { IMpsProxy } from './ImpsProxy'
 import { APFProtocol } from '../../models'
 import { getDistributedKV } from '../../utils/IDistributedKV'
-import { MPSMicroservice } from '../../mpsMicroservice'
+import { MPSMicroservice } from '../../MPSMicroservice'
 import { logger as log } from '../../utils/logger'
 import * as common from '../../utils/common.js'
 

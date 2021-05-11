@@ -22,12 +22,12 @@
         "@typescript-eslint"
     ],
     "rules": {
-        "@typescript-eslint/strict-boolean-expressions": 0,
-        "@typescript-eslint/restrict-template-expressions": 0,
-        "@typescript-eslint/no-dynamic-delete": 0,
-        "@typescript-eslint/no-extraneous-class": 0,
-        "@typescript-eslint/restrict-plus-operands": 0,
-        "no-prototype-builtins": 0,
-        "node/no-callback-literal": 0
+        "@typescript-eslint/strict-boolean-expressions": 1,
+        "@typescript-eslint/restrict-template-expressions": 1,
+        "@typescript-eslint/no-dynamic-delete": 1,
+        "@typescript-eslint/no-extraneous-class": 1,
+        "@typescript-eslint/restrict-plus-operands": 1,
+        "no-prototype-builtins": 1,
+        "node/no-callback-literal": 1
     }
 }

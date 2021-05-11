@@ -14,7 +14,7 @@ import { directConfigType, MPSCertConfig, WebCertConfig } from '../models'
 const webTlsConfigPath = path.join(__dirname, '../../private/webtlsconfig.json')
 const mpsTlsConfigPath = path.join(__dirname, '../../private/mpstlsconfig.json')
 const directConnTlsConfigPath = path.join(__dirname, '../../private/directConntlsconfig.json')
-export class tlsConfig {
+export class TLSConfiguration {
   static web (): WebCertConfig {
     try {
       let webConfig: WebCertConfig
