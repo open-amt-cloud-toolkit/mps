@@ -13,10 +13,10 @@ import { Database } from '../src/utils/db'
 import { MPSMicroservice } from '../src/mpsMicroservice'
 import { MPSServer } from '../src/server/mpsserver'
 import { join } from 'path'
-import { certificatesType, configType } from '../src/models/models'
+import { MPSCertificates, MPSConfig } from '../src/models'
 
 // Parsing configuration
-const config: configType = {
+const config: MPSConfig = {
   use_allowlist: false,
   common_name: 'localhost',
   port: 4433,
@@ -75,7 +75,7 @@ const config: configType = {
 }
 
 const pki = forge.pki
-let certs : certificatesType
+let certs : MPSCertificates
 const certPath = config.cert_path
 let db: Database
 let mpsService: MPSMicroservice

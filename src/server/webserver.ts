@@ -27,7 +27,7 @@ import interceptor from '../utils/interceptor.js'
 import WebSocket from 'ws'
 import { URL } from 'url'
 import cors from 'cors'
-import { certificatesType, configType, queryParams } from '../models'
+import { MPSCertificates, MPSConfig, QueryParams } from '../models'
 
 export class WebServer {
   db: IDbProvider
@@ -37,8 +37,8 @@ export class WebServer {
   notificationwss = null
   relaywss = null
   mpsService: MPSMicroservice
-  config: configType
-  certs: certificatesType
+  config: MPSConfig
+  certs: MPSCertificates
   sessionParser: any
 
   constructor (mpsService: MPSMicroservice) {
@@ -82,7 +82,7 @@ export class WebServer {
         try {
           const base = `${this.config.https ? 'https' : 'http'}://${this.config.common_name}:${this.config.web_port}/`
           const reqQueryURL = new URL(req.url, base)
-          const params: queryParams = {
+          const params: QueryParams = {
             host: reqQueryURL.searchParams.get('host'),
             port: Number(reqQueryURL.searchParams.get('port')),
             p: Number(reqQueryURL.searchParams.get('p')),

@@ -14,12 +14,12 @@
 import fs from 'fs'
 import { logger as log } from './logger'
 import { IDbProvider } from '../interfaces/IDbProvider'
-import { configType, Credentials } from '../models'
+import { MPSConfig, Credentials } from '../models'
 
 export class Database implements IDbProvider {
-  private readonly config: configType
+  private readonly config: MPSConfig
   private readonly datapath: string
-  constructor (config: configType) {
+  constructor (config: MPSConfig) {
     try {
       this.config = config
       this.datapath = config.data_path

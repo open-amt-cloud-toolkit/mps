@@ -18,7 +18,7 @@ import { parseValue } from './utils/parseEnvValue'
 
 import rc from 'rc'
 import { Environment } from './utils/Environment'
-import { certificatesType, configType } from './models'
+import { MPSCertificates, MPSConfig } from './models'
 
 try {
   // To merge ENV variables. consider after lowercasing ENV since our config keys are lowercase
@@ -29,7 +29,7 @@ try {
     }, {})
 
   // build config object
-  const config: configType = rc('mps')
+  const config: MPSConfig = rc('mps')
 
   if (!config.web_admin_password || !config.web_admin_user) {
     log.error('Web admin username, password and API key are mandatory. Make sure to set values for these variables.')
@@ -39,7 +39,7 @@ try {
   // path where Self-signed certificates are generated
   const certPath = path.join(__dirname, config.cert_path)
   config.data_path = path.join(__dirname, config.data_path)
-  let certs: certificatesType
+  let certs: MPSCertificates
 
   log.silly(`Updated config... ${JSON.stringify(config, null, 2)}`)
   Environment.Config = config

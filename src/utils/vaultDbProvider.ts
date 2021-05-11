@@ -4,14 +4,14 @@
 **********************************************************************/
 import { IDbProvider } from '../interfaces/IDbProvider'
 import { ISecretManagerService } from '../interfaces/ISecretManagerService'
-import { configType, Credentials } from '../models'
+import { MPSConfig, Credentials } from '../models'
 
 export class SecretsDbProvider implements IDbProvider {
   secretsManager: ISecretManagerService
   secretsPath: string
   logger: any
-  config: configType
-  constructor (secretsManager: ISecretManagerService, logger: any, config: configType) {
+  config: MPSConfig
+  constructor (secretsManager: ISecretManagerService, logger: any, config: MPSConfig) {
     this.secretsManager = secretsManager
     this.secretsPath = config.secrets_path
     this.logger = logger

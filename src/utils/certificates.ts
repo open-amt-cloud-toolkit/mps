@@ -10,12 +10,12 @@ import * as fs from 'fs'
 import { logger as log } from './logger'
 import { CertificateOperations } from './certoperations.js'
 import path from 'path'
-import { certAndKeyType, certificatesType, mpsConfigType, webConfigType } from '../models'
+import { certAndKeyType, MPSCertificates, MPSCertConfig, WebCertConfig } from '../models'
 
 const certoperation = CertificateOperations()
 
 export class certificates {
-  static generateCertificates (config, certpath): certificatesType {
+  static generateCertificates (config, certpath): MPSCertificates {
     let mpsCertAndKey: certAndKeyType
     let rootCertificate, rootPrivateKey
     let rootCertAndKey: certAndKeyType
@@ -53,13 +53,13 @@ export class certificates {
     }
 
     // Set MPS TLS Configuration
-    const mpsConfig: mpsConfigType = { cert: mpsCertificate, key: mpsPrivateKey, minVersion: 'TLSv1', requestCert: true, rejectUnauthorized: false }
+    const mpsConfig: MPSCertConfig = { cert: mpsCertificate, key: mpsPrivateKey, minVersion: 'TLSv1', requestCert: true, rejectUnauthorized: false }
 
     // Set WebServer TLS Configuration
     // certificates.web.root.key = rootPrivateKey;
-    const webConfig: webConfigType = { ca: rootCertificate, cert: mpsCertificate, key: mpsPrivateKey }
+    const webConfig: WebCertConfig = { ca: rootCertificate, cert: mpsCertificate, key: mpsPrivateKey }
 
-    const certificates: certificatesType = { mps_tls_config: mpsConfig, web_tls_config: webConfig }
+    const certificates: MPSCertificates = { mps_tls_config: mpsConfig, web_tls_config: webConfig }
 
     return certificates// return mps and web certificates
   }

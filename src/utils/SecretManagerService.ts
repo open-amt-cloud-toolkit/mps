@@ -6,13 +6,13 @@
  **********************************************************************/
 
 import { ISecretManagerService } from '../interfaces/ISecretManagerService'
-import { configType } from '../models'
+import { MPSConfig } from '../models'
 import NodeVault = require('node-vault')
 
 export class SecretManagerService implements ISecretManagerService {
   vaultClient: NodeVault.client
   logger: any
-  constructor (config: configType, logger: any, vault?: any) {
+  constructor (config: MPSConfig, logger: any, vault?: any) {
     this.logger = logger
     if (vault != null) {
       this.vaultClient = vault

@@ -5,11 +5,11 @@
 import { Consul } from '../src/utils/consul';
 import { IDistributedKV, getDistributedKV } from '../src/utils/IDistributedKV';
 import { MPSMicroservice } from '../src/mpsMicroservice'
-import { configType } from '../src/models/models';
+import { MPSConfig } from '../src/models';
 
 describe('Test Consul class Construction', () => {
     it('Test if Consul class Object Constructed only once', () => {
-        const config: configType = {
+        const config: MPSConfig = {
             use_allowlist: false,
             common_name: 'localhost',
             port: 4433,

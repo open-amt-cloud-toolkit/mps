@@ -28,7 +28,7 @@ import { IDbProvider } from '../interfaces/IDbProvider'
 
 import * as common from '../utils/common.js'
 import { MPSMode } from '../utils/constants'
-import { APFProtocol, APFChannelOpenFailureReasonCode, certificatesType, configType } from '../models'
+import { APFProtocol, APFChannelOpenFailureReasonCode, MPSCertificates, MPSConfig } from '../models'
 // 90 seconds max idle time, higher than the typical KEEP-ALIVE period of 60 seconds
 const MAX_IDLE = 90000
 const MPS_PROXY_MSG_HEADER_LENGTH = 85
@@ -46,8 +46,8 @@ const MPS_DEVICE_DISCONNECT_LENGTH = 77
 export class MPSServer {
   db: IDbProvider
   mpsService: MPSMicroservice
-  config: configType
-  certs: certificatesType
+  config: MPSConfig
+  certs: MPSCertificates
   ciraConnections = {}
   server: any
   webProxy: any

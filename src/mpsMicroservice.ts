@@ -12,20 +12,20 @@ import { MpsProxy } from './server/proxies/MpsProxy'
 import { CiraConnectionFactory } from './CiraConnectionFactory'
 import { CiraChannelFactory } from './CiraChannelFactory'
 import { MPSMode } from './utils/constants'
-import { certificatesType, configType } from './models'
+import { MPSCertificates, MPSConfig } from './models'
 
 export class MPSMicroservice {
   mpsserver: MPSServer
   webserver: WebServer
-  config: configType
-  certs: certificatesType
+  config: MPSConfig
+  certs: MPSCertificates
   debugLevel: number = 1
   mpsComputerList = {}
   db: IDbProvider
   ciraConnectionFactory: CiraConnectionFactory
   ciraChannelFactory: CiraChannelFactory
 
-  constructor (config: configType, db: IDbProvider, certs: certificatesType) {
+  constructor (config: MPSConfig, db: IDbProvider, certs: MPSCertificates) {
     try {
       this.config = config
       this.debugLevel = config.debug_level

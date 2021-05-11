@@ -3,11 +3,11 @@
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
 import { Database } from '../src/utils/db'
-import { configType } from '../src/models/Config'
+import { MPSConfig } from '../src/models'
 import { join } from 'path'
 
 describe('Use GUID allowlisting: ', () => {
-  const config: configType = {
+  const config: MPSConfig = {
     use_allowlist: true,
     common_name: 'localhost',
     port: 4433,
@@ -106,7 +106,7 @@ describe('Use GUID allowlisting: ', () => {
 })
 
 describe('Do not use GUID allowlisting: ', () => {
-  const config: configType = {
+  const config: MPSConfig = {
     use_allowlist: false,
     common_name: 'localhost',
     port: 4433,

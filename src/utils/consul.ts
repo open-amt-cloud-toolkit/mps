@@ -11,11 +11,11 @@ import { MpsProxy } from '../server/proxies/MpsProxy'
 import * as os from 'os'
 import { DefaultNetworkingAdaptor } from './constants'
 import consulClient from 'consul'
-import { configType } from '../models'
+import { MPSConfig } from '../models'
 
 // Class for HashiCorp consul
 export class Consul implements IDistributedKV {
-  private readonly config: configType
+  private readonly config: MPSConfig
   private mpsService: MPSMicroservice
   private static instance: IDistributedKV = null
   private readonly consul

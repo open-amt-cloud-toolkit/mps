@@ -9,15 +9,15 @@ import * as fs from 'fs'
 
 import { logger as log } from './logger'
 import { constants } from 'crypto'
-import { directConfigType, mpsConfigType, webConfigType } from '../models'
+import { directConfigType, MPSCertConfig, WebCertConfig } from '../models'
 
 const webTlsConfigPath = path.join(__dirname, '../../private/webtlsconfig.json')
 const mpsTlsConfigPath = path.join(__dirname, '../../private/mpstlsconfig.json')
 const directConnTlsConfigPath = path.join(__dirname, '../../private/directConntlsconfig.json')
 export class tlsConfig {
-  static web (): webConfigType {
+  static web (): WebCertConfig {
     try {
-      let webConfig: webConfigType
+      let webConfig: WebCertConfig
       // Parse Web TLS Configuration json file
       try {
         if (fs.existsSync(webTlsConfigPath)) {
@@ -110,9 +110,9 @@ export class tlsConfig {
     }
   }
 
-  static mps (): mpsConfigType {
+  static mps (): MPSCertConfig {
     try {
-      let mpsConfig: mpsConfigType
+      let mpsConfig: MPSCertConfig
       // Parse MPS TLS Configuration json file
       try {
         if (fs.existsSync(mpsTlsConfigPath)) {

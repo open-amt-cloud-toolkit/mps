@@ -25,7 +25,7 @@ export interface DeviceMetadata{
   hostname: string
 }
 
-export interface configType {
+export interface MPSConfig {
   use_allowlist: boolean
   common_name: string
   port: number
@@ -74,12 +74,12 @@ export interface configType {
   connection_string: string
 }
 
-export interface certificatesType {
-  mps_tls_config: mpsConfigType
-  web_tls_config: webConfigType
+export interface MPSCertificates {
+  mps_tls_config: MPSCertConfig
+  web_tls_config: WebCertConfig
 }
 
-export interface mpsConfigType {
+export interface MPSCertConfig {
   cert: any
   key: any
   minVersion: any
@@ -88,7 +88,7 @@ export interface mpsConfigType {
   rejectUnauthorized: boolean
 }
 
-export interface webConfigType {
+export interface WebCertConfig {
   ca: any
   cert: any
   key: any
@@ -109,19 +109,13 @@ export interface directConfigType {
   rejectUnauthorized: boolean
 }
 
-export interface apiResponseType {
-  statuscode: number
-  payload: any
-}
-
-export interface queryParams {
+export interface QueryParams {
   host: string
   port: number
   p: number
   tls: number
   tls1only: number
 }
-
 
 export enum APFProtocol {
   UNKNOWN = 0,
