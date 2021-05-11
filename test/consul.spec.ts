@@ -5,7 +5,7 @@
 import { Consul } from '../src/utils/consul';
 import { IDistributedKV, getDistributedKV } from '../src/utils/IDistributedKV';
 import { MPSMicroservice } from '../src/mpsMicroservice'
-import { configType } from '../src/models/Config'
+import { configType } from '../src/models/models';
 
 describe('Test Consul class Construction', () => {
     it('Test if Consul class Object Constructed only once', () => {

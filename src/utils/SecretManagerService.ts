@@ -5,8 +5,8 @@
  * Author: Ramu Bachala
  **********************************************************************/
 
-import { ISecretManagerService } from '../models/ISecretManagerService'
-import { configType } from '../models/Config'
+import { ISecretManagerService } from '../interfaces/ISecretManagerService'
+import { configType } from '../models'
 import NodeVault = require('node-vault')
 
 export class SecretManagerService implements ISecretManagerService {
@@ -14,7 +14,7 @@ export class SecretManagerService implements ISecretManagerService {
   logger: any
   constructor (config: configType, logger: any, vault?: any) {
     this.logger = logger
-    if (vault) {
+    if (vault != null) {
       this.vaultClient = vault
       return
     }

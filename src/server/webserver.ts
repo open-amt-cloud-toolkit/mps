@@ -15,12 +15,11 @@ import express from 'express'
 import * as http from 'http'
 import * as parser from 'body-parser'
 
-import { configType, certificatesType, queryParams } from '../models/Config'
 import { ErrorResponse } from '../utils/amtHelper'
 import { logger as log } from '../utils/logger'
 import { constants } from 'crypto'
 import { MPSMicroservice } from '../mpsMicroservice'
-import { IDbProvider } from '../models/IDbProvider'
+import { IDbProvider } from '../interfaces/IDbProvider'
 import AMTStackFactory from '../amt_libraries/amt-connection-factory'
 import routes from '../routes'
 
@@ -28,6 +27,7 @@ import interceptor from '../utils/interceptor.js'
 import WebSocket from 'ws'
 import { URL } from 'url'
 import cors from 'cors'
+import { certificatesType, configType, queryParams } from '../models'
 
 export class WebServer {
   db: IDbProvider

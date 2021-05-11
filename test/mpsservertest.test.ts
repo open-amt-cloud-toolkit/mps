@@ -9,11 +9,11 @@ import * as fs from 'fs'
 import * as https from 'https'
 import * as forge from 'node-forge'
 import { certificates } from '../src/utils/certificates'
-import { certificatesType, configType } from '../src/models/Config'
 import { Database } from '../src/utils/db'
 import { MPSMicroservice } from '../src/mpsMicroservice'
 import { MPSServer } from '../src/server/mpsserver'
 import { join } from 'path'
+import { certificatesType, configType } from '../src/models/models'
 
 // Parsing configuration
 const config: configType = {

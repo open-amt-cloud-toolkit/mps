@@ -1,4 +1,4 @@
-import { Credentials } from './models'
+import { Credentials } from '../models'
 
 /*********************************************************************
 * Copyright (c) Intel Corporation 2020

@@ -2,10 +2,9 @@
 * Copyright (c) Intel Corporation 2020
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
-import { IDbProvider } from '../models/IDbProvider'
-import { ISecretManagerService } from '../models/ISecretManagerService'
-import { configType } from '../models/Config'
-import { Credentials } from '../models/models'
+import { IDbProvider } from '../interfaces/IDbProvider'
+import { ISecretManagerService } from '../interfaces/ISecretManagerService'
+import { configType, Credentials } from '../models'
 
 export class SecretsDbProvider implements IDbProvider {
   secretsManager: ISecretManagerService

@@ -7,11 +7,10 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { logger as log } from './utils/logger'
 import { MPSMicroservice } from './mpsMicroservice'
-import { configType, certificatesType } from './models/Config'
 
 import { certificates } from './utils/certificates'
 import { tlsConfig } from './utils/tlsConfiguration'
-import { IDbProvider } from './models/IDbProvider'
+import { IDbProvider } from './interfaces/IDbProvider'
 
 import { SecretManagerService } from './utils/SecretManagerService'
 import { SecretsDbProvider } from './utils/vaultDbProvider'
@@ -19,6 +18,7 @@ import { parseValue } from './utils/parseEnvValue'
 
 import rc from 'rc'
 import { Environment } from './utils/Environment'
+import { certificatesType, configType } from './models'
 
 try {
   // To merge ENV variables. consider after lowercasing ENV since our config keys are lowercase

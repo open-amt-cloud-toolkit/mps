@@ -3,16 +3,16 @@
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
 
-import { configType, certificatesType } from './models/Config'
 import { WebServer } from './server/webserver'
 import { MPSServer } from './server/mpsserver'
 import { logger as log } from './utils/logger'
-import { IDbProvider } from './models/IDbProvider'
+import { IDbProvider } from './interfaces/IDbProvider'
 import { getDistributedKV } from './utils/IDistributedKV'
 import { MpsProxy } from './server/proxies/MpsProxy'
 import { CiraConnectionFactory } from './CiraConnectionFactory'
 import { CiraChannelFactory } from './CiraChannelFactory'
 import { MPSMode } from './utils/constants'
+import { certificatesType, configType } from './models'
 
 export class MPSMicroservice {
   mpsserver: MPSServer

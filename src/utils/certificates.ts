@@ -8,9 +8,9 @@
 
 import * as fs from 'fs'
 import { logger as log } from './logger'
-import { certificatesType, mpsConfigType, webConfigType, certAndKeyType } from '../models/Config'
 import { CertificateOperations } from './certoperations.js'
 import path from 'path'
+import { certAndKeyType, certificatesType, mpsConfigType, webConfigType } from '../models'
 
 const certoperation = CertificateOperations()
 

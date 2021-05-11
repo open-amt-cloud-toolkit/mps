@@ -4,7 +4,6 @@
 * Author: Vinay G
 **********************************************************************/
 
-import { configType } from '../models/Config'
 import { IDistributedKV } from './IDistributedKV'
 import { logger as log } from './logger'
 import { MPSMicroservice } from '../mpsMicroservice'
@@ -12,6 +11,7 @@ import { MpsProxy } from '../server/proxies/MpsProxy'
 import * as os from 'os'
 import { DefaultNetworkingAdaptor } from './constants'
 import consulClient from 'consul'
+import { configType } from '../models'
 
 // Class for HashiCorp consul
 export class Consul implements IDistributedKV {

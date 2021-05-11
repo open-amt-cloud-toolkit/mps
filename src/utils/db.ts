@@ -12,10 +12,9 @@
  */
 
 import fs from 'fs'
-import { configType } from '../models/Config'
 import { logger as log } from './logger'
-import { IDbProvider } from '../models/IDbProvider'
-import { Credentials } from '../models/models'
+import { IDbProvider } from '../interfaces/IDbProvider'
+import { configType, Credentials } from '../models'
 
 export class Database implements IDbProvider {
   private readonly config: configType

@@ -1,6 +1,6 @@
 import * as net from 'net'
 import { IMpsProxy } from './ImpsProxy'
-import { APFProtocol } from '../../models/Mps'
+import { APFProtocol } from '../../models'
 import { getDistributedKV } from '../../utils/IDistributedKV'
 import { MPSMicroservice } from '../../mpsMicroservice'
 import { logger as log } from '../../utils/logger'
