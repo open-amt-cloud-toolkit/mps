@@ -707,7 +707,7 @@ function AmtStackCreateService(wsmanStack) {
         if (id == 1606) { var r = ["Disabled", "Enabled"][data.charCodeAt(0)]; if (data.charCodeAt(1) == 0) { r += ", " + data.substring(3); } return r;} // ACL Entry State
         if (id == 1607) { return "Remote " + ["NoAuth", "ServerAuth", "MutualAuth"][data.charCodeAt(0)] + ", Local " + ["NoAuth", "ServerAuth", "MutualAuth"][data.charCodeAt(1)]; } // TLS State Changed
         if (id == 1617) { return obj.RealmNames[ReadInt(data, 0)] + ", " + ["NoAuth", "Auth", "Disabled"][data.charCodeAt(4)]; } // Set Realm Authentication Mode
-        if (id == 1619) { return ["BIOS", "MEBx", "Local MEI", "Local WSMAN", "Remote WSAMN"][data.charCodeAt(0)]; } // Intel AMT Unprovisioning Started
+        if (id == 1619) { return ["BIOS", "MEBx", "Local MEI", "Local WSMAN", "Remote WSMAN"][data.charCodeAt(0)]; } // Intel AMT Unprovisioning Started
         if (id == 1900) { return "From " + ReadShort(data, 0) + "." + ReadShort(data, 2) + "." + ReadShort(data, 4) + "." + ReadShort(data, 6) + " to " + ReadShort(data, 8) + "." + ReadShort(data, 10) + "." + ReadShort(data, 12) + "." + ReadShort(data, 14); } // Firmware Updated
         if (id == 2100) { var t4 = new Date(); t4.setTime(ReadInt(data, 0) * 1000 + (new Date().getTimezoneOffset() * 60000)); return t4.toLocaleString(); } // Intel AMT Time Set
         if (id == 3000) { return "From " + ["None", "KVM", "All"][data.charCodeAt(0)] + " to " + ["None", "KVM", "All"][data.charCodeAt(1)]; } // Opt-In Policy Change
