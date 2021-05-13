@@ -64,7 +64,6 @@ const config: configType = {
   distributed_kv_name: "HashiCorpConsul",
   distributed_kv_ip:"127.0.0.1",
   distributed_kv_port: 8500,
-  startup_mode: "standalone",
   web_proxy_port: 8100,
   network_adaptor: "eth0",
   tls_cert: "",

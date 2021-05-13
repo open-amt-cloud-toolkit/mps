@@ -38,7 +38,6 @@ export interface configType {
   distributed_kv_name: string
   distributed_kv_ip?: string
   distributed_kv_port?: number
-  startup_mode: string
   web_proxy_port: number
   network_adaptor: string
   tls_cert: string

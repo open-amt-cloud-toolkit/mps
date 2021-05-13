@@ -57,10 +57,3 @@ export enum KeyValueStore {
   Unknown = 'Unknown',
   HashiCorpConsul = 'HashiCorpConsul'
 }
-
-export enum MPSMode {
-  Unknown = 'Unknown',
-  Standalone = 'standalone',
-  MPS = 'mps',
-  WEB = 'web'
-}

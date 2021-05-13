@@ -30,58 +30,56 @@ import { IDbProvider } from '../models/IDbProvider'
 
 import * as common from '../utils/common.js'
 // 90 seconds max idle time, higher than the typical KEEP-ALIVE period of 60 seconds
-const MAX_IDLE = 90000;      
+const MAX_IDLE = 90000
 
-export class MPSServer{
+export class MPSServer {
+  db: IDbProvider
+  mpsService: MPSMicroservice
+  config: configType
+  certs: certificatesType
+  ciraConnections = {}
+  server: any
 
-    db: IDbProvider;
-    mpsService: MPSMicroservice;
-    config: configType;
-    certs: certificatesType;
-    ciraConnections = {};
-    server: any;
+  constructor (mpsService: MPSMicroservice) {
+    this.mpsService = mpsService
+    this.db = mpsService.db
+    this.config = mpsService.config
+    this.certs = mpsService.certs
 
-    constructor(mpsService: MPSMicroservice){
-        this.mpsService = mpsService;
-        this.db = mpsService.db;
-        this.config = mpsService.config;
-        this.certs = mpsService.certs;
-            
-        if (this.config.tls_offload) {
-            //Creates a new TCP server
-            this.server = net.createServer((socket) => {
-                this.onConnection(socket);
-            });
-        } else {
-            //Creates a TLS server for secure connection
-            this.server = tls.createServer(this.certs.mps_tls_config, (socket) => {
-                this.onConnection(socket);
-            });
-        }
-        
-        this.server.listen(this.config.port, () => {
-            let mpsaliasport  =  (typeof this.config.alias_port === 'undefined') ? `${this.config.port}` :  `${this.config.port} alias port ${this.config.alias_port}`;
-            log.info(`Intel(R) AMT server running on ${this.config.common_name}:${mpsaliasport}.`);
-        });
-
-        this.server.on('error', (err) => {
-            log.error(`ERROR: Intel(R) AMT server port ${this.config.port} is not available.`);
-            if(err)log.error(err);
-            // if (this.config.exactports) {
-            //     process.exit();
-            // }
-        });
-
+    if (this.config.tls_offload) {
+      // Creates a new TCP server
+      this.server = net.createServer((socket) => {
+        this.onConnection(socket)
+      })
+    } else {
+      // Creates a TLS server for secure connection
+      this.server = tls.createServer(this.certs.mps_tls_config, (socket) => {
+        this.onConnection(socket)
+      })
     }
-    
-    onConnection = (socket): void => {
-        if (this.config.tls_offload) {
-            socket.tag = { first: true, clientCert: null, accumulator: "", activetunnels: 0, boundPorts: [], socket: socket, host: null, nextchannelid: 4, channels: {}, nextsourceport: 0 };
-        } else {
-            socket.tag = { first: true, clientCert: socket.getPeerCertificate(true), accumulator: "", activetunnels: 0, boundPorts: [], socket: socket, host: null, nextchannelid: 4, channels: {}, nextsourceport: 0 };
-        }
-        socket.setEncoding('binary');
-        this.debug(1,`MPS:New CIRA connection`);
+
+    this.server.listen(this.config.port, () => {
+      const mpsaliasport = (typeof this.config.alias_port === 'undefined') ? `${this.config.port}` : `${this.config.port} alias port ${this.config.alias_port}`
+      log.info(`Intel(R) AMT server running on ${this.config.common_name}:${mpsaliasport}.`)
+    })
+
+    this.server.on('error', (err) => {
+      log.error(`ERROR: Intel(R) AMT server port ${this.config.port} is not available.`)
+      if (err)log.error(err)
+      // if (this.config.exactports) {
+      //     process.exit();
+      // }
+    })
+  }
+
+  onConnection = (socket): void => {
+    if (this.config.tls_offload) {
+      socket.tag = { first: true, clientCert: null, accumulator: '', activetunnels: 0, boundPorts: [], socket: socket, host: null, nextchannelid: 4, channels: {}, nextsourceport: 0 }
+    } else {
+      socket.tag = { first: true, clientCert: socket.getPeerCertificate(true), accumulator: '', activetunnels: 0, boundPorts: [], socket: socket, host: null, nextchannelid: 4, channels: {}, nextsourceport: 0 }
+    }
+    socket.setEncoding('binary')
+    this.debug(1, 'MPS:New CIRA connection')
 
     // Setup the CIRA keep alive timer
     socket.setTimeout(MAX_IDLE)
@@ -90,9 +88,9 @@ export class MPSServer{
       try {
         socket.end()
         if (this.ciraConnections[socket.tag.nodeid]) {
-          delete this.ciraConnections[socket.tag.nodeid];
-          if (typeof this.mpsService["CIRADisconnected"] === "function") {
-            this.mpsService.CIRADisconnected(socket.tag.nodeid);
+          delete this.ciraConnections[socket.tag.nodeid]
+          if (typeof this.mpsService.CIRADisconnected === 'function') {
+            await this.mpsService.CIRADisconnected(socket.tag.nodeid)
           }
         }
       } catch (e) {

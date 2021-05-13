@@ -6,7 +6,7 @@
 
 import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
-import { amtPort, MPSMode } from '../../utils/constants'
+import { amtPort } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { validationResult } from 'express-validator'
 
@@ -20,7 +20,7 @@ export async function powerAction (req: Request, res: Response): Promise<void> {
       return
     }
 
-    const ciraconn = await req.mpsService.ciraConnectionFactory.getConnection(guid)
+    const ciraconn = req.mpsService.mpsserver.ciraConnections[guid]
     if (ciraconn && ciraconn.readyState === 'open') {
       const cred = await req.mpsService.db.getAmtPassword(guid)
       const amtstack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
@@ -168,9 +168,7 @@ function powerStateChange (uuid, action, amtstack, req, res): void {
   amtstack.RequestPowerStateChange(
     action,
     (stack, name, response, status) => {
-      if (req.mpsService.config.startup_mode === MPSMode.Standalone) {
-        stack.wsman.comm.socket.sendchannelclose()
-      }
+      stack.wsman.comm.socket.sendchannelclose()
       if (status === 200) {
         // log.info(`Power state change request successful for guid : ${uuid}`);
         res.status(200).json(response).end()

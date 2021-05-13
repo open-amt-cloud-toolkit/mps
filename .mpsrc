@@ -30,7 +30,6 @@
     "distributed_kv_name": "HashiCorpConsul",
     "web_proxy_port": "8100",
     "network_adaptor": "eth0",
-    "startup_mode": "standalone",
     "cors_origin":"*",
     "cors_headers":"*",
     "cors_methods":"*",
