@@ -1,218 +1,10 @@
 {
 	"info": {
-		"_postman_id": "fc56b9cb-afb3-4f0d-8dd2-5f8f4a5f6f0f",
+		"_postman_id": "f17d0f89-6914-468b-95ba-b1f093ac9abd",
 		"name": "MPS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
-		{
-			"name": "Metadata",
-			"item": [
-				{
-					"name": "Get Devices",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{protocol}}://{{host}}/api/v1/metadata",
-							"protocol": "{{protocol}}",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"metadata"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Devices (Tags Query)",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{protocol}}://{{host}}/api/v1/metadata",
-							"protocol": "{{protocol}}",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"metadata"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create Device",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 201\", function () {\r",
-									"    pm.response.to.have.status(201);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n        \"guid\": \"143e4567-e89b-12d3-a456-426614174000\",\r\n        \"hostname\": \"hostname\",\r\n        \"tags\": []\r\n    }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{protocol}}://{{host}}/api/v1/metadata",
-							"protocol": "{{protocol}}",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"metadata"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Devices by Guid",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var env = pm.environment.get(\"env\");\r",
-									"if (env == 'dev') {\r",
-									"    pm.test(\"Status code is 404\", function () {\r",
-									"        pm.response.to.have.status(404);\r",
-									"    });\r",
-									"} else {\r",
-									"    pm.test(\"Status code is 200\", function () {\r",
-									"        pm.response.to.have.status(200);\r",
-									"    });\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{protocol}}://{{host}}/api/v1/metadata/dc09fce2-a602-11ea-90a8-90cf9ac8ee00",
-							"protocol": "{{protocol}}",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"metadata",
-								"dc09fce2-a602-11ea-90a8-90cf9ac8ee00"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Device",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 204\", function () {\r",
-									"    pm.response.to.have.status(204);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{protocol}}://{{host}}/api/v1/metadata/143e4567-e89b-12d3-a456-426614174000",
-							"protocol": "{{protocol}}",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"metadata",
-								"143e4567-e89b-12d3-a456-426614174000"
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				}
-			]
-		},
 		{
 			"name": "Certs",
 			"item": [
@@ -270,6 +62,11 @@
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Result length should be 0\", function () {\r",
+									"   var jsonData = pm.response.json();\r",
+									"   pm.expect(jsonData.length).to.eql(0);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -307,52 +104,7 @@
 					"response": []
 				},
 				{
-					"name": "All Devices with status filter",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{protocol}}://{{host}}/api/v1/devices",
-							"protocol": "{{protocol}}",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"devices"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Stats",
+					"name": "Device Stats",
 					"event": [
 						{
 							"listen": "test",
@@ -363,9 +115,9 @@
 									"});\r",
 									"pm.test(\"Expect to have 3 properties\",function(){\r",
 									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData.totalCount).to.be.above(-1)\r",
-									"    pm.expect(jsonData.connectedCount).to.be.above(-1)\r",
-									"    pm.expect(jsonData.disconnectedCount).to.be.above(-1)\r",
+									"    pm.expect(jsonData.totalCount).to.be.equal(0)\r",
+									"    pm.expect(jsonData.connectedCount).to.be.equal(0)\r",
+									"    pm.expect(jsonData.disconnectedCount).to.be.equal(0)\r",
 									"    \r",
 									"})"
 								],
@@ -405,7 +157,7 @@
 					"response": []
 				},
 				{
-					"name": "All Devices with tag filter",
+					"name": "DISTINCT tags when no devices",
 					"event": [
 						{
 							"listen": "test",
@@ -413,7 +165,11 @@
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
-									"});"
+									"});\r",
+									"pm.test(\"Expect to have two tags\",function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.length).to.be.equal(0)\r",
+									"})"
 								],
 								"type": "text/javascript"
 							}
@@ -428,6 +184,56 @@
 						"body": {
 							"mode": "raw",
 							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices/tags",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices",
+								"tags"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Device with invalid GUID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"pm.test(\"Expect to return device info\",function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.errors[0].value).to.be.equal(\"143e4567-e89b-12d3-a456-426614174\")\r",
+									"    pm.expect(jsonData.errors[0].msg).to.be.equal(\"Invalid value\")\r",
+									"    pm.expect(jsonData.errors[0].param).to.be.equal(\"guid\")  \r",
+									"    pm.expect(jsonData.errors[0].location).to.be.equal(\"body\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"guid\": \"143e4567-e89b-12d3-a456-426614174\",\r\n    \"hostname\": \"hostname\",\r\n    \"tags\": []\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -450,7 +256,567 @@
 					"response": []
 				},
 				{
-					"name": "Disconnect CIRA Device",
+					"name": "Create Device with tags as string",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"pm.test(\"Expect an error with wrong device guid format\",function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.errors[0].value).to.be.equal(\"test\")\r",
+									"    pm.expect(jsonData.errors[0].msg).to.be.equal(\"tags should be an array of strings\")\r",
+									"    pm.expect(jsonData.errors[0].param).to.be.equal(\"tags\")  \r",
+									"    pm.expect(jsonData.errors[0].location).to.be.equal(\"body\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"guid\": \"d12428be-9fa1-4226-9784-54b2038beab6\",\r\n    \"hostname\": \"hostname\",\r\n    \"tags\": \"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Device",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"pm.test(\"Expect to return device info\",function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.guid).to.be.equal(\"143e4567-e89b-12d3-a456-426614174000\");\r",
+									"    pm.expect(jsonData.hostname).to.be.equal(\"hostname\");\r",
+									"    pm.expect(jsonData.tags.length).to.be.equal(0);\r",
+									"    pm.expect(jsonData.mpsInstance).to.be.equal(null);\r",
+									"    pm.expect(jsonData.connectionStatus).to.be.equal(false);\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"guid\": \"143e4567-e89b-12d3-a456-426614174000\",\r\n    \"hostname\": \"hostname\",\r\n    \"tags\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Device by GUID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Expect to return device info\",function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.guid).to.be.equal(\"143e4567-e89b-12d3-a456-426614174000\")\r",
+									"    pm.expect(jsonData.hostname).to.be.equal(\"hostname\")\r",
+									"    pm.expect(jsonData.tags.length).to.be.equal(0)  \r",
+									"    pm.expect(jsonData.mpsInstance).to.be.equal(null)\r",
+									"    pm.expect(jsonData.connectionStatus).to.be.equal(false)\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices/143e4567-e89b-12d3-a456-426614174000",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices",
+								"143e4567-e89b-12d3-a456-426614174000"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Device with an invalid GUID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"pm.test(\"Expect an error with wrong device guid format\",function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.errors[0].value).to.be.equal(\"143e4567-e89b-12d3-a456-426614174\")\r",
+									"    pm.expect(jsonData.errors[0].msg).to.be.equal(\"Invalid value\")\r",
+									"    pm.expect(jsonData.errors[0].param).to.be.equal(\"guid\")  \r",
+									"    pm.expect(jsonData.errors[0].location).to.be.equal(\"params\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices/143e4567-e89b-12d3-a456-426614174",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices",
+								"143e4567-e89b-12d3-a456-426614174"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Device hostname",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Expect to return device info\",function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.guid).to.be.equal(\"143e4567-e89b-12d3-a456-426614174000\")\r",
+									"    pm.expect(jsonData.hostname).to.be.equal(\"DESKTOP-2T73VQK\")\r",
+									"    pm.expect(jsonData.tags.length).to.be.equal(1)  \r",
+									"    pm.expect(jsonData.mpsInstance).to.be.equal(null)\r",
+									"    pm.expect(jsonData.connectionStatus).to.be.equal(false)\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"guid\": \"143e4567-e89b-12d3-a456-426614174000\",\r\n        \"hostname\": \"DESKTOP-2T73VQK\",\r\n        \"tags\": [\"acm\"]\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Device not found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Expect to return device info\",function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.guid).to.be.equal(\"143e4567-e89b-12d3-a456-426614174000\")\r",
+									"    pm.expect(jsonData.hostname).to.be.equal(\"hostname\")\r",
+									"    pm.expect(jsonData.tags.length).to.be.equal(1)  \r",
+									"    pm.expect(jsonData.mpsInstance).to.be.equal(null)\r",
+									"    pm.expect(jsonData.connectionStatus).to.be.equal(null)\r",
+									"})\r",
+									"pm.test(\"Expect tag value to be acm\",function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.tags.length).to.be.equal(1)  \r",
+									"    pm.expect(jsonData.tags[0]).to.be.equal(\"acm\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"guid\": \"143e4567-e89b-12d3-a456-426614174000\",\r\n        \"hostname\": \"hostname\",\r\n        \"tags\": [\"acm\"]\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Device tags",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Expect to return device info\",function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.guid).to.be.equal(\"143e4567-e89b-12d3-a456-426614174000\")\r",
+									"    pm.expect(jsonData.hostname).to.be.equal(\"hostname\")\r",
+									"    pm.expect(jsonData.tags.length).to.be.equal(1)  \r",
+									"    pm.expect(jsonData.mpsInstance).to.be.equal(null)\r",
+									"    pm.expect(jsonData.connectionStatus).to.be.equal(null)\r",
+									"})\r",
+									"pm.test(\"Expect tag value to be acm\",function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.tags.length).to.be.equal(1)  \r",
+									"    pm.expect(jsonData.tags[0]).to.be.equal(\"acm\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"guid\": \"143e4567-e89b-12d3-a456-426614174000\",\r\n        \"hostname\": \"hostname\",\r\n        \"tags\": [\"acm\"]\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Device",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"pm.test(\"Expect to return device info\",function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.guid).to.be.equal(\"d12428be-9fa1-4226-9784-54b2038beab6\")\r",
+									"    pm.expect(jsonData.hostname).to.be.equal(\"hostname\")\r",
+									"    pm.expect(jsonData.tags.length).to.be.equal(1)  \r",
+									"    pm.expect(jsonData.mpsInstance).to.be.equal(null)\r",
+									"    pm.expect(jsonData.connectionStatus).to.be.equal(false)\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"guid\": \"d12428be-9fa1-4226-9784-54b2038beab6\",\r\n    \"hostname\": \"hostname\",\r\n    \"tags\": [\"ccm\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DISTINCT tags",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Expect to have two tags\",function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.length).to.be.equal(2)\r",
+									"    pm.expect(jsonData).contains(\"acm\")\r",
+									"    pm.expect(jsonData).contains(\"ccm\")\r",
+									"    \r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices/tags",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices",
+								"tags"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Device with an invalid GUID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"pm.test(\"Expect an error for invalid guid\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.errors[0].value).to.be.equal(\"143e4567-e89b-12d3-a456-426614174\")\r",
+									"    pm.expect(jsonData.errors[0].msg).to.be.equal(\"Invalid value\")\r",
+									"    pm.expect(jsonData.errors[0].param).to.be.equal(\"guid\")  \r",
+									"    pm.expect(jsonData.errors[0].location).to.be.equal(\"params\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices/143e4567-e89b-12d3-a456-426614174",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices",
+								"143e4567-e89b-12d3-a456-426614174"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Device not found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"pm.test(\"Expect an error when there is no device\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.be.equal(\"NOT FOUND\")\r",
+									"    pm.expect(jsonData.message).to.be.equal(\"Device ID 143e4567-e89b-12d3-a456-426614174002 not found\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices/143e4567-e89b-12d3-a456-426614174002",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices",
+								"143e4567-e89b-12d3-a456-426614174002"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Device",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices/143e4567-e89b-12d3-a456-426614174000",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices",
+								"143e4567-e89b-12d3-a456-426614174000"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Disconnect CIRA",
 					"event": [
 						{
 							"listen": "test",
@@ -463,7 +829,7 @@
 									"pm.test(\"Device should not be found\", function () {\r",
 									"    var jsonData = pm.response.json();\r",
 									"    pm.expect(jsonData.error).to.eq(\"Device not found/connected. Please connect again using CIRA.\")\r",
-									"    pm.expect(jsonData.errorDescription).to.eq(\"guid : 1\")\r",
+									"    pm.expect(jsonData.errorDescription).to.eq(\"guid : d12428be-9fa1-4226-9784-54b2038beab6\")\r",
 									"});\r",
 									""
 								],
@@ -475,7 +841,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{host}}/api/v1/devices/disconnect/1",
+							"raw": "{{protocol}}://{{host}}/api/v1/devices/disconnect/d12428be-9fa1-4226-9784-54b2038beab6",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
@@ -485,7 +851,41 @@
 								"v1",
 								"devices",
 								"disconnect",
-								"1"
+								"d12428be-9fa1-4226-9784-54b2038beab6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Device",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices/d12428be-9fa1-4226-9784-54b2038beab6",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices",
+								"d12428be-9fa1-4226-9784-54b2038beab6"
 							]
 						}
 					},

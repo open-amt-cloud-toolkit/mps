@@ -129,13 +129,13 @@ export class MPSServer {
         this.onWebConnection(socket)
       })
     } else {
-      this.onCiraDisconnect = (nodeid) => {
+      this.onCiraDisconnect = async (nodeid): Promise<void> => {
         if (this.ciraConnections[nodeid]) {
           delete this.ciraConnections[nodeid]
         }
 
         if (this.mpsService.CIRADisconnected != null) {
-          this.mpsService.CIRADisconnected(nodeid)
+          await this.mpsService.CIRADisconnected(nodeid)
         }
       }
     }
@@ -439,7 +439,7 @@ export class MPSServer {
 
     // Setup the CIRA keep alive timer
     socket.setTimeout(MAX_IDLE)
-    socket.on('timeout', () => {
+    socket.on('timeout', async (): Promise<void> => {
       this.debug(1, 'MPS:CIRA timeout, disconnecting.')
       try {
         socket.end()
@@ -447,7 +447,7 @@ export class MPSServer {
           this.onCiraDisconnect(socket.tag.nodeid)
           this.debug(1, 'MPS: call CIRADisconnected')
           if (typeof this.mpsService.CIRADisconnected === 'function') {
-            this.mpsService.CIRADisconnected(socket.tag.nodeid)
+            await this.mpsService.CIRADisconnected(socket.tag.nodeid)
           } else {
             this.debug(1, 'MPS: No definition for CIRADisconnected')
           }
@@ -458,7 +458,7 @@ export class MPSServer {
       this.debug(1, 'MPS:CIRA timeout, disconnected.')
     })
 
-    socket.addListener('data', (data: string) => {
+    socket.addListener('data', async (data: string): Promise<void> => {
       // TODO: mpsdebug should be added to the config file
       // if (this.config.mpsdebug) {
       //     let buf = Buffer.from(data, "binary");
@@ -501,7 +501,7 @@ export class MPSServer {
         // Parse all of the APF data we can
         let l = 0
         do {
-          l = this.processCommand(socket)
+          l = await this.processCommand(socket)
           if (l > 0) {
             socket.tag.accumulator = socket.tag.accumulator.substring(l)
           }
@@ -514,13 +514,13 @@ export class MPSServer {
       }
     })
 
-    socket.addListener('close', () => {
+    socket.addListener('close', async (): Promise<void> => {
       this.debug(1, 'MPS:CIRA connection closed')
       try {
         if (this.ciraConnections[socket.tag.nodeid]) {
           delete this.ciraConnections[socket.tag.nodeid]
           if (typeof this.mpsService.CIRADisconnected === 'function') {
-            this.mpsService.CIRADisconnected(socket.tag.nodeid)
+            await this.mpsService.CIRADisconnected(socket.tag.nodeid)
           }
         }
       } catch (e) {
@@ -535,7 +535,7 @@ export class MPSServer {
   }
 
   // Process one APF command
-  processCommand = (socket): number => {
+  processCommand = async (socket): Promise<number> => {
     const cmd = socket.tag.accumulator.charCodeAt(0)
     const len = socket.tag.accumulator.length
     const data = socket.tag.accumulator
@@ -565,12 +565,12 @@ export class MPSServer {
         this.debug(3, 'MPS:PROTOCOLVERSION', socket.tag.MajorVersion, socket.tag.MinorVersion, socket.tag.SystemId)
         // Check if the device is allowlisted to connect. Only checked when 'use_allowlist' is set to true in config.json.
         if (this.config.use_allowlist) {
-          this.db.IsGUIDApproved(socket.tag.SystemId, (allowed) => {
+          this.db.IsGUIDApproved(socket.tag.SystemId, async (allowed): Promise<void> => {
             socket.tag.nodeid = socket.tag.SystemId
             if (allowed) {
               if (socket.tag.certauth) {
                 this.ciraConnections[socket.tag.SystemId] = socket
-                this.mpsService.CIRAConnected(socket.tag.nodeid)
+                await this.mpsService.CIRAConnected(socket.tag.nodeid)
               }
             } else {
               try {
@@ -583,7 +583,7 @@ export class MPSServer {
           socket.tag.nodeid = socket.tag.SystemId
           if (socket.tag.certauth) {
             this.ciraConnections[socket.tag.SystemId] = socket
-            this.mpsService.CIRAConnected(socket.tag.nodeid)
+            await this.mpsService.CIRAConnected(socket.tag.nodeid)
           }
         }
         log.debug(`device uuid: ${socket.tag.SystemId}`)
@@ -605,15 +605,15 @@ export class MPSServer {
         this.debug(3, `MPS:USERAUTH_REQUEST usernameLen=${usernameLen} serviceNameLen=${serviceNameLen} methodNameLen=${methodNameLen}`)
         this.debug(3, `MPS:USERAUTH_REQUEST user=${username} service=${serviceName} method=${methodName} password=${password}`)
         // Authenticate device connection using username and password
-        this.db.CIRAAuth(socket.tag.SystemId, username, password, (allowed) => {
+        this.db.CIRAAuth(socket.tag.SystemId, username, password, async (allowed): Promise<void> => {
           if (allowed) {
             this.debug(1, 'MPS:CIRA Authentication successful for ', username)
             this.ciraConnections[socket.tag.SystemId] = socket
-            this.mpsService.CIRAConnected(socket.tag.SystemId) // Notify that a connection is successful to console
+            await this.mpsService.CIRAConnected(socket.tag.SystemId) // Notify that a connection is successful to console
             this.SendUserAuthSuccess(socket) // Notify the auth success on the CIRA connection
           } else {
             log.warn(`MPS: CIRA Authentication failed for: ${username} `)
-            this.SendUserAuthFail(socket); return -1
+            this.SendUserAuthFail(socket)
           }
         })
         return 18 + usernameLen + serviceNameLen + methodNameLen + passwordLen
@@ -858,7 +858,7 @@ export class MPSServer {
         try {
           delete this.ciraConnections[socket.tag.nodeid]
         } catch (e) { }
-        this.mpsService.CIRADisconnected(socket.tag.nodeid)
+        await this.mpsService.CIRADisconnected(socket.tag.nodeid)
         return 7
       }
       default: {
@@ -869,7 +869,7 @@ export class MPSServer {
   }
 
   // Disconnect CIRA tunnel
-  close (socket): void {
+  async close (socket): Promise<void> {
     try {
       socket.end()
     } catch (e) { }
@@ -877,7 +877,7 @@ export class MPSServer {
       delete this.ciraConnections[socket.tag.nodeid]
     } catch (e) { }
     if (this.mpsService) {
-      this.mpsService.CIRADisconnected(socket.tag.nodeid)
+      await this.mpsService.CIRADisconnected(socket.tag.nodeid)
     }
   }
 

@@ -13,7 +13,9 @@ import { MpsProxy } from './server/proxies/MpsProxy'
 import { CiraConnectionFactory } from './CiraConnectionFactory'
 import { CiraChannelFactory } from './CiraChannelFactory'
 import { MPSMode } from './utils/constants'
-
+import { DeviceDb } from './db/device'
+import { Device } from './models/models'
+import { Environment } from './utils/Environment'
 export class MPSMicroservice {
   mpsserver: MPSServer
   webserver: WebServer
@@ -24,7 +26,7 @@ export class MPSMicroservice {
   db: IDbProvider
   ciraConnectionFactory: CiraConnectionFactory
   ciraChannelFactory: CiraChannelFactory
-
+  deviceDb: DeviceDb
   constructor (config: configType, db: IDbProvider, certs: certificatesType) {
     try {
       this.config = config
@@ -37,6 +39,7 @@ export class MPSMicroservice {
   }
 
   start (): void {
+    this.deviceDb = new DeviceDb()
     if (this.config.startup_mode === MPSMode.Standalone) {
       this.webserver = new WebServer(this)
       this.mpsserver = new MPSServer(this)
@@ -59,9 +62,19 @@ export class MPSMicroservice {
     }
   }
 
-  CIRAConnected (guid: string): void {
-    log.info(`CIRA connection established for ${guid}`)
-
+  async CIRAConnected (guid: string): Promise<void> {
+    // ToDo: Check if the device doesn't exist
+    if (this.deviceDb != null) {
+      const device: Device = await this.deviceDb.getById(guid)
+      device.connectionStatus = true
+      device.mpsInstance = Environment.Config.instance_name
+      const results = await this.deviceDb.update(device)
+      if (results) {
+        log.info(`CIRA connection established for ${guid}`)
+      } else {
+        log.info(`Failed to update CIRA Connection established status in DB ${guid}`)
+      }
+    }
     if (this.config.startup_mode === MPSMode.MPS) {
       // update DistributedKV with key as device UUID
       // and value as Server IP.f
@@ -77,8 +90,18 @@ export class MPSMicroservice {
     }
   }
 
-  CIRADisconnected (guid: string): void {
-    log.info(`Main:CIRA connection closed for ${guid}`)
+  async CIRADisconnected (guid: string): Promise<void> {
+    if (this.deviceDb != null) {
+      const device: Device = await this.deviceDb.getById(guid)
+      device.connectionStatus = false
+      device.mpsInstance = null
+      const results = await this.deviceDb.update(device)
+      if (results) {
+        log.info(`Main:CIRA connection closed for ${guid}`)
+      } else {
+        log.info(`Failed to update CIRA Connection closed status in DB ${guid}`)
+      }
+    }
 
     if (this.config.startup_mode === MPSMode.MPS) {
       // delete the KV pair in DistributedKV
