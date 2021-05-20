@@ -4,14 +4,14 @@
 **********************************************************************/
 
 import { MpsProxy } from "../src/server/proxies/MpsProxy"
-import { certificatesType, configType } from '../src/models/Config'
+import { MPSCertificates, MPSConfig } from '../src/models'
 const common = require('../src/utils/common.js')
 import { MPSMicroservice } from '../src/mpsMicroservice'
 import { Database } from '../src/utils/db'
 
 describe('mpsProxy Object creation test', () => {
     it ('mpsProxy Object creation test', async () => {
-      const config: configType = {
+      const config: MPSConfig = {
         use_allowlist: false,
         common_name: 'localhost',
         port: 4433,
@@ -70,7 +70,7 @@ describe('mpsProxy Object creation test', () => {
       }
         const uuid = "1cc7c617-22fa-4120-8b65-54b2038d3e8a"
         let db: Database
-        let certs : certificatesType
+        let certs : MPSCertificates
         db = new Database(config)
         let mpsService = new MPSMicroservice(config, db, certs)
 

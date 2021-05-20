@@ -2,17 +2,16 @@
 * Copyright (c) Intel Corporation 2020
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
-import { IDbProvider } from '../models/IDbProvider'
-import { ISecretManagerService } from '../models/ISecretManagerService'
-import { configType } from '../models/Config'
-import { Credentials } from '../models/models'
+import { IDbProvider } from '../interfaces/IDbProvider'
+import { ISecretManagerService } from '../interfaces/ISecretManagerService'
+import { MPSConfig, Credentials } from '../models'
 
 export class SecretsDbProvider implements IDbProvider {
   secretsManager: ISecretManagerService
   secretsPath: string
   logger: any
-  config: configType
-  constructor (secretsManager: ISecretManagerService, logger: any, config: configType) {
+  config: MPSConfig
+  constructor (secretsManager: ISecretManagerService, logger: any, config: MPSConfig) {
     this.secretsManager = secretsManager
     this.secretsPath = config.secrets_path
     this.logger = logger

@@ -5,7 +5,7 @@
 import { logger as log } from '../../utils/logger'
 import * as fs from 'fs'
 import * as path from 'path'
-import { ErrorResponse } from '../../utils/amtHelper'
+import { ErrorResponse } from '../../utils/ErrorResponse'
 
 export async function mpsrootcert (req, res): Promise<void> {
   try {

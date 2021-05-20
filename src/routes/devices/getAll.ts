@@ -4,7 +4,7 @@
  **********************************************************************/
 import { validationResult } from 'express-validator'
 import { MetadataDb } from '../../db/metadata'
-import { Device, DeviceMetadata } from '../../models/models'
+import { Device, DeviceMetadata } from '../../models'
 import { logger as log } from '../../utils/logger'
 
 export async function getAll (req, res): Promise<void> {

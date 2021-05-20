@@ -5,7 +5,7 @@
 **********************************************************************/
 
 import { Consul } from './consul'
-import { MPSMicroservice } from '../mpsMicroservice'
+import { MPSMicroservice } from '../MPSMicroservice'
 import { KeyValueStore } from './constants'
 
 export interface IDistributedKV {

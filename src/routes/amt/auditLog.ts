@@ -7,7 +7,7 @@
 import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
 import { amtPort, MPSMode } from '../../utils/constants'
-import { ErrorResponse } from '../../utils/amtHelper'
+import { ErrorResponse } from '../../utils/ErrorResponse'
 import { validationResult } from 'express-validator'
 
 export async function auditLog (req: Request, res: Response): Promise<void> {

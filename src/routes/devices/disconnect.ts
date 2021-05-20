@@ -2,7 +2,7 @@
  * Copyright (c) Intel Corporation 2021
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
-import { ErrorResponse } from '../../utils/amtHelper'
+import { ErrorResponse } from '../../utils/ErrorResponse'
 import { logger as log } from '../../utils/logger'
 export async function disconnect (req, res): Promise<void> {
   try {

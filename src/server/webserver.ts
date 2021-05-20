@@ -15,12 +15,11 @@ import express from 'express'
 import * as http from 'http'
 import * as parser from 'body-parser'
 
-import { configType, certificatesType, queryParams } from '../models/Config'
-import { ErrorResponse } from '../utils/amtHelper'
+import { ErrorResponse } from '../utils/ErrorResponse'
 import { logger as log } from '../utils/logger'
 import { constants } from 'crypto'
-import { MPSMicroservice } from '../mpsMicroservice'
-import { IDbProvider } from '../models/IDbProvider'
+import { MPSMicroservice } from '../MPSMicroservice'
+import { IDbProvider } from '../interfaces/IDbProvider'
 import AMTStackFactory from '../amt_libraries/amt-connection-factory'
 import routes from '../routes'
 
@@ -28,6 +27,7 @@ import interceptor from '../utils/interceptor.js'
 import WebSocket from 'ws'
 import { URL } from 'url'
 import cors from 'cors'
+import { MPSCertificates, MPSConfig, QueryParams } from '../models'
 
 export class WebServer {
   db: IDbProvider
@@ -37,8 +37,8 @@ export class WebServer {
   notificationwss = null
   relaywss = null
   mpsService: MPSMicroservice
-  config: configType
-  certs: certificatesType
+  config: MPSConfig
+  certs: MPSCertificates
   sessionParser: any
 
   constructor (mpsService: MPSMicroservice) {
@@ -82,7 +82,7 @@ export class WebServer {
         try {
           const base = `${this.config.https ? 'https' : 'http'}://${this.config.common_name}:${this.config.web_port}/`
           const reqQueryURL = new URL(req.url, base)
-          const params: queryParams = {
+          const params: QueryParams = {
             host: reqQueryURL.searchParams.get('host'),
             port: Number(reqQueryURL.searchParams.get('port')),
             p: Number(reqQueryURL.searchParams.get('p')),
