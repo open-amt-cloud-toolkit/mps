@@ -10,7 +10,7 @@ export async function stats (req, res): Promise<void> {
   let connectedCount = 0
   let totalCount = 0
   if (devices != null) {
-    totalCount = Object.keys(devices).length
+    totalCount = devices.length
   }
   if (totalCount !== 0) {
     connectedCount = devices.filter(device => device.connectionStatus).length

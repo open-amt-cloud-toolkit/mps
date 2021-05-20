@@ -52,8 +52,3 @@ export const AMTFeaturesConst = {
   AMT_OPTIN_SERVICE: 'IPS_OptInService',
   AMT_USER_CONSENT: 'OptInRequired'
 }
-
-export enum KeyValueStore {
-  Unknown = 'Unknown',
-  HashiCorpConsul = 'HashiCorpConsul'
-}

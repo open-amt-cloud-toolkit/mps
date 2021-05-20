@@ -61,11 +61,6 @@ const config: configType = {
     ca: ['../private/root-cert-public.crt'],
     secureOptions: ['SSL_OP_NO_SSLv2', 'SSL_OP_NO_SSLv3', 'SSL_OP_NO_COMPRESSION', 'SSL_OP_CIPHER_SERVER_PREFERENCE', 'SSL_OP_NO_TLSv1', 'SSL_OP_NO_TLSv11']
   },
-  distributed_kv_name: "HashiCorpConsul",
-  distributed_kv_ip:"127.0.0.1",
-  distributed_kv_port: 8500,
-  web_proxy_port: 8100,
-  network_adaptor: "eth0",
   tls_cert: "",
   tls_cert_key: "",
   tls_cert_ca: "",

@@ -14,14 +14,18 @@ export async function deleteDevice (req, res): Promise<void> {
       res.status(400).json({ errors: errors.array() })
       return
     }
-    const results = await db.delete(req.params.guid)
-    if (results) {
-      res.status(204).end()
+
+    const device = await db.getById(req.params.guid)
+    if (device == null) {
+      res.status(404).json({ error: 'NOT FOUND', message: `Device ID ${req.params.guid} not found` }).end()
     } else {
-      res.status(400).end()
+      const results = await db.delete(req.params.guid)
+      if (results) {
+        res.status(204).end()
+      }
     }
   } catch (err) {
-    log.error(err)
+    log.error(`Failed to delete device: ${req.params.guid}`, err)
     res.status(500).end()
   }
 }

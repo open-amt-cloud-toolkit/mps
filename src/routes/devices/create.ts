@@ -6,6 +6,7 @@ import { validationResult } from 'express-validator'
 import { DeviceDb } from '../../db/device'
 import { Device } from '../../models/models'
 import { logger as log } from '../../utils/logger'
+import { MPSValidationError } from '../../utils/MPSValidationError'
 
 export async function insertDevice (req, res): Promise<void> {
   const db = new DeviceDb()
@@ -35,7 +36,11 @@ export async function insertDevice (req, res): Promise<void> {
       res.status(201).json(results)
     }
   } catch (err) {
-    log.error(err)
-    res.status(500).end()
+    log.error(`Failed to update/insert device : ${req.body.guid}`, err)
+    if (err instanceof MPSValidationError) {
+      res.status(err.status).json({ error: err.name, message: err.message }).end()
+    } else {
+      res.status(500).end()
+    }
   }
 }

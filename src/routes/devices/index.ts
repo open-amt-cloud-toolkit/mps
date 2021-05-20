@@ -6,10 +6,10 @@
 import { Router } from 'express'
 import { metadataQueryValidator, validator } from './deviceValidator'
 import { disconnect } from './disconnect'
-import { getAll } from './getAll'
+import { getAllDevices } from './getAll'
 import { stats } from './stats'
-import { get } from './get'
-import { tags } from './tags'
+import { getDevice } from './get'
+import { getDistinctTags } from './tags'
 import { insertDevice } from './create'
 import { updateDevice } from './update'
 import { deleteDevice } from './delete'
@@ -17,10 +17,10 @@ import { param } from 'express-validator'
 
 const deviceRouter: Router = Router()
 
-deviceRouter.get('/', metadataQueryValidator(), getAll)
+deviceRouter.get('/', metadataQueryValidator(), getAllDevices)
 deviceRouter.get('/stats', stats)
-deviceRouter.get('/tags', tags)
-deviceRouter.get('/:guid', param('guid').isUUID(), get)
+deviceRouter.get('/tags', getDistinctTags)
+deviceRouter.get('/:guid', param('guid').isUUID(), getDevice)
 deviceRouter.post('/', validator(), insertDevice)
 deviceRouter.patch('/', validator(), updateDevice)
 deviceRouter.delete('/:guid', param('guid').isUUID(), deleteDevice)

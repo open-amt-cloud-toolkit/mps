@@ -157,6 +157,56 @@
 					"response": []
 				},
 				{
+					"name": "DISTINCT tags when no devices",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Expect to have two tags\",function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.length).to.be.equal(0)\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices/tags",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices",
+								"tags"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Create Device with invalid GUID",
 					"event": [
 						{
@@ -439,6 +489,61 @@
 					"response": []
 				},
 				{
+					"name": "Update Device not found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Expect to return device info\",function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.guid).to.be.equal(\"143e4567-e89b-12d3-a456-426614174000\")\r",
+									"    pm.expect(jsonData.hostname).to.be.equal(\"hostname\")\r",
+									"    pm.expect(jsonData.tags.length).to.be.equal(1)  \r",
+									"    pm.expect(jsonData.mpsInstance).to.be.equal(null)\r",
+									"    pm.expect(jsonData.connectionStatus).to.be.equal(null)\r",
+									"})\r",
+									"pm.test(\"Expect tag value to be acm\",function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.tags.length).to.be.equal(1)  \r",
+									"    pm.expect(jsonData.tags[0]).to.be.equal(\"acm\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"guid\": \"143e4567-e89b-12d3-a456-426614174000\",\r\n        \"hostname\": \"hostname\",\r\n        \"tags\": [\"acm\"]\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Update Device tags",
 					"event": [
 						{
@@ -544,7 +649,7 @@
 					"response": []
 				},
 				{
-					"name": "All DISTINCT tags",
+					"name": "DISTINCT tags",
 					"event": [
 						{
 							"listen": "test",
@@ -632,6 +737,45 @@
 								"v1",
 								"devices",
 								"143e4567-e89b-12d3-a456-426614174"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Device not found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"pm.test(\"Expect an error when there is no device\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.be.equal(\"NOT FOUND\")\r",
+									"    pm.expect(jsonData.message).to.be.equal(\"Device ID 143e4567-e89b-12d3-a456-426614174002 not found\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices/143e4567-e89b-12d3-a456-426614174002",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices",
+								"143e4567-e89b-12d3-a456-426614174002"
 							]
 						}
 					},

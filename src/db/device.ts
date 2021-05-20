@@ -8,6 +8,7 @@ import { IDeviceDb } from '../interfaces/IDeviceDb'
 import { Environment } from '../utils/Environment'
 import { Device } from '../models/models'
 import { mapToDevice } from './mapToDevice'
+import { MPSValidationError } from '../utils/MPSValidationError'
 
 export class DeviceDb implements IDeviceDb {
   db: PostgresDb
@@ -82,11 +83,10 @@ export class DeviceDb implements IDeviceDb {
       return null
     } catch (error) {
       log.error(`Failed to insert: ${device.guid}`, error)
-      throw new Error(error)
-    //   if (error.code === '23505') { // Unique key violation
-    //     throw new RPSError(DUPLICATE_DOMAIN_FAILED(deviceMetadata.profileName), 'Unique key violation')
-    //   }
-    //   throw new RPSError(API_UNEXPECTED_EXCEPTION(deviceMetadata.profileName))
+      if (error.code === '23505') { // Unique key violation
+        throw new MPSValidationError(`Device ID: ${device.guid} already exists`, 400, 'Unique key violation')
+      }
+      throw new MPSValidationError(`Failed to insert device: ${device.guid}, error: ${error}`, 500)
     }
   }
 
@@ -108,9 +108,10 @@ export class DeviceDb implements IDeviceDb {
       if (results.rowCount > 0) {
         return await this.getById(device.guid)
       }
-      return null
+      throw new MPSValidationError(`Failed to update device: ${device.guid}`, 400)
     } catch (error) {
       log.error(`Failed to update: ${device.guid}`, error)
+      throw new MPSValidationError(`Failed to update device: ${device.guid}, error: ${error}`, 500)
     }
   }
 
@@ -119,7 +120,7 @@ export class DeviceDb implements IDeviceDb {
   * @param {string} mpsInstance
   * @returns {void}
   */
-  updateByInstance (mpsInstance: string): void {
+  clearInstanceStatus (mpsInstance: string): void {
     try {
       const results = this.db.query('UPDATE devices SET mpsinstance=$2, connectionstatus=$3 WHERE mpsinstance=$1',
         [

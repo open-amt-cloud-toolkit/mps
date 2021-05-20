@@ -54,7 +54,7 @@ try {
   signals.forEach((signal) => {
     process.on(signal, () => {
       console.log('signal received :', signal)
-      deviceDb.updateByInstance(Environment.Config.instance_name)
+      deviceDb.clearInstanceStatus(Environment.Config.instance_name)
       if (signal !== 'exit') {
         setTimeout(() => process.exit(), 1000)
       }
