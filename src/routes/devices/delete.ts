@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 import { validationResult } from 'express-validator'
-import { MetadataDb } from '../../db/metadata'
+import { DeviceDb } from '../../db/device'
 import { logger as log } from '../../utils/logger'
 
-export async function updateDevice (req, res): Promise<void> {
-  const db = new MetadataDb()
+export async function deleteDevice (req, res): Promise<void> {
+  const db = new DeviceDb()
   try {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -15,10 +15,17 @@ export async function updateDevice (req, res): Promise<void> {
       return
     }
 
-    const results = await db.update(req.body)
-    res.status(200).json(results).end()
+    const device = await db.getById(req.params.guid)
+    if (device == null) {
+      res.status(404).json({ error: 'NOT FOUND', message: `Device ID ${req.params.guid} not found` }).end()
+    } else {
+      const results = await db.delete(req.params.guid)
+      if (results) {
+        res.status(204).end()
+      }
+    }
   } catch (err) {
-    log.error(err)
+    log.error(`Failed to delete device: ${req.params.guid}`, err)
     res.status(500).end()
   }
 }

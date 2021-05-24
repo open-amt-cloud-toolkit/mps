@@ -45,6 +45,7 @@ const config: configType = {
   cors_origin:'*',
   cors_headers:'*',
   cors_methods:'*',
+  instance_name: 'localhost',
   mps_tls_config: {
     key: '../private/mpsserver-cert-private.key',
     cert: '../private/mpsserver-cert-public.crt',

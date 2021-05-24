@@ -176,7 +176,7 @@ export class Consul implements IDistributedKV {
             }
             that.mpsService.mpsComputerList[recvObject.guid] = computerEntry
           }
-          that.mpsService.CIRAConnected(recvObject.guid)
+          await that.mpsService.CIRAConnected(recvObject.guid)
         }
 
         for (const index in that.connectedDevices) {
@@ -200,7 +200,7 @@ export class Consul implements IDistributedKV {
     })
 
     // handle 'delete' event from consul
-    watchDelete.on('change', function (data, res) {
+    watchDelete.on('change', async function (data, res): Promise<void> {
       if (data === 'undefined') {
         log.silly('delete on change empty data')
       } else {
@@ -309,7 +309,7 @@ export class Consul implements IDistributedKV {
           that.disconnectedDevices[recvObject.guid] = reqObject
 
           // call mpsService.CIRADisconnected to update mpsComputerList
-          that.mpsService.CIRADisconnected(recvObject.guid)
+          await that.mpsService.CIRADisconnected(recvObject.guid)
         }
         for (const index in that.connectedDevices) {
           log.silly(`delete event watch: connectedDevices[${index}]`)
