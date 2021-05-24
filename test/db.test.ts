@@ -48,6 +48,7 @@ describe('Use GUID allowlisting: ', () => {
     cors_headers: '*',
     cors_methods: '*',
     connection_string: '',
+    instance_name: 'localhost',
     mps_tls_config: {
       key: '../private/mpsserver-cert-private.key',
       cert: '../private/mpsserver-cert-public.crt',
@@ -146,7 +147,8 @@ describe('Do not use GUID allowlisting: ', () => {
     cors_origin: '*',
     cors_headers: '*',
     cors_methods: '*',
-    connection_string: '',
+    connection_string: 'postgresql://admin:test123@localhost:5432/mpsdb',
+    instance_name: 'localhost',
     mps_tls_config: {
       key: '../private/mpsserver-cert-private.key',
       cert: '../private/mpsserver-cert-public.crt',

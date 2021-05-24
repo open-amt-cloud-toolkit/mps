@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 export interface Device {
-  connectionStatus: number
+  connectionStatus: boolean
+  mpsInstance: string
   hostname: string
   guid: string
-  metadata: DeviceMetadata | {}
+  tags: string[]
 }
 export interface Credentials {
   [key: string]: AMTCredential
@@ -17,10 +18,4 @@ export interface AMTCredential {
   mpspass: string
   amtuser: string
   amtpass: string
-}
-
-export interface DeviceMetadata{
-  guid: string
-  tags: string[]
-  hostname: string
 }

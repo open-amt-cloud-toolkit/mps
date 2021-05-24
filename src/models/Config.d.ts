@@ -51,6 +51,7 @@ export interface configType {
   cors_headers: string
   cors_methods: string
   connection_string: string
+  instance_name: string
 }
 
 export interface certificatesType {
