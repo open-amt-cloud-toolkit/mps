@@ -6,20 +6,18 @@
 
 import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
-import { amtPort, MPSMode } from '../../utils/constants'
+import { amtPort } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 
 export async function generalSettings (req: Request, res: Response): Promise<void> {
   try {
     const guid = req.params.guid
-    const ciraconn = await req.mpsService.ciraConnectionFactory.getConnection(guid)
+    const ciraconn = req.mpsService.mpsserver.ciraConnections[guid]
     if (ciraconn) {
       const cred = await req.mpsService.db.getAmtPassword(guid)
       const amtstack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
       await amtstack.Get('AMT_GeneralSettings', (obj, name, response, status) => {
-        if (req.mpsService.config.startup_mode === MPSMode.Standalone) {
-          obj.wsman.comm.socket.sendchannelclose()
-        }
+        obj.wsman.comm.socket.sendchannelclose()
         if (status === 200) {
           res.status(200).json(response).end()
         } else {

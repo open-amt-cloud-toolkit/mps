@@ -130,29 +130,28 @@ function CreateWsmanComm(host, port, user, pass, tls, parent) {
         obj.socketData = '';
         obj.socketState = 1;
 
-        obj.parent.ciraConnectionFactory.getConnection(obj.host).then((ciraconn) => {
-            obj.socket = obj.parent.ciraChannelFactory.getChannel(ciraconn, obj.port);
+        var ciraconn = obj.parent.mpsserver.ciraConnections[obj.host];
+        obj.socket = obj.parent.mpsserver.SetupCiraChannel(ciraconn, obj.port);
+        obj.socket.onData = function (ccon, data) {
+            _OnSocketData(data);
+        }
 
-            obj.socket.onData = function (ccon, data) {
-                _OnSocketData(data);
+        obj.socket.onStateChange = function (ccon, state) {
+            if (state == 0) {
+                try {
+                    obj.socketParseState = 0;
+                    obj.socketAccumulator = '';
+                    obj.socketHeader = null;
+                    obj.socketData = '';
+                    obj.socketState = 0;
+                    _OnSocketClosed();
+                } catch (e) { }
+            } else if (state == 2) {
+                // channel open success
+                _OnSocketConnected();
             }
-
-            obj.socket.onStateChange = function (ccon, state) {
-                if (state == 0) {
-                    try {
-                        obj.socketParseState = 0;
-                        obj.socketAccumulator = '';
-                        obj.socketHeader = null;
-                        obj.socketData = '';
-                        obj.socketState = 0;
-                        _OnSocketClosed();
-                    } catch (e) { }
-                } else if (state == 2) {
-                    // channel open success
-                    _OnSocketConnected();
-                }
-            }
-        })
+        }
+        
     }
 
     // Websocket relay specific private method

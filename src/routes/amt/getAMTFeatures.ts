@@ -7,7 +7,7 @@
 
 import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
-import { amtPort, AMTFeaturesConst, UserConsentOptions, MPSMode } from '../../utils/constants'
+import { amtPort, AMTFeaturesConst, UserConsentOptions } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { AMTFeatures } from '../../utils/AMTFeatures'
 import { MPSValidationError } from '../../utils/MPSValidationError'
@@ -17,14 +17,12 @@ export async function getAMTFeatures (req: Request, res: Response): Promise<void
   try {
     const payload = req.body
     const guid = req.params.guid
-    const ciraconn = await req.mpsService.ciraConnectionFactory.getConnection(guid)
+    const ciraconn = req.mpsService.mpsserver.ciraConnections[guid]
     if (ciraconn && ciraconn.readyState === 'open') {
       const cred = await req.mpsService.db.getAmtPassword(guid)
       const amtstack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
       const wsmanResponse = await AMTFeatures.getAMTFeatures(amtstack, payload)
-      if (req.mpsService.config.startup_mode === MPSMode.Standalone) {
-        amtstack.wsman.comm.socket.sendchannelclose()
-      }
+      amtstack.wsman.comm.socket.sendchannelclose()
       if (wsmanResponse[AMTFeaturesConst.AMT_REDIR_SERVICE] &&
                       wsmanResponse[AMTFeaturesConst.AMT_KVM_REDIR] &&
                       wsmanResponse[AMTFeaturesConst.AMT_OPTIN_SERVICE]) {

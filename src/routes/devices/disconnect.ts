@@ -14,7 +14,7 @@ export async function disconnect (req, res): Promise<void> {
     }
     const guid = req.params.guid
     // check if guid is connected
-    const ciraconn = await req.mpsService.ciraConnectionFactory.getConnection(guid)
+    const ciraconn = req.mpsService.mpsserver.ciraConnections[guid]
     if (ciraconn) {
       try {
         ciraconn.destroy()
