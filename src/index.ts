@@ -20,6 +20,8 @@ import { parseValue } from './utils/parseEnvValue'
 import rc from 'rc'
 import { Environment } from './utils/Environment'
 import { DeviceDb } from './db/device'
+import { MqttProvider } from './utils/mqttHelper'
+
 try {
   // To merge ENV variables. consider after lowercasing ENV since our config keys are lowercase
   process.env = Object.keys(process.env)
@@ -43,6 +45,9 @@ try {
 
   log.silly(`Updated config... ${JSON.stringify(config, null, 2)}`)
   Environment.Config = config
+
+  // MQTT Connection
+  const mqtt: MqttProvider = new MqttProvider(config)
 
   // DB initialization
 
@@ -97,7 +102,7 @@ try {
 
     log.info('certs loaded..')
 
-    const mps = new MPSMicroservice(config, db, certs)
+    const mps = new MPSMicroservice(config, db, certs, mqtt)
     mps.start()
   }
 } catch (error) {
