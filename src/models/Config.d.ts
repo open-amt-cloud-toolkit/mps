@@ -27,6 +27,7 @@ export interface configType {
   cert_format: string
   vault_address?: string
   vault_token?: string
+  mqtt_address?: string
   debug_level: number
   jwt_secret: string
   jwt_issuer: string
