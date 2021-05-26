@@ -18,6 +18,7 @@
     "web_admin_password": "G@ppm0ym",
     "vault_address": "http://localhost:8200",
     "vault_token": "myroot",
+    "mqtt_address": "",
     "secrets_path": "secret/data/",
     "cert_format" : "file",
     "data_path" : "../private/data.json",

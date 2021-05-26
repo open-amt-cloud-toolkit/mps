@@ -24,3 +24,11 @@ export interface DeviceMetadata{
   tags: string[]
   hostname: string
 }
+
+export interface OpenAMTEvent {
+  type: string
+  message: string
+  method: string
+  guid: string
+  timestamp: number
+}

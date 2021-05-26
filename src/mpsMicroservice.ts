@@ -13,6 +13,7 @@ import { MpsProxy } from './server/proxies/MpsProxy'
 import { CiraConnectionFactory } from './CiraConnectionFactory'
 import { CiraChannelFactory } from './CiraChannelFactory'
 import { MPSMode } from './utils/constants'
+import { mqttProvider } from './utils/mqttHelper'
 
 export class MPSMicroservice {
   mpsserver: MPSServer
@@ -22,15 +23,17 @@ export class MPSMicroservice {
   debugLevel: number = 1
   mpsComputerList = {}
   db: IDbProvider
+  mqtt: mqttProvider
   ciraConnectionFactory: CiraConnectionFactory
   ciraChannelFactory: CiraChannelFactory
 
-  constructor (config: configType, db: IDbProvider, certs: certificatesType) {
+  constructor (config: configType, db: IDbProvider, certs: certificatesType, mqtt: mqttProvider) {
     try {
       this.config = config
       this.debugLevel = config.debug_level
       this.db = db
       this.certs = certs
+      this.mqtt = mqtt
     } catch (e) {
       log.error(`Exception in MPS Microservice: ${e}`)
     }
