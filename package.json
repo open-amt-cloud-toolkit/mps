@@ -17,12 +17,13 @@
     "express": "^4.17.1",
     "express-validator": "^6.11.1",
     "jws": "^4.0.0",
+    "mqtt": "^4.2.6",
     "node-forge": "^0.10.0",
     "node-vault": "^0.9.21",
     "pg": "^8.6.0",
     "rc": "^1.2.8",
     "winston": "^3.0.0",
-    "ws": "^7.4.5"
+    "ws": "^7.4.6"
   },
   "devDependencies": {
     "@types/body-parser": "^1.17.1",
