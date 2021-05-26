@@ -2,14 +2,14 @@
  * Copyright (c) Intel Corporation 2021
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
-import { DeviceMetadata } from '../models/models'
+import { Device } from '../models/models'
 
-export interface IMetadataDb {
-  get: () => Promise<DeviceMetadata[]>
+export interface IDeviceDb {
+  get: () => Promise<Device[]>
   getDistinctTags: () => Promise<String[]>
-  getById: (guid: string) => Promise<DeviceMetadata>
-  getByTags: (tags: string[], method: string) => Promise<DeviceMetadata[]>
+  getById: (guid: string) => Promise<Device>
+  getByTags: (tags: string[], method: string) => Promise<Device[]>
   delete: (guid: string) => Promise<boolean>
-  insert: (data: DeviceMetadata) => Promise<DeviceMetadata>
-  update: (data: DeviceMetadata) => Promise<DeviceMetadata>
+  insert: (data: Device) => Promise<Device>
+  update: (data: Device) => Promise<Device>
 }

@@ -8,12 +8,11 @@ import { WebServer } from './server/webserver'
 import { MPSServer } from './server/mpsserver'
 import { logger as log } from './utils/logger'
 import { IDbProvider } from './models/IDbProvider'
-import { getDistributedKV } from './utils/IDistributedKV'
-import { MpsProxy } from './server/proxies/MpsProxy'
-import { CiraConnectionFactory } from './CiraConnectionFactory'
-import { CiraChannelFactory } from './CiraChannelFactory'
-import { MPSMode } from './utils/constants'
+
 import { mqttProvider } from './utils/mqttHelper'
+import { DeviceDb } from './db/device'
+import { Device } from './models/models'
+import { Environment } from './utils/Environment'
 
 export class MPSMicroservice {
   mpsserver: MPSServer
@@ -24,10 +23,9 @@ export class MPSMicroservice {
   mpsComputerList = {}
   db: IDbProvider
   mqtt: mqttProvider
-  ciraConnectionFactory: CiraConnectionFactory
-  ciraChannelFactory: CiraChannelFactory
+  deviceDb: DeviceDb
+  constructor (config: configType, db: IDbProvider, certs: certificatesType) {
 
-  constructor (config: configType, db: IDbProvider, certs: certificatesType, mqtt: mqttProvider) {
     try {
       this.config = config
       this.debugLevel = config.debug_level
@@ -40,59 +38,41 @@ export class MPSMicroservice {
   }
 
   start (): void {
-    if (this.config.startup_mode === MPSMode.Standalone) {
-      this.webserver = new WebServer(this)
-      this.mpsserver = new MPSServer(this)
-      this.ciraConnectionFactory = new CiraConnectionFactory(async (hostGuid) => this.mpsserver.ciraConnections[hostGuid])
-      this.ciraChannelFactory = new CiraChannelFactory((socket, port) => this.mpsserver.SetupCiraChannel(socket, port))
-    } else if (this.config.startup_mode === MPSMode.WEB) { // Running in distributed mode
-      this.webserver = new WebServer(this)
-      getDistributedKV(this).addEventWatch()
-      this.ciraConnectionFactory = new CiraConnectionFactory(async (hostGuid) => {
-        const mpsProxy = await MpsProxy.getSocketForGuid(hostGuid, this)
-        mpsProxy.nodeid = hostGuid
-        return mpsProxy
-      })
-      this.ciraChannelFactory = new CiraChannelFactory((mpsProxy, port) => mpsProxy.SetupCiraChannel(port, mpsProxy.nodeid)) // here socket passed would be Mps Proxy
-    } else if (this.config.startup_mode === MPSMode.MPS) { // Running in distributed mode
-      this.mpsserver = new MPSServer(this) // MPS only takes in connections from web or devices. so no need to have a connection or channel factory
-    } else {
-      log.error('Unknown startup mode. Exiting.')
-      process.exit(1)
-    }
+    this.deviceDb = new DeviceDb()
+    this.webserver = new WebServer(this)
+    this.mpsserver = new MPSServer(this)
   }
 
-  CIRAConnected (guid: string): void {
-    log.info(`CIRA connection established for ${guid}`)
-
-    if (this.config.startup_mode === MPSMode.MPS) {
-      // update DistributedKV with key as device UUID
-      // and value as Server IP.f
-      getDistributedKV(this).updateKV(guid).then((v) => log.debug(v)).catch((reason) => log.error(reason))
-    } else if (this.config.startup_mode === MPSMode.WEB) {
-      MpsProxy.getSocketForGuid(guid, this).catch(err => {
-        log.error(`failed to get socket for guid: ${guid}, result: ${err}`)
-      })
+  async CIRAConnected (guid: string): Promise<void> {
+    if (this.deviceDb != null) {
+      const device: Device = await this.deviceDb.getById(guid)
+      device.connectionStatus = true
+      const instanceName = Environment.Config.instance_name
+      device.mpsInstance = instanceName === '{{.Task.Name}}' ? 'mps' : instanceName
+      const results = await this.deviceDb.update(device)
+      if (results) {
+        log.info(`CIRA connection established for ${guid}`)
+      } else {
+        log.info(`Failed to update CIRA Connection established status in DB ${guid}`)
+      }
     }
-
     if (this.webserver) {
       this.webserver.notifyUsers({ host: guid, event: 'node_connection', status: 'connected' })
     }
   }
 
-  CIRADisconnected (guid: string): void {
-    log.info(`Main:CIRA connection closed for ${guid}`)
-
-    if (this.config.startup_mode === MPSMode.MPS) {
-      // delete the KV pair in DistributedKV
-      getDistributedKV(this).deleteKV(guid).then((v) => log.debug(v)).catch((reason) => log.error(reason))
-    } else if (this.config.startup_mode === MPSMode.WEB) {
-      if (MpsProxy.proxies[guid]) {
-        log.silly('Cleaning up MpsProxy.proxies entry.')
-        delete MpsProxy.proxies[guid]
+  async CIRADisconnected (guid: string): Promise<void> {
+    if (this.deviceDb != null) {
+      const device: Device = await this.deviceDb.getById(guid)
+      device.connectionStatus = false
+      device.mpsInstance = null
+      const results = await this.deviceDb.update(device)
+      if (results) {
+        log.info(`Main:CIRA connection closed for ${guid}`)
+      } else {
+        log.info(`Failed to update CIRA Connection closed status in DB ${guid}`)
       }
     }
-
     if (guid && this.mpsComputerList[guid]) {
       log.silly(`delete mpsComputerList[${guid}]`)
       delete this.mpsComputerList[guid]

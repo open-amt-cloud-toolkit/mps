@@ -154,10 +154,8 @@ export class WebServer {
             // If this is TCP (without TLS) set a normal TCP socket
             // check if this is MPS connection
             const uuid = params.host
-            const ciraConn = await this.mpsService.ciraConnectionFactory.getConnection(uuid)
+            const ciraConn = this.mpsService.mpsserver.ciraConnections[uuid]
             if (uuid && ciraConn) {
-              log.silly(`go setup the CIRA channel for ${uuid}`)
-              // Setup CIRA channel for the device
               ws.forwardclient = this.mpsService.mpsserver.SetupCiraChannel(
                 ciraConn,
                 params.port

@@ -22,9 +22,16 @@ export const metadataQueryValidator = (): any => {
   ]
 }
 
-export const deviceGetValidator = (): any => {
+export const validator = (): any => {
   return [
     check('guid')
-      .isUUID()
+      .isUUID(),
+    check('hostname')
+      .optional({ nullable: true })
+      .isString(),
+    check('tags')
+      .optional()
+      .isArray()
+      .withMessage('tags should be an array of strings')
   ]
 }

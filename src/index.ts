@@ -19,9 +19,8 @@ import { parseValue } from './utils/parseEnvValue'
 
 import rc from 'rc'
 import { Environment } from './utils/Environment'
-
 import { mqttProvider } from './utils/mqttHelper'
-
+import { DeviceDb } from './db/device'
 
 try {
   // To merge ENV variables. consider after lowercasing ENV since our config keys are lowercase
@@ -53,6 +52,19 @@ try {
 
   // DB initialization
   const db: IDbProvider = new SecretsDbProvider(new SecretManagerService(config, log), log, config)
+  const deviceDb = new DeviceDb()
+
+  // Cleans the DB before exit when it listens to the signals
+  const signals = ['SIGINT', 'exit', 'uncaughtException', 'SIGTERM', 'SIGHUP']
+  signals.forEach((signal) => {
+    process.on(signal, () => {
+      console.log('signal received :', signal)
+      deviceDb.clearInstanceStatus(Environment.Config.instance_name)
+      if (signal !== 'exit') {
+        setTimeout(() => process.exit(), 1000)
+      }
+    })
+  })
 
   // Certificate Configuration and Operations
   if (config.https || !config.tls_offload) {

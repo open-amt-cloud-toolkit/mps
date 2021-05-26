@@ -4,17 +4,26 @@
  **********************************************************************/
 
 import { Router } from 'express'
-import { deviceGetValidator, metadataQueryValidator } from './deviceValidator'
+import { metadataQueryValidator, validator } from './deviceValidator'
 import { disconnect } from './disconnect'
-import { getAll } from './getAll'
+import { getAllDevices } from './getAll'
 import { stats } from './stats'
-import { get } from './get'
+import { getDevice } from './get'
+import { getDistinctTags } from './tags'
+import { insertDevice } from './create'
+import { updateDevice } from './update'
+import { deleteDevice } from './delete'
+import { param } from 'express-validator'
 
 const deviceRouter: Router = Router()
 
-deviceRouter.get('/', metadataQueryValidator(), getAll)
+deviceRouter.get('/', metadataQueryValidator(), getAllDevices)
 deviceRouter.get('/stats', stats)
-deviceRouter.delete('/disconnect/:guid', disconnect)
-deviceRouter.get('/:guid', deviceGetValidator(), get)
+deviceRouter.get('/tags', getDistinctTags)
+deviceRouter.get('/:guid', param('guid').isUUID(), getDevice)
+deviceRouter.post('/', validator(), insertDevice)
+deviceRouter.patch('/', validator(), updateDevice)
+deviceRouter.delete('/:guid', param('guid').isUUID(), deleteDevice)
+deviceRouter.delete('/disconnect/:guid', param('guid').isUUID(), disconnect)
 
 export default deviceRouter

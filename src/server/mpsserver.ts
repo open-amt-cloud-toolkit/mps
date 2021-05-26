@@ -29,20 +29,8 @@ import { MPSMicroservice } from '../mpsMicroservice'
 import { IDbProvider } from '../models/IDbProvider'
 
 import * as common from '../utils/common.js'
-import { MPSMode } from '../utils/constants'
 // 90 seconds max idle time, higher than the typical KEEP-ALIVE period of 60 seconds
 const MAX_IDLE = 90000
-const MPS_PROXY_MSG_HEADER_LENGTH = 85
-const MPS_PROXY_MSG_TYPE_INDEX = 4
-const MPS_PROXY_MSG_UUID_START_INDEX = 5
-const MPS_PROXY_MSG_UUID_LENGTH = 72
-const MPS_PROXY_MSG_CHANNELID_INDEX = 77
-const MPS_PROXY_MSG_TARGET_PORT_INDEX = 81
-const MPS_PROXY_MSG_DATA_LENGTH_INDEX = 81
-const MPS_PROXY_MSG_DATA_INDEX = 85
-const MPS_STATE_CHANGE_MSG_LENGTH = 81
-const MPS_DATA_MSG_HEADER_LENGTH = 85
-const MPS_DEVICE_DISCONNECT_LENGTH = 77
 
 export class MPSServer {
   db: IDbProvider
@@ -51,16 +39,12 @@ export class MPSServer {
   certs: certificatesType
   ciraConnections = {}
   server: any
-  webProxy: any
-  onCiraDisconnect: any
-  onCiraChannelClose: any
-  allSockets: any
+
   constructor (mpsService: MPSMicroservice) {
     this.mpsService = mpsService
     this.db = mpsService.db
     this.config = mpsService.config
     this.certs = mpsService.certs
-    this.allSockets = {}
 
     if (this.config.tls_offload) {
       // Creates a new TCP server
@@ -74,357 +58,17 @@ export class MPSServer {
       })
     }
 
-    // hook up cira disconnect event handler
-    this.onCiraDisconnect = (nodeid) => { // On AMT Device Disconnection
-      log.silly(`onCiraDisconnect for nodeid=${nodeid}`)
-      try {
-        if (this.ciraConnections[nodeid] != null) {
-          delete this.ciraConnections[nodeid]
-        }
-      } catch (e) { log.error(`onCiraDisconnect: ${e}`) }
-
-      // eslint-disable-next-line array-callback-return
-      Object.keys(this.allSockets).map((key) => {
-        const socket = this.allSockets[key] // todo: check if socket is open
-
-        try {
-          // Write connection state back to the web proxy using helper methods
-          this.Write(
-            socket,
-            common.IntToStr(MPS_DEVICE_DISCONNECT_LENGTH) +
-            String.fromCharCode(APFProtocol.DISCONNECT) +
-            common.rstr2hex(nodeid)
-          )
-          log.silly(`${socket.remoteAddress}:${socket.remotePort}: device disconnected for ${nodeid}`)
-        } catch (e) {
-          log.error(`write connection state back to web proxy error: ${e}`)
-        }
-        try {
-          log.silly(`${socket.remoteAddress}:${socket.remotePort}: onCiraDisconnect:delete amtMpsproxyChannelMapping and mpsproxyAmtChannelMapping`)
-          // delete mapping for the uuid
-          if (socket.tag.amtMpsproxyChannelMapping[nodeid] != null) {
-            delete socket.tag.amtMpsproxyChannelMapping[nodeid]
-          }
-          if (socket.tag.mpsproxyAmtChannelMapping[nodeid] != null) {
-            delete socket.tag.mpsproxyAmtChannelMapping[nodeid]
-          }
-          log.silly(`${socket.remoteAddress}:${socket.remotePort}: onCiraDisconnect:deleted amtMpsproxyChannelMapping and mpsproxyAmtChannelMapping`)
-        } catch (e) {
-          log.error(`${socket.remoteAddress}:${socket.remotePort}: onCiraDisconnect: exception caught while deleting amtMpsproxyChannelMapping`)
-        }
-        log.silly(`${socket.remoteAddress}:${socket.remotePort}: onCiraDisconnect for nodeid=${nodeid}`)
-      })
-    }
-
-    if (this.config.startup_mode === MPSMode.MPS) {
-      // Creates a new TCP server
-      this.webProxy = net.createServer((socket: any) => {
-        socket.tag = {}
-        socket.tag.ipaddr = socket // ip address
-        socket.tag.mpsproxyAmtChannelMapping = {}
-        socket.tag.amtMpsproxyChannelMapping = {}
-        socket.tag.index = this.allSockets.length // for each socket, store its index in the array with the socket itself for easy retrieval
-        this.allSockets[`${socket.remoteAddress}:${socket.remotePort}`] = socket
-        log.silly(`${socket.remoteAddress}:${socket.remotePort}: webProxy createServer`)
-        this.onWebConnection(socket)
-      })
-    } else {
-      this.onCiraDisconnect = (nodeid) => {
-        if (this.ciraConnections[nodeid]) {
-          delete this.ciraConnections[nodeid]
-        }
-
-        if (this.mpsService.CIRADisconnected != null) {
-          this.mpsService.CIRADisconnected(nodeid)
-        }
-      }
-    }
-    if (this.config.startup_mode === MPSMode.MPS) {
-      // Listening for web server
-      this.webProxy.listen(this.config.web_proxy_port, () => {
-        log.info(`Listening for Proxy Connections on ${this.config.common_name}:${this.config.web_proxy_port}.`)
-      })
-
-      this.webProxy.on('error', (err) => {
-        log.error(`ERROR: Proxy server port ${this.config.port} is not available.`)
-        if (err) log.error(err)
-        // if (this.config.exactports) {
-        //     process.exit();
-        // }
-      })
-    }
-
-    // Listening for device connections
     this.server.listen(this.config.port, () => {
       const mpsaliasport = (typeof this.config.alias_port === 'undefined') ? `${this.config.port}` : `${this.config.port} alias port ${this.config.alias_port}`
-      log.info(`Intel(R) AMT MPS Microservice running on ${this.config.common_name}:${mpsaliasport}.`)
+      log.info(`Intel(R) AMT server running on ${this.config.common_name}:${mpsaliasport}.`)
     })
 
     this.server.on('error', (err) => {
       log.error(`ERROR: Intel(R) AMT server port ${this.config.port} is not available.`)
-      if (err) log.error(err)
-    })
-  }
-
-  onWebConnection = (socket): void => {
-    // Web Server and Mps Server agrees on a protocol to send the traffic back and forth
-    // First. WebServer would setup a CIRA Channel.
-    // For CIRA Channel, get the GUID from Web Server
-    // For CIRA Channel setup, the webserver would get back a Channel ID for that GUID
-    // Second,
-    // it starts sending data
-    // total message length
-
-    // [90, ] - Command (90 - Channel_Open, 94 - data)
-    // [  Channel_open (90) , GUID, channelid (on mpsproxy), targetport  ] -
-    //                          Here you all SetupCiraChannel
-    // [  Data (94)  ,  GUID, channelid (on mpsproxy), data_length, data ] -
-    //                       Here you will lookup the channelid on MPSServer side for this guid and
-    //                       send data on that channel
-
-    // RESPONSE:
-    // [ channel_close (97), 16 bytes of GUID (socket.tag.nodeid), channelid ]
-
-    socket.setEncoding('binary')
-
-    // used for logging
-    const socketIPPort = socket.remoteAddress + ':' + socket.remotePort
-
-    socket.addListener('data', (data) => {
-      try {
-        const totalmsgLength = data.length
-        log.silly(`data from webProxy(${socketIPPort}): length =${data.length}`)
-
-        // go over all the received messages
-        for (let dataIndex = 0; dataIndex < totalmsgLength;) {
-          // get length of the message
-          const thisMsgLength = common.ReadInt(data, dataIndex)
-          log.silly(`Length of this message ${thisMsgLength}`)
-
-          // Channel Open or Channel data or Channel close
-          const requestType = data.charCodeAt(dataIndex + MPS_PROXY_MSG_TYPE_INDEX)
-          log.silly(`requestType from webProxy(${socketIPPort})= ${requestType}`)
-          if ((requestType !== APFProtocol.CHANNEL_OPEN) &&
-            (requestType !== APFProtocol.CHANNEL_DATA) &&
-            (requestType !== APFProtocol.CHANNEL_CLOSE) &&
-            (requestType !== APFProtocol.DISCONNECT)) {
-            log.debug(`requestType from webProxy (${socketIPPort}) not Channel Open/data/close`)
-            return
-          }
-
-          // UUID
-          let uuidHex = ''
-          // read hex data from message
-          for (let index = dataIndex + MPS_PROXY_MSG_UUID_START_INDEX;
-            index <= dataIndex + MPS_PROXY_MSG_UUID_START_INDEX + MPS_PROXY_MSG_UUID_LENGTH;
-            index++) {
-            uuidHex += data[index]
-          }
-          log.silly(`(${socketIPPort}): received uuid in hex: ${uuidHex}`)
-          const uuid = common.hex2rstr(uuidHex)
-          log.silly(`(${socketIPPort}): received uuid= ${uuid}`)
-
-          // validate and check if socket is open on device
-          let ciraconn
-          if (typeof this.ciraConnections !== 'undefined') {
-            if ((typeof this.ciraConnections[uuid]) === 'undefined') {
-              log.error(`(${socketIPPort}): ciraConnections is undefined for ${uuid}`)
-              return
-            } else {
-              log.silly(`(${socketIPPort}): get CIRA socket connection object the for device`)
-              ciraconn = this.ciraConnections[uuid]
-            }
-          } else {
-            log.error(`(${socketIPPort}): ciraConnections object is undefined`)
-            return
-          }
-          // todo - communicate back to mpsProxy if error
-          if (APFProtocol.DISCONNECT === requestType) {
-            ciraconn?.destroy()
-            this.onCiraDisconnect(uuid)
-          } else if (APFProtocol.CHANNEL_OPEN === requestType) {
-            // Channel Open request
-            log.silly(`(${socketIPPort}): received CHANNEL_OPEN request from mpsProxy`)
-
-            // webProxy sent Channelid
-            // read back the Int
-            const mpsproxyChannelid = common.ReadInt(data, dataIndex + MPS_PROXY_MSG_CHANNELID_INDEX)
-            log.silly(`(${socketIPPort}): received channel id= ${mpsproxyChannelid}`)
-
-            // check if mpsProxy sent channel id already in map
-            if (typeof socket.tag.mpsproxyAmtChannelMapping[uuid] === 'undefined') {
-              log.silly(`(${socketIPPort}): mpsproxyAmtChannelMapping for ${uuid} is undefined`)
-              socket.tag.mpsproxyAmtChannelMapping[uuid] = {}
-            } else {
-              if (typeof socket.tag.mpsproxyAmtChannelMapping[uuid][mpsproxyChannelid] !== 'undefined') {
-                log.silly(`(${socketIPPort}): Proxy sent channel id exists in map`)
-                return
-              }
-            }
-
-            // target port
-            // read back the Int
-            const targetPort = common.ReadInt(data, dataIndex + MPS_PROXY_MSG_TARGET_PORT_INDEX)
-            log.silly(`(${socketIPPort}): received target port= ${targetPort}`)
-
-            // call SetupCiraChannel
-            const cirachannel: any = this.SetupCiraChannel(ciraconn, targetPort)
-
-            cirachannel.onData = (ciraconn, data) => {
-              log.silly(`(${socketIPPort}): send back data for ${uuid} to webServer length ${data.length}`)
-              this.Write(socket,
-                common.IntToStr(MPS_DATA_MSG_HEADER_LENGTH + data.length) +
-                String.fromCharCode(APFProtocol.CHANNEL_DATA) + // msg Type
-                common.rstr2hex(uuid) + // uuid
-                common.IntToStr(mpsproxyChannelid) + // channel id on mpsproxy
-                common.IntToStr(data.length) + // data length
-                data // data
-              )
-            }
-
-            cirachannel.onStateChange = (channel, state) => {
-              log.debug(`(${socketIPPort}): send back state value(${state}) to webServer ${uuid}`)
-              if (state === 0) {
-                log.silly(`(${socketIPPort}): state:${state} uuid:${uuid}`)
-                // delete channel mapping
-                delete socket.tag.amtMpsproxyChannelMapping[uuid][cirachannel.channelid]
-                delete socket.tag.mpsproxyAmtChannelMapping[uuid][mpsproxyChannelid]
-
-                // send back to webServer
-                this.Write(socket,
-                  common.IntToStr(MPS_STATE_CHANGE_MSG_LENGTH) +
-                  String.fromCharCode(APFProtocol.CHANNEL_CLOSE) + // msg Type
-                  common.rstr2hex(uuid) + // uuid
-                  common.IntToStr(mpsproxyChannelid) // channel id on mpsproxy
-                )
-              } else if (state === 2) {
-                log.silly(`(${socketIPPort}): state:${state} uuid:${uuid}`)
-
-                // send back to webServer
-                this.Write(socket,
-                  common.IntToStr(MPS_STATE_CHANGE_MSG_LENGTH) +
-                  String.fromCharCode(APFProtocol.CHANNEL_OPEN) + // msg Type
-                  common.rstr2hex(uuid) + // uuid
-                  common.IntToStr(mpsproxyChannelid) // channel id on mpsproxy
-                )
-              }
-            }
-
-            if (typeof cirachannel === 'undefined') {
-              log.debug(`(${socketIPPort}): received object as undefined from SetupCiraChannel`)
-              return
-            }
-
-            log.silly(`(${socketIPPort}): update mpsproxyMpsMapping`)
-            log.silly(`(${socketIPPort}): cirachannel.channelid: ${cirachannel.channelid}`)
-
-            // mapping for mpsproxyChannelid to amtchannelid
-            socket.tag.mpsproxyAmtChannelMapping[uuid][mpsproxyChannelid] = cirachannel // Store the whole channel here
-            // }
-            log.silly(`(${socketIPPort}): mpsproxyAmtChannelMapping[${uuid}][${mpsproxyChannelid}]= ${socket.tag.mpsproxyAmtChannelMapping[uuid][mpsproxyChannelid]}`)
-
-            // mapping for amtchannelid to mpsproxyChannelid
-            if (typeof socket.tag.amtMpsproxyChannelMapping[uuid] === 'undefined') {
-              log.silly(`(${socketIPPort}): amtMpsproxyChannelMapping for ${uuid} is undefined`)
-              socket.tag.amtMpsproxyChannelMapping[uuid] = {}
-            }
-            socket.tag.amtMpsproxyChannelMapping[uuid][cirachannel.channelid] = mpsproxyChannelid
-            log.silly(`(${socketIPPort}): amtMpsproxyChannelMapping[${uuid}][${cirachannel.channelid}]= ${socket.tag.amtMpsproxyChannelMapping[uuid][cirachannel.channelid]}`)
-          } else if (APFProtocol.CHANNEL_DATA === requestType) {
-            // data on channel
-            log.silly(`(${socketIPPort}): received CHANNEL_DATA request from mpsProxy`)
-
-            // webProxy sent Channelid
-            // read back the Int
-            const mpsproxyChannelid = common.ReadInt(data, dataIndex + MPS_PROXY_MSG_CHANNELID_INDEX)
-            log.silly(`(${socketIPPort}): received channel id= ${mpsproxyChannelid}`)
-
-            if (typeof socket.tag.mpsproxyAmtChannelMapping[uuid] === 'undefined') {
-              log.debug(`(${socketIPPort}): mpsproxyAmtChannelMapping for ${uuid} is undefined`)
-              return
-            } else if (typeof socket.tag.mpsproxyAmtChannelMapping[uuid][mpsproxyChannelid] === 'undefined') {
-              log.debug(`(${socketIPPort}): mpsproxyAmtChannelMapping for ${uuid} on mpsProxy channel ${mpsproxyChannelid} is undefined`)
-              return
-            }
-
-            // message length
-            // read back the Int
-            const msgLength = common.ReadInt(data, dataIndex + MPS_PROXY_MSG_DATA_LENGTH_INDEX)
-            log.silly(`(${socketIPPort}): message length: ${msgLength}`)
-
-            // validate Message length
-            if ((dataIndex + MPS_PROXY_MSG_HEADER_LENGTH + msgLength) > data.length) {
-              log.debug(`(${socketIPPort}): received msg length of ${data.length} not matching payload length`)
-              return
-            }
-
-            // get the channel first
-            const cirachannel = socket.tag.mpsproxyAmtChannelMapping[uuid][mpsproxyChannelid]
-
-            // get data
-            let msgData = ''
-            // read hex data from message
-            for (let index = dataIndex + MPS_PROXY_MSG_DATA_INDEX;
-              index < dataIndex + MPS_PROXY_MSG_DATA_INDEX + msgLength;
-              index++) {
-              msgData += data[index]
-            }
-            // write on the device socket
-            if (cirachannel != null) {
-              log.silly(`(${socketIPPort}): write data on device, data: ${msgData}`)
-              cirachannel.write(msgData)
-            } else {
-              log.debug(`(${socketIPPort}): ciraChannel not defined`)
-            }
-          } else if (APFProtocol.CHANNEL_CLOSE === requestType) {
-            log.silly(`(${socketIPPort}): received CHANNEL_CLOSE request from mpsProxy`)
-
-            // webProxy sent Channelid
-            // read back the Int
-            const mpsproxyChannelid = common.ReadInt(data, dataIndex + MPS_PROXY_MSG_CHANNELID_INDEX)
-            log.silly(`(${socketIPPort}): received channel id= ${mpsproxyChannelid}`)
-
-            if (typeof socket.tag.mpsproxyAmtChannelMapping[uuid] === 'undefined') {
-              log.debug(`(${socketIPPort}): mpsproxyAmtChannelMapping for ${uuid} is undefined`)
-              return
-            } else if (typeof socket.tag.mpsproxyAmtChannelMapping[uuid][mpsproxyChannelid] === 'undefined') {
-              log.debug(`(${socketIPPort}): mpsproxyAmtChannelMapping for ${uuid} on mpsProxy channel ${mpsproxyChannelid} is undefined`)
-              return
-            }
-
-            const cirachannel = socket.tag.mpsproxyAmtChannelMapping[uuid][mpsproxyChannelid] // Store the whole channel here
-
-            if (cirachannel != null) {
-              log.silly(`(${socketIPPort}): send channel close to device`)
-              cirachannel.close()
-            } else {
-              log.silly(`(${socketIPPort}): ciraChannel not defined`)
-            }
-          }
-          dataIndex += thisMsgLength
-        }
-        log.silly(`(${socketIPPort}): done processing of the message received on webProxy`)
-      } catch (e) {
-        log.error(`(${socketIPPort}):Error in socket on data: webServer: ${e}`)
-      }
-    })
-
-    // webServer connection closed
-    socket.addListener('close', () => {
-      log.debug(`(${socketIPPort}): webServer connection closed`)
-      try {
-        // delete all the entries from webMpsChannelMapping/webproxyMpsMapping
-        socket.tag.mpsproxyAmtChannelMapping = null
-        socket.tag.amtMpsproxyChannelMapping = null
-        socket.tag.channelSocketMapping = null
-        delete this.allSockets[`${socketIPPort}`]
-      } catch (e) {
-        log.error(`(${socketIPPort}): Error from webserver socket close: ${e}`)
-      }
-    })
-
-    socket.addListener('error', () => {
-      log.error('onWebConnection error')
+      if (err)log.error(err)
+      // if (this.config.exactports) {
+      //     process.exit();
+      // }
     })
   }
 
@@ -439,17 +83,14 @@ export class MPSServer {
 
     // Setup the CIRA keep alive timer
     socket.setTimeout(MAX_IDLE)
-    socket.on('timeout', () => {
+    socket.on('timeout', async (): Promise<void> => {
       this.debug(1, 'MPS:CIRA timeout, disconnecting.')
       try {
         socket.end()
         if (this.ciraConnections[socket.tag.nodeid]) {
-          this.onCiraDisconnect(socket.tag.nodeid)
-          this.debug(1, 'MPS: call CIRADisconnected')
+          delete this.ciraConnections[socket.tag.nodeid]
           if (typeof this.mpsService.CIRADisconnected === 'function') {
-            this.mpsService.CIRADisconnected(socket.tag.nodeid)
-          } else {
-            this.debug(1, 'MPS: No definition for CIRADisconnected')
+            await this.mpsService.CIRADisconnected(socket.tag.nodeid)
           }
         }
       } catch (e) {
@@ -458,7 +99,7 @@ export class MPSServer {
       this.debug(1, 'MPS:CIRA timeout, disconnected.')
     })
 
-    socket.addListener('data', (data: string) => {
+    socket.addListener('data', async (data: string): Promise<void> => {
       // TODO: mpsdebug should be added to the config file
       // if (this.config.mpsdebug) {
       //     let buf = Buffer.from(data, "binary");
@@ -501,7 +142,7 @@ export class MPSServer {
         // Parse all of the APF data we can
         let l = 0
         do {
-          l = this.processCommand(socket)
+          l = await this.processCommand(socket)
           if (l > 0) {
             socket.tag.accumulator = socket.tag.accumulator.substring(l)
           }
@@ -514,13 +155,13 @@ export class MPSServer {
       }
     })
 
-    socket.addListener('close', () => {
+    socket.addListener('close', async (): Promise<void> => {
       this.debug(1, 'MPS:CIRA connection closed')
       try {
         if (this.ciraConnections[socket.tag.nodeid]) {
           delete this.ciraConnections[socket.tag.nodeid]
           if (typeof this.mpsService.CIRADisconnected === 'function') {
-            this.mpsService.CIRADisconnected(socket.tag.nodeid)
+            await this.mpsService.CIRADisconnected(socket.tag.nodeid)
           }
         }
       } catch (e) {
@@ -535,7 +176,7 @@ export class MPSServer {
   }
 
   // Process one APF command
-  processCommand = (socket): number => {
+  processCommand = async (socket): Promise<number> => {
     const cmd = socket.tag.accumulator.charCodeAt(0)
     const len = socket.tag.accumulator.length
     const data = socket.tag.accumulator
@@ -565,12 +206,12 @@ export class MPSServer {
         this.debug(3, 'MPS:PROTOCOLVERSION', socket.tag.MajorVersion, socket.tag.MinorVersion, socket.tag.SystemId)
         // Check if the device is allowlisted to connect. Only checked when 'use_allowlist' is set to true in config.json.
         if (this.config.use_allowlist) {
-          this.db.IsGUIDApproved(socket.tag.SystemId, (allowed) => {
+          this.db.IsGUIDApproved(socket.tag.SystemId, async (allowed): Promise<void> => {
             socket.tag.nodeid = socket.tag.SystemId
             if (allowed) {
               if (socket.tag.certauth) {
                 this.ciraConnections[socket.tag.SystemId] = socket
-                this.mpsService.CIRAConnected(socket.tag.nodeid)
+                await this.mpsService.CIRAConnected(socket.tag.nodeid)
               }
             } else {
               try {
@@ -583,7 +224,7 @@ export class MPSServer {
           socket.tag.nodeid = socket.tag.SystemId
           if (socket.tag.certauth) {
             this.ciraConnections[socket.tag.SystemId] = socket
-            this.mpsService.CIRAConnected(socket.tag.nodeid)
+            await this.mpsService.CIRAConnected(socket.tag.nodeid)
           }
         }
         log.debug(`device uuid: ${socket.tag.SystemId}`)
@@ -605,15 +246,15 @@ export class MPSServer {
         this.debug(3, `MPS:USERAUTH_REQUEST usernameLen=${usernameLen} serviceNameLen=${serviceNameLen} methodNameLen=${methodNameLen}`)
         this.debug(3, `MPS:USERAUTH_REQUEST user=${username} service=${serviceName} method=${methodName} password=${password}`)
         // Authenticate device connection using username and password
-        this.db.CIRAAuth(socket.tag.SystemId, username, password, (allowed) => {
+        this.db.CIRAAuth(socket.tag.SystemId, username, password, async (allowed): Promise<void> => {
           if (allowed) {
             this.debug(1, 'MPS:CIRA Authentication successful for ', username)
             this.ciraConnections[socket.tag.SystemId] = socket
-            this.mpsService.CIRAConnected(socket.tag.SystemId) // Notify that a connection is successful to console
+            await this.mpsService.CIRAConnected(socket.tag.SystemId) // Notify that a connection is successful to console
             this.SendUserAuthSuccess(socket) // Notify the auth success on the CIRA connection
           } else {
             log.warn(`MPS: CIRA Authentication failed for: ${username} `)
-            this.SendUserAuthFail(socket); return -1
+            this.SendUserAuthFail(socket)
           }
         })
         return 18 + usernameLen + serviceNameLen + methodNameLen + passwordLen
@@ -858,7 +499,7 @@ export class MPSServer {
         try {
           delete this.ciraConnections[socket.tag.nodeid]
         } catch (e) { }
-        this.mpsService.CIRADisconnected(socket.tag.nodeid)
+        await this.mpsService.CIRADisconnected(socket.tag.nodeid)
         return 7
       }
       default: {
@@ -869,7 +510,7 @@ export class MPSServer {
   }
 
   // Disconnect CIRA tunnel
-  close (socket): void {
+  async close (socket): Promise<void> {
     try {
       socket.end()
     } catch (e) { }
@@ -877,7 +518,7 @@ export class MPSServer {
       delete this.ciraConnections[socket.tag.nodeid]
     } catch (e) { }
     if (this.mpsService) {
-      this.mpsService.CIRADisconnected(socket.tag.nodeid)
+      await this.mpsService.CIRADisconnected(socket.tag.nodeid)
     }
   }
 

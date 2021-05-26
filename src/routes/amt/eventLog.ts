@@ -6,13 +6,13 @@
 
 import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
-import { amtPort, MPSMode } from '../../utils/constants'
+import { amtPort } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 
 export async function eventLog (req: Request, res: Response): Promise<void> {
   try {
     const guid = req.params.guid
-    const ciraconn = await req.mpsService.ciraConnectionFactory.getConnection(guid)
+    const ciraconn = req.mpsService.mpsserver.ciraConnections[guid]
 
     if (ciraconn && ciraconn.readyState === 'open') {
       const cred = await req.mpsService.db.getAmtPassword(guid)
@@ -20,9 +20,7 @@ export async function eventLog (req: Request, res: Response): Promise<void> {
       req.mpsService.mqtt.message({type: 'request', method: 'AMT_EventLog', guid, message: "Event Log Requested"})
 
       amtstack.GetMessageLog(function (stack, responses, tag, status) {
-        if (req.mpsService.config.startup_mode === MPSMode.Standalone) {
-          stack.wsman.comm.socket.sendchannelclose()
-        }
+        stack.wsman.comm.socket.sendchannelclose()
         if (status === 200) {
           req.mpsService.mqtt.message({type:'success', method: 'AMT_EventLog', guid, message: "Sent Event Log"})
           res.status(200).json(responses).end()

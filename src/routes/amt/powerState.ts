@@ -6,22 +6,20 @@
 
 import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
-import { amtPort, MPSMode } from '../../utils/constants'
+import { amtPort } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 
 export async function powerState (req: Request, res: Response): Promise<void> {
   try {
     const guid = req.params.guid
-    const ciraconn = await req.mpsService.ciraConnectionFactory.getConnection(guid)
+    const ciraconn = req.mpsService.mpsserver.ciraConnections[guid]
     if (ciraconn && ciraconn.readyState === 'open') {
       const cred = await req.mpsService.db.getAmtPassword(guid)
       const amtstack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
       req.mpsService.mqtt.message({type: 'request', method: 'AMT_PowerState', guid, message: "Power State Requested"})
       
       amtstack.Enum('CIM_ServiceAvailableToElement', (stack, name, responses, status) => {
-        if (req.mpsService.config.startup_mode === MPSMode.Standalone) {
-          stack.wsman.comm.socket.sendchannelclose()
-        }
+        stack.wsman.comm.socket.sendchannelclose()
         if (status !== 200) {
           log.error(`Request failed during powerstate fetch for guid : ${guid}.`)
           req.mpsService.mqtt.message({type: 'fail', method: 'AMT_PowerState', guid, message: "Failed to Get Power State"})

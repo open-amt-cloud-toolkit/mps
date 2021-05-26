@@ -6,7 +6,7 @@
 
 import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
-import { amtPort, MPSMode } from '../../utils/constants'
+import { amtPort } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { validationResult } from 'express-validator'
 
@@ -21,7 +21,7 @@ export async function auditLog (req: Request, res: Response): Promise<void> {
       return
     }
 
-    const ciraconn = await req.mpsService.ciraConnectionFactory.getConnection(guid)
+    const ciraconn = req.mpsService.mpsserver.ciraConnections[guid]
     if (ciraconn && ciraconn.readyState === 'open') {
       const cred = await req.mpsService.db.getAmtPassword(guid)
       const amtstack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
@@ -30,10 +30,7 @@ export async function auditLog (req: Request, res: Response): Promise<void> {
       req.mpsService.mqtt.message({type: 'request', method: 'AMT_AuditLog', guid, message: "Audit Log Requested"})
 
       amtstack.GetAuditLogChunks(startIndex, (stack, responses, status) => {
-        if (req.mpsService.config.startup_mode === MPSMode.Standalone) {
-          stack.wsman.comm.socket.sendchannelclose()
-        }
-
+        stack.wsman.comm.socket.sendchannelclose()
         if (status === 200) {
           req.mpsService.mqtt.message({type: 'success', method: 'AMT_AuditLog', guid, message: "Sent Audit Log"})
           res.status(200).json(responses).end()

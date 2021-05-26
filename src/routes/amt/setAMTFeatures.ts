@@ -6,7 +6,7 @@
  **********************************************************************/
 import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
-import { amtPort, MPSMode } from '../../utils/constants'
+import { amtPort } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { AMTFeatures } from '../../utils/AMTFeatures'
 import { MPSValidationError } from '../../utils/MPSValidationError'
@@ -22,16 +22,16 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
       res.status(400).json({ errors: errors.array() }).end()
       return
     }
-    const ciraconn = await req.mpsService.ciraConnectionFactory.getConnection(guid)
+    const ciraconn = req.mpsService.mpsserver.ciraConnections[guid]
     if (ciraconn && ciraconn.readyState === 'open') {
       const cred = await req.mpsService.db.getAmtPassword(guid)
       const amtstack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
       req.mpsService.mqtt.message({success: true, method: 'AMT_SetFeatures', guid, message: "Set AMT Features Requested"})
       await AMTFeatures.setAMTFeatures(amtstack, payload)
-      if (req.mpsService.config.startup_mode === MPSMode.Standalone) {
-        amtstack.wsman.comm.socket.sendchannelclose()
-      }
+
       req.mpsService.mqtt.message({success: true, method: 'AMT_SetFeatures', guid, message: "Set AMT Features"})
+      amtstack.wsman.comm.socket.sendchannelclose()
+
       res.status(200).json({ status: 'Updated AMT Features' }).end()
     } else {
       req.mpsService.mqtt.message({type: 'fail', method: 'AMT_SetFeatures', guid, message: "Device Not Found"})

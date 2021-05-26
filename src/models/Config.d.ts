@@ -36,12 +36,6 @@ export interface configType {
   web_admin_password: string
   mps_tls_config: any
   web_tls_config: any
-  distributed_kv_name: string
-  distributed_kv_ip?: string
-  distributed_kv_port?: number
-  startup_mode: string
-  web_proxy_port: number
-  network_adaptor: string
   tls_cert: string
   tls_cert_key: string
   tls_cert_ca: string
@@ -52,6 +46,7 @@ export interface configType {
   cors_headers: string
   cors_methods: string
   connection_string: string
+  instance_name: string
 }
 
 export interface certificatesType {
