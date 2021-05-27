@@ -1,0 +1,9 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.19.0
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  SNYK-JS-GLOBPARENT-1016905:
+    - mqtt > help-me > glob-stream > glob-parent:
+        reason: no fix available
+        expires: '2021-06-26T17:00:59.791Z'
+patch: {}
