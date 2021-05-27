@@ -19,3 +19,10 @@ export interface AMTCredential {
   amtuser: string
   amtpass: string
 }
+export interface OpenAMTEvent {
+  type: string
+  message: string
+  method: string
+  guid: string
+  timestamp: number
+}

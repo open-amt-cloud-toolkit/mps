@@ -11,6 +11,8 @@ import { IDbProvider } from './models/IDbProvider'
 import { DeviceDb } from './db/device'
 import { Device } from './models/models'
 import { Environment } from './utils/Environment'
+import { MqttProvider } from './utils/mqttHelper'
+
 export class MPSMicroservice {
   mpsserver: MPSServer
   webserver: WebServer
@@ -20,12 +22,14 @@ export class MPSMicroservice {
   mpsComputerList = {}
   db: IDbProvider
   deviceDb: DeviceDb
-  constructor (config: configType, db: IDbProvider, certs: certificatesType) {
+  mqtt: MqttProvider
+  constructor (config: configType, db: IDbProvider, certs: certificatesType, mqtt?: MqttProvider) {
     try {
       this.config = config
       this.debugLevel = config.debug_level
       this.db = db
       this.certs = certs
+      this.mqtt = mqtt
     } catch (e) {
       log.error(`Exception in MPS Microservice: ${e}`)
     }
