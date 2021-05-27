@@ -16,26 +16,26 @@ export async function eventLog (req: Request, res: Response): Promise<void> {
     if (ciraconn && ciraconn.readyState === 'open') {
       const cred = await req.mpsService.db.getAmtPassword(guid)
       const amtstack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
-      req.mpsService.mqtt.message({ type: 'request', method: 'AMT_EventLog', guid, message: 'Event Log Requested' })
+      req.mpsService.mqtt.publishEvent('request', ['AMT_EventLog'], 'Event Log Requested', guid)
 
       amtstack.GetMessageLog(function (stack, responses, tag, status) {
         stack.wsman.comm.socket.sendchannelclose()
         if (status === 200) {
-          req.mpsService.mqtt.message({ type: 'success', method: 'AMT_EventLog', guid, message: 'Sent Event Log' })
+          req.mpsService.mqtt.publishEvent('success', ['AMT_EventLog'], 'Sent Event Log', guid)
           res.status(200).json(responses).end()
         } else {
           log.error(`Failed during GET MessageLog guid : ${guid}.`)
-          req.mpsService.mqtt.message({ type: 'fail', method: 'AMT_EventLog', guid, message: 'Failed to Get Event Log' })
+          req.mpsService.mqtt.publishEvent('fail', ['AMT_EventLog'], 'Failed to Get Event Log', guid)
           res.status(status).json(ErrorResponse(status, `Failed during GET MessageLog guid : ${guid}.`)).end()
         }
       })
     } else {
-      req.mpsService.mqtt.message({ type: 'fail', method: 'AMT_EventLog', guid, message: 'Device Not Found' })
+      req.mpsService.mqtt.publishEvent('fail', ['AMT_EventLog'], 'Device Not Found', guid)
       res.status(404).json(ErrorResponse(404, `guid : ${guid}`, 'device')).end()
     }
   } catch (error) {
     log.error(`Exception in AMT EventLog: ${error}`)
-    req.mpsService.mqtt.message({ type: 'fail', method: 'AMT_EventLog', guid: null, message: 'Internal Server Error' })
+    req.mpsService.mqtt.publishEvent('fail', ['AMT_EventLog'], 'Internal Server Error')
     res.status(500).json(ErrorResponse(500, 'Request failed during AMT EventLog.')).end()
   }
 }

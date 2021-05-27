@@ -22,7 +22,7 @@ export interface AMTCredential {
 export interface OpenAMTEvent {
   type: string
   message: string
-  method: string
+  methods: string[]
   guid: string
   timestamp: number
 }

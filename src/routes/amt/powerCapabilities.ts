@@ -16,7 +16,7 @@ export async function powerCapabilities (req: Request, res: Response): Promise<v
     if (ciraconn && ciraconn.readyState === 'open') {
       const cred = await req.mpsService.db.getAmtPassword(guid)
       const amtstack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
-      req.mpsService.mqtt.message({ type: 'request', method: 'AMT_PowerCapabilities', guid, message: 'Power Capabilities Requested' })
+      req.mpsService.mqtt.publishEvent('request', ['AMT_BootCapabilities'], 'Power Capabilities Requested', guid)
 
       getVersion(amtstack, req, res, (responses, res) => {
         const versionData = responses
@@ -27,17 +27,17 @@ export async function powerCapabilities (req: Request, res: Response): Promise<v
           }
           // console.log("AMT_BootCapabilities info of " + uuid + " sent.");
           const powerCap = await bootCapabilities(versionData, responses.Body)
-          req.mpsService.mqtt.message({ type: 'success', method: 'AMT_PowerCapabilities', guid, message: 'Sent Power Capabilities' })
+          req.mpsService.mqtt.publishEvent('success', ['AMT_BootCapabilities'], 'Sent Power Capabilities', guid)
           return res.status(200).json(powerCap).end()
         }, 0, 1)
       })
     } else {
-      req.mpsService.mqtt.message({ type: 'fail', method: 'AMT_PowerCapabilities', guid, message: 'Device Not Found' })
+      req.mpsService.mqtt.publishEvent('fail', ['AMT_BootCapabilities'], 'Device Not Found', guid)
       res.status(404).json(ErrorResponse(404, `guid : ${guid}`, 'device')).end()
     }
   } catch (error) {
     log.error(`Exception in AMT PowerCapabilities : ${error}`)
-    req.mpsService.mqtt.message({ type: 'fail', method: 'AMT_PowerCapabilities', guid: null, message: 'Internal Server Error' })
+    req.mpsService.mqtt.publishEvent('fail', ['AMT_BootCapabilities'], 'Internal Server Error')
     res.status(500).json(ErrorResponse(500, 'Request failed during AMT PowerCapabilities.')).end()
   }
 }

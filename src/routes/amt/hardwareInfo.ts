@@ -16,7 +16,7 @@ export async function hardwareInfo (req: Request, res: Response): Promise<void> 
     if (ciraconn && ciraconn.readyState === 'open') {
       const cred = await req.mpsService.db.getAmtPassword(guid)
       const amtstack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
-      req.mpsService.mqtt.message({ type: 'request', method: 'AMT_HardwareInfo', guid, message: 'Hardware Information Requested' })
+      req.mpsService.mqtt.publishEvent('request', ['AMT_HardwareInfo'], 'Hardware Information Requested', guid)
 
       amtstack.BatchEnum('', ['*CIM_ComputerSystemPackage',
         'CIM_SystemPackaging', '*CIM_Chassis', 'CIM_Chip', '*CIM_Card', '*CIM_BIOSElement',
@@ -25,20 +25,20 @@ export async function hardwareInfo (req: Request, res: Response): Promise<void> 
         stack.wsman.comm.socket.sendchannelclose()
         if (status !== 200) {
           log.error(`Request failed during AMTHardware Information BatchEnum Exec for guid : ${guid}.`)
-          req.mpsService.mqtt.message({ type: 'fail', method: 'AMT_HardwareInfo', guid, message: 'Failed to Get Hardware Information' })
+          req.mpsService.mqtt.publishEvent('fail', ['AMT_HardwareInfo'], 'Failed to Get Hardware Information', guid)
           return res.status(status).json(ErrorResponse(status, `Request failed during AMTHardware Information BatchEnum Exec for guid : ${guid}.`)).end()
         } else {
-          req.mpsService.mqtt.message({ type: 'success', method: 'AMT_HardwareInfo', guid, message: 'Sent Hardware Information' })
+          req.mpsService.mqtt.publishEvent('success', ['AMT_HardwareInfo'], 'Sent Hardware Information', guid)
           res.status(status).json(responses).end()
         }
       })
     } else {
-      req.mpsService.mqtt.message({ type: 'fail', method: 'AMT_HardwareInfo', guid, message: 'Device Not Found' })
+      req.mpsService.mqtt.publishEvent('fail', ['AMT_HardwareInfo'], 'Device Not Found', guid)
       res.status(404).json(ErrorResponse(404, `guid : ${guid}`, 'device')).end()
     }
   } catch (error) {
     log.error(`Exception in AMT HardwareInformation : ${error}`)
-    req.mpsService.mqtt.message({ type: 'fail', method: 'AMT_HardwareInfo', guid: null, message: 'Interanl Server Error' })
+    req.mpsService.mqtt.publishEvent('fail', ['AMT_HardwareInfo'], 'Interanl Server Error')
     res.status(500).json(ErrorResponse(500, 'Request failed during AMTHardware Information.')).end()
   }
 }
