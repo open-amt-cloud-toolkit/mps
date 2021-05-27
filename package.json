@@ -7,7 +7,8 @@
     "compile": "tsc",
     "lint": "eslint . --ext .ts",
     "start": "npm run build && node ./dist/index.js",
-    "test": "jest --detectOpenHandles --forceExit --coverage"
+    "test": "jest --detectOpenHandles --forceExit --coverage",
+    "preinstall": "npx npm-force-resolutions"
   },
   "author": "",
   "license": "Apache-2.0",
@@ -23,6 +24,9 @@
     "pg": "^8.6.0",
     "rc": "^1.2.8",
     "winston": "^3.0.0",
+    "ws": "^7.4.6"
+  },
+  "resolutions": {
     "ws": "^7.4.6"
   },
   "devDependencies": {
