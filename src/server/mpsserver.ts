@@ -204,29 +204,22 @@ export class MPSServer {
         socket.tag.MinorVersion = common.ReadInt(data, 5)
         socket.tag.SystemId = this.guidToStr(common.rstr2hex(data.substring(13, 29))).toLowerCase()
         this.debug(3, 'MPS:PROTOCOLVERSION', socket.tag.MajorVersion, socket.tag.MinorVersion, socket.tag.SystemId)
-        // Check if the device is allowlisted to connect. Only checked when 'use_allowlist' is set to true in config.json.
-        if (this.config.use_allowlist) {
-          this.db.IsGUIDApproved(socket.tag.SystemId, async (allowed): Promise<void> => {
-            socket.tag.nodeid = socket.tag.SystemId
-            if (allowed) {
-              if (socket.tag.certauth) {
-                this.ciraConnections[socket.tag.SystemId] = socket
-                await this.mpsService.CIRAConnected(socket.tag.nodeid)
-              }
-            } else {
-              try {
-                this.debug(1, `MPS:GUID ${socket.tag.SystemId} is not allowed to connect.`)
-                socket.end()
-              } catch (e) { }
-            }
-          })
-        } else {
+
+        this.db.IsGUIDApproved(socket.tag.SystemId, async (allowed): Promise<void> => {
           socket.tag.nodeid = socket.tag.SystemId
-          if (socket.tag.certauth) {
-            this.ciraConnections[socket.tag.SystemId] = socket
-            await this.mpsService.CIRAConnected(socket.tag.nodeid)
+          if (allowed) {
+            if (socket.tag.certauth) {
+              this.ciraConnections[socket.tag.SystemId] = socket
+              await this.mpsService.CIRAConnected(socket.tag.nodeid)
+            }
+          } else {
+            try {
+              this.debug(1, `MPS:GUID ${socket.tag.SystemId} is not allowed to connect.`)
+              socket.end()
+            } catch (e) { }
           }
-        }
+        })
+
         log.debug(`device uuid: ${socket.tag.SystemId}`)
         return 93
       }

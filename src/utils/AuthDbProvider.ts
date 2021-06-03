@@ -6,53 +6,42 @@ import { IDbProvider } from '../models/IDbProvider'
 import { ISecretManagerService } from '../models/ISecretManagerService'
 import { configType } from '../models/Config'
 import { Credentials } from '../models/models'
+import { IDeviceDb } from '../interfaces/IDeviceDb'
 
-export class SecretsDbProvider implements IDbProvider {
+export class AuthDbProvider implements IDbProvider {
   secretsManager: ISecretManagerService
+  deviceDb: IDeviceDb
   secretsPath: string
   logger: any
   config: configType
-  constructor (secretsManager: ISecretManagerService, logger: any, config: configType) {
+  constructor (secretsManager: ISecretManagerService, deviceDb: IDeviceDb, logger: any, config: configType) {
     this.secretsManager = secretsManager
+    this.deviceDb = deviceDb
     this.secretsPath = config.secrets_path
     this.logger = logger
-    this.config = config
   }
 
   async CIRAAuth (guid: string, username: string, password: string, cb: any): Promise<boolean> {
     try {
-      // let user = await this.secretsManager.getSecretFromKey(`${this.secretsPath}devices/${guid}`, `username`);
-      // let pwd = await this.secretsManager.getSecretFromKey(`${this.secretsPath}devices/${guid}`, `password`);
-      let user, pwd
-      if (this.config.use_global_mps_credentials) {
-        // user = await this.secretsManager.getSecretFromKey(`${this.secretsPath}global`, `username`);
-        // pwd = await this.secretsManager.getSecretFromKey(`${this.secretsPath}global`, `password`);
-
-        // TODO: move this to vault.
-        user = this.config.username
-        pwd = this.config.pass
-
-        if (username === user && password === pwd) {
-          if (cb) {
-            cb(true)
-          }
-          return
-        }
-        this.logger.info('invalid mps credentials')
-        if (cb) cb(false)
+      const results = await this.deviceDb.getById(guid)
+      if (results != null) {
+        this.logger.debug(`CIRAAuth: device found: ${guid}, ${JSON.stringify(results)}`)
       } else {
-        user = await this.secretsManager.getSecretFromKey(`${this.secretsPath}devices/${guid}`, 'mps_username')
-        pwd = await this.secretsManager.getSecretFromKey(`${this.secretsPath}devices/${guid}`, 'mps_password')
-
-        if (username === user && password === pwd) {
-          if (cb) {
-            cb(true)
-          }
-          return
-        }
-        this.logger.info('invalid mps credentials')
+        this.logger.warn(`CIRAAuth: device not found: ${guid}`)
         if (cb) cb(false)
+        return false
       }
+
+      const pwd = await this.secretsManager.getSecretFromKey(`${this.secretsPath}devices/${guid}`, 'MPS_PASSWORD')
+
+      if (username === results.mpsusername && password === pwd) {
+        if (cb) {
+          cb(true)
+        }
+        return
+      }
+      this.logger.info('invalid mps credentials')
+      if (cb) cb(false)
     } catch (error) {
       this.logger.error('Error while retrieving server credentials\r\n')
       this.logger.error(error)
@@ -76,10 +65,16 @@ export class SecretsDbProvider implements IDbProvider {
   async IsGUIDApproved (guid: string, cb: any): Promise<void> {
     try {
       let result = false
-      const guids = await this.secretsManager.getSecretFromKey(`${this.secretsPath}global`, 'guids_allowlist')
-      if (guids.includes(guid)) {
+
+      const results = await this.deviceDb.getById(guid)
+      if (results != null) {
+        this.logger.debug(`IsGUIDApproved: device found: ${guid}, ${JSON.stringify(results)}`)
         result = true
+      } else {
+        this.logger.warn(`IsGUIDApproved: device not found: ${guid}`)
+        result = false
       }
+
       if (cb) {
         cb(result)
       }
