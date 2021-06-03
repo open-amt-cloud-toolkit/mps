@@ -69,13 +69,14 @@ export class DeviceDb implements IDeviceDb {
    */
   async insert (device: Device): Promise<Device> {
     try {
-      const results = await this.db.query('INSERT INTO devices(guid, hostname, tags, mpsinstance, connectionstatus) values($1, $2, ARRAY(SELECT json_array_elements_text($3)), $4, $5)',
+      const results = await this.db.query('INSERT INTO devices(guid, hostname, tags, mpsinstance, connectionstatus, mpsusername) values($1, $2, ARRAY(SELECT json_array_elements_text($3)), $4, $5, $6)',
         [
           device.guid,
           device.hostname,
           JSON.stringify(device.tags),
           device.mpsInstance,
-          device.connectionStatus
+          device.connectionStatus,
+          device.mpsusername
         ])
       if (results.rowCount > 0) {
         return await this.getById(device.guid)
@@ -97,7 +98,7 @@ export class DeviceDb implements IDeviceDb {
   */
   async update (device: Device): Promise <Device> {
     try {
-      const results = await this.db.query('UPDATE devices SET tags=$2, hostname=$3, mpsinstance=$4, connectionstatus=$5 WHERE guid=$1',
+      const results = await this.db.query('UPDATE devices SET tags=$2, hostname=$3, mpsinstance=$4, connectionstatus=$5, mpsusername=$6 WHERE guid=$1',
         [
           device.guid,
           device.tags,
