@@ -104,7 +104,8 @@ export class DeviceDb implements IDeviceDb {
           device.tags,
           device.hostname,
           device.mpsInstance,
-          device.connectionStatus
+          device.connectionStatus,
+          device.mpsusername
         ])
       if (results.rowCount > 0) {
         return await this.getById(device.guid)
