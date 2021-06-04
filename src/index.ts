@@ -60,6 +60,7 @@ try {
     process.on(signal, () => {
       console.log('signal received :', signal)
       deviceDb.clearInstanceStatus(Environment.Config.instance_name)
+      mqtt.end()
       if (signal !== 'exit') {
         setTimeout(() => process.exit(), 1000)
       }

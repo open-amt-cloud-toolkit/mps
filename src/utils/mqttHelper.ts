@@ -74,12 +74,4 @@ export class MqttProvider {
     log.info('MQTT client closed')
     this.client.end()
   }
-
-  test (): void {
-    if (this.turnedOn) return
-
-    this.client.publish('mps/test', 'Test message', function () {
-      log.info('Message connect is published')
-    })
-  }
 }
