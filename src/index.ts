@@ -20,7 +20,7 @@ import { parseValue } from './utils/parseEnvValue'
 import rc from 'rc'
 import { Environment } from './utils/Environment'
 import { DeviceDb } from './db/device'
-import { MqttProvider } from './utils/mqttHelper'
+import { MqttProvider } from './utils/mqttProvider'
 
 try {
   // To merge ENV variables. consider after lowercasing ENV since our config keys are lowercase
@@ -48,6 +48,7 @@ try {
 
   // MQTT Connection
   const mqtt: MqttProvider = new MqttProvider(config)
+  mqtt.connectBroker()
 
   // DB initialization
 
@@ -60,6 +61,7 @@ try {
     process.on(signal, () => {
       console.log('signal received :', signal)
       deviceDb.clearInstanceStatus(Environment.Config.instance_name)
+      mqtt.endBroker()
       if (signal !== 'exit') {
         setTimeout(() => process.exit(), 1000)
       }

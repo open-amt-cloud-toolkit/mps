@@ -19,8 +19,9 @@ export interface AMTCredential {
   amtuser: string
   amtpass: string
 }
+export type eventType = 'request' | 'success' | 'fail'
 export interface OpenAMTEvent {
-  type: string
+  type: eventType
   message: string
   methods: string[]
   guid: string

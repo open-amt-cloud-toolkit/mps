@@ -1,0 +1,70 @@
+// Provides functions to abstract the interactions
+// with mqtt broker
+
+import url from 'url'
+import { configType } from '../models/Config'
+import { eventType, OpenAMTEvent } from '../models/models'
+import { logger as log } from './logger'
+import { MqttClient, connect } from 'mqtt'
+
+export class MqttProvider {
+  client: MqttClient
+  turnedOn: boolean
+  mqttUrl: url.URL
+  baseUrl: string
+  port: number
+  options: any
+
+  constructor (config: configType) {
+    if (!config.mqtt_address) {
+      this.turnedOn = false
+      log.info('Mosquitto is turned off')
+    } else {
+      this.turnedOn = true
+      this.mqttUrl = new url.URL(config.mqtt_address)
+      this.baseUrl = 'mqtt://' + this.mqttUrl.host
+      this.port = +this.mqttUrl.port
+      this.options = {
+        port: this.port,
+        clientId: 'mqttjs_' + Math.random().toString(16).substr(2, 8)
+        // username: auth[0],
+        // password: auth[1],
+      }
+    }
+  }
+
+  connectBroker (): void {
+    this.client = connect(this.baseUrl, this.options)
+  }
+
+  async publishEvent (type: eventType, methods: string[], message: string, guid?: string): Promise<void> {
+    // Block message if mqtt option is off
+    if (!this.turnedOn) return
+
+    const event: OpenAMTEvent = {
+      type: type,
+      message: message,
+      methods: methods,
+      guid: guid,
+      timestamp: Date.now()
+    }
+
+    // Enforce message type names before publishing
+    return await new Promise((resolve, reject) => {
+      this.client.publish('mps/events', JSON.stringify(event), function (err) {
+        if (err == null) {
+          log.info('Event message published')
+          resolve()
+        } else {
+          log.error('Event message failed')
+          reject(new Error('Event message failed: ' + err.message))
+        }
+      })
+    })
+  }
+
+  endBroker (): void {
+    this.client = this.client.end()
+    log.info('MQTT client closed')
+  }
+}

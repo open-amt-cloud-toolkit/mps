@@ -11,7 +11,7 @@ import { IDbProvider } from './models/IDbProvider'
 import { DeviceDb } from './db/device'
 import { Device } from './models/models'
 import { Environment } from './utils/Environment'
-import { MqttProvider } from './utils/mqttHelper'
+import { MqttProvider } from './utils/mqttProvider'
 
 export class MPSMicroservice {
   mpsserver: MPSServer
