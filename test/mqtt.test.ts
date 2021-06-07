@@ -33,7 +33,7 @@ describe('Basic MQTT Tests', () => {
         web_tls_cert_ca: "",
         vault_address: "http://localhost:8200",
         vault_token: "myroot",
-        mqtt_address: "",
+        mqtt_address: "mqtt://mosquitto:8883",
         secrets_path: "secret/data/",
         cert_format: "file",
         data_path: "../private/data.json",
