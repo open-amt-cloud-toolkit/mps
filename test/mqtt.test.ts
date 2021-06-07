@@ -68,17 +68,17 @@ describe('Basic MQTT Tests', () => {
 
     it('Checks Construction', () => {
         expect(mqtt.turnedOn).toBe(true)
+        expect(mqtt.client.connected).toBe(false)
         expect(mqtt.client.connected).toBe(true)
     })
 
     it('Publish and event', () => {
-        let sent: Boolean
+        let sent: Boolean = false
         let p = mqtt.publishEvent('success', ['testMethod'], 'Test Message')
 
         p.then(() => {
             sent = true
         }).catch((message) => {
-            sent = false
             log.error(message)
         })
 
