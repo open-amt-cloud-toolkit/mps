@@ -1,5 +1,5 @@
 // Provides functions to abstract the interactions
-// with mqtt
+// with mqtt broker
 
 import url from 'url'
 import { configType } from '../models/Config'
@@ -35,10 +35,6 @@ export class MqttProvider {
         log.info('Connect message published')
       })
     }
-  }
-
-  async getClient (): Promise<any> {
-    return this.client
   }
 
   async publishEvent (type: string, methods: string[], message: string, guid?: string): Promise<void> {
