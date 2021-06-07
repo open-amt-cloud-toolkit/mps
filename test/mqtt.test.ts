@@ -79,8 +79,4 @@ describe('Basic MQTT Tests', () => {
         mqtt.end()
         expect(mqtt.client.connected).toBe(false)
     })
-}) 
-
-{
-    
-}
+})
