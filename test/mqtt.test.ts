@@ -68,15 +68,16 @@ describe('Basic MQTT Tests', () => {
     it('Checks Construction', () => {
         expect(mqtt.turnedOn).toBe(false)
         expect(mqtt.client.connected).toBe(true)
-        expect(mqtt.client.connected).toBe(false)
     })
 
     it('Publish and event', () => {
-        mqtt.publishEvent('success', ['testMethod'], 'Test Message')
+        let sent = mqtt.publishEvent('success', ['testMethod'], 'Test Message')
+        expect(sent).toBe(true)
     })
 
     it('Closes the client', () => {
         mqtt.end()
+        expect(mqtt.client.connected).toBe(false)
     })
 }) 
 
