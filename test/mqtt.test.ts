@@ -4,6 +4,7 @@
 
 import { MqttProvider } from '../src/utils/mqttHelper'
 import { configType } from '../src/models/Config'
+import { logger as log } from '../src/utils/logger'
 
 describe('Basic MQTT Tests', () => {
     const config: configType = {
@@ -66,12 +67,21 @@ describe('Basic MQTT Tests', () => {
     const mqtt: MqttProvider = new MqttProvider(config)
 
     it('Checks Construction', () => {
-        expect(mqtt.turnedOn).toBe(false)
+        expect(mqtt.turnedOn).toBe(true)
         expect(mqtt.client.connected).toBe(true)
     })
 
     it('Publish and event', () => {
-        let sent = mqtt.publishEvent('success', ['testMethod'], 'Test Message')
+        let sent: Boolean
+        let p = mqtt.publishEvent('success', ['testMethod'], 'Test Message')
+
+        p.then(() => {
+            sent = true
+        }).catch((message) => {
+            sent = false
+            log.error(message)
+        })
+
         expect(sent).toBe(true)
     })
 

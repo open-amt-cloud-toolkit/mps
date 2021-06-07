@@ -37,7 +37,7 @@ export class MqttProvider {
     }
   }
 
-  async publishEvent (type: string, methods: string[], message: string, guid?: string): Promise<boolean> {
+  async publishEvent (type: string, methods: string[], message: string, guid?: string): Promise<void> {
     // Block message if mqtt option is off
     if (!this.turnedOn) return
 
@@ -50,22 +50,20 @@ export class MqttProvider {
     }
 
     // Enforce message type names before publishing
-    if (messageTypes.includes(event.type)) {
-      return await new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
+      if (messageTypes.includes(event.type)) {
         this.client.publish('mps/events', JSON.stringify(event), function () {
           log.info('Event message published')
         })
-        resolve(true)
-      })
-    } else {
-      return new Promise((resolve, reject) => {
+        resolve()
+      } else {
         log.error('Invalid message type: ' + event.type + '\nValid types names are: ' + messageTypes)
         this.client.publish('mps/events', 'Invalid Message Attempted', function () {
           log.info('Error message published')
         })
-        resolve(false)
-      })
-    }
+        reject(new Error('Invalid message attempted'))
+      }
+    })
   }
 
   end (): void {
