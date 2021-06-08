@@ -48,6 +48,11 @@ try {
 
   // MQTT Connection
   const mqtt: MqttProvider = new MqttProvider(config)
+  if (mqtt.client.connected) {
+    console.log("connected")
+  } else {
+    console.log("disconnected")
+  }
 
   // DB initialization
 
