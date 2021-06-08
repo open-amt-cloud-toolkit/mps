@@ -504,7 +504,7 @@ components:
     DisconnectResponse:
       title: DisconnectResponse
       example:
-        success: 200
+        success: 200,
         description: "CIRA connection disconnected : 038d0240-045c-05f4-7706-980700080009"
       properties:
         success:
@@ -532,7 +532,7 @@ components:
     DeleteResponse:
       title: DeleteResponse
       example:
-        success: 204
+        success: 204,
       properties:
         success:
           description: HTTP returncode
