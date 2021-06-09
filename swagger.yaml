@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 1.3.0
+  version: 1.4.0
   title: Managed Prescence Server (MPS) API
   license:
     name: Apache 2.0
@@ -46,7 +46,7 @@ paths:
         401:
           description: 'Incorrect Username and/or Password'
         200:
-          description: 'Successful operation'
+          description: 'Success'
           content:
             application/json:
               schema:
@@ -350,7 +350,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SetDeviceInput'
+              $ref: '#/components/schemas/AddDevice'
       responses:
         200:
           description: 'Successful operation'
@@ -359,7 +359,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/SetDeviceOutput'
+                  $ref: '#/components/schemas/AddDevice'
         500:
           description: 'Internal server error'
     patch:
@@ -372,7 +372,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SetDeviceInput'
+              $ref: '#/components/schemas/AddDevice'
       responses:
         200:
           description: 'Successful operation'
@@ -381,7 +381,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/SetDeviceOutput'
+                  $ref: '#/components/schemas/AddDevice'
         500:
           description: 'Internal server error'
   /api/v1/devices/stats:
@@ -504,7 +504,7 @@ components:
     DisconnectResponse:
       title: DisconnectResponse
       example:
-        success: 200,
+        success: 200
         description: "CIRA connection disconnected : 038d0240-045c-05f4-7706-980700080009"
       properties:
         success:
@@ -516,7 +516,7 @@ components:
     DisconnectErrorResponse:
       title: DisconnectErrorResponse
       example:
-        status: 404,
+        status: 404
         error: "Device not found/connected. Please connect again using CIRA."
         errorDescription: "guid : 038d0240-045c-05f4-7706-980700080009"
       properties:
@@ -532,7 +532,7 @@ components:
     DeleteResponse:
       title: DeleteResponse
       example:
-        success: 204,
+        success: 204
       properties:
         success:
           description: HTTP returncode
@@ -540,7 +540,7 @@ components:
     DeleteErrorResponse:
       title: DeleteErrorResponse
       example:
-        status: 404,
+        status: 404
         error: "NOT FOUND"
         errorDescription: "Device ID 038d0240-045c-05f4-7706-980700080009 not found"
       properties:
@@ -1779,7 +1779,7 @@ components:
         guid: '123e4567-e89b-12d3-a456-426614174000'
         hostname: 'AMTDEVICENUC1'
         connectionStatus: 1
-        metadata: {guid: 123e4567-e89b-12d3-a456-426614174000, hostname: AMTDEVICENUC1, tags: ['Texas','NUC','Store #123']}
+        tags: ['Texas','NUC','Store #123']
       properties:
         guid:
           type: string
@@ -1787,8 +1787,12 @@ components:
           type: string
         connectionStatus:
           type: integer
-    SetDeviceInput:
-      title: SetDeviceInput
+        tags:
+          type: array
+          items:
+            type: string
+    AddDevice:
+      title: AddDevice
       example:
         guid: '123e4567-e89b-12d3-a456-426614174000'
         hostname: 'AMTDEVICENUC1'
@@ -1800,19 +1804,8 @@ components:
           type: string
         tags:
           type: array
-    SetDeviceOutput:
-      title: SetDeviceOutput
-      example:
-        guid: '123e4567-e89b-12d3-a456-426614174000'
-        hostname: 'AMTDEVICENUC1'
-        tags: ['Texas','NUC','Store #123']
-      properties:
-        guid:
-          type: string
-        hostname:
-          type: string
-        tags:
-          type: array
+          items:
+            type: string
     Stats:
       title: Stats
       example:
