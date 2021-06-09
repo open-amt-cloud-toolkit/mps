@@ -10,14 +10,14 @@ import * as https from 'https'
 import * as forge from 'node-forge'
 import { certificates } from '../src/utils/certificates'
 import { certificatesType, configType } from '../src/models/Config'
-import { Database } from '../src/utils/db'
 import { MPSMicroservice } from '../src/mpsMicroservice'
 import { MPSServer } from '../src/server/mpsserver'
 import { join } from 'path'
+import { Database } from './helper/db'
+
 
 // Parsing configuration
 const config: configType = {
-  use_allowlist: false,
   common_name: 'localhost',
   port: 4433,
   username: 'standalone',
@@ -86,7 +86,7 @@ describe('MPS Server', function () {
       console.log(`Failed to create Cert path ${certPath}. Create if it doesn't exist`)
     }
     certs = await certificates.generateCertificates(config, certPath)
-    db = new Database(config)
+    db  = new Database(config)
     mpsService = new MPSMicroservice(config, db, certs)
     mps = new MPSServer(mpsService)
 
@@ -193,7 +193,6 @@ describe('MPS Server', function () {
       debug: false,
       testciraState: 'USERAUTH_SUCCESS' // USERAUTH_SERVICE_ACCEPT, PFWD_SERVICE_ACCEPT, GLOBAL_REQUEST_SUCCESS, USERAUTH_SUCCESS, USERAUTH_FAILURE, PROTOCOL_VERSION_SENT, KEEPALIVE_REPLY
     }
-
     obj.ciraclient = require('./helper/ciraclient.js').CreateCiraClient(obj, args)
     obj.ciraclient.connect(function () {
       obj.ciraclient.disconnect()

@@ -5,7 +5,6 @@
 import { IDbProvider } from '../models/IDbProvider'
 import { ISecretManagerService } from '../models/ISecretManagerService'
 import { configType } from '../models/Config'
-import { Credentials } from '../models/models'
 
 export class SecretsDbProvider implements IDbProvider {
   secretsManager: ISecretManagerService
@@ -54,8 +53,7 @@ export class SecretsDbProvider implements IDbProvider {
         if (cb) cb(false)
       }
     } catch (error) {
-      this.logger.error('Error while retrieving server credentials\r\n')
-      this.logger.error(error)
+      this.logger.error('Error while retrieving server credentials :', error)
       return false
     }
   }
@@ -67,8 +65,7 @@ export class SecretsDbProvider implements IDbProvider {
       const amtpass = data.data.AMT_PASSWORD
       return [user, amtpass]
     } catch (error) {
-      this.logger.error('Error while retrieving device credentials\r\n')
-      this.logger.error(error)
+      this.logger.error('Error while retrieving device credentials :', error)
       return null
     }
   }
@@ -76,57 +73,15 @@ export class SecretsDbProvider implements IDbProvider {
   async IsGUIDApproved (guid: string, cb: any): Promise<void> {
     try {
       let result = false
-      const guids = await this.secretsManager.getSecretFromKey(`${this.secretsPath}global`, 'guids_allowlist')
-      if (guids.includes(guid)) {
+      const guids = await this.secretsManager.getSecretAtPath(`${this.secretsPath}devices/${guid}`)
+      if (guids?.data.AMT_PASSWORD != null) {
         result = true
       }
       if (cb) {
         cb(result)
       }
     } catch (error) {
-      this.logger.error('Error while retrieving guids allowlist\r\n')
-      this.logger.error(error)
-    }
-  }
-
-  async IsOrgApproved (org: string, cb: any): Promise<void> {
-    try {
-      let result = false
-      const orgs = await this.secretsManager.getSecretFromKey(`${this.secretsPath}global`, 'orgs_allowlist')
-
-      if (orgs.includes(org)) {
-        result = true
-      }
-      if (cb) {
-        cb(result)
-      }
-    } catch (error) {
-      this.logger.error('Error while retrieving org allowlist\r\n')
-      this.logger.error(error)
-      if (cb) {
-        cb(null, 'error while retrieving org allowlist')
-      }
-    }
-  }
-
-  async getAllAmtCredentials (): Promise<Credentials> {
-    try {
-      try {
-        const path = this.secretsPath.replace('data', 'metadata')
-        const creds = await this.secretsManager.listSecretsAtPath(`${path}devices`)
-
-        return creds.reduce((acc, cur) => {
-          acc[cur] = {}
-          return acc
-        }, {})
-      } catch (error) {
-        this.logger.error('Error while retrieving org allowlist\r\n')
-        this.logger.error(error)
-      }
-    } catch (error) {
-      this.logger.error('Error while retrieving all amt device list\r\n')
-      this.logger.error(error)
-      return null
+      this.logger.error('Error while retrieving guid:', error)
     }
   }
 }
