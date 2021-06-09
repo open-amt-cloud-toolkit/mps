@@ -62,13 +62,13 @@ export class MPSMicroservice {
   async CIRADisconnected (guid: string): Promise<void> {
     if (this.deviceDb != null) {
       const device: Device = await this.deviceDb.getById(guid)
-      device.connectionStatus = false
-      device.mpsInstance = null
-      const results = await this.deviceDb.update(device)
-      if (results) {
-        log.info(`Main:CIRA connection closed for ${guid}`)
-      } else {
-        log.info(`Failed to update CIRA Connection closed status in DB ${guid}`)
+      if (device != null) {
+        device.connectionStatus = false
+        device.mpsInstance = null
+        const results = await this.deviceDb.update(device)
+        if (results) {
+          log.info(`Device connection status updated in db : ${guid}`)
+        }
       }
     }
     if (guid && this.mpsComputerList[guid]) {
@@ -81,6 +81,7 @@ export class MPSMicroservice {
           status: 'disconnected'
         })
       }
+      log.info(`CIRA connection disconnected for device : ${guid}`)
     }
   }
 }

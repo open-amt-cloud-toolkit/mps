@@ -17,7 +17,6 @@ EXPOSE 3000
 COPY package*.json ./
 COPY tsconfig.json ./
 COPY src ./src/
-COPY private/data.json ./private/ 
 COPY agent ./agent/
 COPY .mpsrc ./
 

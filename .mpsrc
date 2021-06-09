@@ -1,5 +1,4 @@
 {
-    "use_allowlist" : false,
     "common_name": "localhost",
     "port": 4433,
     "username": "standalone",

@@ -5,7 +5,6 @@
 **********************************************************************/
 
 export interface configType {
-  use_allowlist: boolean
   common_name: string
   port: number
   username: string

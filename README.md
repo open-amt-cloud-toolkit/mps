@@ -25,10 +25,8 @@ To deploy the MPS on a local development system:
     git clone https://github.com/open-amt-cloud-toolkit/mps.git && cd mps
     ```
 
-2. Modify the mps/.mpsrc file’s allowlist and common name settings. Save and close the file.
+2. Modify the mps/.mpsrc file common name settings. Save and close the file.
     ```
-    “use_allowlist” : false
-    …
     “common_name” : “the development system’s IP address”
     ```
 
