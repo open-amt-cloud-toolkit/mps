@@ -12,10 +12,10 @@
  */
 
 import fs from 'fs'
-import { configType } from '../models/Config'
-import { logger as log } from './logger'
-import { IDbProvider } from '../models/IDbProvider'
-import { Credentials } from '../models/models'
+import { configType } from '../../src/models/Config'
+import { logger as log } from '../../src/utils/logger'
+import { IDbProvider } from '../../src/models/IDbProvider'
+import { Credentials } from '../../src/models/models'
 
 export class Database implements IDbProvider {
   private readonly config: configType
@@ -117,41 +117,17 @@ export class Database implements IDbProvider {
   IsGUIDApproved (guid, cb): void {
     try {
       let result = false
-
-      if (this.config?.use_allowlist) {
-        const guids = this.getAllGUIDS()
-        if (guids.includes(guid)) {
-          result = true
-          log.silly('Guid found.')
-        }
-      } else {
+      const guids = this.getAllAmtCredentials()
+      console.log('test', guids[guid])
+      if (guids[guid]) {
         result = true
+        log.silly('Guid found.')
       }
       if (cb) {
         cb(result)
       }
     } catch (error) {
       log.error(`Exception in IsGUIDApproved: ${error}`)
-    }
-  }
-
-  // check if a Organization is allowed to connect
-  IsOrgApproved (org, cb): void {
-    try {
-      let result = false
-      if (this.config?.use_allowlist) {
-        const orgs = this.getAllOrgs()
-        if (orgs.includes(org)) {
-          result = true
-        }
-      } else {
-        result = true
-      }
-      if (cb) {
-        cb(result)
-      }
-    } catch (error) {
-      log.error(`Exception in IsOrgApproved: ${error}`)
     }
   }
 

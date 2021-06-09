@@ -8,7 +8,7 @@
         Functionality has been modified for standalone operation only (Meshcentral services will not work with this code)
     Parameters:
         parent (mpsMicroservice): parent service invoking this module (provides eventing and wiring services)
-        db: database for credential and allowlisting
+        db: database for credential
         config: settings pertaining to the behaviour of this service
         certificates: certificates to use for TLS server creation
 */
@@ -119,23 +119,6 @@ export class MPSServer {
           return
         }
         socket.tag.first = false
-
-        // Setup this node with certificate authentication
-        if (socket.tag.clientCert?.subject?.O) {
-          // This is a node where the organization is indicated within the CIRA certificate
-          this.db.IsOrgApproved(socket.tag.clientCert.subject.O, (allowed) => {
-            if (allowed) {
-              this.debug(1, `CIRA connection for organization: ${socket.tag.clientCert.subject.O}`)
-              socket.tag.certauth = true
-            } else {
-              this.debug(1, `CIRA connection for unknown node with incorrect organization: ${socket.tag.clientCert.subject.O}`)
-              socket.end()
-            }
-          })
-        } else {
-          // This node connected without certificate authentication, use password auth
-          this.debug(1, 'Intel AMT CIRA trying to connect without certificate authentication')
-        }
       }
 
       try {
@@ -171,7 +154,10 @@ export class MPSServer {
 
     socket.addListener('error', (error
     ) => {
-      log.error(`MPS socket error ${socket.tag.nodeid},  ${socket.remoteAddress}: ${error}`)
+      // error "ECONNRESET" means the other side of the TCP conversation abruptly closed its end of the connection.
+      if (error.code !== 'ECONNRESET') {
+        log.error(`MPS socket error ${socket.tag.nodeid},  ${socket.remoteAddress}: ${error}`)
+      }
     })
   }
 
@@ -204,29 +190,21 @@ export class MPSServer {
         socket.tag.MinorVersion = common.ReadInt(data, 5)
         socket.tag.SystemId = this.guidToStr(common.rstr2hex(data.substring(13, 29))).toLowerCase()
         this.debug(3, 'MPS:PROTOCOLVERSION', socket.tag.MajorVersion, socket.tag.MinorVersion, socket.tag.SystemId)
-        // Check if the device is allowlisted to connect. Only checked when 'use_allowlist' is set to true in config.json.
-        if (this.config.use_allowlist) {
-          this.db.IsGUIDApproved(socket.tag.SystemId, async (allowed): Promise<void> => {
-            socket.tag.nodeid = socket.tag.SystemId
-            if (allowed) {
-              if (socket.tag.certauth) {
-                this.ciraConnections[socket.tag.SystemId] = socket
-                await this.mpsService.CIRAConnected(socket.tag.nodeid)
-              }
-            } else {
-              try {
-                this.debug(1, `MPS:GUID ${socket.tag.SystemId} is not allowed to connect.`)
-                socket.end()
-              } catch (e) { }
-            }
-          })
-        } else {
+        // Check if the device exits in db
+        this.db.IsGUIDApproved(socket.tag.SystemId, async (allowed): Promise<void> => {
           socket.tag.nodeid = socket.tag.SystemId
-          if (socket.tag.certauth) {
-            this.ciraConnections[socket.tag.SystemId] = socket
-            await this.mpsService.CIRAConnected(socket.tag.nodeid)
+          if (allowed) {
+            if (socket.tag.certauth) {
+              this.ciraConnections[socket.tag.SystemId] = socket
+              await this.mpsService.CIRAConnected(socket.tag.nodeid)
+            }
+          } else {
+            try {
+              this.debug(1, `MPS:GUID ${socket.tag.SystemId} is not allowed to connect.`)
+              socket.end()
+            } catch (e) { }
           }
-        }
+        })
         log.debug(`device uuid: ${socket.tag.SystemId}`)
         return 93
       }
