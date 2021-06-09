@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 1.3.0
+  version: 1.4.0
   title: Managed Prescence Server (MPS) API
   license:
     name: Apache 2.0
@@ -339,7 +339,51 @@ paths:
                 items:
                   $ref: '#/components/schemas/Device'
         500:
-          description: 'internal server error'
+          description: 'Internal server error'
+    post:
+      description: Adds a new device to MPS
+      tags:
+        - Devices
+      requestBody:
+        description: Payload to add AMT device to MPS
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddDevice'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AddDevice'
+        500:
+          description: 'Internal server error'
+    patch:
+      description: Edit a single device in the MPS
+      tags:
+        - Devices
+      requestBody:
+        description: Payload to edit AMT device in MPS
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddDevice'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AddDevice'
+        500:
+          description: 'Internal server error'
   /api/v1/devices/stats:
     get:
       description: Retrieve the current count of all registered, connected, and disconnected devices
@@ -538,9 +582,33 @@ components:
     DisconnectErrorResponse:
       title: DisconnectErrorResponse
       example:
-        status: 404,
+        status: 404
         error: "Device not found/connected. Please connect again using CIRA."
         errorDescription: "guid : 038d0240-045c-05f4-7706-980700080009"
+      properties:
+        success:
+          description: HTTP returncode
+          type: integer
+        error:
+          description: server error message
+          type: string
+        errorDescription:
+          description: contains device guid
+          type: string
+    DeleteResponse:
+      title: DeleteResponse
+      example:
+        success: 204
+      properties:
+        success:
+          description: HTTP returncode
+          type: integer
+    DeleteErrorResponse:
+      title: DeleteErrorResponse
+      example:
+        status: 404
+        error: "NOT FOUND"
+        errorDescription: "Device ID 038d0240-045c-05f4-7706-980700080009 not found"
       properties:
         success:
           description: HTTP returncode
@@ -1777,7 +1845,7 @@ components:
         guid: '123e4567-e89b-12d3-a456-426614174000'
         hostname: 'AMTDEVICENUC1'
         connectionStatus: 1
-        metadata: {guid: 123e4567-e89b-12d3-a456-426614174000, hostname: AMTDEVICENUC1, tags: ['Texas','NUC','Store #123']}
+        tags: ['Texas','NUC','Store #123']
       properties:
         guid:
           type: string
@@ -1785,8 +1853,25 @@ components:
           type: string
         connectionStatus:
           type: integer
-        metadata:
-          $ref: '#/components/schemas/Metadata'
+        tags:
+          type: array
+          items:
+            type: string
+    AddDevice:
+      title: AddDevice
+      example:
+        guid: '123e4567-e89b-12d3-a456-426614174000'
+        hostname: 'AMTDEVICENUC1'
+        tags: ['Texas','NUC','Store #123']
+      properties:
+        guid:
+          type: string
+        hostname:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
     Stats:
       title: Stats
       example:
