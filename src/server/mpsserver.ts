@@ -191,20 +191,18 @@ export class MPSServer {
         socket.tag.SystemId = this.guidToStr(common.rstr2hex(data.substring(13, 29))).toLowerCase()
         this.debug(3, 'MPS:PROTOCOLVERSION', socket.tag.MajorVersion, socket.tag.MinorVersion, socket.tag.SystemId)
         // Check if the device exits in db
-        this.db.IsGUIDApproved(socket.tag.SystemId, async (allowed): Promise<void> => {
+        if (this.db.IsGUIDApproved(socket.tag.SystemId)) {
           socket.tag.nodeid = socket.tag.SystemId
-          if (allowed) {
-            if (socket.tag.certauth) {
-              this.ciraConnections[socket.tag.SystemId] = socket
-              await this.mpsService.CIRAConnected(socket.tag.nodeid)
-            }
-          } else {
-            try {
-              this.debug(1, `MPS:GUID ${socket.tag.SystemId} is not allowed to connect.`)
-              socket.end()
-            } catch (e) { }
+          if (socket.tag.certauth) {
+            this.ciraConnections[socket.tag.SystemId] = socket
+            await this.mpsService.CIRAConnected(socket.tag.nodeid)
           }
-        })
+        } else {
+          try {
+            this.debug(1, `MPS:GUID ${socket.tag.SystemId} is not allowed to connect.`)
+            socket.end()
+          } catch (e) { }
+        }
         log.debug(`device uuid: ${socket.tag.SystemId}`)
         return 93
       }
@@ -224,17 +222,15 @@ export class MPSServer {
         this.debug(3, `MPS:USERAUTH_REQUEST usernameLen=${usernameLen} serviceNameLen=${serviceNameLen} methodNameLen=${methodNameLen}`)
         this.debug(3, `MPS:USERAUTH_REQUEST user=${username} service=${serviceName} method=${methodName} password=${password}`)
         // Authenticate device connection using username and password
-        this.db.CIRAAuth(socket.tag.SystemId, username, password, async (allowed): Promise<void> => {
-          if (allowed) {
-            this.debug(1, 'MPS:CIRA Authentication successful for ', username)
-            this.ciraConnections[socket.tag.SystemId] = socket
-            await this.mpsService.CIRAConnected(socket.tag.SystemId) // Notify that a connection is successful to console
-            this.SendUserAuthSuccess(socket) // Notify the auth success on the CIRA connection
-          } else {
-            log.warn(`MPS: CIRA Authentication failed for: ${username} `)
-            this.SendUserAuthFail(socket)
-          }
-        })
+        if (this.db.CIRAAuth(socket.tag.SystemId, username, password)) {
+          this.debug(1, 'MPS:CIRA Authentication successful for ', username)
+          this.ciraConnections[socket.tag.SystemId] = socket
+          await this.mpsService.CIRAConnected(socket.tag.SystemId) // Notify that a connection is successful to console
+          this.SendUserAuthSuccess(socket) // Notify the auth success on the CIRA connection
+        } else {
+          log.warn(`MPS: CIRA Authentication failed for: ${username} `)
+          this.SendUserAuthFail(socket)
+        }
         return 18 + usernameLen + serviceNameLen + methodNameLen + passwordLen
       }
       case APFProtocol.SERVICE_REQUEST: {
