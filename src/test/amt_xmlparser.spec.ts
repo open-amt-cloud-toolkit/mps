@@ -1,5 +1,5 @@
 
-import { ParseWsman } from '../src/amt_libraries/amt-xml'
+import { ParseWsman } from '../amt_libraries/amt-xml'
 
 describe('AMT related XML parser testing ', () => {
   // AMT_audilog

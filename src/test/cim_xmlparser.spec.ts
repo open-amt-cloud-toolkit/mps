@@ -1,4 +1,4 @@
-import { ParseWsman } from '../src/amt_libraries/amt-xml'
+import { ParseWsman } from '../amt_libraries/amt-xml'
 
 describe('CIM related XML parser testing ', () => {
   // CIM_BIOSElement
