@@ -341,7 +341,7 @@ paths:
         500:
           description: 'Internal server error'
     post:
-      description: Adds a new device to MPS
+      description: Adds a new device to MPS.  This call does not add the device credentials.  In order for MPS to manage the device, a separate call to Vault must be made to add the credentials.  For example the Remote Provision Server (RPS) makes the call to Vault to add the AMT device credentials during activation of the AMT device.  
       tags:
         - Devices
       requestBody:
@@ -363,7 +363,7 @@ paths:
         500:
           description: 'Internal server error'
     patch:
-      description: Edit a single device in the MPS
+      description: Edit a single device in the MPS.  This call does not edit the AMT device credentials.  To update these, a separate call to Vault must be made.  For example the Remote Provision Server (RPS) makes the call to Vault to add the AMT device credentials during activation of the AMT device.
       tags:
         - Devices
       requestBody:
@@ -423,7 +423,7 @@ paths:
         500:
           description: 'Internal server error'
     delete:
-      description: Removes the device with a specific GUID and all device information from the database 
+      description: Removes the device with a specific GUID and all device information from the database.  This will prevent the device from connecting to MPS, even if the device has not yet been unprovisioned.  Use the disconnect API after this call to remove a device and prevent it from reconnecting to the MPS.
       tags:
         - Devices
       parameters:
