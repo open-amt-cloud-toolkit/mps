@@ -14,7 +14,7 @@ import * as tls from 'tls'
 import express from 'express'
 import * as http from 'http'
 import * as parser from 'body-parser'
-
+import jws from 'jws'
 import { configType, certificatesType, queryParams } from '../models/Config'
 import { ErrorResponse } from '../utils/amtHelper'
 import { logger as log } from '../utils/logger'
@@ -48,8 +48,23 @@ export class WebServer {
       this.config = this.mpsService.config
       this.certs = this.mpsService.certs
       this.app = express()
-      this.notificationwss = new WebSocket.Server({ noServer: true })
-      this.relaywss = new WebSocket.Server({ noServer: true })
+      const options: WebSocket.ServerOptions = {
+        noServer: true,
+        verifyClient: (info) => {
+          // verify JWT
+          try {
+            const valid = jws.verify(info.req.headers['sec-websocket-protocol'], 'HS256', this.config.jwt_secret)
+            if (!valid) {
+              return false
+            }
+          } catch (err) { // reject connection if problem with verify
+            return false
+          }
+          return true
+        }
+      }
+      this.notificationwss = new WebSocket.Server(options)
+      this.relaywss = new WebSocket.Server(options)
 
       // Create Server
       this.server = http.createServer(this.app)
