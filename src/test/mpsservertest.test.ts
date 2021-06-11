@@ -8,10 +8,10 @@ import * as net from 'net'
 import * as fs from 'fs'
 import * as https from 'https'
 import * as forge from 'node-forge'
-import { certificates } from '../src/utils/certificates'
-import { certificatesType, configType } from '../src/models/Config'
-import { MPSMicroservice } from '../src/mpsMicroservice'
-import { MPSServer } from '../src/server/mpsserver'
+import { certificates } from '../utils/certificates'
+import { certificatesType, configType } from '../models/Config'
+import { MPSMicroservice } from '../mpsMicroservice'
+import { MPSServer } from '../server/mpsserver'
 import { join } from 'path'
 import { Database } from './helper/db'
 
@@ -20,9 +20,6 @@ import { Database } from './helper/db'
 const config: configType = {
   common_name: 'localhost',
   port: 4433,
-  username: 'standalone',
-  pass: 'G@ppm0ym',
-  use_global_mps_credentials: true,
   country: 'US',
   company: 'NoCorp',
   debug: true,
@@ -187,8 +184,8 @@ describe('MPS Server', function () {
       port: config.port,
       clientName: 'hostname-prefix',
       uuid: '12345678-9abc-def1-2345-123456789000', // GUID template, last few chars of the string will be replaced
-      username: config.username, // mps username
-      password: config.pass, // mps password
+      username: 'admin', // mps username
+      password: 'P@ssw0rd', // mps password
       keepalive: 10000, // interval for keepalive ping
       debug: false,
       testciraState: 'USERAUTH_SUCCESS' // USERAUTH_SERVICE_ACCEPT, PFWD_SERVICE_ACCEPT, GLOBAL_REQUEST_SUCCESS, USERAUTH_SUCCESS, USERAUTH_FAILURE, PROTOCOL_VERSION_SENT, KEEPALIVE_REPLY
@@ -208,8 +205,8 @@ describe('MPS Server', function () {
       port: config.port,
       clientName: 'hostname-prefix',
       uuid: '12345678-9abc-def1-2345-123456789000', // GUID template, last few chars of the string will be replaced
-      username: config.username, // mps username
-      password: config.pass, // mps password
+      username: 'admin', // mps username
+      password: 'P@ssw0rd', // mps password
       keepalive: 10000, // interval for keepalive ping
       debug: false,
       testciraState: 'USERAUTH_SERVICE_ACCEPT' // USERAUTH_SERVICE_ACCEPT, PFWD_SERVICE_ACCEPT, GLOBAL_REQUEST_SUCCESS, USERAUTH_SUCCESS, USERAUTH_FAILURE, PROTOCOL_VERSION_SENT, KEEPALIVE_REPLY
@@ -230,8 +227,8 @@ describe('MPS Server', function () {
       port: config.port,
       clientName: 'hostname-prefix',
       uuid: '12345678-9abc-def1-2345-123456789000', // GUID template, last few chars of the string will be replaced
-      username: config.username, // mps username
-      password: config.pass, // mps password
+      username: 'admin', // mps username
+      password: 'P@ssw0rd', // mps password
       keepalive: 10000, // interval for keepalive ping
       debug: false,
       testciraState: 'PFWD_SERVICE_ACCEPT' // USERAUTH_SERVICE_ACCEPT, PFWD_SERVICE_ACCEPT, GLOBAL_REQUEST_SUCCESS, USERAUTH_SUCCESS, USERAUTH_FAILURE, PROTOCOL_VERSION_SENT, KEEPALIVE_REPLY
@@ -252,8 +249,8 @@ describe('MPS Server', function () {
       port: config.port,
       clientName: 'hostname-prefix',
       uuid: '12345678-9abc-def1-2345-123456789000', // GUID template, last few chars of the string will be replaced
-      username: config.username, // mps username
-      password: config.pass, // mps password
+      username: 'admin', // mps username
+      password: 'P@ssw0rd', // mps password
       keepalive: 10000, // interval for keepalive ping
       debug: false,
       testciraState: 'GLOBAL_REQUEST_SUCCESS' // USERAUTH_SERVICE_ACCEPT, PFWD_SERVICE_ACCEPT, GLOBAL_REQUEST_SUCCESS, USERAUTH_SUCCESS, USERAUTH_FAILURE, PROTOCOL_VERSION_SENT, KEEPALIVE_REPLY
@@ -274,8 +271,8 @@ describe('MPS Server', function () {
       port: config.port,
       clientName: 'hostname-prefix',
       uuid: '12345678-9abc-def1-2345-123456789000', // GUID template, last few chars of the string will be replaced
-      username: config.username, // mps username
-      password: config.pass, // mps password
+      username: 'admin', // mps username
+      password: 'P@ssw0rd', // mps password
       keepalive: 10000, // interval for keepalive ping
       debug: false,
       testciraState: 'PROTOCOL_VERSION_SENT' // USERAUTH_SERVICE_ACCEPT, PFWD_SERVICE_ACCEPT, GLOBAL_REQUEST_SUCCESS, USERAUTH_SUCCESS, USERAUTH_FAILURE, PROTOCOL_VERSION_SENT, KEEPALIVE_REPLY
@@ -296,8 +293,8 @@ describe('MPS Server', function () {
       port: config.port,
       clientName: 'hostname-prefix',
       uuid: '12345678-9abc-def1-2345-123456789000', // GUID template, last few chars of the string will be replaced
-      username: config.username, // mps username
-      password: config.pass, // mps password
+      username: 'admin', // mps username
+      password: 'P@ssw0rd', // mps password
       keepalive: 10000, // interval for keepalive ping
       debug: false,
       testciraState: 'KEEPALIVE_REPLY' // USERAUTH_SERVICE_ACCEPT, PFWD_SERVICE_ACCEPT, GLOBAL_REQUEST_SUCCESS, USERAUTH_SUCCESS, USERAUTH_FAILURE, PROTOCOL_VERSION_SENT, KEEPALIVE_REPLY
@@ -318,7 +315,7 @@ describe('MPS Server', function () {
       port: config.port,
       clientName: 'hostname-prefix',
       uuid: '12345678-9abc-def1-2345-123456789000', // GUID template, last few chars of the string will be replaced
-      username: config.username, // mps username
+      username: 'admin', // mps username
       password: 'pasdbenaksd', // Invalid mps password
       keepalive: 10000, // interval for keepalive ping
       debug: false,

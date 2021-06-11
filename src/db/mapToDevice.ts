@@ -10,6 +10,7 @@ export function mapToDevice (result): Device {
     hostname: result.hostname,
     tags: result.tags,
     mpsInstance: result.mpsinstance,
-    connectionStatus: result.connectionstatus
+    connectionStatus: result.connectionstatus,
+    mpsusername: result.mpsusername
   }
 }
