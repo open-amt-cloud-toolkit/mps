@@ -9,9 +9,6 @@ describe('MQTT Turned ON Tests', () => {
   const config: configType = {
     common_name: "localhost",
     port: 4433,
-    username: "standalone",
-    pass: "G@ppm0ym",
-    use_global_mps_credentials: true,
     country: "US",
     company: "NoCorp",
     debug: true,
@@ -147,9 +144,6 @@ describe('MQTT Turned OFF Tests', () => {
   const config: configType = {
     common_name: "localhost",
     port: 4433,
-    username: "standalone",
-    pass: "G@ppm0ym",
-    use_global_mps_credentials: true,
     country: "US",
     company: "NoCorp",
     debug: true,

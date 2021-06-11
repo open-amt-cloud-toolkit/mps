@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f17d0f89-6914-468b-95ba-b1f093ac9abd",
+		"_postman_id": "98c88f35-4651-4007-88b4-a48c76c29f3a",
 		"name": "MPS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -332,7 +332,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"guid\": \"143e4567-e89b-12d3-a456-426614174000\",\r\n    \"hostname\": \"hostname\",\r\n    \"tags\": []\r\n}",
+							"raw": "{\r\n    \"guid\": \"143e4567-e89b-12d3-a456-426614174000\",\r\n    \"hostname\": \"hostname\",\r\n    \"tags\": [],\r\n    \"mpsusername\": \"admin\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1410,52 +1410,157 @@
 			]
 		},
 		{
-			"name": "Authorize",
-			"event": [
+			"name": "Login",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Body should have JWT Token\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.token).to.be.not.null;\r",
-							"});\r",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"username\":\"standalone\",\r\n    \"password\":\"G@ppm0ym\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"name": "Authorize",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body should have JWT Token\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.token).to.be.not.null;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
 						}
-					}
-				},
-				"url": {
-					"raw": "{{protocol}}://{{host}}/api/v1/authorize",
-					"protocol": "{{protocol}}",
-					"host": [
-						"{{host}}"
 					],
-					"path": [
-						"api",
-						"v1",
-						"authorize"
-					]
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"standalone\",\r\n    \"password\":\"G@ppm0ym\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/authorize",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"authorize"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authorize without username",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"request should fail without username\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.errors[0].msg).to.be.eql(\"User name is required\");\r",
+									"    pm.expect(jsonData.errors[0].param).to.be.eql(\"username\");\r",
+									"    pm.expect(jsonData.errors[0].location).to.be.eql(\"body\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\":\"G@ppm0ym\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/authorize",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"authorize"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authorize without password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"request should fail without password\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.errors[0].msg).to.be.eql(\"Password is required\");\r",
+									"    pm.expect(jsonData.errors[0].param).to.be.eql(\"password\");\r",
+									"    pm.expect(jsonData.errors[0].location).to.be.eql(\"body\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"standalone\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/authorize",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"authorize"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		}
 	],
 	"auth": {

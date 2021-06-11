@@ -7,6 +7,7 @@ export interface Device {
   mpsInstance: string
   hostname: string
   guid: string
+  mpsusername: string
   tags: string[]
 }
 export interface Credentials {

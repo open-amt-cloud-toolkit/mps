@@ -14,14 +14,13 @@ import { tlsConfig } from './utils/tlsConfiguration'
 import { IDbProvider } from './models/IDbProvider'
 
 import { SecretManagerService } from './utils/SecretManagerService'
-import { SecretsDbProvider } from './utils/vaultDbProvider'
 import { parseValue } from './utils/parseEnvValue'
 
 import rc from 'rc'
 import { Environment } from './utils/Environment'
 import { DeviceDb } from './db/device'
 import { MqttProvider } from './utils/mqttProvider'
-
+import { AuthDbProvider } from './utils/AuthDbProvider'
 try {
   // To merge ENV variables. consider after lowercasing ENV since our config keys are lowercase
   process.env = Object.keys(process.env)
@@ -33,8 +32,8 @@ try {
   // build config object
   const config: configType = rc('mps')
 
-  if (!config.web_admin_password || !config.web_admin_user) {
-    log.error('Web admin username, password and API key are mandatory. Make sure to set values for these variables.')
+  if (!config.web_admin_password || !config.web_admin_user || !config.jwt_secret) {
+    log.error('Web admin username, password and jwt secret are mandatory. Make sure to set values for these variables.')
     process.exit(1)
   }
 
@@ -51,9 +50,8 @@ try {
   mqtt.connectBroker()
 
   // DB initialization
-
-  const db: IDbProvider = new SecretsDbProvider(new SecretManagerService(config, log), log, config)
   const deviceDb = new DeviceDb()
+  const db: IDbProvider = new AuthDbProvider(new SecretManagerService(config, log), deviceDb, log, config)
 
   // Cleans the DB before exit when it listens to the signals
   const signals = ['SIGINT', 'exit', 'uncaughtException', 'SIGTERM', 'SIGHUP']

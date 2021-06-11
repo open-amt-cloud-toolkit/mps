@@ -8,9 +8,10 @@ import deviceRouter from './devices/index'
 import { mpsrootcert } from './certs'
 import { login } from './auth/login'
 import amtRouter from './amt/index'
+import { authValidator } from './auth/authValidator'
 
 const router: Router = Router()
-router.post('/authorize', login)
+router.post('/authorize', authValidator(), login)
 router.use('/devices', deviceRouter)
 router.get('/ciracert', mpsrootcert)
 router.use('/amt', amtRouter)

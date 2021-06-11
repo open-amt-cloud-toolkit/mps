@@ -7,9 +7,6 @@
 export interface configType {
   common_name: string
   port: number
-  username: string
-  pass: string
-  use_global_mps_credentials: boolean
   country: string
   company: string
   listen_any: boolean
