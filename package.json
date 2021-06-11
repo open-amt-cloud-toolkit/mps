@@ -1,7 +1,38 @@
 {
   "name": "mps-microservice",
   "version": "1.3.0",
-  "description": "Containerized MPS service",
+  "description": "Containerized MPS service for executing Intel&reg; AMT features",
+  "homepage": "https://github.com/open-amt-cloud-toolkit/mps",
+  "contributors": [
+    {
+      "name": "Matt C. Primrose",
+      "email": "matt.c.primrose@intel.com"
+    },
+    {
+      "name": "Michael Johanson",
+      "email": "michael.johanson@intel.com"
+    },
+    {
+      "name": "Madhavi Losetty",
+      "email": "madhavi.losetty@intel.com"
+    },
+    {
+      "name": "Brian Osburn",
+      "email": "brian.j.osburn@intel.com"
+    },
+    {
+      "name": "Mudit Vats",
+      "email": "mudit.vats@intel.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/open-amt-cloud-toolkit/mps.git"
+  },
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=12.0.0"
+  },
   "scripts": {
     "build": "tsc",
     "compile": "tsc",
@@ -9,8 +40,6 @@
     "start": "npm run build && node ./dist/index.js",
     "test": "jest --detectOpenHandles --forceExit --coverage"
   },
-  "author": "",
-  "license": "Apache-2.0",
   "dependencies": {
     "consul": "^0.40.0",
     "cors": "^2.8.5",
@@ -31,6 +60,7 @@
     "@types/node": "^14.17.3",
     "@types/node-forge": "^0.10.0",
     "@types/pg": "^8.6.0",
+    "@types/ws": "^7.4.4",
     "@typescript-eslint/eslint-plugin": "^4.26.1",
     "@typescript-eslint/parser": "^4.26.1",
     "eslint": "^7.28.0",

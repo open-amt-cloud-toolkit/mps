@@ -3,9 +3,9 @@ private/*.crt
 private/*.key
 private/*.cer
 mochawesome-report/
-test/private/*.cer
-test/private/*.crt
-test/private/*.key
+src/test/private/*.cer
+src/test/private/*.crt
+src/test/private/*.key
 
 # build output folder
 dist/

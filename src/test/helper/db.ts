@@ -12,10 +12,10 @@
  */
 
 import fs from 'fs'
-import { configType } from '../../src/models/Config'
-import { logger as log } from '../../src/utils/logger'
-import { IDbProvider } from '../../src/models/IDbProvider'
-import { Credentials } from '../../src/models/models'
+import { configType } from '../../models/Config'
+import { logger as log } from '../../utils/logger'
+import { IDbProvider } from '../../models/IDbProvider'
+import { Credentials } from '../../models/models'
 
 export class Database implements IDbProvider {
   private readonly config: configType
@@ -114,38 +114,34 @@ export class Database implements IDbProvider {
   }
 
   // check if a GUID is allowed to connect
-  IsGUIDApproved (guid, cb): void {
+  IsGUIDApproved (guid): boolean {
     try {
       let result = false
       const guids = this.getAllAmtCredentials()
-      console.log('test', guids[guid])
       if (guids[guid]) {
         result = true
         log.silly('Guid found.')
       }
-      if (cb) {
-        cb(result)
-      }
+      return result
     } catch (error) {
       log.error(`Exception in IsGUIDApproved: ${error}`)
     }
   }
 
   // CIRA auth
-  CIRAAuth (guid, username, password, func): void {
+  CIRAAuth (guid, username, password): boolean {
     try {
-      let result = false
+      let result: boolean = false
       const cred = this.getCredentialsForGuid(guid)
-      log.info(cred)
       if (cred && cred.mpsuser === username && cred.mpspass === password) {
         result = true
-      } else if (cred && this.config.use_global_mps_credentials) {
-        if (this.config.username === username && this.config.pass === password) {
+      } else if (cred) {
+        if (username === 'admin' && password === 'P@ssw0rd') {
           result = true
           log.silly(`CIRAAuth successful. ${username} ${password}`)
         }
       }
-      if (func) func(result)
+      return result
     } catch (error) {
       log.error(`Exception in CIRAAuth: ${error}`)
     }

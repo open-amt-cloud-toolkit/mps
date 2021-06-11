@@ -29,6 +29,9 @@ export const validator = (): any => {
     check('hostname')
       .optional({ nullable: true })
       .isString(),
+    check('mpsusername')
+      .optional({ nullable: true })
+      .isString(),
     check('tags')
       .optional()
       .isArray()
