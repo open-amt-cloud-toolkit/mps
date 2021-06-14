@@ -19,6 +19,7 @@ import { parseValue } from './utils/parseEnvValue'
 import rc from 'rc'
 import { Environment } from './utils/Environment'
 import { DeviceDb } from './db/device'
+import { MqttProvider } from './utils/mqttProvider'
 import { AuthDbProvider } from './utils/AuthDbProvider'
 try {
   // To merge ENV variables. consider after lowercasing ENV since our config keys are lowercase
@@ -44,6 +45,10 @@ try {
   log.silly(`Updated config... ${JSON.stringify(config, null, 2)}`)
   Environment.Config = config
 
+  // MQTT Connection
+  const mqtt: MqttProvider = new MqttProvider(config)
+  mqtt.connectBroker()
+
   // DB initialization
   const deviceDb = new DeviceDb()
   const db: IDbProvider = new AuthDbProvider(new SecretManagerService(config, log), deviceDb, log, config)
@@ -54,6 +59,7 @@ try {
     process.on(signal, () => {
       console.log('signal received :', signal)
       deviceDb.clearInstanceStatus(Environment.Config.instance_name)
+      mqtt.endBroker()
       if (signal !== 'exit') {
         setTimeout(() => process.exit(), 1000)
       }
@@ -96,7 +102,7 @@ try {
 
     log.info('certs loaded..')
 
-    const mps = new MPSMicroservice(config, db, certs)
+    const mps = new MPSMicroservice(config, db, certs, mqtt)
     mps.start()
   }
 } catch (error) {

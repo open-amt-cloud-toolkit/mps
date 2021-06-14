@@ -26,10 +26,12 @@ export async function powerAction (req: Request, res: Response): Promise<void> {
       const amtstack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
       getBootData(guid, payload.action, payload.useSOL, amtstack, req, res)
     } else {
+      req.mpsService.mqtt.publishEvent('fail', ['AMT_BootSettingData'], 'Device Not Found', guid)
       res.status(404).json(ErrorResponse(404, `guid : ${guid}`, 'device')).end()
     }
   } catch (error) {
     log.error(`Exception in Power action : ${error}`)
+    req.mpsService.mqtt.publishEvent('fail', ['AMT_BootSettingData'], 'Internal Server Error')
     res.status(500).json(ErrorResponse(500, 'Request failed during AMT Power action execution.')).end()
   }
 }
@@ -171,6 +173,7 @@ function powerStateChange (uuid, action, amtstack, req, res): void {
       stack.wsman.comm.socket.sendchannelclose()
       if (status === 200) {
         // log.info(`Power state change request successful for guid : ${uuid}`);
+        req.mpsService.mqtt.publishEvent('success', ['AMT_BootSettingData'], 'Sent Power Action ' + action, uuid)
         res.status(200).json(response).end()
       } else {
         log.error(`Power state change request failed for guid : ${uuid}`)
