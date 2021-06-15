@@ -57,7 +57,7 @@ const config: configType = {
 }
 
 const secretManagerServiceStub: ISecretManagerService = {
-    getSecretFromKey: async (path, key) => { return "secret" },
+    getSecretFromKey: async (path, key) => { return "G@ppm0ym" },
     readJsonFromKey: async (path, key) => { return null },
     getSecretAtPath: async (path: string) => { return null },
     writeSecretWithKey: async (path: string, key: string, keyvalue: any) => { return null },
@@ -65,7 +65,7 @@ const secretManagerServiceStub: ISecretManagerService = {
 }
 
 
-test('test if device is authorized', async () => {
+test('test if device guid is authorized', async () => {
 
     const device = {
         connectionStatus: true,
@@ -93,7 +93,7 @@ test('test if device is authorized', async () => {
 })
 
 
-test('test if device is not authorized', async () => {
+test('test if device guid is not authorized', async () => {
     const deviceDbStub: IDeviceDb = {
         get: async () => { return null },
         getDistinctTags: async () => { return null },
@@ -106,5 +106,86 @@ test('test if device is not authorized', async () => {
 
     const authDbProvider = new AuthDbProvider(secretManagerServiceStub, deviceDbStub, logger, config)
     const actual = await authDbProvider.IsGUIDApproved("c8429e33-d032-49d3-80e7-d45ddf046fff");
+    expect(actual).toBeFalsy()
+})
+
+test('test if device is authorized', async () => {
+
+    const device = {
+        connectionStatus: true,
+        mpsInstance: "instance",
+        hostname: "host",
+        guid: "c8429e33-d032-49d3-80e7-d45ddf046fff",
+        mpsusername: "user",
+        tags: null
+    }
+
+    const deviceDbStub: IDeviceDb = {
+        get: async () => { return null },
+        getDistinctTags: async () => { return null },
+        getById: async (guid: string) => { return device },
+        getByTags: async (tags: string[], method: string) => { return null },
+        delete: async (guid: string) => { return null },
+        insert: async (data: Device) => { return null },
+        update: async (data: Device) => { return null }
+
+    }
+
+    const authDbProvider = new AuthDbProvider(secretManagerServiceStub, deviceDbStub, logger, config)
+    const actual = await authDbProvider.CIRAAuth(device.guid, device.mpsusername, "G@ppm0ym");
+    expect(actual).toBeTruthy()
+})
+
+test('test if device is authorized with invalid username', async () => {
+
+    const device = {
+        connectionStatus: true,
+        mpsInstance: "instance",
+        hostname: "host",
+        guid: "c8429e33-d032-49d3-80e7-d45ddf046fff",
+        mpsusername: "user",
+        tags: null
+    }
+
+    const deviceDbStub: IDeviceDb = {
+        get: async () => { return null },
+        getDistinctTags: async () => { return null },
+        getById: async (guid: string) => { return device },
+        getByTags: async (tags: string[], method: string) => { return null },
+        delete: async (guid: string) => { return null },
+        insert: async (data: Device) => { return null },
+        update: async (data: Device) => { return null }
+
+    }
+
+    const authDbProvider = new AuthDbProvider(secretManagerServiceStub, deviceDbStub, logger, config)
+    const actual = await authDbProvider.CIRAAuth(device.guid, "admin", "G@ppm0ym");
+    expect(actual).toBeFalsy()
+})
+
+test('test if device is authorized with invalid password', async () => {
+
+    const device = {
+        connectionStatus: true,
+        mpsInstance: "instance",
+        hostname: "host",
+        guid: "c8429e33-d032-49d3-80e7-d45ddf046fff",
+        mpsusername: "user",
+        tags: null
+    }
+
+    const deviceDbStub: IDeviceDb = {
+        get: async () => { return null },
+        getDistinctTags: async () => { return null },
+        getById: async (guid: string) => { return device },
+        getByTags: async (tags: string[], method: string) => { return null },
+        delete: async (guid: string) => { return null },
+        insert: async (data: Device) => { return null },
+        update: async (data: Device) => { return null }
+
+    }
+
+    const authDbProvider = new AuthDbProvider(secretManagerServiceStub, deviceDbStub, logger, config)
+    const actual = await authDbProvider.CIRAAuth(device.guid, "admin", "P@ssw0rd");
     expect(actual).toBeFalsy()
 })
