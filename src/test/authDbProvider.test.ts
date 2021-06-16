@@ -12,6 +12,7 @@ const config: configType = {
     port: 4433,
     country: 'US',
     company: 'NoCorp',
+    secrets_path: 'secret/data/',
     debug: true,
     listen_any: true,
     https: true,
@@ -59,7 +60,9 @@ const config: configType = {
 const secretManagerServiceStub: ISecretManagerService = {
     getSecretFromKey: async (path, key) => { return "G@ppm0ym" },
     readJsonFromKey: async (path, key) => { return null },
-    getSecretAtPath: async (path: string) => { return null },
+    getSecretAtPath: async (path: string) => { 
+        return { data: { AMT_PASSWORD: "G@ppm0ym" } }
+    },
     writeSecretWithKey: async (path: string, key: string, keyvalue: any) => { return null },
     listSecretsAtPath: async (path: string) => { return null }
 }
@@ -84,7 +87,6 @@ test('test if device guid is authorized', async () => {
         delete: async (guid: string) => { return null },
         insert: async (data: Device) => { return null },
         update: async (data: Device) => { return null }
-
     }
 
     const authDbProvider = new AuthDbProvider(secretManagerServiceStub, deviceDbStub, logger, config)
@@ -128,7 +130,6 @@ test('test if device is authorized', async () => {
         delete: async (guid: string) => { return null },
         insert: async (data: Device) => { return null },
         update: async (data: Device) => { return null }
-
     }
 
     const authDbProvider = new AuthDbProvider(secretManagerServiceStub, deviceDbStub, logger, config)
@@ -155,7 +156,6 @@ test('test if device is authorized with invalid username', async () => {
         delete: async (guid: string) => { return null },
         insert: async (data: Device) => { return null },
         update: async (data: Device) => { return null }
-
     }
 
     const authDbProvider = new AuthDbProvider(secretManagerServiceStub, deviceDbStub, logger, config)
@@ -182,10 +182,76 @@ test('test if device is authorized with invalid password', async () => {
         delete: async (guid: string) => { return null },
         insert: async (data: Device) => { return null },
         update: async (data: Device) => { return null }
-
     }
 
     const authDbProvider = new AuthDbProvider(secretManagerServiceStub, deviceDbStub, logger, config)
     const actual = await authDbProvider.CIRAAuth(device.guid, "admin", "P@ssw0rd");
     expect(actual).toBeFalsy()
+})
+
+
+test('test if device password is returned', async () => {
+
+    const device = {
+        connectionStatus: true,
+        mpsInstance: "instance",
+        hostname: "host",
+        guid: "c8429e33-d032-49d3-80e7-d45ddf046fff",
+        mpsusername: "user",
+        tags: null
+    }
+
+    const deviceDbStub: IDeviceDb = {
+        get: async () => { return null },
+        getDistinctTags: async () => { return null },
+        getById: async (guid: string) => { return device },
+        getByTags: async (tags: string[], method: string) => { return null },
+        delete: async (guid: string) => { return null },
+        insert: async (data: Device) => { return null },
+        update: async (data: Device) => { return null }
+    }
+
+    const authDbProvider = new AuthDbProvider(secretManagerServiceStub, deviceDbStub, logger, config)
+    const actual = await authDbProvider.getAmtPassword(device.guid);
+    expect(actual).not.toBeNull()
+    expect(actual).toBeDefined();
+    expect(actual).toHaveLength(2)
+    expect(actual[1]).toEqual(`G@ppm0ym`)
+})
+
+test('test if device password is not returned', async () => {
+
+    const device = {
+        connectionStatus: true,
+        mpsInstance: "instance",
+        hostname: "host",
+        guid: "c8429e33-d032-49d3-80e7-d45ddf046fff",
+        mpsusername: "user",
+        tags: null
+    }
+
+    const secretManagerService: ISecretManagerService = {
+        getSecretFromKey: async (path, key) => { return "G@ppm0ym" },
+        readJsonFromKey: async (path, key) => { return null },
+        getSecretAtPath: async (path: string) => { 
+            return null
+        },
+        writeSecretWithKey: async (path: string, key: string, keyvalue: any) => { return null },
+        listSecretsAtPath: async (path: string) => { return null }
+    }
+    
+
+    const deviceDbStub: IDeviceDb = {
+        get: async () => { return null },
+        getDistinctTags: async () => { return null },
+        getById: async (guid: string) => { return device },
+        getByTags: async (tags: string[], method: string) => { return null },
+        delete: async (guid: string) => { return null },
+        insert: async (data: Device) => { return null },
+        update: async (data: Device) => { return null }
+    }
+
+    const authDbProvider = new AuthDbProvider(secretManagerService, deviceDbStub, logger, config)
+    const actual = await authDbProvider.getAmtPassword(device.guid);
+    expect(actual).toBeNull()
 })
