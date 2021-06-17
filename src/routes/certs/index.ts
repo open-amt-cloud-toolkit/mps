@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 import { logger as log } from '../../utils/logger'
+import { Request, Response } from 'express'
 import * as fs from 'fs'
 import * as path from 'path'
 import { ErrorResponse } from '../../utils/amtHelper'
 
-export async function mpsrootcert (req, res): Promise<void> {
+export async function mpsrootcert (req: Request, res: Response): Promise<void> {
   try {
     const certPath = path.join(__dirname, '../../../private/root-cert-public.crt')
     if (fs.existsSync(certPath)) {

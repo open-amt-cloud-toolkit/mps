@@ -4,7 +4,9 @@
  **********************************************************************/
 import { DeviceDb } from '../../db/device'
 import { logger as log } from '../../utils/logger'
-export async function getDistinctTags (req, res): Promise<void> {
+import { Request, Response } from 'express'
+
+export async function getDistinctTags (req: Request, res: Response): Promise<void> {
   const db = new DeviceDb()
   try {
     const results = await db.getDistinctTags()

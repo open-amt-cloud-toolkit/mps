@@ -8,7 +8,8 @@
         "allowJs": true,
         "target":"es2019",
         "typeRoots": [
-            "node_modules/@types"
+            "node_modules/@types",
+            "src/custom.d.ts",
         ]
     },
     "include":[

@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 import { validationResult } from 'express-validator'
+import { Request, Response } from 'express'
 import { DeviceDb } from '../../db/device'
 import { logger as log } from '../../utils/logger'
 
-export async function deleteDevice (req, res): Promise<void> {
+export async function deleteDevice (req: Request, res: Response): Promise<void> {
   const db = new DeviceDb()
   try {
     const errors = validationResult(req)

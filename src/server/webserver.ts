@@ -9,10 +9,10 @@
 * @version v0.2.0c
 */
 
-import * as net from 'net'
-import * as tls from 'tls'
+import { Socket } from 'net'
+import { connect } from 'tls'
 import express from 'express'
-import * as http from 'http'
+import { createServer } from 'http'
 import * as parser from 'body-parser'
 import jws from 'jws'
 import { configType, certificatesType, queryParams } from '../models/Config'
@@ -67,7 +67,7 @@ export class WebServer {
       this.relaywss = new WebSocket.Server(options)
 
       // Create Server
-      this.server = http.createServer(this.app)
+      this.server = createServer(this.app)
       this.app.use(cors())
 
       // Handles the Bad JSON exceptions
@@ -202,7 +202,7 @@ export class WebServer {
               }
               ws._socket.resume()
             } else {
-              ws.forwardclient = new net.Socket()
+              ws.forwardclient = new Socket()
               ws.forwardclient.setEncoding('binary')
               ws.forwardclient.forwardwsocket = ws
             }
@@ -220,7 +220,7 @@ export class WebServer {
                 constants.SSL_OP_CIPHER_SERVER_PREFERENCE,
               rejectUnauthorized: false
             }
-            ws.forwardclient = tls.connect(
+            ws.forwardclient = connect(
               params.port,
               params.host,
               tlsoptions,
@@ -235,7 +235,7 @@ export class WebServer {
           }
 
           // Add handlers to socket.
-          if (ws.forwardclient instanceof net.Socket) {
+          if (ws.forwardclient instanceof Socket) {
             // When we receive data on the TCP connection, forward it back into the web socket connection.
             ws.forwardclient.on('data', data => {
               if (ws.interceptor) {

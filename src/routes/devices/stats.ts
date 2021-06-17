@@ -1,10 +1,11 @@
 import { DeviceDb } from '../../db/device'
+import { Request, Response } from 'express'
 
 /*********************************************************************
  * Copyright (c) Intel Corporation 2021
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
-export async function stats (req, res): Promise<void> {
+export async function stats (req: Request, res: Response): Promise<void> {
   const db = new DeviceDb()
   const devices = await db.get()
   let connectedCount = 0
