@@ -41,6 +41,7 @@
     "test": "jest --detectOpenHandles --forceExit --coverage"
   },
   "dependencies": {
+    "atob": "^2.1.2",
     "consul": "^0.40.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
