@@ -24,8 +24,8 @@ COPY .mpsrc ./
 RUN npm ci --unsafe-perm
 
 # Transpile TS -> JS
-#RUN npm run build
-#RUN npm prune --production
+RUN npm run build
+RUN npm prune --production
 
-#CMD [ "node", "./dist/index.js" ]
-CMD [ "npm", "start" ]
+CMD [ "node", "./dist/index.js" ]
+# CMD [ "npm", "start" ]
