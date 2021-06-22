@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "98c88f35-4651-4007-88b4-a48c76c29f3a",
+		"_postman_id": "13b96ed9-0dc4-4a2a-943a-674c70f64a6e",
 		"name": "MPS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -495,21 +495,13 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
 									"});\r",
 									"pm.test(\"Expect to return device info\",function(){\r",
 									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData.guid).to.be.equal(\"143e4567-e89b-12d3-a456-426614174000\")\r",
-									"    pm.expect(jsonData.hostname).to.be.equal(\"hostname\")\r",
-									"    pm.expect(jsonData.tags.length).to.be.equal(1)  \r",
-									"    pm.expect(jsonData.mpsInstance).to.be.equal(null)\r",
-									"    pm.expect(jsonData.connectionStatus).to.be.equal(null)\r",
-									"})\r",
-									"pm.test(\"Expect tag value to be acm\",function(){\r",
-									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData.tags.length).to.be.equal(1)  \r",
-									"    pm.expect(jsonData.tags[0]).to.be.equal(\"acm\")\r",
+									"    pm.expect(jsonData.error).to.be.equal(\"NOT FOUND\")\r",
+									"    pm.expect(jsonData.message).to.be.equal(\"Device ID 143e4567-e89b-12d3-a456-426614174001 not found\")\r",
 									"})"
 								],
 								"type": "text/javascript"
@@ -521,7 +513,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n        \"guid\": \"143e4567-e89b-12d3-a456-426614174000\",\r\n        \"hostname\": \"hostname\",\r\n        \"tags\": [\"acm\"]\r\n    }",
+							"raw": "{\r\n        \"guid\": \"143e4567-e89b-12d3-a456-426614174001\",\r\n        \"hostname\": \"hostname\",\r\n        \"tags\": [\"acm\"]\r\n    }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -559,7 +551,7 @@
 									"    pm.expect(jsonData.hostname).to.be.equal(\"hostname\")\r",
 									"    pm.expect(jsonData.tags.length).to.be.equal(1)  \r",
 									"    pm.expect(jsonData.mpsInstance).to.be.equal(null)\r",
-									"    pm.expect(jsonData.connectionStatus).to.be.equal(null)\r",
+									"    pm.expect(jsonData.connectionStatus).to.be.equal(false)\r",
 									"})\r",
 									"pm.test(\"Expect tag value to be acm\",function(){\r",
 									"    var jsonData = pm.response.json();\r",
@@ -719,7 +711,7 @@
 									"   pm.expect(jsonData[0].tags.length).to.eql(1);\r",
 									"    pm.expect(jsonData[0].tags[0]).to.eql(\"acm\");\r",
 									"   pm.expect(jsonData[0].mpsInstance).to.eql(null);\r",
-									"   pm.expect(jsonData[0].connectionStatus).to.eql(null);\r",
+									"   pm.expect(jsonData[0].connectionStatus).to.eql(false);\r",
 									"});"
 								],
 								"type": "text/javascript"
