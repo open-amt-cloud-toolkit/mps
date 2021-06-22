@@ -31,13 +31,14 @@ To deploy the MPS on a local development system:
 
 2. Open the `.mpsrc` file to edit.
 
-3. Update the following 3 fields. Save and keep track of the values you choose.
+3. Update the following 4 fields. Save and keep track of the values you choose.
 
     | Field Name | Required | Usage |
-    | ------------- | ------------------ | ------------ |
-    | web_admin_user | Username of your choice | For logging into the Sample Web UI |
+    | ------------------ | ---------------------------------- | ------------ |
+    | common_name        | Development IP Address             | MPS Server IP Address for Device Connection and API Use |
+    | web_admin_user     | Username of your choice            | For logging into the Sample Web UI |
     | web_admin_password | **Strong** password of your choice | For logging into the Sample Web UI |
-    | jwt_secret | A strong secret of your choice | Used when generating a JSON Web Token for authentication |
+    | jwt_secret         | A strong secret of your choice     | Used when generating a JSON Web Token for authentication |
 
     >This password must meet standard, **strong** password requirements:
     > - 8 to 32 characters
@@ -63,5 +64,22 @@ To deploy the MPS on a local development system:
     MPS Microservice running on localhost:3000.
     Intel(R) AMT server running on localhost:4433.
     ```
-    
+
 For detailed documentation about MPS, see the [docs](https://open-amt-cloud-toolkit.github.io/docs)
+
+<br>
+    
+## Using Kong
+
+If using the [Kong*](https://konghq.com/kong/) API gateway with MPS, your `kong.yaml` file must be updated to support JWT Authentication.
+
+The secret provided in kong.yaml **must match** the `jwt_secret` from the `.mpsrc` file.
+
+Example:
+```
+jwt_secrets:
+  - consumer: admin
+    key: 9EmRJTbIiIb4bIeSsmgcWIjrR6HyETqc #sample key
+    secret: myStrongSecret
+```
+
