@@ -1,3 +1,83 @@
+<a name="v1.4.0"></a>
+## [v1.4.0] - 2021-06-22
+### Build
+- add snyk config
+- **dep:** missing atob dependency in package.json
+- **deps:** bump express-validator from 6.10.1 to 6.11.1
+- **deps:** bump ws from 7.4.5 to 7.4.6
+- **deps:** add mqtt
+- **deps:** bump ws from 7.4.6 to 7.5.0 ([#247](https://github.com/open-amt-cloud-toolkit/mps/issues/247))
+- **deps:** bump express-validator from 6.11.1 to 6.12.0 ([#243](https://github.com/open-amt-cloud-toolkit/mps/issues/243))
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin
+- **deps-dev:** bump eslint from 7.27.0 to 7.28.0 ([#229](https://github.com/open-amt-cloud-toolkit/mps/issues/229))
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin ([#233](https://github.com/open-amt-cloud-toolkit/mps/issues/233))
+- **deps-dev:** bump [@types](https://github.com/types)/node-forge from 0.9.9 to 0.10.0 ([#235](https://github.com/open-amt-cloud-toolkit/mps/issues/235))
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 4.26.0 to 4.26.1 ([#234](https://github.com/open-amt-cloud-toolkit/mps/issues/234))
+- **deps-dev:** bump [@types](https://github.com/types)/node from 14.17.2 to 14.17.3 ([#236](https://github.com/open-amt-cloud-toolkit/mps/issues/236))
+- **deps-dev:** bump typescript from 4.2.4 to 4.3.2
+- **deps-dev:** bump ts-node from 9.1.1 to 10.0.0
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 4.26.1 to 4.27.0 ([#245](https://github.com/open-amt-cloud-toolkit/mps/issues/245))
+- **deps-dev:** bump [@types](https://github.com/types)/node from 14.17.1 to 14.17.2
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 4.25.0 to 4.26.0
+- **deps-dev:** bump eslint-plugin-import from 2.23.3 to 2.23.4
+- **deps-dev:** bump eslint-config-standard from 16.0.2 to 16.0.3
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin ([#244](https://github.com/open-amt-cloud-toolkit/mps/issues/244))
+- **deps-dev:** bump [@types](https://github.com/types)/ws from 7.4.4 to 7.4.5 ([#249](https://github.com/open-amt-cloud-toolkit/mps/issues/249))
+- **deps-dev:** bump typescript from 4.3.2 to 4.3.4 ([#248](https://github.com/open-amt-cloud-toolkit/mps/issues/248))
+- **deps-dev:** bump [@types](https://github.com/types)/node from 14.17.0 to 14.17.1
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 4.24.0 to 4.25.0
+- **deps-dev:** bump [@types](https://github.com/types)/pg from 7.14.11 to 8.6.0
+- **deps-dev:** bump [@types](https://github.com/types)/node-forge from 0.9.7 to 0.9.9
+- **deps-dev:** bump eslint-plugin-import from 2.23.2 to 2.23.3
+- **deps-dev:** bump eslint from 7.26.0 to 7.27.0
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 4.23.0 to 4.24.0 ([#200](https://github.com/open-amt-cloud-toolkit/mps/issues/200))
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin ([#201](https://github.com/open-amt-cloud-toolkit/mps/issues/201))
+- **deps-dev:** bump [@types](https://github.com/types)/node from 14.14.45 to 14.17.0
+- **deps-dev:** bump eslint-plugin-import from 2.22.1 to 2.23.2
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 4.22.0 to 4.23.0
+- **deps-dev:** bump [@types](https://github.com/types)/node from 14.14.44 to 14.14.45
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin
+- **deps-dev:** bump ts-jest from 26.5.5 to 26.5.6
+- **deps-dev:** bump eslint from 7.25.0 to 7.26.0
+- **deps-dev:** bump [@types](https://github.com/types)/node from 14.14.43 to 14.14.44
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin
+- **version:** bump to v1.4.0
+
+### Ci
+- add codeQL scan
+
+### Docs
+- **api:** additional edits
+- **api:** remove metadata
+- **api:** typo fix
+- **api:** remove metadata
+- **package.json:** additional information
+- **swagger:** updated swagger docs for 1.3
+
+### Feat
+- **mqtt:** adds event logging to mps
+- **reverseproxy:** updated DB amd api's to store the connection status ([#189](https://github.com/open-amt-cloud-toolkit/mps/issues/189))
+- **security:** add JWT verification to websocket connection
+
+### Fix
+- **api:** only update the columns requested for change ([#257](https://github.com/open-amt-cloud-toolkit/mps/issues/257))
+- **config:** removed use_allowlist from config ([#231](https://github.com/open-amt-cloud-toolkit/mps/issues/231))
+- **dockerfile:** send signals to node instead of npm
+- **scaling:** Revert scaling changes ([#198](https://github.com/open-amt-cloud-toolkit/mps/issues/198))
+
+### Refactor
+- **auth:** check for jwt secret and mps credentials ([#238](https://github.com/open-amt-cloud-toolkit/mps/issues/238))
+
+### Test
+- **auth:** test device auth ([#246](https://github.com/open-amt-cloud-toolkit/mps/issues/246))
+
+### BREAKING CHANGE
+
+- JWT is now required for KVM/SOL connections
+- db schema added new column for mps username
+- global credentials have been removed for MPS
+- Environment Variables removed for username, password, and global credentials, use_allowlist
+
 <a name="v1.3.0"></a>
 ## [v1.3.0] - 2021-05-06
 

@@ -1,0 +1,20 @@
+name: Changelog Generator
+
+on:  
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with: 
+          fetch-depth: 0
+      - run: docker run -v $PWD:/workdir quay.io/git-chglog/git-chglog --next-tag vNext --output CHANGELOG-new.md vNext.. 
+      - name: GitHub Upload Release Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: CHANGELOG-new.md
+          path: |
+            ./CHANGELOG-new.md
