@@ -18,7 +18,6 @@ export class MPSMicroservice {
   webserver: WebServer
   config: configType
   certs: certificatesType
-  debugLevel: number = 1
   mpsComputerList = {}
   db: IDbProvider
   deviceDb: DeviceDb
@@ -26,7 +25,6 @@ export class MPSMicroservice {
   constructor (config: configType, db: IDbProvider, certs: certificatesType, mqtt?: MqttProvider) {
     try {
       this.config = config
-      this.debugLevel = config.debug_level
       this.db = db
       this.certs = certs
       this.mqtt = mqtt
@@ -51,7 +49,7 @@ export class MPSMicroservice {
       if (results) {
         log.info(`CIRA connection established for ${guid}`)
       } else {
-        log.info(`Failed to update CIRA Connection established status in DB ${guid}`)
+        log.error(`Failed to update CIRA Connection established status in DB ${guid}`)
       }
     }
     if (this.webserver) {
@@ -67,7 +65,7 @@ export class MPSMicroservice {
         device.mpsInstance = null
         const results = await this.deviceDb.update(device)
         if (results) {
-          log.info(`Device connection status updated in db : ${guid}`)
+          log.debug(`Device connection status updated in db : ${guid}`)
         }
       }
     }

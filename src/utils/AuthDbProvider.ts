@@ -34,7 +34,7 @@ export class AuthDbProvider implements IDbProvider {
       if (username === results.mpsusername && password === pwd) {
         return true
       }
-      this.logger.info('invalid mps credentials')
+      this.logger.warn('invalid mps credentials')
       return false
     } catch (error) {
       this.logger.error('Error while retrieving server credentials :', error)
