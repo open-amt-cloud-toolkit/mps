@@ -47,7 +47,7 @@ export class MPSMicroservice {
       device.mpsInstance = instanceName === '{{.Task.Name}}' ? 'mps' : instanceName
       const results = await this.deviceDb.update(device)
       if (results) {
-        log.info(`CIRA connection established for ${guid}`)
+        log.debug(`CIRA connection established for ${guid}`)
       } else {
         log.error(`Failed to update CIRA Connection established status in DB ${guid}`)
       }

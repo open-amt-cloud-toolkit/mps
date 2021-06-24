@@ -220,7 +220,7 @@ export class MPSServer {
           password = data.substring(18 + usernameLen + serviceNameLen + methodNameLen, 18 + usernameLen + serviceNameLen + methodNameLen + passwordLen)
         }
         log.silly(`MPS:USERAUTH_REQUEST usernameLen=${usernameLen} serviceNameLen=${serviceNameLen} methodNameLen=${methodNameLen}`)
-        log.silly(`MPS:USERAUTH_REQUEST user=${username} service=${serviceName} method=${methodName} password=${password}`)
+        log.silly(`MPS:USERAUTH_REQUEST user=${username} service=${serviceName} method=${methodName}`)
         // Authenticate device connection using username and password
         if (this.db.CIRAAuth(socket.tag.SystemId, username, password)) {
           log.debug(`MPS:CIRA Authentication successful for: ${username}`)
