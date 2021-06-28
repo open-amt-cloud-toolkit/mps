@@ -24,7 +24,7 @@ import { IDbProvider } from '../models/IDbProvider'
 import AMTStackFactory from '../amt_libraries/amt-connection-factory'
 import routes from '../routes'
 
-import interceptor from '../utils/interceptor.js'
+import { CreateHttpInterceptor, CreateRedirInterceptor } from '../utils/interceptor'
 import WebSocket from 'ws'
 import { URL } from 'url'
 import cors from 'cors'
@@ -151,14 +151,14 @@ export class WebServer {
           if (credentials != null) {
             log.debug('Creating credential')
             if (params.p === 1) {
-              ws.interceptor = interceptor.CreateHttpInterceptor({
+              ws.interceptor = CreateHttpInterceptor({
                 host: params.host,
                 port: params.port,
                 user: credentials[0],
                 pass: credentials[1]
               })
             } else if (params.p === 2) {
-              ws.interceptor = interceptor.CreateRedirInterceptor({
+              ws.interceptor = CreateRedirInterceptor({
                 user: credentials[0],
                 pass: credentials[1]
               })
