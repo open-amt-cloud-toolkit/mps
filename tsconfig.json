@@ -1,4 +1,4 @@
-{ 
+{
     "compilerOptions": {
         "outDir": "./dist",
         "sourceMap": true,
@@ -6,16 +6,12 @@
         "esModuleInterop": true,
         "module": "commonjs",
         "allowJs": true,
-        "target":"es2019",
+        "target": "es2019",
         "typeRoots": [
             "node_modules/@types"
         ]
     },
-    "include":[
-        "./src/**/*",
-    ],
-    "type":[
-        "@types/jest",
-        "@types/node"
-    ]   
+    "include": [
+        "./src/**/*"
+    ]
 }
