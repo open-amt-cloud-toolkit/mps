@@ -6,8 +6,9 @@ import { validationResult } from 'express-validator'
 import { DeviceDb } from '../../db/device'
 import { logger as log } from '../../utils/logger'
 import { MPSValidationError } from '../../utils/MPSValidationError'
+import { Request, Response } from 'express'
 
-export async function updateDevice (req, res): Promise<void> {
+export async function updateDevice (req: Request, res: Response): Promise<void> {
   const db = new DeviceDb()
   try {
     const errors = validationResult(req)

@@ -5,7 +5,9 @@
 import { validationResult } from 'express-validator'
 import { DeviceDb } from '../../db/device'
 import { logger as log } from '../../utils/logger'
-export async function getDevice (req, res): Promise<void> {
+import { Request, Response } from 'express'
+
+export async function getDevice (req: Request, res: Response): Promise<void> {
   const db = new DeviceDb()
   try {
     const errors = validationResult(req)

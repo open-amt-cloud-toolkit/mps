@@ -25,15 +25,15 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
     if (ciraconn && ciraconn.readyState === 'open') {
       const cred = await req.mpsService.db.getAmtPassword(guid)
       const amtstack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
-      req.mpsService.mqtt.publishEvent('request', 'AMT_SetFeatures', 'Set AMT Features Requested', guid)
+      await req.mpsService.mqtt.publishEvent('request', ['AMT_SetFeatures'], 'Set AMT Features Requested', guid)
 
       await AMTFeatures.setAMTFeatures(amtstack, payload)
       amtstack.wsman.comm.socket.sendchannelclose()
 
-      req.mpsService.mqtt.publishEvent('success', 'AMT_SetFeatures', 'Set AMT Features', guid)
+      await req.mpsService.mqtt.publishEvent('success', ['AMT_SetFeatures'], 'Set AMT Features', guid)
       res.status(200).json({ status: 'Updated AMT Features' }).end()
     } else {
-      req.mpsService.mqtt.publishEvent('fail', 'AMT_SetFeatures', 'Device Not Found', guid)
+      await req.mpsService.mqtt.publishEvent('fail', ['AMT_SetFeatures'], 'Device Not Found', guid)
       res.status(404).json(ErrorResponse(404, `guid : ${guid}`, 'device')).end()
     }
   } catch (error) {
@@ -41,7 +41,7 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
     if (error instanceof MPSValidationError) {
       res.status(error.status || 400).json(ErrorResponse(error.status || 400, error.message)).end()
     } else {
-      req.mpsService.mqtt.publishEvent('fail', 'AMT_SetFeatures', 'Internal Server Error')
+      await req.mpsService.mqtt.publishEvent('fail', ['AMT_SetFeatures'], 'Internal Server Error')
       res.status(500).json(ErrorResponse(500, 'Request failed during set AMT Features.')).end()
     }
   }
