@@ -79,12 +79,12 @@ export class MPSServer {
       socket.tag = { first: true, clientCert: socket.getPeerCertificate(true), accumulator: '', activetunnels: 0, boundPorts: [], socket: socket, host: null, nextchannelid: 4, channels: {}, nextsourceport: 0 }
     }
     socket.setEncoding('binary')
-    this.debug(1, 'MPS:New CIRA connection')
+    log.debug('MPS:New CIRA connection')
 
     // Setup the CIRA keep alive timer
     socket.setTimeout(MAX_IDLE)
     socket.on('timeout', async (): Promise<void> => {
-      this.debug(1, 'MPS:CIRA timeout, disconnecting.')
+      log.debug('MPS:CIRA timeout, disconnecting.')
       try {
         socket.end()
         if (this.ciraConnections[socket.tag.nodeid]) {
@@ -96,7 +96,7 @@ export class MPSServer {
       } catch (e) {
         log.error(`Error from socket timeout: ${e}`)
       }
-      this.debug(1, 'MPS:CIRA timeout, disconnected.')
+      log.debug('MPS:CIRA timeout, disconnected.')
     })
 
     socket.addListener('data', async (data: string): Promise<void> => {
@@ -139,7 +139,7 @@ export class MPSServer {
     })
 
     socket.addListener('close', async (): Promise<void> => {
-      this.debug(1, 'MPS:CIRA connection closed')
+      log.debug('MPS:CIRA connection closed')
       try {
         if (this.ciraConnections[socket.tag.nodeid]) {
           delete this.ciraConnections[socket.tag.nodeid]
@@ -175,13 +175,13 @@ export class MPSServer {
         if (len < 5) {
           return 0
         }
-        log.debug(`MPS: KEEPALIVE_REQUEST: ${socket.tag.nodeid}`)
+        log.verbose(`MPS: KEEPALIVE_REQUEST: ${socket.tag.nodeid}`)
         this.SendKeepAliveReply(socket, common.ReadInt(data, 1))
         return 5
       }
       case APFProtocol.KEEPALIVE_REPLY: {
         if (len < 5) return 0
-        this.debug(3, 'MPS:KEEPALIVE_REPLY')
+        log.silly('MPS:KEEPALIVE_REPLY')
         return 5
       }
       case APFProtocol.PROTOCOLVERSION: {
@@ -189,7 +189,7 @@ export class MPSServer {
         socket.tag.MajorVersion = common.ReadInt(data, 1)
         socket.tag.MinorVersion = common.ReadInt(data, 5)
         socket.tag.SystemId = this.guidToStr(common.rstr2hex(data.substring(13, 29))).toLowerCase()
-        this.debug(3, 'MPS:PROTOCOLVERSION', socket.tag.MajorVersion, socket.tag.MinorVersion, socket.tag.SystemId)
+        log.silly(`MPS:PROTOCOLVERSION, ${socket.tag.MajorVersion}, ${socket.tag.MinorVersion}, ${socket.tag.SystemId}`)
         // Check if the device exits in db
         if (this.db.IsGUIDApproved(socket.tag.SystemId)) {
           socket.tag.nodeid = socket.tag.SystemId
@@ -199,11 +199,11 @@ export class MPSServer {
           }
         } else {
           try {
-            this.debug(1, `MPS:GUID ${socket.tag.SystemId} is not allowed to connect.`)
+            log.warn(`MPS:GUID ${socket.tag.SystemId} is not allowed to connect.`)
             socket.end()
           } catch (e) { }
         }
-        log.debug(`device uuid: ${socket.tag.SystemId}`)
+        log.silly(`device uuid: ${socket.tag.SystemId}`)
         return 93
       }
       case APFProtocol.USERAUTH_REQUEST: {
@@ -219,16 +219,16 @@ export class MPSServer {
           passwordLen = common.ReadInt(data, 14 + usernameLen + serviceNameLen + methodNameLen)
           password = data.substring(18 + usernameLen + serviceNameLen + methodNameLen, 18 + usernameLen + serviceNameLen + methodNameLen + passwordLen)
         }
-        this.debug(3, `MPS:USERAUTH_REQUEST usernameLen=${usernameLen} serviceNameLen=${serviceNameLen} methodNameLen=${methodNameLen}`)
-        this.debug(3, `MPS:USERAUTH_REQUEST user=${username} service=${serviceName} method=${methodName} password=${password}`)
+        log.silly(`MPS:USERAUTH_REQUEST usernameLen=${usernameLen} serviceNameLen=${serviceNameLen} methodNameLen=${methodNameLen}`)
+        log.silly(`MPS:USERAUTH_REQUEST user=${username} service=${serviceName} method=${methodName}`)
         // Authenticate device connection using username and password
         if (this.db.CIRAAuth(socket.tag.SystemId, username, password)) {
-          this.debug(1, 'MPS:CIRA Authentication successful for ', username)
+          log.debug(`MPS:CIRA Authentication successful for: ${username}`)
           this.ciraConnections[socket.tag.SystemId] = socket
           await this.mpsService.CIRAConnected(socket.tag.SystemId) // Notify that a connection is successful to console
           this.SendUserAuthSuccess(socket) // Notify the auth success on the CIRA connection
         } else {
-          log.warn(`MPS: CIRA Authentication failed for: ${username} `)
+          log.warn(`MPS: CIRA Authentication failed for: ${username}`)
           this.SendUserAuthFail(socket)
         }
         return 18 + usernameLen + serviceNameLen + methodNameLen + passwordLen
@@ -238,7 +238,7 @@ export class MPSServer {
         const serviceNameLen: number = common.ReadInt(data, 1)
         if (len < 5 + serviceNameLen) return 0
         const serviceName = data.substring(5, 5 + serviceNameLen)
-        this.debug(3, 'MPS:SERVICE_REQUEST', serviceName)
+        log.silly(`MPS:SERVICE_REQUEST: ${serviceName}`)
         if (serviceName === 'pfwd@amt.intel.com') {
           this.SendServiceAccept(socket, 'pfwd@amt.intel.com')
         }
@@ -260,7 +260,7 @@ export class MPSServer {
           let addr = data.substring(10 + requestLen, 10 + requestLen + addrLen)
           const port = common.ReadInt(data, 10 + requestLen + addrLen)
           if (addr === '') addr = undefined
-          log.debug(`MPS: GLOBAL_REQUEST ${socket.tag.nodeid} ${request} ${addr}: ${port} `)
+          log.silly(`MPS: GLOBAL_REQUEST ${socket.tag.nodeid} ${request} ${addr}: ${port}`)
           this.ChangeHostname(socket, addr)
           if (socket.tag.boundPorts.indexOf(port) === -1) {
             socket.tag.boundPorts.push(port)
@@ -274,7 +274,7 @@ export class MPSServer {
           if (len < 14 + requestLen + addrLen) return 0
           const addr: string = data.substring(10 + requestLen, 10 + requestLen + addrLen)
           const port: number = common.ReadInt(data, 10 + requestLen + addrLen)
-          this.debug(2, 'MPS:GLOBAL_REQUEST', request, `${addr}:${port}`)
+          log.silly(`MPS:GLOBAL_REQUEST, ${request}, ${addr}:${port}`)
           const portindex = socket.tag.boundPorts.indexOf(port)
           if (portindex >= 0) {
             socket.tag.boundPorts.splice(portindex, 1)
@@ -294,7 +294,7 @@ export class MPSServer {
           const oport: number = common.ReadInt(data, 18 + requestLen + addrLen + oaddrLen)
           const datalen: number = common.ReadInt(data, 22 + requestLen + addrLen + oaddrLen)
           if (len < 26 + requestLen + addrLen + oaddrLen + datalen) return 0
-          this.debug(2, 'MPS:GLOBAL_REQUEST', request, `${addr}:${port}`, `${oaddr}:${oport}`, datalen.toString())
+          log.silly(`MPS:GLOBAL_REQUEST, ${request}, ${addr}:${port}, ${oaddr}:${oport}, ${datalen.toString()}`)
           // TODO
           return 26 + requestLen + addrLen + oaddrLen + datalen
         }
@@ -323,7 +323,7 @@ export class MPSServer {
         const Source: string = data.substring(29 + ChannelTypeLength + TargetLen, 29 + ChannelTypeLength + TargetLen + SourceLen)
         const SourcePort: number = common.ReadInt(data, 29 + ChannelTypeLength + TargetLen + SourceLen)
 
-        this.debug(3, 'MPS:CHANNEL_OPEN', ChannelType, SenderChannel.toString(), WindowSize.toString(), `${Target}:${TargetPort}`, `${Source}:${SourcePort}`)
+        log.silly(`MPS:CHANNEL_OPEN, ${ChannelType}, ${SenderChannel.toString()}, ${WindowSize.toString()}, ${Target}:${TargetPort}, ${Source}:${SourcePort}`)
 
         // Check if we understand this channel type
         // if (ChannelType.toLowerCase() == "direct-tcpip")
@@ -352,7 +352,7 @@ export class MPSServer {
         }
         cirachannel.amtchannelid = SenderChannel
         cirachannel.sendcredits = cirachannel.amtCiraWindow = WindowSize
-        this.debug(3, 'MPS:CHANNEL_OPEN_CONFIRMATION', RecipientChannel.toString(), SenderChannel.toString(), WindowSize.toString())
+        log.silly(`MPS:CHANNEL_OPEN_CONFIRMATION, ${RecipientChannel.toString()}, ${SenderChannel.toString()}, ${WindowSize.toString()}`)
         if (cirachannel.closing === 1) {
           // Close this channel
           this.SendChannelClose(cirachannel.socket, cirachannel.amtchannelid)
@@ -386,10 +386,10 @@ export class MPSServer {
         if (len < 17) return 0
         const RecipientChannel: number = common.ReadInt(data, 1)
         const ReasonCode: number = common.ReadInt(data, 5)
-        this.debug(3, 'MPS:CHANNEL_OPEN_FAILURE', RecipientChannel.toString(), ReasonCode.toString())
+        log.silly(`MPS:CHANNEL_OPEN_FAILURE, ${RecipientChannel.toString()}, ${ReasonCode.toString()}`)
         const cirachannel = socket.tag.channels[RecipientChannel]
         if (cirachannel == null) {
-          log.debug(`MPS Error in CHANNEL_OPEN_FAILURE: Unable to find channelid ${RecipientChannel}`); return 17
+          log.error(`MPS Error in CHANNEL_OPEN_FAILURE: Unable to find channelid ${RecipientChannel}`); return 17
         }
         if (cirachannel.state > 0) {
           cirachannel.state = 0
@@ -403,10 +403,10 @@ export class MPSServer {
       case APFProtocol.CHANNEL_CLOSE: {
         if (len < 5) return 0
         const RecipientChannel: number = common.ReadInt(data, 1)
-        this.debug(3, 'MPS:CHANNEL_CLOSE', RecipientChannel.toString())
+        log.silly(`MPS:CHANNEL_CLOSE ${RecipientChannel.toString()}`)
         const cirachannel = socket.tag.channels[RecipientChannel]
         if (cirachannel == null) {
-          log.debug(`MPS Error in CHANNEL_CLOSE: Unable to find channelid ${RecipientChannel}`); return 5
+          log.error(`MPS Error in CHANNEL_CLOSE: Unable to find channelid ${RecipientChannel}`); return 5
         }
         this.SendChannelClose(cirachannel.socket, cirachannel.amtchannelid)
         socket.tag.activetunnels--
@@ -425,10 +425,10 @@ export class MPSServer {
         const ByteToAdd: number = common.ReadInt(data, 5)
         const cirachannel = socket.tag.channels[RecipientChannel]
         if (cirachannel == null) {
-          log.debug(`MPS Error in CHANNEL_WINDOW_ADJUST: Unable to find channelid ${RecipientChannel}`); return 9
+          log.error(`MPS Error in CHANNEL_WINDOW_ADJUST: Unable to find channelid ${RecipientChannel}`); return 9
         }
         cirachannel.sendcredits += ByteToAdd
-        this.debug(3, 'MPS:CHANNEL_WINDOW_ADJUST', RecipientChannel.toString(), ByteToAdd.toString(), cirachannel.sendcredits)
+        log.silly(`MPS:CHANNEL_WINDOW_ADJUST, ${RecipientChannel.toString()}, ${ByteToAdd.toString()}, ${cirachannel.sendcredits}`)
         if (cirachannel.state === 2 && cirachannel.sendBuffer != null) {
           // Compute how much data we can send
           if (cirachannel.sendBuffer.length <= cirachannel.sendcredits) {
@@ -453,10 +453,10 @@ export class MPSServer {
         const RecipientChannel: number = common.ReadInt(data, 1)
         const LengthOfData: number = common.ReadInt(data, 5)
         if (len < (9 + LengthOfData)) return 0
-        this.debug(4, 'MPS:CHANNEL_DATA', RecipientChannel.toString(), LengthOfData.toString())
+        log.silly(`MPS:CHANNEL_DATA, ${RecipientChannel.toString()}, ${LengthOfData.toString()}`)
         const cirachannel = socket.tag.channels[RecipientChannel]
         if (cirachannel == null) {
-          log.debug(`MPS Error in CHANNEL_DATA: Unable to find channelid ${RecipientChannel}`); return 9 + LengthOfData
+          log.error(`MPS Error in CHANNEL_DATA: Unable to find channelid ${RecipientChannel}`); return 9 + LengthOfData
         }
         cirachannel.amtpendingcredits += LengthOfData
         if (cirachannel.onData) cirachannel.onData(cirachannel, data.substring(9, 9 + LengthOfData))
@@ -469,7 +469,7 @@ export class MPSServer {
       case APFProtocol.DISCONNECT: {
         if (len < 7) return 0
         const ReasonCode: number = common.ReadInt(data, 1)
-        this.debug(3, 'MPS:DISCONNECT', ReasonCode.toString())
+        log.silly(`MPS:DISCONNECT, ${ReasonCode.toString()}`)
         try {
           delete this.ciraConnections[socket.tag.nodeid]
         } catch (e) { }
@@ -477,7 +477,7 @@ export class MPSServer {
         return 7
       }
       default: {
-        this.debug(1, `MPS:Unknown CIRA command: ${cmd}`)
+        log.warn(`MPS:Unknown CIRA command: ${cmd}`)
         return -1
       }
     }
@@ -575,7 +575,7 @@ export class MPSServer {
   }
 
   SendChannelClose (socket, channelid): void {
-    this.debug(2, 'MPS:SendChannelClose', channelid)
+    log.silly(`MPS:SendChannelClose, ${channelid}`)
     this.Write(
       socket,
       String.fromCharCode(APFProtocol.CHANNEL_CLOSE) +
@@ -595,7 +595,7 @@ export class MPSServer {
   }
 
   SendChannelWindowAdjust (socket, channelid, bytestoadd): void {
-    this.debug(3, 'MPS:SendChannelWindowAdjust', channelid, bytestoadd)
+    log.silly(`MPS:SendChannelWindowAdjust, ${channelid}, ${bytestoadd}`)
     this.Write(
       socket,
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
@@ -742,7 +742,7 @@ export class MPSServer {
       amtuser: undefined
     }
     if (socket.tag.host === host) return // Nothing to change
-    this.debug(3, 'Change hostname to ', host)
+    log.silly(`Change hostname to: ${host}`)
     socket.tag.host = host
     if (this.mpsService.mpsComputerList[socket.tag.nodeid]) {
       computerEntry = this.mpsService.mpsComputerList[socket.tag.nodeid]
@@ -778,23 +778,5 @@ export class MPSServer {
             '-' +
             g.substring(20)
     )
-  }
-
-  // Debug
-  debug (lvl: number, ...argArray: string[]): void {
-    if (lvl > this.mpsService.debugLevel) return
-    if (argArray.length === 1) {
-      log.debug(argArray[0])
-    } else if (argArray.length === 2) {
-      log.debug(`${argArray[0]} ${argArray[1]}`)
-    } else if (argArray.length === 3) {
-      log.debug(`${argArray[0]} ${argArray[1]} ${argArray[2]}`)
-    } else if (argArray.length === 4) {
-      log.debug(`${argArray[0]} ${argArray[1]} ${argArray[2]} ${argArray[3]}`)
-    } else if (argArray.length === 5) {
-      log.debug(`${argArray[0]} ${argArray[1]} ${argArray[2]} ${argArray[3]} ${argArray[4]}`)
-    } else if (argArray.length === 6) {
-      log.debug(`${argArray[0]} ${argArray[1]} ${argArray[2]} ${argArray[3]} ${argArray[4]} ${argArray[5]}`)
-    }
   }
 }

@@ -15,8 +15,6 @@ export interface configType {
   web_port: number
   generate_certificates: boolean
   alias_port?: number
-  debug?: boolean
-  logger_off: boolean
   secrets_path?: string
   data_path?: string
   cert_path: string
@@ -24,7 +22,6 @@ export interface configType {
   vault_address?: string
   vault_token?: string
   mqtt_address?: string
-  debug_level: number
   jwt_secret: string
   jwt_issuer: string
   jwt_expiration: number
