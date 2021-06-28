@@ -28,6 +28,7 @@
         "@typescript-eslint/no-extraneous-class": 0,
         "@typescript-eslint/restrict-plus-operands": 0,
         "no-prototype-builtins": 0,
-        "node/no-callback-literal": 0
+        "node/no-callback-literal": 0,
+        "@typescript-eslint/no-misused-promises": 0
     }
 }

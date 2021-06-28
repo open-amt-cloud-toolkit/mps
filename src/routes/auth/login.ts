@@ -1,6 +1,8 @@
 import { validationResult } from 'express-validator'
 import jws from 'jws'
-export async function login (req, res): Promise<void> {
+import { Request, Response } from 'express'
+
+export async function login (req: Request, res: Response): Promise<void> {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     res.status(400).json({ errors: errors.array() })

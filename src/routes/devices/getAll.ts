@@ -5,8 +5,9 @@
 import { DeviceDb } from '../../db/device'
 import { Device } from '../../models/models'
 import { logger as log } from '../../utils/logger'
+import { Request, Response } from 'express'
 
-export async function getAllDevices (req, res): Promise<void> {
+export async function getAllDevices (req: Request<any, any, any, {tags?: string, method?: string, status?: boolean}>, res: Response): Promise<void> {
   const db = new DeviceDb()
   try {
     let list: Device[] = []

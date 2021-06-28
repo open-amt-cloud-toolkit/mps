@@ -5,7 +5,9 @@
 import { validationResult } from 'express-validator'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { logger as log } from '../../utils/logger'
-export async function disconnect (req, res): Promise<void> {
+import { Request, Response } from 'express'
+
+export async function disconnect (req: Request, res: Response): Promise<void> {
   try {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {

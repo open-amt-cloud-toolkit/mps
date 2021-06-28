@@ -57,6 +57,7 @@
   },
   "devDependencies": {
     "@types/body-parser": "^1.17.1",
+    "@types/express": "^4.17.12",
     "@types/jest": "^26.0.23",
     "@types/node": "^14.17.4",
     "@types/node-forge": "^0.10.0",

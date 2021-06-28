@@ -7,8 +7,9 @@ import { DeviceDb } from '../../db/device'
 import { Device } from '../../models/models'
 import { logger as log } from '../../utils/logger'
 import { MPSValidationError } from '../../utils/MPSValidationError'
+import { Request, Response } from 'express'
 
-export async function insertDevice (req, res): Promise<void> {
+export async function insertDevice (req: Request, res: Response): Promise<void> {
   const db = new DeviceDb()
   let device: Device
   try {
