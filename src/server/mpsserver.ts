@@ -389,7 +389,7 @@ export class MPSServer {
         log.silly(`MPS:CHANNEL_OPEN_FAILURE, ${RecipientChannel.toString()}, ${ReasonCode.toString()}`)
         const cirachannel = socket.tag.channels[RecipientChannel]
         if (cirachannel == null) {
-          log.warn(`MPS Error in CHANNEL_OPEN_FAILURE: Unable to find channelid ${RecipientChannel}`); return 17
+          log.error(`MPS Error in CHANNEL_OPEN_FAILURE: Unable to find channelid ${RecipientChannel}`); return 17
         }
         if (cirachannel.state > 0) {
           cirachannel.state = 0
@@ -406,7 +406,7 @@ export class MPSServer {
         log.silly(`MPS:CHANNEL_CLOSE ${RecipientChannel.toString()}`)
         const cirachannel = socket.tag.channels[RecipientChannel]
         if (cirachannel == null) {
-          log.warn(`MPS Error in CHANNEL_CLOSE: Unable to find channelid ${RecipientChannel}`); return 5
+          log.error(`MPS Error in CHANNEL_CLOSE: Unable to find channelid ${RecipientChannel}`); return 5
         }
         this.SendChannelClose(cirachannel.socket, cirachannel.amtchannelid)
         socket.tag.activetunnels--
@@ -425,7 +425,7 @@ export class MPSServer {
         const ByteToAdd: number = common.ReadInt(data, 5)
         const cirachannel = socket.tag.channels[RecipientChannel]
         if (cirachannel == null) {
-          log.warn(`MPS Error in CHANNEL_WINDOW_ADJUST: Unable to find channelid ${RecipientChannel}`); return 9
+          log.error(`MPS Error in CHANNEL_WINDOW_ADJUST: Unable to find channelid ${RecipientChannel}`); return 9
         }
         cirachannel.sendcredits += ByteToAdd
         log.silly(`MPS:CHANNEL_WINDOW_ADJUST, ${RecipientChannel.toString()}, ${ByteToAdd.toString()}, ${cirachannel.sendcredits}`)
@@ -456,7 +456,7 @@ export class MPSServer {
         log.silly(`MPS:CHANNEL_DATA, ${RecipientChannel.toString()}, ${LengthOfData.toString()}`)
         const cirachannel = socket.tag.channels[RecipientChannel]
         if (cirachannel == null) {
-          log.warn(`MPS Error in CHANNEL_DATA: Unable to find channelid ${RecipientChannel}`); return 9 + LengthOfData
+          log.error(`MPS Error in CHANNEL_DATA: Unable to find channelid ${RecipientChannel}`); return 9 + LengthOfData
         }
         cirachannel.amtpendingcredits += LengthOfData
         if (cirachannel.onData) cirachannel.onData(cirachannel, data.substring(9, 9 + LengthOfData))
