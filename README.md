@@ -6,7 +6,11 @@
 
 The Management Presence Server (MPS) enables remote edge management of Intel vPro® Platforms featuring Intel® AMT.  MPS uses an Intel vPro® feature, Client Initiated Remote Access (CIRA), to maintain a persistent connection with managed devices. As a cloud-agnostic microservice, MPS provides out-of-band manageability features, such as power control or keyboard, video, and mouse (KVM) control.
 
+<br><br>
+
 **For detailed documentation** about Getting Started with MPS or other features of the Open AMT Cloud Toolkit, see the [docs](https://open-amt-cloud-toolkit.github.io/docs).
+
+<br>
 
 ## Prerequisites
 
@@ -20,45 +24,62 @@ To succesfully deploy MPS, the following software must be installed on your deve
 
 To deploy the MPS on a local development system: 
 
-1. Clone the MPS repository on your development system.
+1. Clone the repo and switch to the `mps` directory.
     ```
     git clone https://github.com/open-amt-cloud-toolkit/mps.git && cd mps
     ```
 
-2. Modify the mps/.mpsrc file common name settings. Save and close the file.
-    ```
-    “common_name” : “the development system’s IP address”
-    ```
+2. Open the `.mpsrc` file to edit.
 
+3. Update the following 4 fields. Save and keep track of the values you choose.
 
-3. Navigate to mps/webui/src and modify the app.config.js file. Replace rpsServerIP and serverIP with your development system’s IP address. Save and close the file.
-    ```
-    const rpsServerIP = process.env.REACT_APP_RPS_SERVER ? process.env.REACT_APP_RPS_SERVER : '192.168.0.8'; 
-    const serverIP = process.env.REACT_APP_MPS_SERVER ? process.env.REACT_APP_MPS_SERVER : '192.168.0.8';
-    ```
+    | Field Name | Required | Usage |
+    | ------------------ | ---------------------------------- | ------------ |
+    | common_name        | Development IP Address             | MPS Server IP Address for Device Connection and API Use |
+    | web_admin_user     | Username of your choice            | For logging into the Sample Web UI |
+    | web_admin_password | **Strong** password of your choice | For logging into the Sample Web UI |
+    | jwt_secret         | A strong secret of your choice     | Used when generating a JSON Web Token for authentication |
 
-4. Run 'npm install' from the working mps directory.
+    >This password must meet standard, **strong** password requirements:
+    > - 8 to 32 characters
+    > - One uppercase, one lowercase, one numerical digit, and one special character.
+
+<br>
+
+4. Save and close the file.
+
+5. Install the dependencies from the working `mps` directory.
     ```
     npm install
     ```
 
-5. Run 'npm run dev' start command. The npm run dev start command may take 2-3 minutes to install.
+6. Start the service.
     ```
-    npm run dev
+    npm start
     ```
 
-6. The MPS listens on port 4433. Successful installation produces the command line message:
+7. The MPS listens on port 4433 by default. Successful installation produces the command line message:
     
     ```
-    Intel(R) AMT server running on [development-system-ip]:4433
-    MPS: Microservice running on https://[development-system-ip]:3000.
+    MPS Microservice running on localhost:3000.
+    Intel(R) AMT server running on localhost:4433.
     ```
-    
+
 For detailed documentation about MPS, see the [docs](https://open-amt-cloud-toolkit.github.io/docs)
 
+<br>
+    
+## Using Kong
 
-## License Note
+If using the [Kong*](https://konghq.com/kong/) API gateway with MPS, your `kong.yaml` file must be updated to support JWT Authentication.
 
-If you are distributing the FortAwesome Icons, please provide attribution to the source per the [CC-by 4.0](https://creativecommons.org/licenses/by/4.0/deed.ast) license obligations. 
+The secret provided in kong.yaml **must match** the `jwt_secret` from the `.mpsrc` file.
 
+Example:
+```
+jwt_secrets:
+  - consumer: admin
+    key: 9EmRJTbIiIb4bIeSsmgcWIjrR6HyETqc #sample key
+    secret: myStrongSecret
+```
 

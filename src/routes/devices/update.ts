@@ -16,11 +16,12 @@ export async function updateDevice (req: Request, res: Response): Promise<void> 
       res.status(400).json({ errors: errors.array() })
       return
     }
-    const device = await db.getById(req.body.guid)
+    let device = await db.getById(req.body.guid)
     if (device == null) {
       res.status(404).json({ error: 'NOT FOUND', message: `Device ID ${req.body.guid} not found` }).end()
     } else {
-      const results = await db.update(req.body)
+      device = { ...device, ...req.body }
+      const results = await db.update(device)
       res.status(200).json(results).end()
     }
   } catch (err) {
