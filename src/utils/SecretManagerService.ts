@@ -44,9 +44,9 @@ export class SecretManagerService implements ISecretManagerService {
 
   async getSecretFromKey (path: string, key: string): Promise<string> {
     try {
-      this.logger.verbose(`getting secret from ${path} ${key}`)
+      this.logger.verbose(`getting secret from ${path}`)
       const data = await this.vaultClient.read(path)
-      this.logger.debug(`received secret from ${path} ${key}`)
+      this.logger.debug(`received secret from ${path}`)
       // { data: data: { "key": "keyvalue"}}
       return data.data.data[key]
     } catch (error) {
@@ -60,7 +60,7 @@ export class SecretManagerService implements ISecretManagerService {
     try {
       this.logger.verbose('getting secrets from ' + path)
       const data = await this.vaultClient.read(path)
-      this.logger.debug(`got data back from vault at path : ${path}`)
+      this.logger.debug(`got data back from vault at path: ${path}`)
       return data.data
     } catch (error) {
       this.logger.error('getSecretAtPath error \r\n')
