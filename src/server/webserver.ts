@@ -20,7 +20,7 @@ import { ErrorResponse } from '../utils/amtHelper'
 import { logger as log } from '../utils/logger'
 import { constants } from 'crypto'
 import { MPSMicroservice } from '../mpsMicroservice'
-import { IDbProvider } from '../models/IDbProvider'
+import { IDbProvider } from '../interfaces/IDbProvider'
 import AMTStackFactory from '../amt_libraries/amt-connection-factory'
 import routes from '../routes'
 
@@ -145,9 +145,7 @@ export class WebServer {
           log.debug(`Opening web socket connection to ${params.host}: ${params.port}.`)
 
           // Fetch Intel AMT credentials & Setup interceptor
-          const credentials = await this.db.getAmtPassword(params.host)
-          // obj.debug("Credential for " + params.host + " is " + JSON.stringify(credentials));
-
+          const credentials = await this.mpsService.secrets.getAMTCredentials(params.host)
           if (credentials != null) {
             log.debug('Creating credential')
             if (params.p === 1) {

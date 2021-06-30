@@ -22,7 +22,7 @@ export async function auditLog (req: Request<any, any, any, {startIndex?: number
 
     const ciraconn = req.mpsService.mpsserver.ciraConnections[guid]
     if (ciraconn && ciraconn.readyState === 'open') {
-      const cred = await req.mpsService.db.getAmtPassword(guid)
+      const cred = await req.mpsService.secrets.getSecretAtPath(guid)
       const amtstack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
       const startIndex: number = queryParams.startIndex == null ? 0 : queryParams.startIndex >= 1 ? queryParams.startIndex : 0
 
