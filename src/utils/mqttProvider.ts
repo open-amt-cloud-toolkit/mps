@@ -18,7 +18,7 @@ export class MqttProvider {
   constructor (config: configType) {
     if (!config.mqtt_address) {
       this.turnedOn = false
-      log.info('MQTT is turned off')
+      log.debug('MQTT is turned off')
     } else {
       this.turnedOn = true
       this.mqttUrl = new url.URL(config.mqtt_address)
@@ -55,7 +55,7 @@ export class MqttProvider {
     return await new Promise((resolve, reject) => {
       this.client.publish('mps/events', JSON.stringify(event), function (err) {
         if (err == null) {
-          log.info('Event message published')
+          log.debug('Event message published')
           resolve()
         } else {
           log.error('Event message failed')
@@ -69,6 +69,6 @@ export class MqttProvider {
     if (!this.turnedOn) return
 
     this.client = this.client.end()
-    log.info('MQTT client closed')
+    log.debug('MQTT client closed')
   }
 }

@@ -30,10 +30,9 @@ export class SecretManagerService implements ISecretManagerService {
 
   async listSecretsAtPath (path: string): Promise<any> {
     try {
-      this.logger.info('list secret ' + path)
+      this.logger.verbose('list secret ' + path)
       const data = await this.vaultClient.list(path)
-      this.logger.info('got data back from vault ')
-      this.logger.info(JSON.stringify(data))
+      this.logger.debug(`got data back from vault: ${path}`)
       // { data: data: { "key": "keyvalue"}}
       return data.data.keys
     } catch (error) {
@@ -45,9 +44,9 @@ export class SecretManagerService implements ISecretManagerService {
 
   async getSecretFromKey (path: string, key: string): Promise<string> {
     try {
-      this.logger.info('getting secret ' + path + ' ' + key)
+      this.logger.verbose(`getting secret from ${path} ${key}`)
       const data = await this.vaultClient.read(path)
-      this.logger.info('got data back from vault ')
+      this.logger.debug(`received secret from ${path} ${key}`)
       // { data: data: { "key": "keyvalue"}}
       return data.data.data[key]
     } catch (error) {
@@ -59,9 +58,9 @@ export class SecretManagerService implements ISecretManagerService {
 
   async getSecretAtPath (path: string): Promise<any> {
     try {
-      this.logger.info('getting secrets from ' + path)
+      this.logger.verbose('getting secrets from ' + path)
       const data = await this.vaultClient.read(path)
-      // this.logger.info(`got data back from vault : ${data}`)
+      this.logger.debug(`got data back from vault at path : ${path}`)
       return data.data
     } catch (error) {
       this.logger.error('getSecretAtPath error \r\n')
@@ -78,9 +77,8 @@ export class SecretManagerService implements ISecretManagerService {
   async writeSecretWithKey (path: string, key: string, keyValue: any): Promise<void> {
     const data = { data: {} }
     data.data[key] = keyValue
-    // this.logger.info('writing:' + JSON.stringify(data))
-    this.logger.info('writing data to vault:')
+    this.logger.verbose(`writing data to vault at path: ${path}`)
     await this.vaultClient.write(path, data)
-    this.logger.info('Successfully written data to vault')
+    this.logger.debug(`Successfully written data at path: ${path}`)
   }
 }

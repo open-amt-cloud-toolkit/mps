@@ -22,7 +22,7 @@ export async function getDevice (req: Request, res: Response): Promise<void> {
       res.status(404).end()
     }
   } catch (err) {
-    log.error(err)
+    log.error(`getDevice exception: ${err}`)
     res.status(500).end()
   }
 }

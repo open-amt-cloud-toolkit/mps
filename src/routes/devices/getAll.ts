@@ -23,7 +23,7 @@ export async function getAllDevices (req: Request<any, any, any, {tags?: string,
     }
     res.status(200).json(list).end()
   } catch (err) {
-    log.error(err)
+    log.error(`getAllDevices exception: ${err}`)
     res.status(500).end()
   }
 }

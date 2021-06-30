@@ -7,6 +7,7 @@
   Pattern referred from https://node-postgres.com/guides/project-structure
 */
 import { Pool, QueryResult } from 'pg'
+import { logger as log } from '../utils/logger'
 
 export class PostgresDb {
   pool: Pool
@@ -21,7 +22,7 @@ export class PostgresDb {
     const start = Date.now()
     const res = await this.pool.query(text, params)
     const duration = Date.now() - start
-    console.log('executed query', { text, duration, rows: res.rowCount })
+    log.verbose(`executed query: ${JSON.stringify({ text, duration, rows: res.rowCount })}`)
     return res
   }
 }
