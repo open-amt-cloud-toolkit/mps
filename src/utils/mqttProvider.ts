@@ -55,7 +55,7 @@ export class MqttProvider {
     return await new Promise((resolve, reject) => {
       this.client.publish('mps/events', JSON.stringify(event), function (err) {
         if (err == null) {
-          log.info('Event message published')
+          log.debug('Event message published')
           resolve()
         } else {
           log.error('Event message failed')

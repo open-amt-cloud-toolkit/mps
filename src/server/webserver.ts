@@ -335,7 +335,7 @@ export class WebServer {
         this.relaywss.emit('connection', ws, request)
       })
     } else { // Invalid endpoint
-      log.info('Route does not exist. Closing connection...')
+      log.debug('Route does not exist. Closing connection...')
       socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
       socket.destroy()
     }

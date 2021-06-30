@@ -742,7 +742,7 @@ export class MPSServer {
       amtuser: undefined
     }
     if (socket.tag.host === host) return // Nothing to change
-    log.silly(`Change hostname to: ${host}`)
+    log.debug(`Change hostname to: ${host}`)
     socket.tag.host = host
     if (this.mpsService.mpsComputerList[socket.tag.nodeid]) {
       computerEntry = this.mpsService.mpsComputerList[socket.tag.nodeid]
