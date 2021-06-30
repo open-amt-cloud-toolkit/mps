@@ -18,7 +18,7 @@ export class MqttProvider {
   constructor (config: configType) {
     if (!config.mqtt_address) {
       this.turnedOn = false
-      log.debug('MQTT is turned off')
+      log.info('MQTT is turned off')
     } else {
       this.turnedOn = true
       this.mqttUrl = new url.URL(config.mqtt_address)
@@ -69,6 +69,6 @@ export class MqttProvider {
     if (!this.turnedOn) return
 
     this.client = this.client.end()
-    log.debug('MQTT client closed')
+    log.info('MQTT client closed')
   }
 }

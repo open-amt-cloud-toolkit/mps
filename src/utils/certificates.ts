@@ -30,7 +30,7 @@ export class certificates {
       rootPrivateKey = fs.readFileSync(rootCertPrivateKeyPath, 'utf8')
       rootCertAndKey = { cert: certoperation.pki.certificateFromPem(rootCertificate), key: certoperation.pki.privateKeyFromPem(rootPrivateKey) }
     } else {
-      log.debug('Generating Root certificate...')
+      log.info('Generating Root certificate...')
       rootCertAndKey = certoperation.GenerateRootCertificate(true, 'MPSRoot', null, null, true)
       rootCertificate = certoperation.pki.certificateToPem(rootCertAndKey.cert)
       rootPrivateKey = certoperation.pki.privateKeyToPem(rootCertAndKey.key)
@@ -44,7 +44,7 @@ export class certificates {
       mpsPrivateKey = fs.readFileSync(mpsserverCertPrivateKeyPath, 'utf8')
       mpsCertAndKey = { cert: certoperation.pki.certificateFromPem(mpsCertificate), key: certoperation.pki.privateKeyFromPem(mpsPrivateKey) }
     } else {
-      log.debug('Generating Intel AMT MPS certificate...')
+      log.info('Generating Intel AMT MPS certificate...')
       mpsCertAndKey = certoperation.IssueWebServerCertificate(rootCertAndKey, false, config.common_name, config.country, config.organization, null, false)
       mpsCertificate = certoperation.pki.certificateToPem(mpsCertAndKey.cert)
       mpsPrivateKey = certoperation.pki.privateKeyToPem(mpsCertAndKey.key)

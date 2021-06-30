@@ -208,7 +208,7 @@ export class WebServer {
             }
           } else {
             // If TLS is going to be used, setup a TLS socket
-            log.debug('TLS Enabled!')
+            log.info('TLS Enabled!')
             const tlsoptions = {
               secureProtocol:
                 params.tls1only === 1 ? 'TLSv1_method' : 'SSLv23_method',
@@ -335,7 +335,7 @@ export class WebServer {
         this.relaywss.emit('connection', ws, request)
       })
     } else { // Invalid endpoint
-      log.error('Route does not exist. Closing connection...')
+      log.debug('Route does not exist. Closing connection...')
       socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
       socket.destroy()
     }
