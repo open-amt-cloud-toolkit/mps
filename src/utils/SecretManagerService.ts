@@ -8,13 +8,13 @@
 import { ISecretManagerService } from '../interfaces/ISecretManagerService'
 import { configType } from '../models/Config'
 import NodeVault = require('node-vault')
-import { Logger } from 'winston'
+import { ILogger } from '../models/ILogger'
 
 export class SecretManagerService implements ISecretManagerService {
   vaultClient: NodeVault.client
   secretsPath: string
-  logger: Logger
-  constructor (config: configType, logger: Logger, vault?: any) {
+  logger: ILogger
+  constructor (config: configType, logger: ILogger, vault?: any) {
     this.logger = logger
     if (vault) {
       this.vaultClient = vault
@@ -33,14 +33,13 @@ export class SecretManagerService implements ISecretManagerService {
   async getSecretFromKey (path: string, key: string): Promise<string> {
     try {
       const fullPath = `${this.secretsPath}${path}`
-      this.logger.info('getting secret ' + fullPath + ' ' + key)
+      this.logger.verbose(`getting secret from ${fullPath}`)
       const data = await this.vaultClient.read(fullPath)
-      this.logger.info('got data back from vault ')
+      this.logger.debug(`received secret from ${fullPath}`)
       // { data: data: { "key": "keyvalue"}}
       return data.data.data[key]
     } catch (error) {
-      this.logger.error('getSecretFromKey error \r\n')
-      this.logger.error(error)
+      this.logger.error('getSecretFromKey error :', error)
       return null
     }
   }
@@ -48,13 +47,12 @@ export class SecretManagerService implements ISecretManagerService {
   async getSecretAtPath (path: string): Promise<any> {
     try {
       const fullPath = `${this.secretsPath}${path}`
-      this.logger.info('getting secrets from ' + fullPath)
+      this.logger.verbose(`getting secrets from path: ${fullPath}`)
       const data = await this.vaultClient.read(fullPath)
-      // this.logger.info(`got data back from vault : ${data}`)
+      this.logger.debug(`got data back from vault at path: ${fullPath}`)
       return data.data
     } catch (error) {
-      this.logger.error('getSecretAtPath error \r\n')
-      this.logger.error(error)
+      this.logger.error('getSecretAtPath error :', error)
       return null
     }
   }

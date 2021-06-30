@@ -9,7 +9,6 @@ import { MPSServer } from './server/mpsserver'
 import { logger as log } from './utils/logger'
 import { IDbProvider } from './interfaces/IDbProvider'
 import { Device } from './models/models'
-import { Environment } from './utils/Environment'
 import { MqttProvider } from './utils/mqttProvider'
 import { ISecretManagerService } from './interfaces/ISecretManagerService'
 
@@ -68,7 +67,7 @@ export class MPSMicroservice {
     }
 
     if (guid && this.mpsComputerList[guid]) {
-      log.silly(`delete mpsComputerList[${guid}]`)
+      log.verbose(`delete mpsComputerList[${guid}]`)
       delete this.mpsComputerList[guid]
       if (this.webserver) {
         this.webserver.notifyUsers({
@@ -77,7 +76,7 @@ export class MPSMicroservice {
           status: 'disconnected'
         })
       }
-      log.info(`CIRA connection disconnected for device : ${guid}`)
+      log.debug(`CIRA connection disconnected for device : ${guid}`)
     }
   }
 }

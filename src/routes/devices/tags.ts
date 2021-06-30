@@ -16,7 +16,7 @@ export async function getDistinctTags (req: Request, res: Response): Promise<voi
       res.status(404).end()
     }
   } catch (err) {
-    log.error(err)
+    log.error(`getDistinctTags exception: ${err}`)
     res.status(500).end()
   }
 }

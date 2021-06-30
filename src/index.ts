@@ -59,7 +59,7 @@ try {
   const signals = ['SIGINT', 'exit', 'uncaughtException', 'SIGTERM', 'SIGHUP']
   signals.forEach((signal) => {
     process.on(signal, () => {
-      console.log('signal received :', signal)
+      log.debug('signal received :', signal)
       deviceDb.clearInstanceStatus(Environment.Config.instance_name)
       mqtt.endBroker()
       if (signal !== 'exit') {
@@ -94,7 +94,7 @@ try {
         log.debug('using cert from file')
         certs = { mps_tls_config: tlsConfig.mps(), web_tls_config: tlsConfig.web() }
       }
-      log.info('Loaded existing certificates')
+      log.debug('Loaded existing certificates')
     } else {
       if (!fs.existsSync(certPath)) {
         fs.mkdirSync(certPath, { recursive: true })
@@ -102,7 +102,7 @@ try {
       certs = certificates.generateCertificates(config, certPath)
     }
 
-    log.info('certs loaded..')
+    log.debug('certs loaded..')
 
     const mps = new MPSMicroservice(config, db, secrets, certs, mqtt)
     mps.start()

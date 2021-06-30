@@ -1,6 +1,7 @@
 import { validationResult } from 'express-validator'
 import jws from 'jws'
 import { Request, Response } from 'express'
+import { logger as log } from '../../utils/logger'
 
 export async function login (req: Request, res: Response): Promise<void> {
   const errors = validationResult(req)
@@ -24,6 +25,7 @@ export async function login (req: Request, res: Response): Promise<void> {
     })
     res.status(200).send({ token: signature })
   } else {
+    log.silly(`Incorrect Username and/or Password!, username: ${username}`)
     res.status(401).send({ message: 'Incorrect Username and/or Password!' })
   }
 }
