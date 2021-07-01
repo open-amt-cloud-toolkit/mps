@@ -22,7 +22,7 @@ export async function disconnect (req: Request, res: Response): Promise<void> {
         ciraconn.destroy()
         res.json({ success: 200, description: `CIRA connection disconnected : ${guid}` })
       } catch (error) {
-        log.error(error)
+        log.error(`cira connection destroy exception: ${error}`)
         res.status(500).json(ErrorResponse(500, error))
       }
     } else {

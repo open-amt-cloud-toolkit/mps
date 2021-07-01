@@ -130,7 +130,7 @@ export class DeviceDb implements IDeviceDb {
           null,
           false
         ])
-      log.info('Clean DB instance before exit', results)
+      log.debug('Clean DB instance before exit', results)
     } catch (error) {
       log.error('Failed to update DB:', error)
     }
