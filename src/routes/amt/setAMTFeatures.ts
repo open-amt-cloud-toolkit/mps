@@ -23,7 +23,7 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
     }
     const ciraconn = req.mpsService.mpsserver.ciraConnections[guid]
     if (ciraconn && ciraconn.readyState === 'open') {
-      const cred = await req.mpsService.db.getAmtPassword(guid)
+      const cred = await req.mpsService.secrets.getAMTCredentials(guid)
       const amtstack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
       await req.mpsService.mqtt.publishEvent('request', ['AMT_SetFeatures'], 'Set AMT Features Requested', guid)
 
