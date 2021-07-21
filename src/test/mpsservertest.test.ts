@@ -13,7 +13,11 @@ import { certificatesType, configType } from '../models/Config'
 import { MPSMicroservice } from '../mpsMicroservice'
 import { MPSServer } from '../server/mpsserver'
 import { join } from 'path'
-import { Database } from './helper/db'
+import { ISecretManagerService } from '../interfaces/ISecretManagerService'
+import { DbProvider } from '../utils/DbProvider'
+import { IDeviceDb } from '../interfaces/IDeviceDb'
+import { Device } from '../models/models'
+import { Environment } from '../utils/Environment'
 
 
 // Parsing configuration
@@ -66,7 +70,9 @@ const config: configType = {
 const pki = forge.pki
 let certs : certificatesType
 const certPath = config.cert_path
-let db: Database
+let db: DbProvider
+let devicesMock: IDeviceDb
+let secrets: ISecretManagerService
 let mpsService: MPSMicroservice
 let mps: MPSServer
 
@@ -80,8 +86,23 @@ describe('MPS Server', function () {
       console.log(`Failed to create Cert path ${certPath}. Create if it doesn't exist`)
     }
     certs = await certificates.generateCertificates(config, certPath)
-    db  = new Database(config)
-    mpsService = new MPSMicroservice(config, db, certs)
+    let device = {mpsusername:'admin'}
+    devicesMock = {
+       get: async ()=>{ return [] as Device[] },
+       getDistinctTags:async ()=>{return ['tag']},
+       getById:async (guid)=>{return device as Device},
+       getByTags:async (tags)=>{return [device] as Device[]},
+       delete:async (guid)=>{return true},
+       insert:async (device)=>{return {} as Device},
+       update:async ()=>{return {} as Device},
+    }
+    db  = new DbProvider(devicesMock)
+    secrets = {
+      getSecretFromKey: async (path: string, key: string) => {return "P@ssw0rd" },
+      getSecretAtPath: async (path: string) => {return {} as any },
+      getAMTCredentials: async (path: string) => {return ['admin','P@ssw0rd'] }
+    }    
+    mpsService = new MPSMicroservice(config,db,secrets, certs)
     mps = new MPSServer(mpsService)
 
     // DB initialization

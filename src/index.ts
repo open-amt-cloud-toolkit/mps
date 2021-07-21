@@ -11,7 +11,7 @@ import { configType, certificatesType } from './models/Config'
 
 import { certificates } from './utils/certificates'
 import { tlsConfig } from './utils/tlsConfiguration'
-import { IDbProvider } from './models/IDbProvider'
+import { IDbProvider } from './interfaces/IDbProvider'
 
 import { SecretManagerService } from './utils/SecretManagerService'
 import { parseValue } from './utils/parseEnvValue'
@@ -20,7 +20,8 @@ import rc from 'rc'
 import { Environment } from './utils/Environment'
 import { DeviceDb } from './db/device'
 import { MqttProvider } from './utils/mqttProvider'
-import { AuthDbProvider } from './utils/AuthDbProvider'
+import { DbProvider } from './utils/DbProvider'
+import { ISecretManagerService } from './interfaces/ISecretManagerService'
 try {
   // To merge ENV variables. consider after lowercasing ENV since our config keys are lowercase
   process.env = Object.keys(process.env)
@@ -51,7 +52,8 @@ try {
 
   // DB initialization
   const deviceDb = new DeviceDb()
-  const db: IDbProvider = new AuthDbProvider(new SecretManagerService(config, log), deviceDb, log, config)
+  const db: IDbProvider = new DbProvider(deviceDb)
+  const secrets: ISecretManagerService = new SecretManagerService(config, log)
 
   // Cleans the DB before exit when it listens to the signals
   const signals = ['SIGINT', 'exit', 'uncaughtException', 'SIGTERM', 'SIGHUP']
@@ -102,7 +104,7 @@ try {
 
     log.debug('certs loaded..')
 
-    const mps = new MPSMicroservice(config, db, certs, mqtt)
+    const mps = new MPSMicroservice(config, db, secrets, certs, mqtt)
     mps.start()
   }
 } catch (error) {
