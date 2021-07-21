@@ -14,7 +14,7 @@ export async function generalSettings (req: Request, res: Response): Promise<voi
     const guid = req.params.guid
     const ciraconn = req.mpsService.mpsserver.ciraConnections[guid]
     if (ciraconn) {
-      const cred = await req.mpsService.db.getAmtPassword(guid)
+      const cred = await req.mpsService.secrets.getAMTCredentials(guid)
       const amtstack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
       await req.mpsService.mqtt.publishEvent('request', ['AMT_GeneralSettings'], 'General Settings Requested', guid)
 

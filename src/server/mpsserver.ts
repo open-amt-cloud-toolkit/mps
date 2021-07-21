@@ -26,7 +26,7 @@ import { configType, certificatesType } from '../models/Config'
 import { APFProtocol, APFChannelOpenFailureReasonCode } from '../models/Mps'
 import { logger as log } from '../utils/logger'
 import { MPSMicroservice } from '../mpsMicroservice'
-import { IDbProvider } from '../models/IDbProvider'
+import { IDbProvider } from '../interfaces/IDbProvider'
 
 import * as common from '../utils/common.js'
 // 90 seconds max idle time, higher than the typical KEEP-ALIVE period of 60 seconds
@@ -191,7 +191,7 @@ export class MPSServer {
         socket.tag.SystemId = this.guidToStr(common.rstr2hex(data.substring(13, 29))).toLowerCase()
         log.silly(`MPS:PROTOCOLVERSION, ${socket.tag.MajorVersion}, ${socket.tag.MinorVersion}, ${socket.tag.SystemId}`)
         // Check if the device exits in db
-        if (this.db.IsGUIDApproved(socket.tag.SystemId)) {
+        if (this.db.devices.getById(socket.tag.SystemId)) {
           socket.tag.nodeid = socket.tag.SystemId
           if (socket.tag.certauth) {
             this.ciraConnections[socket.tag.SystemId] = socket
@@ -222,13 +222,20 @@ export class MPSServer {
         log.silly(`MPS:USERAUTH_REQUEST usernameLen=${usernameLen} serviceNameLen=${serviceNameLen} methodNameLen=${methodNameLen}`)
         log.silly(`MPS:USERAUTH_REQUEST user=${username} service=${serviceName} method=${methodName}`)
         // Authenticate device connection using username and password
-        if (this.db.CIRAAuth(socket.tag.SystemId, username, password)) {
-          log.debug(`MPS:CIRA Authentication successful for: ${username}`)
-          this.ciraConnections[socket.tag.SystemId] = socket
-          await this.mpsService.CIRAConnected(socket.tag.SystemId) // Notify that a connection is successful to console
-          this.SendUserAuthSuccess(socket) // Notify the auth success on the CIRA connection
-        } else {
-          log.warn(`MPS: CIRA Authentication failed for: ${username}`)
+        try {
+          const device = await this.db.devices.getById(socket.tag.SystemId)
+          const pwd = await this.mpsService.secrets.getSecretFromKey(`devices/${socket.tag.SystemId}`, 'MPS_PASSWORD')
+          if (username === device?.mpsusername && password === pwd) {
+            log.debug(`MPS:CIRA Authentication successful for: ${username}`)
+            this.ciraConnections[socket.tag.SystemId] = socket
+            await this.mpsService.CIRAConnected(socket.tag.SystemId) // Notify that a connection is successful to console
+            this.SendUserAuthSuccess(socket) // Notify the auth success on the CIRA connection
+          } else {
+            log.warn(`MPS: CIRA Authentication failed for: ${username}`)
+            this.SendUserAuthFail(socket)
+          }
+        } catch (err) {
+          log.error(err)
           this.SendUserAuthFail(socket)
         }
         return 18 + usernameLen + serviceNameLen + methodNameLen + passwordLen
