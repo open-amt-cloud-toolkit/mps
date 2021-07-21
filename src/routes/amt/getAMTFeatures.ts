@@ -21,7 +21,7 @@ export async function getAMTFeatures (req: Request, res: Response): Promise<void
     if (ciraconn && ciraconn.readyState === 'open') {
       await req.mpsService.mqtt.publishEvent('request', ['AMT_GetFeatures'], 'Get AMT Features Requested', guid)
 
-      const cred = await req.mpsService.db.getAmtPassword(guid)
+      const cred = await req.mpsService.secrets.getAMTCredentials(guid)
       const amtstack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
       const wsmanResponse = await AMTFeatures.getAMTFeatures(amtstack, payload)
       amtstack.wsman.comm.socket.sendchannelclose()
