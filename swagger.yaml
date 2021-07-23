@@ -284,7 +284,34 @@ paths:
                 $ref: '#/components/schemas/PowerCapabilitiesResponse'
   /api/v1/amt/power/action/{guid}:
     post:
-      description: Perform an OOB power action.  Execute a GET Power/Capabilities/{guid} call first to get the list of available power actions.
+      description: Perform an OOB power actions numbered 1 thru 99.  Execute a GET Power/Capabilities/{guid} call first to get the list of available power actions.
+      tags:
+        - AMT
+      parameters:
+      - name: guid
+        in: path
+        description: GUID of device
+        example: 123e4567-e89b-12d3-a456-426614174000
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Payload to perform a power action
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PowerActionRequest'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+           application/json:
+             schema:
+               $ref: '#/components/schemas/PowerActionResponse'
+  /api/v1/amt/power/bootoptions/{guid}:
+    post:
+      description: Perform an OOB power actions numbered 100+.  Execute a GET Power/Capabilities/{guid} call first to get the list of available power actions.
       tags:
         - AMT
       parameters:

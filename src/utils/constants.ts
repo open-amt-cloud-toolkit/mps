@@ -34,7 +34,8 @@ export const httpErrorTable = {
 // Power Actions supported as per Distributed Management Task Force standard.
 // ValueMap={2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}
 // Values={Power On, Sleep - Light, Sleep - Deep, Power Cycle (Off Soft), Power Off - Hard, Hibernate, Power Off - Soft, Power Cycle (Off Hard), Master Bus Reset, Diagnostic Interrupt (NMI), Power Off - Soft Graceful, Power Off - Hard Graceful, Master Bus Reset Graceful, Power Cycle (Off - Soft Graceful), Power Cycle (Off - Hard Graceful)}
-export const DMTFPowerStates = [2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 100, 101, 104, 200, 201, 202, 203, 300, 301, 400, 401]
+export const DMTFPowerStates = [2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17]
+export const DMTFPowerExtendedStates = [100, 101, 104, 200, 201, 202, 203, 300, 301, 400, 401]
 
 export const UserConsentOptions = {
   none: 0,
