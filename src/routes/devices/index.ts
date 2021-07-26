@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { Router } from 'express'
-import { metadataQueryValidator, validator } from './deviceValidator'
+import { metadataQueryValidator, odataValidator, validator } from './deviceValidator'
 import { disconnect } from './disconnect'
 import { getAllDevices } from './getAll'
 import { stats } from './stats'
@@ -17,7 +17,7 @@ import { param } from 'express-validator'
 
 const deviceRouter: Router = Router()
 
-deviceRouter.get('/', metadataQueryValidator(), getAllDevices)
+deviceRouter.get('/', odataValidator(), metadataQueryValidator(), getAllDevices)
 deviceRouter.get('/stats', stats)
 deviceRouter.get('/tags', getDistinctTags)
 deviceRouter.get('/:guid', param('guid').isUUID(), getDevice)
