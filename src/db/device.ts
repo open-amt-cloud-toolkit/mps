@@ -9,6 +9,7 @@ import { Environment } from '../utils/Environment'
 import { Device } from '../models/models'
 import { mapToDevice } from './mapToDevice'
 import { MPSValidationError } from '../utils/MPSValidationError'
+import { DEFAULT_SKIP, DEFAULT_TOP } from '../utils/constants'
 
 export class DeviceDb implements IDeviceDb {
   db: PostgresDb
@@ -16,12 +17,21 @@ export class DeviceDb implements IDeviceDb {
     this.db = db ?? new PostgresDb(Environment.Config.connection_string)
   }
 
+  async getCount (): Promise<number> {
+    const result = await this.db.query('SELECT count(*) OVER() AS total_count FROM devices', [])
+    let count = 0
+    if (result != null) {
+      count = Number(result?.rows[0]?.total_count)
+    }
+    return count
+  }
+
   /**
    * @description Get all devices from DB
    * @returns {Device[]} returns an array of objects
    */
-  async get (): Promise<Device[]> {
-    const results = await this.db.query('SELECT * FROM devices')
+  async get (top: number = DEFAULT_TOP, skip: number = DEFAULT_SKIP): Promise<Device[]> {
+    const results = await this.db.query('SELECT * FROM devices ORDER BY guid LIMIT $1 OFFSET $2', [top, skip])
     return results.rows.map(p => {
       const result = mapToDevice(p)
       return result
@@ -42,12 +52,12 @@ export class DeviceDb implements IDeviceDb {
     return domain
   }
 
-  async getByTags (tags: string[], method: string): Promise<Device[]> {
+  async getByTags (tags: string[], method: string, top: number = DEFAULT_TOP, skip: number = DEFAULT_SKIP): Promise<Device[]> {
     let results
     if (method === 'AND') {
-      results = await this.db.query('SELECT * FROM devices WHERE tags @> $1', [tags])
+      results = await this.db.query('SELECT * FROM devices WHERE tags @> $1 ORDER BY guid LIMIT $2 OFFSET $3', [tags, top, skip])
     } else { // assume OR
-      results = await this.db.query('SELECT * FROM devices WHERE tags && $1', [tags])
+      results = await this.db.query('SELECT * FROM devices WHERE tags && $1 ORDER BY guid LIMIT $2 OFFSET $3', [tags, top, skip])
     }
     return results.rows.map(p => {
       const result = mapToDevice(p)

@@ -53,3 +53,8 @@ export const AMTFeaturesConst = {
   AMT_OPTIN_SERVICE: 'IPS_OptInService',
   AMT_USER_CONSENT: 'OptInRequired'
 }
+
+// Default top and skip for api pagination
+
+export const DEFAULT_TOP = 25
+export const DEFAULT_SKIP = 0

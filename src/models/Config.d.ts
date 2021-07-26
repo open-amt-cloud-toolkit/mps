@@ -89,3 +89,8 @@ export interface queryParams {
   tls: number
   tls1only: number
 }
+
+export class DataWithCount {
+  data: any[]
+  totalCount: number
+}
