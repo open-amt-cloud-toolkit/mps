@@ -15,6 +15,8 @@ export class MqttProvider {
   port: number
   options: any
 
+  static instance: MqttProvider
+
   constructor (config: configType) {
     if (!config.mqtt_address) {
       this.turnedOn = false
@@ -37,11 +39,12 @@ export class MqttProvider {
     if (!this.turnedOn) return
 
     this.client = connect(this.baseUrl, this.options)
+    MqttProvider.instance = this
   }
 
-  async publishEvent (type: eventType, methods: string[], message: string, guid?: string): Promise<void> {
+  static async publishEvent (type: eventType, methods: string[], message: string, guid?: string): Promise<void> {
     // Block message if mqtt option is off
-    if (!this.turnedOn) return
+    if (!MqttProvider.instance.turnedOn) return
 
     const event: OpenAMTEvent = {
       type: type,
@@ -53,7 +56,7 @@ export class MqttProvider {
 
     // Enforce message type names before publishing
     return await new Promise((resolve, reject) => {
-      this.client.publish('mps/events', JSON.stringify(event), function (err) {
+      MqttProvider.instance.client.publish('mps/events', JSON.stringify(event), function (err) {
         if (err == null) {
           log.debug('Event message published')
           resolve()
@@ -65,10 +68,10 @@ export class MqttProvider {
     })
   }
 
-  endBroker (): void {
-    if (!this.turnedOn) return
+  static endBroker (): void {
+    if (!MqttProvider.instance.turnedOn) return
 
-    this.client = this.client.end()
+    MqttProvider.instance.client = MqttProvider.instance.client.end()
     log.info('MQTT client closed')
   }
 }

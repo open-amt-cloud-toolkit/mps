@@ -11,6 +11,7 @@ import { amtPort, AMTFeaturesConst, UserConsentOptions } from '../../utils/const
 import { ErrorResponse } from '../../utils/amtHelper'
 import { AMTFeatures } from '../../utils/AMTFeatures'
 import { MPSValidationError } from '../../utils/MPSValidationError'
+import { MqttProvider } from '../../utils/mqttProvider'
 
 export async function getAMTFeatures (req: Request, res: Response): Promise<void> {
   let redir, sol, ider, kvm, userConsent
@@ -19,7 +20,7 @@ export async function getAMTFeatures (req: Request, res: Response): Promise<void
     const guid = req.params.guid
     const ciraconn = req.mpsService.mpsserver.ciraConnections[guid]
     if (ciraconn && ciraconn.readyState === 'open') {
-      await req.mpsService.mqtt.publishEvent('request', ['AMT_GetFeatures'], 'Get AMT Features Requested', guid)
+      await MqttProvider.publishEvent('request', ['AMT_GetFeatures'], 'Get AMT Features Requested', guid)
 
       const cred = await req.mpsService.secrets.getAMTCredentials(guid)
       const amtstack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
@@ -41,11 +42,11 @@ export async function getAMTFeatures (req: Request, res: Response): Promise<void
         const value = optServiceRes[AMTFeaturesConst.AMT_USER_CONSENT]
         userConsent = Object.keys(UserConsentOptions).find(key => UserConsentOptions[key] === value)
 
-        await req.mpsService.mqtt.publishEvent('success', ['AMT_GetFeatures'], 'Get AMT Features', guid)
+        await MqttProvider.publishEvent('success', ['AMT_GetFeatures'], 'Get AMT Features', guid)
         res.status(200).json({ userConsent: userConsent, redirection: redir, KVM: kvm, SOL: sol, IDER: ider }).end()
       }
     } else {
-      await req.mpsService.mqtt.publishEvent('fail', ['AMT_GetFeatures'], 'Device Not Found', guid)
+      await MqttProvider.publishEvent('fail', ['AMT_GetFeatures'], 'Device Not Found', guid)
       res.status(404).json(ErrorResponse(404, `guid : ${guid}`, 'device')).end()
     }
   } catch (error) {
@@ -53,7 +54,7 @@ export async function getAMTFeatures (req: Request, res: Response): Promise<void
     if (error instanceof MPSValidationError) {
       return res.status(error.status || 400).json(ErrorResponse(error.status || 400, error.message)).end()
     } else {
-      await req.mpsService.mqtt.publishEvent('fail', ['AMT_GetFeatures'], 'Internal Server Error')
+      await MqttProvider.publishEvent('fail', ['AMT_GetFeatures'], 'Internal Server Error')
       return res.status(500).json(ErrorResponse(500, 'Request failed during get AMT Features.')).end()
     }
   }
