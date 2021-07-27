@@ -27,7 +27,7 @@ export const odataValidator = (): any => {
     query('$top')
       .optional()
       .isInt({ min: 0 })
-      .withMessage('The numbers of items to return should be a positive integer'),
+      .withMessage('The number of items to return should be a positive integer'),
     query('$skip')
       .optional()
       .isInt({ min: 0 })
