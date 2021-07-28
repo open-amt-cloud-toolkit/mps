@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 1.4.0
+  version: 1.5.0
   title: Managed Prescence Server (MPS) API
   license:
     name: Apache 2.0
@@ -22,7 +22,7 @@ info:
 servers:
   # Added by API Auto Mocking Plugin
   - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/rbheopenamt/mps/1.3.0
+    url: https://virtserver.swaggerhub.com/rbheopenamt/mps/1.5.0
 security:
   - BearerAuth: []
 paths:
@@ -342,29 +342,56 @@ paths:
       tags:
         - Devices
       parameters:
-      - name: tags
-        in: query
-        description: Comma-delimited list of tags to query for
-        example: 'tags=NUC,Store #123'
-        required: false
-        schema:
-          type: string
-      - name: status
-        in: query
-        description: Specify '0' to query for disconnected devices or specify '1' for connected devices. To return all devices, omit this query parameter.
-        example: 'status=1'
-        required: false
-        schema:
-          type: integer
+        - in: query
+          name: $skip
+          required: false
+          schema:
+            type: integer
+          description: The number of items to skip before starting to collect the result set
+        - in: query
+          name: $top
+          required: false
+          schema:
+            type: integer
+          description: The number of items to return
+        - in: query
+          name: $count
+          required: false
+          schema:
+            type: boolean
+          description: The total number of domains to return
+        - in: query
+          name: tags
+          description: Comma-delimited list of tags to query for
+          example: 'tags=NUC,Store #123'
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: status
+          description: Specify '0' to query for disconnected devices or specify '1' for connected devices. To return all devices, omit this query parameter.
+          example: 'status=1'
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: method
+          description: Specify a conditional operator 'AND' or 'OR' to fetch the records with given tags .
+          example: 'method=AND'
+          required: false
+          schema:
+            type: string
       responses:
         200:
           description: 'Successful operation'
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Device'
+                oneOf:
+                   - type: array
+                     items:
+                       $ref: '#/components/schemas/Device'
+                   - $ref: '#/components/schemas/CountDevicesResponse'
         500:
           description: 'Internal server error'
     post:
@@ -1818,6 +1845,16 @@ components:
           type: array
           items:
             type: string
+    CountDevicesResponse:
+      title: CountDevicesResponse
+      type: object 
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Device'  
+        totalCount:
+          type: integer
     AddDevice:
       title: AddDevice
       example:

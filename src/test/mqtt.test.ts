@@ -92,7 +92,7 @@ describe('MQTT Turned ON Tests', () => {
     })
     MqttProvider.instance.turnedOn = true
     try {
-      await MqttProvider.publishEvent('success', ['testMethod'], 'Test Message')
+      MqttProvider.publishEvent('success', ['testMethod'], 'Test Message')
       expect(spy).toHaveBeenCalled()
     } catch (err) {
 
@@ -109,7 +109,7 @@ describe('MQTT Turned ON Tests', () => {
     })
     MqttProvider.instance.turnedOn = true
     try {
-      await MqttProvider.publishEvent('success', ['testMethod'], 'Test Message')
+      MqttProvider.publishEvent('success', ['testMethod'], 'Test Message')
 
     } catch (err) {
       expect(spy).toHaveBeenCalled()
@@ -200,7 +200,7 @@ describe('MQTT Turned OFF Tests', () => {
       return {} as any
     })
     MqttProvider.instance.turnedOn = false
-    await MqttProvider.publishEvent('success', ['testMethod'], 'Test Message')
+    MqttProvider.publishEvent('success', ['testMethod'], 'Test Message')
     expect(spy).not.toHaveBeenCalled()
   })
 })

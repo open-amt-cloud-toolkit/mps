@@ -27,26 +27,26 @@ export async function auditLog (req: Request<any, any, any, {startIndex?: number
       const amtstack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
       const startIndex: number = queryParams.startIndex == null ? 0 : queryParams.startIndex >= 1 ? queryParams.startIndex : 0
 
-      await MqttProvider.publishEvent('request', ['AMT_AuditLog'], 'Audit Log Requested', guid)
+      MqttProvider.publishEvent('request', ['AMT_AuditLog'], 'Audit Log Requested', guid)
 
       amtstack.GetAuditLogChunks(startIndex, async (stack, responses, status) => {
         stack.wsman.comm.socket.sendchannelclose()
         if (status === 200) {
-          await MqttProvider.publishEvent('success', ['AMT_AuditLog'], 'Sent Audit Log', guid)
+          MqttProvider.publishEvent('success', ['AMT_AuditLog'], 'Sent Audit Log', guid)
           res.status(200).json(responses).end()
         } else {
           log.error(`Power Action failed during GETAudit log for guid : ${guid}.`)
-          await MqttProvider.publishEvent('fail', ['AMT_AuditLog'], 'Audit Log Not Found', guid)
+          MqttProvider.publishEvent('fail', ['AMT_AuditLog'], 'Audit Log Not Found', guid)
           res.status(404).json(ErrorResponse(status, `Power Action failed during GETAudit log for guid : ${guid}.`)).end()
         }
       })
     } else {
-      await MqttProvider.publishEvent('fail', ['AMT_AuditLog'], 'Device Not Found', guid)
+      MqttProvider.publishEvent('fail', ['AMT_AuditLog'], 'Device Not Found', guid)
       res.status(404).json(ErrorResponse(404, `guid : ${guid}`, 'device')).end()
     }
   } catch (error) {
     log.error(`Exception in AMT AuditLog : ${error}`)
-    await MqttProvider.publishEvent('fail', ['AMT_AuditLog'], 'Internal Service Error')
+    MqttProvider.publishEvent('fail', ['AMT_AuditLog'], 'Internal Service Error')
     res.status(500).json(ErrorResponse(500, 'Request failed during AMT AuditLog.')).end()
   }
 }

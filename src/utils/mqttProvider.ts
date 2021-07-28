@@ -42,9 +42,12 @@ export class MqttProvider {
     MqttProvider.instance = this
   }
 
-  static async publishEvent (type: eventType, methods: string[], message: string, guid?: string): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
+  // Return type is any to get around the linter - Rule : no-floating-promises
+  // Publish event is meant to be fire and forget
+  static publishEvent (type: eventType, methods: string[], message: string, guid?: string): any {
     // Block message if mqtt option is off
-    if (!MqttProvider.instance.turnedOn) return
+    if (!MqttProvider.instance?.turnedOn) return
 
     const event: OpenAMTEvent = {
       type: type,
@@ -55,11 +58,11 @@ export class MqttProvider {
     }
 
     // Enforce message type names before publishing
-    return await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       MqttProvider.instance.client.publish('mps/events', JSON.stringify(event), function (err) {
         if (err == null) {
           log.debug('Event message published')
-          resolve()
+          resolve(null)
         } else {
           log.error('Event message failed')
           reject(new Error('Event message failed: ' + err.message))
@@ -69,7 +72,7 @@ export class MqttProvider {
   }
 
   static endBroker (): void {
-    if (!MqttProvider.instance.turnedOn) return
+    if (!MqttProvider.instance?.turnedOn) return
 
     MqttProvider.instance.client = MqttProvider.instance.client.end()
     log.info('MQTT client closed')

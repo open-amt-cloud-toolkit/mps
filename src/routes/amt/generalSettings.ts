@@ -17,26 +17,26 @@ export async function generalSettings (req: Request, res: Response): Promise<voi
     if (ciraconn) {
       const cred = await req.mpsService.secrets.getAMTCredentials(guid)
       const amtstack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
-      await MqttProvider.publishEvent('request', ['AMT_GeneralSettings'], 'General Settings Requested', guid)
+      MqttProvider.publishEvent('request', ['AMT_GeneralSettings'], 'General Settings Requested', guid)
 
       await amtstack.Get('AMT_GeneralSettings', async (obj, name, response, status) => {
         obj.wsman.comm.socket.sendchannelclose()
         if (status === 200) {
-          await MqttProvider.publishEvent('success', ['AMT_GeneralSettings'], 'Sent General Settings', guid)
+          MqttProvider.publishEvent('success', ['AMT_GeneralSettings'], 'Sent General Settings', guid)
           res.status(200).json(response).end()
         } else {
           log.error(`Request failed during GET AMT_GeneralSettings for guid : ${guid}.`)
-          await MqttProvider.publishEvent('fail', ['AMT_GeneralSettings'], 'Failed to Get General Settings', guid)
+          MqttProvider.publishEvent('fail', ['AMT_GeneralSettings'], 'Failed to Get General Settings', guid)
           res.status(status).json(ErrorResponse(status, `Request failed during GET AMT_GeneralSettings for guid : ${guid}.`)).end()
         }
       }, 0, 1)
     } else {
-      await MqttProvider.publishEvent('fail', ['AMT_GeneralSettings'], 'Device Not Found', guid)
+      MqttProvider.publishEvent('fail', ['AMT_GeneralSettings'], 'Device Not Found', guid)
       res.status(404).json(ErrorResponse(404, `guid : ${guid}`, 'device')).end()
     }
   } catch (error) {
     log.error(`Exception in AMT GeneralSettings: ${error}`)
-    await MqttProvider.publishEvent('fail', ['AMT_GeneralSettings'], 'Internal Server Error')
+    MqttProvider.publishEvent('fail', ['AMT_GeneralSettings'], 'Internal Server Error')
     res.status(500).json(ErrorResponse(500, 'Request failed during AMT GeneralSettings.')).end()
   }
 }
