@@ -38,8 +38,7 @@ export class MPSMicroservice {
   async CIRAConnected (guid: string): Promise<void> {
     const device: Device = await this.db.devices.getById(guid)
     device.connectionStatus = true
-    const instanceName = this.config.instance_name
-    device.mpsInstance = instanceName === '{{.Task.Name}}' ? 'mps' : instanceName
+    device.mpsInstance = this.config.instance_name
     const results = await this.db.devices.update(device)
     if (results) {
       log.debug(`CIRA connection established for ${guid}`)
