@@ -45,7 +45,7 @@ try {
   config.instance_name = config.instance_name === '{{.Task.Name}}' ? 'mps' : config.instance_name
   log.silly(`Updated config... ${JSON.stringify(config, null, 2)}`)
   Environment.Config = config
-  // MQTT Connection
+  // MQTT Connection - Creates a static connection to be access across MPS
   const mqtt: MqttProvider = new MqttProvider(config)
   mqtt.connectBroker()
 
@@ -60,7 +60,7 @@ try {
     process.on(signal, () => {
       log.debug('signal received :', signal)
       deviceDb.clearInstanceStatus(Environment.Config.instance_name)
-      mqtt.endBroker()
+      MqttProvider.endBroker()
       if (signal !== 'exit') {
         setTimeout(() => process.exit(), 1000)
       }
@@ -103,7 +103,7 @@ try {
 
     log.debug('certs loaded..')
 
-    const mps = new MPSMicroservice(config, db, secrets, certs, mqtt)
+    const mps = new MPSMicroservice(config, db, secrets, certs)
     mps.start()
   }
 } catch (error) {
