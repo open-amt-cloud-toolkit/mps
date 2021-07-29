@@ -11,7 +11,7 @@ import { ErrorResponse } from '../../utils/amtHelper'
 import { validationResult } from 'express-validator'
 import { MqttProvider } from '../../utils/mqttProvider'
 
-export async function auditLog (req: Request<any, any, any, {startIndex?: number}>, res: Response): Promise<void> {
+export async function auditLog (req: Request<any, any, any, { startIndex?: number }>, res: Response): Promise<void> {
   try {
     const queryParams = req.query
     const guid = req.params.guid
@@ -23,7 +23,7 @@ export async function auditLog (req: Request<any, any, any, {startIndex?: number
 
     const ciraconn = req.mpsService.mpsserver.ciraConnections[guid]
     if (ciraconn && ciraconn.readyState === 'open') {
-      const cred = await req.mpsService.secrets.getSecretAtPath(guid)
+      const cred = await req.mpsService.secrets.getAMTCredentials(guid)
       const amtstack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
       const startIndex: number = queryParams.startIndex == null ? 0 : queryParams.startIndex >= 1 ? queryParams.startIndex : 0
 
