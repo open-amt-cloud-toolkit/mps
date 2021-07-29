@@ -42,10 +42,9 @@ try {
   const certPath = path.join(__dirname, config.cert_path)
   config.data_path = path.join(__dirname, config.data_path)
   let certs: certificatesType
-
+  config.instance_name = config.instance_name === '{{.Task.Name}}' ? 'mps' : config.instance_name
   log.silly(`Updated config... ${JSON.stringify(config, null, 2)}`)
   Environment.Config = config
-
   // MQTT Connection
   const mqtt: MqttProvider = new MqttProvider(config)
   mqtt.connectBroker()
