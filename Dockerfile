@@ -15,13 +15,14 @@ EXPOSE 4433
 EXPOSE 3000
 
 COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --unsafe-perm
+
 COPY tsconfig.json ./
 COPY src ./src/
 COPY agent ./agent/
 COPY .mpsrc ./
-
-# Install dependencies
-RUN npm ci --unsafe-perm
 
 # Transpile TS -> JS
 RUN npm run build
