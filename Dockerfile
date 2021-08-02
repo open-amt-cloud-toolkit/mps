@@ -1,5 +1,5 @@
 #*********************************************************************
-# Copyright (c) Intel Corporation 2020
+# Copyright (c) Intel Corporation 2021
 # SPDX-License-Identifier: Apache-2.0
 #*********************************************************************/
 #Multistage docker layer to isolate the git credentials
@@ -7,7 +7,7 @@
 ARG BASE=node:14-buster-slim
 FROM ${BASE} as builder
 LABEL license='SPDX-License-Identifier: Apache-2.0' \
-      copyright='Copyright (c) 2021: Intel'
+      copyright='Copyright (c) Intel Corporation 2021'
 
 WORKDIR /mps-microservice
 
