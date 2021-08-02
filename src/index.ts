@@ -42,11 +42,10 @@ try {
   const certPath = path.join(__dirname, config.cert_path)
   config.data_path = path.join(__dirname, config.data_path)
   let certs: certificatesType
-
+  config.instance_name = config.instance_name === '{{.Task.Name}}' ? 'mps' : config.instance_name
   log.silly(`Updated config... ${JSON.stringify(config, null, 2)}`)
   Environment.Config = config
-
-  // MQTT Connection
+  // MQTT Connection - Creates a static connection to be access across MPS
   const mqtt: MqttProvider = new MqttProvider(config)
   mqtt.connectBroker()
 
@@ -61,7 +60,7 @@ try {
     process.on(signal, () => {
       log.debug('signal received :', signal)
       deviceDb.clearInstanceStatus(Environment.Config.instance_name)
-      mqtt.endBroker()
+      MqttProvider.endBroker()
       if (signal !== 'exit') {
         setTimeout(() => process.exit(), 1000)
       }

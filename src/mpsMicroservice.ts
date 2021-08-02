@@ -9,7 +9,6 @@ import { MPSServer } from './server/mpsserver'
 import { logger as log } from './utils/logger'
 import { IDbProvider } from './interfaces/IDbProvider'
 import { Device } from './models/models'
-import { MqttProvider } from './utils/mqttProvider'
 import { ISecretManagerService } from './interfaces/ISecretManagerService'
 
 export class MPSMicroservice {
@@ -20,14 +19,12 @@ export class MPSMicroservice {
   mpsComputerList = {}
   db: IDbProvider
   secrets: ISecretManagerService
-  mqtt: MqttProvider
-  constructor (config: configType, db: IDbProvider, secrets: ISecretManagerService, certs: certificatesType, mqtt?: MqttProvider) {
+  constructor (config: configType, db: IDbProvider, secrets: ISecretManagerService, certs: certificatesType) {
     try {
       this.config = config
       this.db = db
       this.secrets = secrets
       this.certs = certs
-      this.mqtt = mqtt
     } catch (e) {
       log.error(`Exception in MPS Microservice: ${e}`)
     }
@@ -41,8 +38,7 @@ export class MPSMicroservice {
   async CIRAConnected (guid: string): Promise<void> {
     const device: Device = await this.db.devices.getById(guid)
     device.connectionStatus = true
-    const instanceName = this.config.instance_name
-    device.mpsInstance = instanceName === '{{.Task.Name}}' ? 'mps' : instanceName
+    device.mpsInstance = this.config.instance_name
     const results = await this.db.devices.update(device)
     if (results) {
       log.debug(`CIRA connection established for ${guid}`)
