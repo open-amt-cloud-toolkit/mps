@@ -102,10 +102,9 @@ try {
     }
 
     log.debug('certs loaded..')
-
-    const mps = new MPSMicroservice(config, db, secrets, certs)
-    mps.start()
   }
+  const mps = new MPSMicroservice(config, db, secrets, certs)
+  mps.start()
 } catch (error) {
   log.error('Error starting MPS microservice. Check server logs.')
   log.error(error)
