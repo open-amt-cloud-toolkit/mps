@@ -19,14 +19,14 @@ export async function getAllDevices (req, res): Promise<void> {
     }
     let list: Device[] = []
 
-    if (req.query.$tags != null) {
-      const tags = req.query.$tags.split(',')
-      list = await db.getByTags(tags, req.query.$method, req.query.$top, req.query.$skip)
+    if (req.query.tags != null) {
+      const tags = req.query.tags.split(',')
+      list = await db.getByTags(tags, req.query.method, req.query.$top, req.query.$skip)
     } else {
       list = await db.get(req.query.$top, req.query.$skip)
     }
     if (req.query.$status != null) {
-      list = list.filter(x => x.connectionStatus === req.query.$status)
+      list = list.filter(x => x.connectionStatus === req.query.status)
     }
     if (count != null && (count === true || count === 1)) {
       const count: number = await db.getCount()
