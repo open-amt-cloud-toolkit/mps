@@ -23,7 +23,7 @@
     "cors_origin":"*",
     "cors_headers":"*",
     "cors_methods":"*",
-    "connection_string": "postgresql://postgresadmin:admin123@localhost:5432/mpsdb",
+    "connection_string": "postgresql://<USERNAME>:<PASSWORD>@localhost:5432/mpsdb?sslmode=no-verify",
     "instance_name" : "localhost",
     "mps_tls_config" : {
       "key": "../private/mpsserver-cert-private.key",
