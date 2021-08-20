@@ -17,8 +17,11 @@ export class DeviceDb implements IDeviceDb {
     this.db = db ?? new PostgresDb(Environment.Config.connection_string)
   }
 
-  async getCount (): Promise<number> {
-    const result = await this.db.query('SELECT count(*) OVER() AS total_count FROM devices', [])
+  async getCount (tenantId: string = ''): Promise<number> {
+    const result = await this.db.query(`
+    SELECT count(*) OVER() AS total_count 
+    FROM devices
+    WHERE tenantid = $1`, [tenantId])
     let count = 0
     if (result != null) {
       count = Number(result?.rows[0]?.total_count)
@@ -30,8 +33,13 @@ export class DeviceDb implements IDeviceDb {
    * @description Get all devices from DB
    * @returns {Device[]} returns an array of objects
    */
-  async get (top: number = DEFAULT_TOP, skip: number = DEFAULT_SKIP): Promise<Device[]> {
-    const results = await this.db.query('SELECT * FROM devices ORDER BY guid LIMIT $1 OFFSET $2', [top, skip])
+  async get (top: number = DEFAULT_TOP, skip: number = DEFAULT_SKIP, tenantId: string = ''): Promise<Device[]> {
+    const results = await this.db.query(`
+    SELECT * 
+    FROM devices
+    WHERE tenantid = $3 
+    ORDER BY guid 
+    LIMIT $1 OFFSET $2`, [top, skip, tenantId])
     return results.rows.map(p => {
       const result = mapToDevice(p)
       return result
@@ -43,8 +51,11 @@ export class DeviceDb implements IDeviceDb {
    * @param {string} guid
    * @returns {Device} Device object
    */
-  async getById (guid: string): Promise<Device> {
-    const results = await this.db.query('SELECT * FROM devices WHERE guid = $1', [guid])
+  async getById (guid: string, tenantId: string = ''): Promise<Device> {
+    const results = await this.db.query(`
+    SELECT * 
+    FROM devices 
+    WHERE guid = $1 and tenantid = $2`, [guid, tenantId])
     let domain: Device = null
     if (results.rowCount > 0) {
       domain = mapToDevice(results.rows[0])
@@ -52,12 +63,22 @@ export class DeviceDb implements IDeviceDb {
     return domain
   }
 
-  async getByTags (tags: string[], method: string, top: number = DEFAULT_TOP, skip: number = DEFAULT_SKIP): Promise<Device[]> {
+  async getByTags (tags: string[], method: string, top: number = DEFAULT_TOP, skip: number = DEFAULT_SKIP, tenantId: string = ''): Promise<Device[]> {
     let results
     if (method === 'AND') {
-      results = await this.db.query('SELECT * FROM devices WHERE tags @> $1 ORDER BY guid LIMIT $2 OFFSET $3', [tags, top, skip])
+      results = await this.db.query(`
+      SELECT * 
+      FROM devices 
+      WHERE tags @> $1 and tenantId = $4
+      ORDER BY guid 
+      LIMIT $2 OFFSET $3`, [tags, top, skip, tenantId])
     } else { // assume OR
-      results = await this.db.query('SELECT * FROM devices WHERE tags && $1 ORDER BY guid LIMIT $2 OFFSET $3', [tags, top, skip])
+      results = await this.db.query(`
+      SELECT * 
+      FROM devices 
+      WHERE tags && $1 and tenantId = $4
+      ORDER BY guid 
+      LIMIT $2 OFFSET $3`, [tags, top, skip, tenantId])
     }
     return results.rows.map(p => {
       const result = mapToDevice(p)
@@ -65,8 +86,11 @@ export class DeviceDb implements IDeviceDb {
     })
   }
 
-  async getDistinctTags (): Promise<string[]> {
-    const results = await this.db.query('SELECT DISTINCT unnest(tags) as tag FROM Devices')
+  async getDistinctTags (tenantId: string = ''): Promise<string[]> {
+    const results = await this.db.query(`
+    SELECT DISTINCT unnest(tags) as tag 
+    FROM Devices
+    WHERE tenantid = $1`, [tenantId])
     return results.rows.map(p => {
       return p.tag
     })
@@ -79,15 +103,18 @@ export class DeviceDb implements IDeviceDb {
    */
   async insert (device: Device): Promise<Device> {
     try {
-      const results = await this.db.query('INSERT INTO devices(guid, hostname, tags, mpsinstance, connectionstatus, mpsusername) values($1, $2, ARRAY(SELECT json_array_elements_text($3)), $4, $5, $6)',
-        [
-          device.guid,
-          device.hostname,
-          JSON.stringify(device.tags),
-          device.mpsInstance,
-          device.connectionStatus,
-          device.mpsusername
-        ])
+      const results = await this.db.query(`
+      INSERT INTO devices(guid, hostname, tags, mpsinstance, connectionstatus, mpsusername, tenantid) 
+      values($1, $2, ARRAY(SELECT json_array_elements_text($3)), $4, $5, $6, $7)`,
+      [
+        device.guid,
+        device.hostname,
+        JSON.stringify(device.tags),
+        device.mpsInstance,
+        device.connectionStatus,
+        device.mpsusername,
+        device.tenantId
+      ])
       if (results.rowCount > 0) {
         return await this.getById(device.guid)
       }
@@ -108,15 +135,19 @@ export class DeviceDb implements IDeviceDb {
   */
   async update (device: Device): Promise <Device> {
     try {
-      const results = await this.db.query('UPDATE devices SET tags=$2, hostname=$3, mpsinstance=$4, connectionstatus=$5, mpsusername=$6 WHERE guid=$1',
-        [
-          device.guid,
-          device.tags,
-          device.hostname,
-          device.mpsInstance,
-          device.connectionStatus,
-          device.mpsusername
-        ])
+      const results = await this.db.query(`
+      UPDATE devices 
+      SET tags=$2, hostname=$3, mpsinstance=$4, connectionstatus=$5, mpsusername=$6 
+      WHERE guid=$1 and tenantid = $7`,
+      [
+        device.guid,
+        device.tags,
+        device.hostname,
+        device.mpsInstance,
+        device.connectionStatus,
+        device.mpsusername,
+        device.tenantId
+      ])
       if (results.rowCount > 0) {
         return await this.getById(device.guid)
       }
@@ -132,14 +163,18 @@ export class DeviceDb implements IDeviceDb {
   * @param {string} mpsInstance
   * @returns {void}
   */
-  clearInstanceStatus (mpsInstance: string): void {
+  clearInstanceStatus (mpsInstance: string, tenantId: string = ''): void {
     try {
-      const results = this.db.query('UPDATE devices SET mpsinstance=$2, connectionstatus=$3 WHERE mpsinstance=$1',
-        [
-          mpsInstance,
-          null,
-          false
-        ])
+      const results = this.db.query(`
+      UPDATE devices 
+      SET mpsinstance=$2, connectionstatus=$3 
+      WHERE mpsinstance=$1 and tenantId = $4`,
+      [
+        mpsInstance,
+        null,
+        false,
+        tenantId
+      ])
       log.debug('Clean DB instance before exit', results)
     } catch (error) {
       log.error('Failed to update DB:', error)
@@ -151,8 +186,10 @@ export class DeviceDb implements IDeviceDb {
   * @param {string} guid
   * @returns {boolean} Return true on successful deletion
   */
-  async delete (guid): Promise<boolean> {
-    const results = await this.db.query('DELETE FROM devices WHERE guid = $1', [guid])
+  async delete (guid: string, tenantId: string = ''): Promise<boolean> {
+    const results = await this.db.query(`
+    DELETE FROM devices 
+    WHERE guid = $1 and tenantid = $2`, [guid, tenantId])
     if (results.rowCount > 0) {
       return true
     }

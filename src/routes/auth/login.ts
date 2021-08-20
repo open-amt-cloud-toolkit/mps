@@ -18,6 +18,7 @@ export async function login (req: Request, res: Response): Promise<void> {
     const signature = jws.sign({
       header: { alg: 'HS256', typ: 'JWT' },
       payload: {
+        tenantId: '',
         iss: req.mpsService.config.jwt_issuer,
         exp: expiration
       },

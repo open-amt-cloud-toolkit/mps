@@ -89,9 +89,11 @@ describe('MPS Server', function () {
     let device = {mpsusername:'admin'}
     devicesMock = {
        get: async ()=>{ return [] as Device[] },
+       getCount: async ()=>{ return 0 },
        getDistinctTags:async ()=>{return ['tag']},
        getById:async (guid)=>{return device as Device},
        getByTags:async (tags)=>{return [device] as Device[]},
+       clearInstanceStatus: async () => {},
        delete:async (guid)=>{return true},
        insert:async (device)=>{return {} as Device},
        update:async ()=>{return {} as Device},

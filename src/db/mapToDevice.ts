@@ -11,6 +11,7 @@ export function mapToDevice (result): Device {
     tags: result.tags,
     mpsInstance: result.mpsinstance,
     connectionStatus: result.connectionstatus,
-    mpsusername: result.mpsusername
+    mpsusername: result.mpsusername,
+    tenantId: result.tenantid
   }
 }
