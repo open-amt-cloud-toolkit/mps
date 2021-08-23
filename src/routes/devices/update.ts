@@ -21,6 +21,7 @@ export async function updateDevice (req: Request, res: Response): Promise<void> 
       res.status(404).json({ error: 'NOT FOUND', message: `Device ID ${req.body.guid} not found` }).end()
     } else {
       device = { ...device, ...req.body }
+      device.tenantId = '' // ensure from token and not overwritten
       const results = await db.update(device)
       res.status(200).json(results).end()
     }

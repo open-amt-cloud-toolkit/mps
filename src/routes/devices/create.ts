@@ -24,6 +24,7 @@ export async function insertDevice (req: Request, res: Response): Promise<void> 
       device.tags = req.body.tags ?? device.tags
       device.connectionStatus = device.connectionStatus ?? false
       device.mpsusername = req.body.mpsusername ?? device.mpsusername
+      device.tenantId = req.body.tenantId ?? ''
       const results = await db.update(device)
       res.status(200).json(results)
     } else {
@@ -33,7 +34,8 @@ export async function insertDevice (req: Request, res: Response): Promise<void> 
         hostname: req.body.hostname ?? null,
         tags: req.body.tags ?? null,
         mpsusername: req.body.mpsusername,
-        mpsInstance: null
+        mpsInstance: null,
+        tenantId: req.body.tenantId ?? ''
       }
       const results = await db.insert(device)
       res.status(201).json(results)
