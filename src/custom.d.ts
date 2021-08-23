@@ -4,5 +4,6 @@ declare module 'express' {
   export interface Request {
     mpsService: MPSMicroservice
     amtFactory: any
+    amtStack: any
   }
 }

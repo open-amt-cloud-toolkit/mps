@@ -7,35 +7,27 @@
 import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
 import { ErrorResponse } from '../../utils/amtHelper'
-import { amtPort } from '../../utils/constants'
 import { MqttProvider } from '../../utils/mqttProvider'
 
 export async function powerCapabilities (req: Request, res: Response): Promise<void> {
   try {
     const guid = req.params.guid
-    const ciraconn = req.mpsService.mpsserver.ciraConnections[guid]
-    if (ciraconn && ciraconn.readyState === 'open') {
-      const cred = await req.mpsService.secrets.getAMTCredentials(guid)
-      const amtstack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
-      MqttProvider.publishEvent('request', ['AMT_BootCapabilities'], 'Power Capabilities Requested', guid)
 
-      getVersion(amtstack, req, res, (responses, res) => {
-        const versionData = responses
-        amtstack.Get('AMT_BootCapabilities', async (stack, name, responses, status) => {
-          if (status !== 200) {
-            log.error(`Request failed during GET AMT_BootCapabilities for guid : ${guid}`)
-            return res.status(status).json(ErrorResponse(status, `Request failed during GET AMT_BootCapabilities for guid : ${guid}`)).end()
-          }
-          // console.log("AMT_BootCapabilities info of " + uuid + " sent.");
-          const powerCap = await bootCapabilities(versionData, responses.Body)
-          MqttProvider.publishEvent('success', ['AMT_BootCapabilities'], 'Sent Power Capabilities', guid)
-          return res.status(200).json(powerCap).end()
-        }, 0, 1)
-      })
-    } else {
-      MqttProvider.publishEvent('fail', ['AMT_BootCapabilities'], 'Device Not Found', guid)
-      res.status(404).json(ErrorResponse(404, `guid : ${guid}`, 'device')).end()
-    }
+    MqttProvider.publishEvent('request', ['AMT_BootCapabilities'], 'Power Capabilities Requested', guid)
+
+    getVersion(req, res, (responses, res) => {
+      const versionData = responses
+      req.amtStack.Get('AMT_BootCapabilities', async (stack, name, responses, status) => {
+        if (status !== 200) {
+          log.error(`Request failed during GET AMT_BootCapabilities for guid : ${guid}`)
+          return res.status(status).json(ErrorResponse(status, `Request failed during GET AMT_BootCapabilities for guid : ${guid}`)).end()
+        }
+        // console.log("AMT_BootCapabilities info of " + uuid + " sent.");
+        const powerCap = await bootCapabilities(versionData, responses.Body)
+        MqttProvider.publishEvent('success', ['AMT_BootCapabilities'], 'Sent Power Capabilities', guid)
+        return res.status(200).json(powerCap).end()
+      }, 0, 1)
+    })
   } catch (error) {
     log.error(`Exception in AMT PowerCapabilities : ${error}`)
     MqttProvider.publishEvent('fail', ['AMT_BootCapabilities'], 'Internal Server Error')
@@ -84,10 +76,10 @@ function parseVersionData (amtVersionData): number {
 }
 
 // Returns AMT version data
-function getVersion (amtstack, req, res, func): void {
+function getVersion (req: Request, res: Response, func): void {
   try {
-    amtstack.BatchEnum('', ['CIM_SoftwareIdentity', '*AMT_SetupAndConfigurationService'],
-      function (stack, name, responses, status) {
+    req.amtStack.BatchEnum('', ['CIM_SoftwareIdentity', '*AMT_SetupAndConfigurationService'],
+      (stack, name, responses, status) => {
         stack.wsman.comm.socket.sendchannelclose()
         if (status !== 200) {
           res.status(status).json(ErrorResponse(status, 'Request failed during AMTVersion BatchEnum Exec.')).end()
