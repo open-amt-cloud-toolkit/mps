@@ -7,47 +7,39 @@
 
 import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
-import { amtPort, AMTFeaturesConst, UserConsentOptions } from '../../utils/constants'
+import { AMTFeaturesConst, UserConsentOptions } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { AMTFeatures } from '../../utils/AMTFeatures'
 import { MPSValidationError } from '../../utils/MPSValidationError'
 import { MqttProvider } from '../../utils/mqttProvider'
 
 export async function getAMTFeatures (req: Request, res: Response): Promise<void> {
-  let redir, sol, ider, kvm, userConsent
   try {
     const payload = req.body
     const guid = req.params.guid
-    const ciraconn = req.mpsService.mpsserver.ciraConnections[guid]
-    if (ciraconn && ciraconn.readyState === 'open') {
-      MqttProvider.publishEvent('request', ['AMT_GetFeatures'], 'Get AMT Features Requested', guid)
 
-      const cred = await req.mpsService.secrets.getAMTCredentials(guid)
-      const amtstack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
-      const wsmanResponse = await AMTFeatures.getAMTFeatures(amtstack, payload)
-      amtstack.wsman.comm.socket.sendchannelclose()
-      if (wsmanResponse[AMTFeaturesConst.AMT_REDIR_SERVICE] &&
+    MqttProvider.publishEvent('request', ['AMT_GetFeatures'], 'Get AMT Features Requested', guid)
+
+    const wsmanResponse = await AMTFeatures.getAMTFeatures(req.amtStack, payload)
+    req.amtStack.wsman.comm.socket.sendchannelclose()
+    if (wsmanResponse[AMTFeaturesConst.AMT_REDIR_SERVICE] &&
                       wsmanResponse[AMTFeaturesConst.AMT_KVM_REDIR] &&
                       wsmanResponse[AMTFeaturesConst.AMT_OPTIN_SERVICE]) {
-        const amtRedirResponse = wsmanResponse[AMTFeaturesConst.AMT_REDIR_SERVICE].response
-        const kvmRedirResponse = wsmanResponse[AMTFeaturesConst.AMT_KVM_REDIR].response
-        const optServiceRes = wsmanResponse[AMTFeaturesConst.AMT_OPTIN_SERVICE].response
+      const amtRedirResponse = wsmanResponse[AMTFeaturesConst.AMT_REDIR_SERVICE].response
+      const kvmRedirResponse = wsmanResponse[AMTFeaturesConst.AMT_KVM_REDIR].response
+      const optServiceRes = wsmanResponse[AMTFeaturesConst.AMT_OPTIN_SERVICE].response
 
-        redir = (amtRedirResponse[AMTFeaturesConst.AMT_REDIR_LISTENER] === true)
-        sol = ((amtRedirResponse[AMTFeaturesConst.AMT_REDIR_STATE] & 2) !== 0)
-        ider = ((amtRedirResponse[AMTFeaturesConst.AMT_REDIR_STATE] & 1) !== 0)
-        kvm = ((kvmRedirResponse.EnabledState === 6 && kvmRedirResponse.RequestedState === 2) ||
+      const redir = (amtRedirResponse[AMTFeaturesConst.AMT_REDIR_LISTENER] === true)
+      const sol = ((amtRedirResponse[AMTFeaturesConst.AMT_REDIR_STATE] & 2) !== 0)
+      const ider = ((amtRedirResponse[AMTFeaturesConst.AMT_REDIR_STATE] & 1) !== 0)
+      const kvm = ((kvmRedirResponse.EnabledState === 6 && kvmRedirResponse.RequestedState === 2) ||
                           kvmRedirResponse.EnabledState === 2 || kvmRedirResponse.EnabledState === 6)
 
-        const value = optServiceRes[AMTFeaturesConst.AMT_USER_CONSENT]
-        userConsent = Object.keys(UserConsentOptions).find(key => UserConsentOptions[key] === value)
+      const value = optServiceRes[AMTFeaturesConst.AMT_USER_CONSENT]
+      const userConsent = Object.keys(UserConsentOptions).find(key => UserConsentOptions[key] === value)
 
-        MqttProvider.publishEvent('success', ['AMT_GetFeatures'], 'Get AMT Features', guid)
-        res.status(200).json({ userConsent: userConsent, redirection: redir, KVM: kvm, SOL: sol, IDER: ider }).end()
-      }
-    } else {
-      MqttProvider.publishEvent('fail', ['AMT_GetFeatures'], 'Device Not Found', guid)
-      res.status(404).json(ErrorResponse(404, `guid : ${guid}`, 'device')).end()
+      MqttProvider.publishEvent('success', ['AMT_GetFeatures'], 'Get AMT Features', guid)
+      res.status(200).json({ userConsent: userConsent, redirection: redir, KVM: kvm, SOL: sol, IDER: ider }).end()
     }
   } catch (error) {
     log.error(`Exception in get AMT Features: ${error}`)
