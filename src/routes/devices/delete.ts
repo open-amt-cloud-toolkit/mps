@@ -2,7 +2,6 @@
  * Copyright (c) Intel Corporation 2021
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
-import { validationResult } from 'express-validator'
 import { Request, Response } from 'express'
 import { DeviceDb } from '../../db/device'
 import { logger as log } from '../../utils/logger'
@@ -10,12 +9,6 @@ import { logger as log } from '../../utils/logger'
 export async function deleteDevice (req: Request, res: Response): Promise<void> {
   const db = new DeviceDb()
   try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      res.status(400).json({ errors: errors.array() })
-      return
-    }
-
     const device = await db.getById(req.params.guid)
     if (device == null) {
       res.status(404).json({ error: 'NOT FOUND', message: `Device ID ${req.params.guid} not found` }).end()
