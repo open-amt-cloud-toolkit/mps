@@ -19,7 +19,7 @@ import { amtFeaturesValidator } from './amtFeatureValidator'
 import { powerActionValidator } from './powerActionValidator'
 import { auditLogValidator } from './auditLogValidator'
 import { bootOptionsValidator } from './bootOptionsValidator'
-import ciraMiddleware from '../../middleware/amt'
+import ciraMiddleware from '../../middleware/cira'
 import validateMiddleware from '../../middleware/validate'
 
 const amtRouter: Router = Router()
