@@ -22,6 +22,11 @@ import { bootOptionsValidator } from './bootOptionsValidator'
 import ciraMiddleware from '../../middleware/amt'
 import validateMiddleware from '../../middleware/validate'
 
+import { cancel } from './userConsent/cancel'
+import { request } from './userConsent/request'
+import { send } from './userConsent/send'
+import { validator as userConsentValidator } from './userConsent/validator'
+
 const amtRouter: Router = Router()
 
 amtRouter.get('/log/audit/:guid', auditLogValidator(), validateMiddleware, ciraMiddleware, auditLog as any)
@@ -35,5 +40,9 @@ amtRouter.get('/power/state/:guid', ciraMiddleware, powerState)
 amtRouter.get('/features/:guid', ciraMiddleware, getAMTFeatures)
 amtRouter.post('/features/:guid', amtFeaturesValidator(), validateMiddleware, ciraMiddleware, setAMTFeatures)
 amtRouter.get('/version/:guid', ciraMiddleware, version)
+
+amtRouter.get('/userConsentCode/cancel/:guid', ciraMiddleware, cancel)
+amtRouter.get('/userConsentCode/:guid', ciraMiddleware, request)
+amtRouter.post('/userConsentCode/:guid', userConsentValidator(), validateMiddleware, ciraMiddleware, send)
 
 export default amtRouter
