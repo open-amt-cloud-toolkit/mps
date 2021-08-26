@@ -16,6 +16,7 @@ export class WSManMessageCreator {
   }
 
   createXml = (header: String, body: String): string => {
+    if (header == null || body == null) { return null }
     const response = this.xmlCommonPrefix + header + body
     return response
   }

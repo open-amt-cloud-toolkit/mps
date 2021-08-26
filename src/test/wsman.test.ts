@@ -32,6 +32,28 @@ describe('createXml Tests', function () {
       done(new Error('Pull WSMan string failed'))
     }
   })
+  it('should return null if header is null/undefined', function (done) {
+    let header = null
+    let body = wsmanMessageCreator.createBody('Enumerate')
+    let response = wsmanMessageCreator.createXml(header, body)
+    const correctResponse = null
+    if (response === correctResponse) {
+      done()
+    } else {
+      done(new Error('createXml did not return null'))
+    }
+  })
+  it('should return null if body is null/undefined', function (done) {
+    let header = wsmanMessageCreator.createHeader('enumeration/Pull', 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ServiceAvailableToElement', '1')
+    let body = null
+    let response = wsmanMessageCreator.createXml(header, body)
+    const correctResponse = null
+    if (response === correctResponse) {
+      done()
+    } else {
+      done(new Error('createXml did not return null'))
+    }
+  })
 })
 describe('createHeader Tests', function () {
   it('creates a correct header with action, resourceUri, and messageId provided', function (done) {
@@ -49,7 +71,7 @@ describe('createHeader Tests', function () {
     if (header === correctHeader) {
       done()
     } else {
-      done(new Error('createHeader() did not return null'))
+      done(new Error('createHeader did not return null'))
     }
   })
   it('returns null if missing resourceUri', function (done) {
@@ -58,7 +80,7 @@ describe('createHeader Tests', function () {
     if (header === correctHeader) {
       done()
     } else {
-      done(new Error('createHeader() did not return null'))
+      done(new Error('createHeader did not return null'))
     }
   })
   it('returns null if missing messageId', function (done) {
@@ -67,7 +89,7 @@ describe('createHeader Tests', function () {
     if (header === correctHeader) {
       done()
     } else {
-      done(new Error('createHeader() did not return null'))
+      done(new Error('createHeader did not return null'))
     }
   })
   it('applies custom address correctly', function (done) {
@@ -76,7 +98,7 @@ describe('createHeader Tests', function () {
     if (header === correctHeader) {
       done()
     } else {
-      done(new Error('did not input address correctly'))
+      done(new Error('createHeader did not input address correctly'))
     }
   })
   it('applies custom timeout correctly', function (done) {
@@ -85,7 +107,7 @@ describe('createHeader Tests', function () {
     if (header === correctHeader) {
       done()
     } else {
-      done(new Error('did not input timeout correctly'))
+      done(new Error('createHeader did not input timeout correctly'))
     }
   })
 })
@@ -96,7 +118,7 @@ describe('createBody Tests', function () {
     if (body === correctBody){
       done()
     } else {
-      done(new Error('did not create Pull body correctly'))
+      done(new Error('createBody did not create Pull body correctly'))
     }
   })
   it('creates correct Enumerate body', function (done) {
@@ -105,7 +127,7 @@ describe('createBody Tests', function () {
     if (body === correctBody){
       done()
     } else {
-      done(new Error('did not create Enumerate body correctly'))
+      done(new Error('createBody did not create Enumerate body correctly'))
     }
   })
   it('should return null if Pull is missing enumerationContext', function (done) {
@@ -114,7 +136,7 @@ describe('createBody Tests', function () {
     if (body === correctBody){
       done()
     } else {
-      done(new Error('did not return null'))
+      done(new Error('createBody did not return null'))
     }
   })
   it('should return null if method is not handled', function (done) {
@@ -123,7 +145,7 @@ describe('createBody Tests', function () {
     if (body === correctBody){
       done()
     } else {
-      done(new Error('did not return null'))
+      done(new Error('createBody did not return null'))
     }
   })
 })
