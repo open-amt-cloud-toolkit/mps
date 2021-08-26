@@ -16,11 +16,11 @@ describe('IPS Tests', function () {
     })
     it('should return null if messageId is missing', function () {
       let response = ipsClass.ips_OptInService(IPS_Methods.GET, null)
-      expect(response).toBeNull
+      expect(response).toBeNull()
     })
     it('should return null if method is unsupported', function () {
       let response = ipsClass.ips_OptInService(IPS_Methods.ENUMERATE, '1')
-      expect(response).toBeNull
+      expect(response).toBeNull()
     })
   })
 })

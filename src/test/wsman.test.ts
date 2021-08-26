@@ -26,13 +26,13 @@ describe('WSManMessageCreator Tests', function () {
       let header = null
       let body = wsmanMessageCreator.createBody('Enumerate')
       let response = wsmanMessageCreator.createXml(header, body)
-      expect(response).toBeNull
+      expect(response).toBeNull()
     })
     it('should return null if body is null/undefined', function () {
       let header = wsmanMessageCreator.createHeader('enumeration/Pull', 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ServiceAvailableToElement', '1')
       let body = null
       let response = wsmanMessageCreator.createXml(header, body)
-      expect(response).toBeNull
+      expect(response).toBeNull()
     })
   })
   describe('createHeader Tests', function () {
@@ -43,15 +43,15 @@ describe('WSManMessageCreator Tests', function () {
     })
     it('returns null if missing action', function () {
       let header = wsmanMessageCreator.createHeader(null, 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ServiceAvailableToElement', '1')
-      expect(header).toBeNull
+      expect(header).toBeNull()
     })
     it('returns null if missing resourceUri', function () {
       let header = wsmanMessageCreator.createHeader('enumeration/Enumerate', null, '1')
-      expect(header).toBeNull
+      expect(header).toBeNull()
     })
     it('returns null if missing messageId', function () {
       let header = wsmanMessageCreator.createHeader('enumeration/Enumerate', 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ServiceAvailableToElement', null)
-      expect(header).toBeNull
+      expect(header).toBeNull()
     })
     it('applies custom address correctly', function () {
       const correctHeader = '<Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/enumeration/Enumerate</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ServiceAvailableToElement</w:ResourceURI><a:MessageID>1</a:MessageID><a:ReplyTo><a:Address>customAddress</a:Address></a:ReplyTo><w:OperationTimeout>PT60S</w:OperationTimeout></Header>'
@@ -77,11 +77,11 @@ describe('WSManMessageCreator Tests', function () {
     })
     it('should return null if Pull is missing enumerationContext', function () {
       let body = wsmanMessageCreator.createBody('Pull')
-      expect(body).toBeNull
+      expect(body).toBeNull()
     })
     it('should return null if method is not handled', function () {
       let body = wsmanMessageCreator.createBody('test')
-      expect(body).toBeNull
+      expect(body).toBeNull()
     })
   })
 })
