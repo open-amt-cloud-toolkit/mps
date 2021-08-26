@@ -5,21 +5,22 @@
 
 export class WSManMessageCreator {
   xmlCommonPrefix: string
-  response: string
   commonAction: string
   anonymousAddress: string
   defaultTimeout: string
-  constructor() {
+  constructor () {
     this.xmlCommonPrefix = '<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope">'
     this.commonAction = 'http://schemas.xmlsoap.org/ws/2004/09/'
     this.anonymousAddress = 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous'
     this.defaultTimeout = 'PT60S'
   }
-  createXml = (header: String, body: String): String => {
-    this.response = this.xmlCommonPrefix + header + body
-    return this.response
+  
+  createXml = (header: String, body: String): string => {
+    const response = this.xmlCommonPrefix + header + body
+    return response
   }
-  createHeader = (action: String, resourceUri: String, messageId: String, address?: String, timeout?: String) => {
+  
+  createHeader = (action: String, resourceUri: String, messageId: String, address?: String, timeout?: String): String => {
     let header: string
     header = '<Header>'
     if (action !== null) { header += '<a:Action>' + this.commonAction + action + '</a:Action>' } else { return null }
@@ -33,7 +34,8 @@ export class WSManMessageCreator {
     header += '</Header>'
     return header
   }
-  createBody = (method: String, enumerationContext?: String) => {
+  
+  createBody = (method: String, enumerationContext?: String): String => {
     let body: string
     body = '<Body>'
     switch (method) {
