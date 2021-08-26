@@ -14,12 +14,12 @@ export class WSManMessageCreator {
     this.anonymousAddress = 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous'
     this.defaultTimeout = 'PT60S'
   }
-  
+
   createXml = (header: String, body: String): string => {
     const response = this.xmlCommonPrefix + header + body
     return response
   }
-  
+
   createHeader = (action: String, resourceUri: String, messageId: String, address?: String, timeout?: String): String => {
     let header: string
     header = '<Header>'
@@ -28,13 +28,13 @@ export class WSManMessageCreator {
     if (resourceUri !== null) { header += '<w:ResourceURI>' + resourceUri + '</w:ResourceURI>' } else { return null }
     if (messageId !== null) { header += '<a:MessageID>' + messageId + '</a:MessageID>' } else { return null }
     header += '<a:ReplyTo>'
-    header += '<a:Address>' + (address ? address : this.anonymousAddress) + '</a:Address>'
+    if (address !== null) { header += '<a:Address>' + address  + '</a:Address>' } else { header += '<a:Address>' + this.anonymousAddress + '</a:Address>'}
     header += '</a:ReplyTo>'
-    header += '<w:OperationTimeout>' + (timeout ? timeout : this.defaultTimeout) + '</w:OperationTimeout>'
+    if (timeout !== null) { header += '<w:OperationTimeout>' + timeout + '</w:OperationTimeout>' } else { header += '<w:OperationTimeout>' + this.defaultTimeout + '</w:OperationTimeout>' }
     header += '</Header>'
     return header
   }
-  
+
   createBody = (method: String, enumerationContext?: String): String => {
     let body: string
     body = '<Body>'
