@@ -28,7 +28,7 @@ export class WSManMessageCreator {
     if (resourceUri !== null) { header += '<w:ResourceURI>' + resourceUri + '</w:ResourceURI>' } else { return null }
     if (messageId !== null) { header += '<a:MessageID>' + messageId + '</a:MessageID>' } else { return null }
     header += '<a:ReplyTo>'
-    if (address !== null) { header += '<a:Address>' + address  + '</a:Address>' } else { header += '<a:Address>' + this.anonymousAddress + '</a:Address>'}
+    if (address !== null) { header += '<a:Address>' + address + '</a:Address>' } else { header += '<a:Address>' + this.anonymousAddress + '</a:Address>' }
     header += '</a:ReplyTo>'
     if (timeout !== null) { header += '<w:OperationTimeout>' + timeout + '</w:OperationTimeout>' } else { header += '<w:OperationTimeout>' + this.defaultTimeout + '</w:OperationTimeout>' }
     header += '</Header>'
