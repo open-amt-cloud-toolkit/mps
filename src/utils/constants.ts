@@ -51,7 +51,8 @@ export const AMTFeaturesConst = {
   AMT_KVM_ENABLED_STATE: 'EnabledState',
   AMT_KVM_REQUESTED_STATE: 'RequestedState',
   AMT_OPTIN_SERVICE: 'IPS_OptInService',
-  AMT_USER_CONSENT: 'OptInRequired'
+  AMT_USER_CONSENT: 'OptInRequired',
+  AMT_OPT_IN_STATE: 'OptInState'
 }
 
 // Default top and skip for api pagination

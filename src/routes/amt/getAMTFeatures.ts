@@ -36,10 +36,11 @@ export async function getAMTFeatures (req: Request, res: Response): Promise<void
                           kvmRedirResponse.EnabledState === 2 || kvmRedirResponse.EnabledState === 6)
 
       const value = optServiceRes[AMTFeaturesConst.AMT_USER_CONSENT]
+      const optInState = optServiceRes[AMTFeaturesConst.AMT_OPT_IN_STATE]
       const userConsent = Object.keys(UserConsentOptions).find(key => UserConsentOptions[key] === value)
 
       MqttProvider.publishEvent('success', ['AMT_GetFeatures'], 'Get AMT Features', guid)
-      res.status(200).json({ userConsent: userConsent, redirection: redir, KVM: kvm, SOL: sol, IDER: ider }).end()
+      res.status(200).json({ userConsent: userConsent, redirection: redir, KVM: kvm, SOL: sol, IDER: ider, optInState: optInState }).end()
     }
   } catch (error) {
     log.error(`Exception in get AMT Features: ${error}`)
