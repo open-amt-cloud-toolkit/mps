@@ -3,9 +3,10 @@
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
 
-describe('AMT Tests', function () {
-  it('is a dummy test', function () {
-    let response = null
-    expect(response).toBeNull
-  })
-})
+export enum IPS_Methods { }
+
+export enum IPS_Actions { }
+
+export enum IPS_Classes {
+  IPS_OPT_IN_SERVICE = 'IPS_OptInService'
+}
