@@ -3,10 +3,14 @@
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
 
+export interface Selector {
+  name: String
+  value: String
+}
+
 export class WSManMessageCreator {
   xmlCommonPrefix: string = '<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope">'
   xmlCommonEnd: string = '</Envelope>'
-  commonAction: string = 'http://schemas.xmlsoap.org/ws/2004/09/'
   anonymousAddress: string = 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous'
   defaultTimeout: string = 'PT60S'
 
@@ -16,9 +20,9 @@ export class WSManMessageCreator {
     return response
   }
 
-  createHeader = (action: String, resourceUri: String, messageId: String, address?: String, timeout?: String): String => {
+  createHeader = (action: String, resourceUri: String, messageId: String, address?: String, timeout?: String, selector?: Selector): String => {
     let header: string = '<Header>'
-    if (action != null) { header += `<a:Action>${this.commonAction}${action}</a:Action>` } else { return null }
+    if (action != null) { header += `<a:Action>${action}</a:Action>` } else { return null }
     header += '<a:To>/wsman</a:To>'
     if (resourceUri != null) { header += `<w:ResourceURI>${resourceUri}</w:ResourceURI>` } else { return null }
     if (messageId != null) { header += `<a:MessageID>${messageId}</a:MessageID>` } else { return null }
@@ -26,6 +30,7 @@ export class WSManMessageCreator {
     if (address != null) { header += `<a:Address>${address}</a:Address>` } else { header += `<a:Address>${this.anonymousAddress}</a:Address>` }
     header += '</a:ReplyTo>'
     if (timeout != null) { header += `<w:OperationTimeout>${timeout}</w:OperationTimeout>` } else { header += `<w:OperationTimeout>${this.defaultTimeout}</w:OperationTimeout>` }
+    if (selector != null) { header += `<w:SelectorSet><w:Selector Name="${selector.name}">${selector.value}</w:Selector></w:SelectorSet>` }
     header += '</Header>'
     return header
   }
@@ -43,6 +48,8 @@ export class WSManMessageCreator {
         body += '<Enumerate xmlns="http://schemas.xmlsoap.org/ws/2004/09/enumeration" />'
         break
       case 'Get':
+        return '<Body />'
+      case 'Delete':
         return '<Body />'
       default:
         return null // TODO: error handling
