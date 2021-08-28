@@ -34,6 +34,14 @@ describe('IPS Tests', function () {
       let response = ipsClass.ips_HostBasedSetupService(IPS_Methods.SETUP, messageId, adminPassEncryptionType, adminPassword)
       expect(response).toEqual(correctResponse)
     })
+    it('should return null if adminPassEncryptionType in ips_HostBasedSetupService is missing', function () {
+      let response = ipsClass.ips_HostBasedSetupService(IPS_Methods.SETUP, messageId, null, adminPassword)
+      expect(response).toBeNull()
+    })
+    it('should return null if adminPassword in ips_HostBasedSetupService is missing', function () {
+      let response = ipsClass.ips_HostBasedSetupService(IPS_Methods.SETUP, messageId, adminPassEncryptionType, null)
+      expect(response).toBeNull()
+    })
     it('should return null if method in ips_HostBasedSetupService is unsupported', function () {
       let response = ipsClass.ips_HostBasedSetupService(CIM_Methods.ENUMERATE, messageId)
       expect(response).toBeNull()
