@@ -192,4 +192,19 @@ export class CIM {
         return null
     }
   }
+
+  cim_WiFiEndpointSettings = (method: CIM_Methods, messageId: String, enumerationContext?: String): String => {
+    switch (method) {
+      case 'Enumerate':
+        return this.enumerate(CIM_Actions.ENUMERATE, CIM_Classes.CIM_WIFI_ENDPOINT_SETTINGS, messageId)
+      case 'Pull':
+        if (enumerationContext != null) {
+          return this.pull(CIM_Actions.PULL, CIM_Classes.CIM_WIFI_ENDPOINT_SETTINGS, messageId, enumerationContext)
+        } else {
+          return null
+        }
+      default:
+        return null
+    }
+  }
 }

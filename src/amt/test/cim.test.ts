@@ -230,4 +230,24 @@ describe('CIM Tests', function () {
       expect(response).toBeNull()
     })
   })
+  describe('cim_WiFiEndpointSettings Tests', function () {
+    it('should create a valid cim_WiFiEndpointSettings Enumerate wsman message', function () {
+      const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/enumeration/Enumerate</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_WiFiEndpointSettings</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>PT60S</w:OperationTimeout></Header><Body><Enumerate xmlns="http://schemas.xmlsoap.org/ws/2004/09/enumeration" /></Body></Envelope>`
+      const response = cimClass.cim_WiFiEndpointSettings(CIM_Methods.ENUMERATE, messageId)
+      expect(response).toEqual(correctResponse)
+    })
+    it('should create a valid cim_WiFiEndpointSettings Pull wsman message', function () {
+      const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/enumeration/Pull</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_WiFiEndpointSettings</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>PT60S</w:OperationTimeout></Header><Body><Pull xmlns="http://schemas.xmlsoap.org/ws/2004/09/enumeration"><EnumerationContext>${enumerationContext}</EnumerationContext><MaxElements>999</MaxElements><MaxCharacters>99999</MaxCharacters></Pull></Body></Envelope>`
+      const response = cimClass.cim_WiFiEndpointSettings(CIM_Methods.PULL, messageId, enumerationContext)
+      expect(response).toEqual(correctResponse)
+    })
+    it('should return null when enumerationContext is missing from cim_WiFiEndpointSettings Pull request', function () {
+      let response = cimClass.cim_WiFiEndpointSettings(CIM_Methods.PULL, messageId)
+      expect(response).toBeNull()
+    })
+    it('should return null when unsupported method in cim_WiFiEndpointSettings is used', function () {
+      let response = cimClass.cim_WiFiEndpointSettings(CIM_Methods.GET, messageId)
+      expect(response).toBeNull()
+    })
+  })
 })
