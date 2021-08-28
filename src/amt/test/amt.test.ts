@@ -87,6 +87,10 @@ describe('AMT Tests', function () {
       const response = amtClass.amt_EthernetPortSettings(CIM_Methods.PUT, messageId, null, ethernetPortObject)
       expect(response).toEqual(correctResponse)
     })
+    it('should return null when ethernetPortObject is missing from amt_EthernetPortSettings Pull request', function () {
+      let response = amtClass.amt_EthernetPortSettings(CIM_Methods.PUT, messageId)
+      expect(response).toBeNull()
+    })
     it('should return null when enumerationContext is missing from amt_EthernetPortSettings Pull request', function () {
       let response = amtClass.amt_EthernetPortSettings(CIM_Methods.PULL, messageId)
       expect(response).toBeNull()
@@ -104,7 +108,7 @@ describe('AMT Tests', function () {
       expect(response).toEqual(correctResponse)
     })
     it('should return null for unsupported in amt_RemoteAccessPolicyRule methods', function () {
-      const response = amtClass.amt_EthernetPortSettings(AMT_Methods.READ_RECORDS, messageId)
+      const response = amtClass.amt_RemoteAccessPolicyRule(AMT_Methods.READ_RECORDS, messageId)
       expect(response).toBeNull()
     })
   })

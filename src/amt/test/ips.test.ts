@@ -34,5 +34,9 @@ describe('IPS Tests', function () {
       let response = ipsClass.ips_HostBasedSetupService(IPS_Methods.SETUP, messageId, adminPassEncryptionType, adminPassword)
       expect(response).toEqual(correctResponse)
     })
+    it('should return null if method in ips_HostBasedSetupService is unsupported', function () {
+      let response = ipsClass.ips_HostBasedSetupService(CIM_Methods.ENUMERATE, messageId)
+      expect(response).toBeNull()
+    })
   })
 })
