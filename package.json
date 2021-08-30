@@ -76,6 +76,6 @@
     "jest-transform-stub": "^2.0.0",
     "ts-jest": "^26.5.6",
     "ts-node": "^10.2.1",
-    "typescript": "^4.3.5"
+    "typescript": "^4.4.2"
   }
 }
