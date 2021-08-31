@@ -15,6 +15,7 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
   try {
     const payload = req.body
     const guid = req.params.guid
+    payload.guid = guid
 
     MqttProvider.publishEvent('request', ['AMT_SetFeatures'], 'Set AMT Features Requested', guid)
 
