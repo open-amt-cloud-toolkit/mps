@@ -5,18 +5,12 @@
 import { DeviceDb } from '../../db/device'
 import { Device } from '../../models/models'
 import { logger as log } from '../../utils/logger'
-import { validationResult } from 'express-validator'
 import { DataWithCount } from '../../models/Config'
 
 export async function getAllDevices (req, res): Promise<void> {
   const db = new DeviceDb()
   const count = req.query.$count
   try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      res.status(400).json({ errors: errors.array() })
-      return
-    }
     let list: Device[] = []
 
     if (req.query.tags != null) {
