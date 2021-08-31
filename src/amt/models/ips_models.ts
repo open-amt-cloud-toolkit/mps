@@ -6,18 +6,18 @@
 import { CIM_SecurityService, CIM_Service } from './cim_models'
 
 export interface IPS_HostBasedSetupService extends CIM_SecurityService<IPS_HostBasedSetupService> {
-  currentControlMode: Number
-  allowedControlModes: Uint8Array
-  configurationNonce: Uint8Array
-  certChainStatus: Number
+  currentControlMode?: number
+  allowedControlModes?: number[]
+  configurationNonce?: number[]
+  certChainStatus?: number
 }
 export interface IPS_OptInService extends CIM_Service<IPS_OptInService> {
-  optInCodeTimeout: Number
-  optInRequired: Number
-  optInState: Number
-  canModifyOptInPolicy: Number
-  optInDisplayTimeout: Number
-  startOptIn: () => Number
-  cancelOptIn: () => Number
-  sendOptInCode: (optInCode: Number) => Number
+  optInCodeTimeout?: number
+  optInRequired?: number
+  optInState?: number
+  canModifyOptInPolicy?: number
+  optInDisplayTimeout?: number
+  startOptIn?: () => number
+  cancelOptIn?: () => number
+  sendOptInCode?: (optInCode: number) => number
 }
