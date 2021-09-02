@@ -14,16 +14,17 @@ import { insertDevice } from './create'
 import { updateDevice } from './update'
 import { deleteDevice } from './delete'
 import { param } from 'express-validator'
+import validateMiddleware from '../../middleware/validate'
 
 const deviceRouter: Router = Router()
 
-deviceRouter.get('/', odataValidator(), metadataQueryValidator(), getAllDevices)
+deviceRouter.get('/', odataValidator(), metadataQueryValidator(), validateMiddleware, getAllDevices)
 deviceRouter.get('/stats', stats)
 deviceRouter.get('/tags', getDistinctTags)
 deviceRouter.get('/:guid', param('guid').isUUID(), getDevice)
-deviceRouter.post('/', validator(), insertDevice)
-deviceRouter.patch('/', validator(), updateDevice)
-deviceRouter.delete('/:guid', param('guid').isUUID(), deleteDevice)
-deviceRouter.delete('/disconnect/:guid', param('guid').isUUID(), disconnect)
+deviceRouter.post('/', validator(), validateMiddleware, insertDevice)
+deviceRouter.patch('/', validator(), validateMiddleware, updateDevice)
+deviceRouter.delete('/:guid', param('guid').isUUID(), validateMiddleware, deleteDevice)
+deviceRouter.delete('/disconnect/:guid', param('guid').isUUID(), validateMiddleware, disconnect)
 
 export default deviceRouter

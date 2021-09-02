@@ -19,19 +19,30 @@ import { amtFeaturesValidator } from './amtFeatureValidator'
 import { powerActionValidator } from './powerActionValidator'
 import { auditLogValidator } from './auditLogValidator'
 import { bootOptionsValidator } from './bootOptionsValidator'
+import ciraMiddleware from '../../middleware/cira'
+import validateMiddleware from '../../middleware/validate'
+
+import { cancel } from './userConsent/cancel'
+import { request } from './userConsent/request'
+import { send } from './userConsent/send'
+import { validator as userConsentValidator } from './userConsent/validator'
 
 const amtRouter: Router = Router()
 
-amtRouter.get('/log/audit/:guid', auditLogValidator(), auditLog)
-amtRouter.get('/log/event/:guid', eventLog)
-amtRouter.get('/generalSettings/:guid', generalSettings)
-amtRouter.get('/hardwareInfo/:guid', hardwareInfo)
-amtRouter.post('/power/action/:guid', powerActionValidator(), powerAction)
-amtRouter.post('/power/bootOptions/:guid', bootOptionsValidator(), bootOptions)
-amtRouter.get('/power/capabilities/:guid', powerCapabilities)
-amtRouter.get('/power/state/:guid', powerState)
-amtRouter.get('/features/:guid', getAMTFeatures)
-amtRouter.post('/features/:guid', amtFeaturesValidator(), setAMTFeatures)
-amtRouter.get('/version/:guid', version)
+amtRouter.get('/log/audit/:guid', auditLogValidator(), validateMiddleware, ciraMiddleware, auditLog as any)
+amtRouter.get('/log/event/:guid', ciraMiddleware, eventLog)
+amtRouter.get('/generalSettings/:guid', ciraMiddleware, generalSettings)
+amtRouter.get('/hardwareInfo/:guid', ciraMiddleware, hardwareInfo)
+amtRouter.post('/power/action/:guid', powerActionValidator(), validateMiddleware, ciraMiddleware, powerAction)
+amtRouter.post('/power/bootOptions/:guid', bootOptionsValidator(), validateMiddleware, ciraMiddleware, bootOptions)
+amtRouter.get('/power/capabilities/:guid', ciraMiddleware, powerCapabilities)
+amtRouter.get('/power/state/:guid', ciraMiddleware, powerState)
+amtRouter.get('/features/:guid', ciraMiddleware, getAMTFeatures)
+amtRouter.post('/features/:guid', amtFeaturesValidator(), validateMiddleware, ciraMiddleware, setAMTFeatures)
+amtRouter.get('/version/:guid', ciraMiddleware, version)
+
+amtRouter.get('/userConsentCode/cancel/:guid', ciraMiddleware, cancel)
+amtRouter.get('/userConsentCode/:guid', ciraMiddleware, request)
+amtRouter.post('/userConsentCode/:guid', userConsentValidator(), validateMiddleware, ciraMiddleware, send)
 
 export default amtRouter

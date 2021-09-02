@@ -6,30 +6,15 @@
 
 import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
-import { amtPort } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
-import { validationResult } from 'express-validator'
 import { MqttProvider } from '../../utils/mqttProvider'
 
 export async function powerAction (req: Request, res: Response): Promise<void> {
   try {
     const payload = req.body
     const guid = req.params.guid
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      res.status(400).json({ errors: errors.array() }).end()
-      return
-    }
 
-    const ciraconn = req.mpsService.mpsserver.ciraConnections[guid]
-    if (ciraconn && ciraconn.readyState === 'open') {
-      const cred = await req.mpsService.secrets.getAMTCredentials(guid)
-      const amtstack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
-      getBootData(guid, payload.action, amtstack, req, res)
-    } else {
-      MqttProvider.publishEvent('fail', ['AMT_BootSettingData'], 'Device Not Found', guid)
-      res.status(404).json(ErrorResponse(404, `guid : ${guid}`, 'device')).end()
-    }
+    getBootData(guid, payload.action, req, res)
   } catch (error) {
     log.error(`Exception in Power action : ${error}`)
     MqttProvider.publishEvent('fail', ['AMT_BootSettingData'], 'Internal Server Error')
@@ -38,7 +23,7 @@ export async function powerAction (req: Request, res: Response): Promise<void> {
 }
 
 // Get AMT_BootSettingData
-function getBootData (uuid: string, action: number, amtstack, req, res): void {
+function getBootData (uuid: string, action: number, req: Request, res: Response): void {
   const handler = (stack, name, response, status): void => {
     if (status !== 200) {
       log.error(`Power Action failed during PUT AMT_BootSettingData for guid : ${uuid}`)
@@ -67,13 +52,13 @@ function getBootData (uuid: string, action: number, amtstack, req, res): void {
       r.SecureErase = false
     }
 
-    putBootData(uuid, action, amtstack, r, req, res)
+    putBootData(uuid, action, r, req, res)
   }
-  amtstack.Get('AMT_BootSettingData', handler, 0, 1)
+  req.amtStack.Get('AMT_BootSettingData', handler, 0, 1)
 }
 
 // Put AMT_BootSettingData
-function putBootData (uuid, action, amtstack, bootSettingData, req, res): void {
+function putBootData (uuid: string, action, bootSettingData, req: Request, res: Response): void {
   const callback = (stack, name, response, status, tag): void => {
     if (status !== 200) {
       log.error(
@@ -82,14 +67,14 @@ function putBootData (uuid, action, amtstack, bootSettingData, req, res): void {
       res.status(status).json(ErrorResponse(status, 'Power Action failed during GET AMT_BootSettingData.')).end()
       return
     }
-    setBootConfRole(uuid, action, amtstack, req, res)
+    setBootConfRole(uuid, action, req, res)
   }
 
-  amtstack.Put('AMT_BootSettingData', bootSettingData, callback, bootSettingData, 1)
+  req.amtStack.Put('AMT_BootSettingData', bootSettingData, callback, bootSettingData, 1)
 }
 
 // SET BootConfigRole
-function setBootConfRole (uuid, action, amtstack, req, res): void {
+function setBootConfRole (uuid: string, action, req: Request, res: Response): void {
   const callback = (stack, name, response, status): void => {
     if (status !== 200) {
       log.error(`Power Action failed during SetBootConfigRole for guid : ${uuid}`
@@ -98,44 +83,36 @@ function setBootConfRole (uuid, action, amtstack, req, res): void {
       return
     }
 
-    changeBootOrder(uuid, action, amtstack, null, req, res)
+    changeBootOrder(uuid, action, null, req, res)
   }
 
-  amtstack.SetBootConfigRole(1, callback, 0, 1)
+  req.amtStack.SetBootConfigRole(1, callback, 0, 1)
 }
 
 // Change BootOrder
-function changeBootOrder (uuid, action, amtstack, bootSource, req, res): void {
-  amtstack.CIM_BootConfigSetting_ChangeBootOrder(
-    bootSource,
-    (stack, name, response, status) => {
-      if (status !== 200) {
-        log.error(
-            `Power Action failed during ChangeBootOrder for guid : ${uuid}`
-        )
-        res.status(status).json(ErrorResponse(status, 'Power Action failed during ChangeBootOrder.')).end()
-        return
-      }
-
-      powerStateChange(uuid, action, amtstack, req, res)
+function changeBootOrder (uuid: string, action, bootSource, req: Request, res: Response): void {
+  req.amtStack.CIM_BootConfigSetting_ChangeBootOrder(bootSource, (stack, name, response, status) => {
+    if (status !== 200) {
+      log.error(`Power Action failed during ChangeBootOrder for guid : ${uuid}`)
+      res.status(status).json(ErrorResponse(status, 'Power Action failed during ChangeBootOrder.')).end()
+      return
     }
-  )
+
+    powerStateChange(uuid, action, req, res)
+  })
 }
 
 // Request Power Change
-function powerStateChange (uuid, action, amtstack, req, res): void {
-  amtstack.RequestPowerStateChange(
-    action,
-    async (stack, name, response, status) => {
-      stack.wsman.comm.socket.sendchannelclose()
-      if (status === 200) {
-        // log.info(`Power state change request successful for guid : ${uuid}`);
-        MqttProvider.publishEvent('success', ['AMT_BootSettingData'], 'Sent Power Action ' + action, uuid)
-        res.status(200).json(response).end()
-      } else {
-        log.error(`Power state change request failed for guid : ${uuid}`)
-        res.status(status).json(ErrorResponse(status, 'PowerStateChange request failed.')).end()
-      }
+function powerStateChange (uuid: string, action, req: Request, res: Response): void {
+  req.amtStack.RequestPowerStateChange(action, async (stack, name, response, status) => {
+    stack.wsman.comm.socket.sendchannelclose()
+    if (status === 200) {
+      // log.info(`Power state change request successful for guid : ${uuid}`);
+      MqttProvider.publishEvent('success', ['AMT_BootSettingData'], 'Sent Power Action ' + action, uuid)
+      res.status(200).json(response).end()
+    } else {
+      log.error(`Power state change request failed for guid : ${uuid}`)
+      res.status(status).json(ErrorResponse(status, 'PowerStateChange request failed.')).end()
     }
-  )
+  })
 }

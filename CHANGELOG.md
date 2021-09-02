@@ -1,3 +1,76 @@
+<a name="v1.5.0"></a>
+## [v1.5.0] - 2021-08-12
+### Build
+- fix tsconfig.json
+- **deps:** bump express-validator from 6.12.0 to 6.12.1
+- **deps:** bump mqtt from 4.2.6 to 4.2.8
+- **deps:** bump path-parse from 1.0.6 to 1.0.7 ([#323](https://github.com/open-amt-cloud-toolkit/mps/issues/323))
+- **deps:** bump node-vault from 0.9.21 to 0.9.22
+- **deps:** bump ws from 7.5.0 to 7.5.1
+- **deps:** bump pg from 8.6.0 to 8.7.1
+- **deps:** bump ws from 7.5.1 to 7.5.2 ([#275](https://github.com/open-amt-cloud-toolkit/mps/issues/275))
+- **deps:** bump ws from 7.5.2 to 7.5.3
+- **deps-dev:** bump [@types](https://github.com/types)/node from 14.17.3 to 14.17.4
+- **deps-dev:** bump ts-node from 10.0.0 to 10.1.0
+- **deps-dev:** bump [@types](https://github.com/types)/ws from 7.4.6 to 7.4.7
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 4.28.4 to 4.28.5
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 4.28.2 to 4.28.4
+- **deps-dev:** bump [@types](https://github.com/types)/node-forge from 0.10.0 to 0.10.2
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin
+- **deps-dev:** bump [@types](https://github.com/types)/pg from 8.6.0 to 8.6.1 ([#282](https://github.com/open-amt-cloud-toolkit/mps/issues/282))
+- **deps-dev:** bump eslint from 7.30.0 to 7.31.0
+- **deps-dev:** bump [@types](https://github.com/types)/jest from 26.0.23 to 26.0.24 ([#281](https://github.com/open-amt-cloud-toolkit/mps/issues/281))
+- **deps-dev:** bump [@types](https://github.com/types)/express from 4.17.12 to 4.17.13
+- **deps-dev:** bump typescript from 4.3.4 to 4.3.5 ([#272](https://github.com/open-amt-cloud-toolkit/mps/issues/272))
+- **deps-dev:** bump [@types](https://github.com/types)/ws from 7.4.5 to 7.4.6 ([#273](https://github.com/open-amt-cloud-toolkit/mps/issues/273))
+- **deps-dev:** bump [@types](https://github.com/types)/body-parser from 1.19.0 to 1.19.1 ([#279](https://github.com/open-amt-cloud-toolkit/mps/issues/279))
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 4.28.1 to 4.28.2 ([#274](https://github.com/open-amt-cloud-toolkit/mps/issues/274))
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin
+- **deps-dev:** bump eslint from 7.29.0 to 7.30.0 ([#277](https://github.com/open-amt-cloud-toolkit/mps/issues/277))
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 4.28.0 to 4.28.1
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 4.28.5 to 4.29.1 ([#322](https://github.com/open-amt-cloud-toolkit/mps/issues/322))
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin
+- **deps-dev:** bump ts-node from 10.1.0 to 10.2.0 ([#320](https://github.com/open-amt-cloud-toolkit/mps/issues/320))
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 4.27.0 to 4.28.0
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin
+- **deps-dev:** bump eslint from 7.28.0 to 7.29.0
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin ([#321](https://github.com/open-amt-cloud-toolkit/mps/issues/321))
+- **deps-dev:** bump eslint from 7.31.0 to 7.32.0 ([#316](https://github.com/open-amt-cloud-toolkit/mps/issues/316))
+- **version:** bump to v1.5.0
+
+### Docs
+- update copyright label
+- update copyright header
+- **power actions:** added boot options api BREAKING CHANGE: added bootoptions api for power actions 100+ Fixes AB[#2777](https://github.com/open-amt-cloud-toolkit/mps/issues/2777)
+- **security:** added SECURITY.md file
+- **security:** added security.md file
+
+### Feat
+- **api:** add pagination following odata spec
+
+### Fix
+- **api:** devices can be filtered by tags
+- **audit-log:** not find secret for device ([#313](https://github.com/open-amt-cloud-toolkit/mps/issues/313))
+- **disconnect:** compose now works with db update on exit ([#312](https://github.com/open-amt-cloud-toolkit/mps/issues/312))
+- **docs:** updated swagger doc with latest api changes ([#307](https://github.com/open-amt-cloud-toolkit/mps/issues/307))
+- **startup:** mps now starts with tls_offload set to true
+
+### Refactor
+- **interfaces:** remove unused IAdminHandler and IAMTHandler
+- **interfaces:** clearer separation of concerns is now reflected in interfaces
+- **logging:** pr changes
+- **logging:** removed key logging
+- **logging:** updated log messages
+- **logging:** removed excessive logging variables ([#263](https://github.com/open-amt-cloud-toolkit/mps/issues/263))
+- **mqtt:** cleaner event publishing using static functions
+- **power actions:** split out power actions 100+ into bootoptions BREAKING CHANGE: added bootoptions api for power actions 100+ fixes AB[#2751](https://github.com/open-amt-cloud-toolkit/mps/issues/2751)
+- **types:** add better typing
+- **utils:** convert interceptor to ts
+
+### Test
+- **power actions:** added boot options test fixes AB[#2905](https://github.com/open-amt-cloud-toolkit/mps/issues/2905)
+
 <a name="v1.4.0"></a>
 ## [v1.4.0] - 2021-06-22
 ### Build

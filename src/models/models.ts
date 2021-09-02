@@ -9,6 +9,7 @@ export interface Device {
   guid: string
   mpsusername: string
   tags: string[]
+  tenantId: string
 }
 export interface Credentials {
   [key: string]: AMTCredential
