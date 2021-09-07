@@ -38,6 +38,7 @@ export interface configType {
   cors_origin: string
   cors_headers: string
   cors_methods: string
+  db_provider: string
   connection_string: string
   instance_name: string
 }

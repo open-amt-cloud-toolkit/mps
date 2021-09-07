@@ -35,6 +35,7 @@ describe('MQTT Turned ON Tests', () => {
     cors_origin: "*",
     cors_headers: "*",
     cors_methods: "*",
+    db_provider: "postgres",
     connection_string: "postgresql://postgresadmin:admin123@localhost:5432/mpsdb",
     instance_name: "localhost",
     mps_tls_config: {
@@ -168,6 +169,7 @@ describe('MQTT Turned OFF Tests', () => {
     cors_origin: "*",
     cors_headers: "*",
     cors_methods: "*",
+    db_provider: "postgres",
     connection_string: "postgresql://postgresadmin:admin123@localhost:5432/mpsdb",
     instance_name: "localhost",
     mps_tls_config: {

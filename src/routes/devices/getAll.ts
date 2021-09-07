@@ -2,28 +2,26 @@
  * Copyright (c) Intel Corporation 2021
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
-import { DeviceDb } from '../../db/device'
 import { Device } from '../../models/models'
 import { logger as log } from '../../utils/logger'
 import { DataWithCount } from '../../models/Config'
 
 export async function getAllDevices (req, res): Promise<void> {
-  const db = new DeviceDb()
   const count = req.query.$count
   try {
     let list: Device[] = []
 
     if (req.query.tags != null) {
       const tags = req.query.tags.split(',')
-      list = await db.getByTags(tags, req.query.method, req.query.$top, req.query.$skip)
+      list = await req.db.devices.getByTags(tags, req.query.method, req.query.$top, req.query.$skip)
     } else {
-      list = await db.get(req.query.$top, req.query.$skip)
+      list = await req.db.devices.get(req.query.$top, req.query.$skip)
     }
     if (req.query.$status != null) {
       list = list.filter(x => x.connectionStatus === req.query.status)
     }
     if (count != null && (count === true || count === 1)) {
-      const count: number = await db.getCount()
+      const count: number = await req.db.devices.getCount()
       const dataWithCount: DataWithCount = {
         data: list,
         totalCount: count
