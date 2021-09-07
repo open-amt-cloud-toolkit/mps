@@ -70,7 +70,7 @@ export class WSManMessageCreator {
       case 'RequestStateChange':
         if (input == null) { throw new Error(WSManErrors.INPUT) }
         if (requestedState == null) { throw new Error(WSManErrors.REQUESTED_STATE) }
-        return `<Body><r:RequestStateChange_INPUT xmlns:r="${input}"><r:RequestedState>${requestedState}</r:RequestedState></r:RequestStateChange_INPUT></Body>`
+        return `<Body><r:RequestStateChange_INPUT xmlns:r="${input}"><r:RequestedState>${requestedState.toString()}</r:RequestedState></r:RequestStateChange_INPUT></Body>`
       default:
         throw new Error(WSManErrors.UNSUPPORTED_METHOD)
     }

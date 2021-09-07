@@ -14,8 +14,8 @@ import path from 'path'
 
 const certoperation = CertificateOperations()
 
-export class certificates {
-  static generateCertificates (config, certpath): certificatesType {
+export default {
+  generateCertificates: (config, certpath): certificatesType => {
     let mpsCertAndKey: certAndKeyType
     let rootCertificate, rootPrivateKey
     let rootCertAndKey: certAndKeyType

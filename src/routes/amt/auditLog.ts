@@ -12,7 +12,7 @@ import { MqttProvider } from '../../utils/mqttProvider'
 export async function auditLog (req: Request<any, any, any, { startIndex?: number }>, res: Response): Promise<void> {
   try {
     const queryParams = req.query
-    const guid = req.params.guid
+    const guid: string = req.params.guid
 
     const startIndex: number = queryParams.startIndex == null ? 0 : queryParams.startIndex >= 1 ? queryParams.startIndex : 0
     MqttProvider.publishEvent('request', ['AMT_AuditLog'], 'Audit Log Requested', guid)

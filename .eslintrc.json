@@ -25,10 +25,7 @@
         "@typescript-eslint/strict-boolean-expressions": 0,
         "@typescript-eslint/restrict-template-expressions": 0,
         "@typescript-eslint/no-dynamic-delete": 0,
-        "@typescript-eslint/no-extraneous-class": 0,
         "@typescript-eslint/restrict-plus-operands": 0,
-        "no-prototype-builtins": 0,
-        "node/no-callback-literal": 0,
         "@typescript-eslint/no-misused-promises": 0
     }
 }

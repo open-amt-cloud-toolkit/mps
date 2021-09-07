@@ -34,8 +34,8 @@ export class WebServer {
   app: any
   users: any = {}
   server = null
-  notificationwss = null
-  relaywss = null
+  notificationwss: any = null
+  relaywss: any = null
   mpsService: MPSMicroservice
   config: configType
   certs: certificatesType
@@ -76,20 +76,6 @@ export class WebServer {
           return res.status(400).send(ErrorResponse(400))
         }
         next()
-      })
-
-      // Console connects to this websocket for a persistent connection
-      this.notificationwss.on('connection', async (ws, req) => {
-        this.users[ws] = ws
-        // log.debug("New control websocket.");
-        ws.on('message', msg => {
-          log.debug(`Incoming control message from browser: ${msg}`)
-        })
-
-        ws.on('close', req => {
-          // log.debug("Closing control websocket.");
-          delete this.users[ws]
-        })
       })
 
       // Relay websocket. KVM & SOL use this websocket.

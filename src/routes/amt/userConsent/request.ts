@@ -9,7 +9,7 @@ import { ErrorResponse } from '../../../utils/amtHelper'
 import { MqttProvider } from '../../../utils/mqttProvider'
 export async function request (req: Request, res: Response): Promise<void> {
   try {
-    const guid = req.params.guid
+    const guid: string = req.params.guid
     // Request an opt-in code. Intel(R) AMT generates code internally.
     req.amtStack.IPS_OptInService_StartOptIn((stack, name, response, status) => {
       log.info(`status : ${status}, response : ${JSON.stringify(response)}`)

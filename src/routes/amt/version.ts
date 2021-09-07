@@ -10,7 +10,7 @@ import { ErrorResponse } from '../../utils/amtHelper'
 
 export async function version (req: Request, res: Response): Promise<void> {
   try {
-    const guid = req.params.guid
+    const guid: string = req.params.guid
     req.amtStack.BatchEnum('', ['CIM_SoftwareIdentity', '*AMT_SetupAndConfigurationService'],
       (stack, name, responses, status) => {
         stack.wsman.comm.socket.sendchannelclose()

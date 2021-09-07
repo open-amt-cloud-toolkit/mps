@@ -8,7 +8,7 @@ import { ErrorResponse } from '../../../utils/amtHelper'
 import { MqttProvider } from '../../../utils/mqttProvider'
 export async function cancel (req: Request, res: Response): Promise<void> {
   try {
-    const guid = req.params.guid
+    const guid: string = req.params.guid
     // Cancel a previous opt-in code request.
     req.amtStack.IPS_OptInService_CancelOptIn((stack, name, response, status) => {
       if (status === 200) {
