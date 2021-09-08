@@ -8,7 +8,7 @@ import { ILogger } from '../models/ILogger'
 
 const { combine, timestamp, printf } = winston.format
 const myFormat = printf(info => {
-  return `${info.timestamp} ${info.level}: ${info.message}`
+  return `${info.timestamp as string} ${info.level}: ${info.message}`
 })
 
 export const logger: ILogger = winston.createLogger({

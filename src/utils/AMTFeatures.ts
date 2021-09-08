@@ -8,8 +8,8 @@
 import { MPSValidationError } from './MPSValidationError'
 import { AMTFeaturesConst, UserConsentOptions } from './constants'
 
-export class AMTFeatures {
-  static async getAMTFeatures (amtstack: any, deviceGuid: string): Promise<any> {
+const AMTFeatures = {
+  getAMTFeatures: async (amtstack: any, deviceGuid: string): Promise<any> => {
     return await new Promise((resolve, reject) => {
       amtstack.BatchEnum('', ['*IPS_OptInService', '*AMT_RedirectionService', '*CIM_KVMRedirectionSAP'], (stack, name, wsmanResponse, status) => {
         if (status !== 200) {
@@ -19,9 +19,9 @@ export class AMTFeatures {
         }
       })
     })
-  }
+  },
 
-  static async setAMTFeatures (amtstack: any, payload: any): Promise<void> {
+  setAMTFeatures: async (amtstack: any, payload: any): Promise<void> => {
     const wsmanResponse = await AMTFeatures.getAMTFeatures(amtstack, payload)
     const amtRedirResponse = wsmanResponse[AMTFeaturesConst.AMT_REDIR_SERVICE].response
     const kvmRedirResponse = wsmanResponse[AMTFeaturesConst.AMT_KVM_REDIR].response
@@ -75,9 +75,9 @@ export class AMTFeatures {
         }
       }
     }
-  }
+  },
 
-  static async setRedirectionService (amtstack: any, amtRedirResponse: any, kvm: any, payload: any): Promise<boolean> {
+  setRedirectionService: async (amtstack: any, amtRedirResponse: any, kvm: any, payload: any): Promise<boolean> => {
     return await new Promise((resolve, reject) => {
       amtstack.AMT_RedirectionService_RequestStateChange(amtRedirResponse.EnabledState, (stack, name, response, status) => {
         if (status !== 200) {
@@ -97,9 +97,9 @@ export class AMTFeatures {
         }
       })
     })
-  }
+  },
 
-  static async setUserConsent (amtstack: any, optServiceRes: any, payload: any): Promise<boolean> {
+  setUserConsent: async (amtstack: any, optServiceRes: any, payload: any): Promise<boolean> => {
     return await new Promise((resolve, reject) => {
       amtstack.Put(AMTFeaturesConst.AMT_OPTIN_SERVICE, optServiceRes, (stack, name, response, status) => {
         if (status !== 200) {
@@ -110,3 +110,4 @@ export class AMTFeatures {
     })
   }
 }
+export default AMTFeatures

@@ -11,7 +11,7 @@ import { MqttProvider } from '../../utils/mqttProvider'
 
 export async function eventLog (req: Request, res: Response): Promise<void> {
   try {
-    const guid = req.params.guid
+    const guid: string = req.params.guid
 
     MqttProvider.publishEvent('request', ['AMT_EventLog'], 'Event Log Requested', guid)
 

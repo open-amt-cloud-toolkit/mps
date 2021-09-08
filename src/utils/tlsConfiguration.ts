@@ -14,8 +14,8 @@ import { constants } from 'crypto'
 const webTlsConfigPath = path.join(__dirname, '../../private/webtlsconfig.json')
 const mpsTlsConfigPath = path.join(__dirname, '../../private/mpstlsconfig.json')
 const directConnTlsConfigPath = path.join(__dirname, '../../private/directConntlsconfig.json')
-export class tlsConfig {
-  static web (): webConfigType {
+export default {
+  web: (): webConfigType => {
     try {
       let webConfig: webConfigType
       // Parse Web TLS Configuration json file
@@ -108,9 +108,9 @@ export class tlsConfig {
       log.error('Web TLS webConfiguration exception:', ex)
       process.exit()
     }
-  }
+  },
 
-  static mps (): mpsConfigType {
+  mps: (): mpsConfigType => {
     try {
       let mpsConfig: mpsConfigType
       // Parse MPS TLS Configuration json file
@@ -186,9 +186,9 @@ export class tlsConfig {
       log.error('Exception mpsTLSConfiguration:', ex.message)
       process.exit()
     }
-  }
+  },
 
-  static direct (): directConfigType {
+  direct: (): directConfigType => {
     try {
       let directConnConfig: directConfigType
       // Parse MPS TLS Configuration json file

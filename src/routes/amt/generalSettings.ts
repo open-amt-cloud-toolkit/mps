@@ -11,7 +11,7 @@ import { MqttProvider } from '../../utils/mqttProvider'
 
 export async function generalSettings (req: Request, res: Response): Promise<void> {
   try {
-    const guid = req.params.guid
+    const guid: string = req.params.guid
     MqttProvider.publishEvent('request', ['AMT_GeneralSettings'], 'General Settings Requested', guid)
     req.amtStack.Get('AMT_GeneralSettings', async (obj, name, response, status) => {
       obj.wsman.comm.socket.sendchannelclose()

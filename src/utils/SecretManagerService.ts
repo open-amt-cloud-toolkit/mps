@@ -57,7 +57,7 @@ export class SecretManagerService implements ISecretManagerService {
     }
   }
 
-  async getAMTCredentials (path): Promise<string[]> {
+  async getAMTCredentials (path: string): Promise<string[]> {
     try {
       const user = 'admin'
       const secret: any = await this.getSecretAtPath(`devices/${path}`)

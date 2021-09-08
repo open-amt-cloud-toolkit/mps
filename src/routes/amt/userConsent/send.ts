@@ -8,7 +8,7 @@ import { ErrorResponse } from '../../../utils/amtHelper'
 import { MqttProvider } from '../../../utils/mqttProvider'
 export async function send (req: Request, res: Response): Promise<void> {
   const userConsentCode = req.body.consentCode
-  const guid = req.params.guid
+  const guid: string = req.params.guid
   try {
     // Cancel a previous opt-in code request.
     req.amtStack.IPS_OptInService_SendOptInCode(userConsentCode, (stack, name, response, status) => {

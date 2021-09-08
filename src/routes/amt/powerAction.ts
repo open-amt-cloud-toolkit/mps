@@ -12,7 +12,7 @@ import { MqttProvider } from '../../utils/mqttProvider'
 export async function powerAction (req: Request, res: Response): Promise<void> {
   try {
     const payload = req.body
-    const guid = req.params.guid
+    const guid: string = req.params.guid
 
     getBootData(guid, payload.action, req, res)
   } catch (error) {

@@ -12,7 +12,7 @@ import { MqttProvider } from '../../utils/mqttProvider'
 export async function bootOptions (req: Request, res: Response): Promise<void> {
   try {
     const payload = req.body
-    const guid = req.params.guid
+    const guid: string = req.params.guid
     getBootData(guid, payload.action, req, res)
   } catch (error) {
     log.error(`Exception in Power action : ${error}`)

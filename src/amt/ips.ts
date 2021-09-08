@@ -33,7 +33,7 @@ export class IPS {
         if (adminPassEncryptionType == null) { throw new Error(WSManErrors.ADMIN_PASS_ENCRYPTION_TYPE) }
         if (adminPassword == null) { throw new Error(WSManErrors.ADMIN_PASSWORD) }
         const header: string = this.wsmanMessageCreator.createHeader(IPS_Actions.SETUP, `${this.resourceUriBase}${IPS_Classes.IPS_HOST_BASED_SETUP_SERVICE}`, messageId)
-        const body: string = `<Body><r:Setup_INPUT xmlns:r="${this.resourceUriBase}${IPS_Classes.IPS_HOST_BASED_SETUP_SERVICE}"><r:NetAdminPassEncryptionType>${adminPassEncryptionType}</r:NetAdminPassEncryptionType><r:NetworkAdminPassword>${adminPassword}</r:NetworkAdminPassword></r:Setup_INPUT></Body>`
+        const body: string = `<Body><r:Setup_INPUT xmlns:r="${this.resourceUriBase}${IPS_Classes.IPS_HOST_BASED_SETUP_SERVICE}"><r:NetAdminPassEncryptionType>${adminPassEncryptionType.toString()}</r:NetAdminPassEncryptionType><r:NetworkAdminPassword>${adminPassword}</r:NetworkAdminPassword></r:Setup_INPUT></Body>`
         return this.wsmanMessageCreator.createXml(header, body)
       }
       default:

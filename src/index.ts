@@ -9,8 +9,8 @@ import { logger as log } from './utils/logger'
 import { MPSMicroservice } from './mpsMicroservice'
 import { configType, certificatesType } from './models/Config'
 
-import { certificates } from './utils/certificates'
-import { tlsConfig } from './utils/tlsConfiguration'
+import certificates from './utils/certificates'
+import tlsConfig from './utils/tlsConfiguration'
 import { IDbProvider } from './interfaces/IDbProvider'
 
 import { SecretManagerService } from './utils/SecretManagerService'
