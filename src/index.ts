@@ -11,7 +11,6 @@ import { configType, certificatesType } from './models/Config'
 
 import certificates from './utils/certificates'
 import tlsConfig from './utils/tlsConfiguration'
-
 import { SecretManagerService } from './utils/SecretManagerService'
 import { parseValue } from './utils/parseEnvValue'
 
