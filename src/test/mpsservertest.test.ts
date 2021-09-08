@@ -14,10 +14,9 @@ import { MPSMicroservice } from '../mpsMicroservice'
 import { MPSServer } from '../server/mpsserver'
 import { join } from 'path'
 import { ISecretManagerService } from '../interfaces/ISecretManagerService'
-import { DbProvider } from '../utils/DbProvider'
-import { IDeviceDb } from '../interfaces/IDeviceDb'
 import { Device } from '../models/models'
-import { Environment } from '../utils/Environment'
+import { IDeviceTable } from '../interfaces/IDeviceTable'
+import { IDB } from '../interfaces/IDb'
 
 
 // Parsing configuration
@@ -59,6 +58,7 @@ const config: configType = {
     ca: ['../private/root-cert-public.crt'],
     secureOptions: ['SSL_OP_NO_SSLv2', 'SSL_OP_NO_SSLv3', 'SSL_OP_NO_COMPRESSION', 'SSL_OP_CIPHER_SERVER_PREFERENCE', 'SSL_OP_NO_TLSv1', 'SSL_OP_NO_TLSv11']
   },
+  db_provider: "postgres",
   tls_cert: "",
   tls_cert_key: "",
   tls_cert_ca: "",
@@ -70,8 +70,8 @@ const config: configType = {
 const pki = forge.pki
 let certs : certificatesType
 const certPath = config.cert_path
-let db: DbProvider
-let devicesMock: IDeviceDb
+let db: IDB
+let devicesMock: IDeviceTable
 let secrets: ISecretManagerService
 let mpsService: MPSMicroservice
 let mps: MPSServer
@@ -91,14 +91,20 @@ describe('MPS Server', function () {
        get: async ()=>{ return [] as Device[] },
        getCount: async ()=>{ return 0 },
        getDistinctTags:async ()=>{return ['tag']},
-       getById:async (guid)=>{return device as Device},
+       getByName:async (guid)=>{return device as Device},
        getByTags:async (tags)=>{return [device] as Device[]},
        clearInstanceStatus: async () => {},
        delete:async (guid)=>{return true},
        insert:async (device)=>{return {} as Device},
        update:async ()=>{return {} as Device},
     }
-    db  = new DbProvider(devicesMock)
+    
+    db = {
+        devices: devicesMock,
+        query: async (text,params): Promise<any> =>{
+
+        }
+    }
     secrets = {
       getSecretFromKey: async (path: string, key: string) => {return "P@ssw0rd" },
       getSecretAtPath: async (path: string) => {return {} as any },

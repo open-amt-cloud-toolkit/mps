@@ -26,14 +26,14 @@ import { configType, certificatesType } from '../models/Config'
 import { APFProtocol, APFChannelOpenFailureReasonCode } from '../models/Mps'
 import { logger as log } from '../utils/logger'
 import { MPSMicroservice } from '../mpsMicroservice'
-import { IDbProvider } from '../interfaces/IDbProvider'
 
 import * as common from '../utils/common.js'
+import { IDB } from '../interfaces/IDb'
 // 90 seconds max idle time, higher than the typical KEEP-ALIVE period of 60 seconds
 const MAX_IDLE = 90000
 
 export class MPSServer {
-  db: IDbProvider
+  db: IDB
   mpsService: MPSMicroservice
   config: configType
   certs: certificatesType
@@ -191,7 +191,7 @@ export class MPSServer {
         socket.tag.SystemId = this.guidToStr(common.rstr2hex(data.substring(13, 29))).toLowerCase()
         log.silly(`MPS:PROTOCOLVERSION, ${socket.tag.MajorVersion}, ${socket.tag.MinorVersion}, ${socket.tag.SystemId}`)
         // Check if the device exits in db
-        if (this.db.devices.getById(socket.tag.SystemId)) {
+        if (this.db.devices.getByName(socket.tag.SystemId)) {
           socket.tag.nodeid = socket.tag.SystemId
           if (socket.tag.certauth) {
             this.ciraConnections[socket.tag.SystemId] = socket
@@ -223,7 +223,7 @@ export class MPSServer {
         log.silly(`MPS:USERAUTH_REQUEST user=${username} service=${serviceName} method=${methodName}`)
         // Authenticate device connection using username and password
         try {
-          const device = await this.db.devices.getById(socket.tag.SystemId)
+          const device = await this.db.devices.getByName(socket.tag.SystemId)
           const pwd = await this.mpsService.secrets.getSecretFromKey(`devices/${socket.tag.SystemId}`, 'MPS_PASSWORD')
           if (username === device?.mpsusername && password === pwd) {
             log.debug(`MPS:CIRA Authentication successful for: ${username}`)

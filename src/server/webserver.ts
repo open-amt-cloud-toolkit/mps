@@ -11,7 +11,7 @@
 
 import { Socket } from 'net'
 import { connect } from 'tls'
-import express from 'express'
+import express, { Request } from 'express'
 import { createServer } from 'http'
 import * as parser from 'body-parser'
 import jws from 'jws'
@@ -20,7 +20,6 @@ import { ErrorResponse } from '../utils/amtHelper'
 import { logger as log } from '../utils/logger'
 import { constants } from 'crypto'
 import { MPSMicroservice } from '../mpsMicroservice'
-import { IDbProvider } from '../interfaces/IDbProvider'
 import AMTStackFactory from '../amt_libraries/amt-connection-factory'
 import routes from '../routes'
 
@@ -28,9 +27,11 @@ import { CreateHttpInterceptor, CreateRedirInterceptor } from '../utils/intercep
 import WebSocket from 'ws'
 import { URL } from 'url'
 import cors from 'cors'
+import { DbCreatorFactory } from '../factories/DbCreatorFactory'
+import { IDB } from '../interfaces/IDb'
 
 export class WebServer {
-  db: IDbProvider
+  db: IDB
   app: any
   users: any = {}
   server = null
@@ -269,11 +270,11 @@ export class WebServer {
         }
       })
 
-      this.app.use('/api/v1', (req, res, next) => {
-        (req).mpsService = this.mpsService
-        next()
-      }, (req, res, next) => {
-        (req).amtFactory = new AMTStackFactory(this.mpsService)
+      this.app.use('/api/v1', async (req: Request, res, next) => {
+        req.mpsService = this.mpsService
+        const newDB = new DbCreatorFactory(this.mpsService.config)
+        req.db = await newDB.getDb()
+        req.amtFactory = new AMTStackFactory(this.mpsService)
         next()
       }, routes)
 

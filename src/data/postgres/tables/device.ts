@@ -2,23 +2,21 @@
  * Copyright (c) Intel Corporation 2021
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
-import { logger as log } from '../utils/logger'
-import { PostgresDb } from '.'
-import { IDeviceDb } from '../interfaces/IDeviceDb'
-import { Environment } from '../utils/Environment'
-import { Device } from '../models/models'
-import { mapToDevice } from './mapToDevice'
-import { MPSValidationError } from '../utils/MPSValidationError'
-import { DEFAULT_SKIP, DEFAULT_TOP } from '../utils/constants'
+import { logger as log } from '../../../utils/logger'
+import { PostgresDb } from '..'
+import { IDeviceTable } from '../../../interfaces/IDeviceTable'
+import { Device } from '../../../models/models'
+import { MPSValidationError } from '../../../utils/MPSValidationError'
+import { DEFAULT_SKIP, DEFAULT_TOP } from '../../../utils/constants'
 
-export class DeviceDb implements IDeviceDb {
+export class DeviceTable implements IDeviceTable {
   db: PostgresDb
-  constructor (db?: PostgresDb) {
-    this.db = db ?? new PostgresDb(Environment.Config.connection_string)
+  constructor (db: PostgresDb) {
+    this.db = db
   }
 
   async getCount (tenantId: string = ''): Promise<number> {
-    const result = await this.db.query(`
+    const result = await this.db.query<{total_count: number}>(`
     SELECT count(*) OVER() AS total_count 
     FROM devices
     WHERE tenantid = $1`, [tenantId])
@@ -34,16 +32,20 @@ export class DeviceDb implements IDeviceDb {
    * @returns {Device[]} returns an array of objects
    */
   async get (top: number = DEFAULT_TOP, skip: number = DEFAULT_SKIP, tenantId: string = ''): Promise<Device[]> {
-    const results = await this.db.query(`
-    SELECT * 
+    const results = await this.db.query<Device>(`
+    SELECT 
+      guid as "guid",
+      hostname as "hostname",
+      tags as "tags",
+      mpsinstance as "mpsInstance",
+      connectionstatus as "connectionStatus",
+      mpsusername as "mpsusername",
+      tenantid as "tenantId"
     FROM devices
     WHERE tenantid = $3 
     ORDER BY guid 
     LIMIT $1 OFFSET $2`, [top, skip, tenantId])
-    return results.rows.map(p => {
-      const result = mapToDevice(p)
-      return result
-    })
+    return results.rows
   }
 
   /**
@@ -51,43 +53,58 @@ export class DeviceDb implements IDeviceDb {
    * @param {string} guid
    * @returns {Device} Device object
    */
-  async getById (guid: string, tenantId: string = ''): Promise<Device> {
-    const results = await this.db.query(`
-    SELECT * 
+  async getByName (guid: string, tenantId: string = ''): Promise<Device> {
+    const results = await this.db.query<Device>(`
+    SELECT
+      guid as "guid",
+      hostname as "hostname",
+      tags as "tags",
+      mpsinstance as "mpsInstance",
+      connectionstatus as "connectionStatus",
+      mpsusername as "mpsusername",
+      tenantid as "tenantId"
     FROM devices 
     WHERE guid = $1 and tenantid = $2`, [guid, tenantId])
-    let domain: Device = null
-    if (results.rowCount > 0) {
-      domain = mapToDevice(results.rows[0])
-    }
-    return domain
+
+    return results.rowCount > 0 ? results.rows[0] : null
   }
 
   async getByTags (tags: string[], method: string, top: number = DEFAULT_TOP, skip: number = DEFAULT_SKIP, tenantId: string = ''): Promise<Device[]> {
     let results
     if (method === 'AND') {
       results = await this.db.query(`
-      SELECT * 
+      SELECT 
+        guid as "guid",
+        hostname as "hostname",
+        tags as "tags",
+        mpsinstance as "mpsInstance",
+        connectionstatus as "connectionStatus",
+        mpsusername as "mpsusername",
+        tenantid as "tenantId" 
       FROM devices 
       WHERE tags @> $1 and tenantId = $4
       ORDER BY guid 
       LIMIT $2 OFFSET $3`, [tags, top, skip, tenantId])
     } else { // assume OR
       results = await this.db.query(`
-      SELECT * 
+      SELECT 
+        guid as "guid",
+        hostname as "hostname",
+        tags as "tags",
+        mpsinstance as "mpsInstance",
+        connectionstatus as "connectionStatus",
+        mpsusername as "mpsusername",
+        tenantid as "tenantId" 
       FROM devices 
       WHERE tags && $1 and tenantId = $4
       ORDER BY guid 
       LIMIT $2 OFFSET $3`, [tags, top, skip, tenantId])
     }
-    return results.rows.map(p => {
-      const result = mapToDevice(p)
-      return result
-    })
+    return results.rows
   }
 
   async getDistinctTags (tenantId: string = ''): Promise<string[]> {
-    const results = await this.db.query(`
+    const results = await this.db.query<{tag: string}>(`
     SELECT DISTINCT unnest(tags) as tag 
     FROM Devices
     WHERE tenantid = $1`, [tenantId])
@@ -116,7 +133,7 @@ export class DeviceDb implements IDeviceDb {
         device.tenantId
       ])
       if (results.rowCount > 0) {
-        return await this.getById(device.guid)
+        return await this.getByName(device.guid)
       }
       return null
     } catch (error) {
@@ -149,7 +166,7 @@ export class DeviceDb implements IDeviceDb {
         device.tenantId
       ])
       if (results.rowCount > 0) {
-        return await this.getById(device.guid)
+        return await this.getByName(device.guid)
       }
       throw new MPSValidationError(`Failed to update device: ${device.guid}`, 400)
     } catch (error) {
@@ -190,9 +207,7 @@ export class DeviceDb implements IDeviceDb {
     const results = await this.db.query(`
     DELETE FROM devices 
     WHERE guid = $1 and tenantid = $2`, [guid, tenantId])
-    if (results.rowCount > 0) {
-      return true
-    }
-    return false
+
+    return results.rowCount > 0
   }
 }

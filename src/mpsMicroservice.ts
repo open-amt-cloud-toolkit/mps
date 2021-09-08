@@ -7,9 +7,9 @@ import { configType, certificatesType } from './models/Config'
 import { WebServer } from './server/webserver'
 import { MPSServer } from './server/mpsserver'
 import { logger as log } from './utils/logger'
-import { IDbProvider } from './interfaces/IDbProvider'
 import { Device } from './models/models'
 import { ISecretManagerService } from './interfaces/ISecretManagerService'
+import { IDB } from './interfaces/IDb'
 
 export class MPSMicroservice {
   mpsserver: MPSServer
@@ -17,9 +17,9 @@ export class MPSMicroservice {
   config: configType
   certs: certificatesType
   mpsComputerList = {}
-  db: IDbProvider
+  db: IDB
   secrets: ISecretManagerService
-  constructor (config: configType, db: IDbProvider, secrets: ISecretManagerService, certs: certificatesType) {
+  constructor (config: configType, db: IDB, secrets: ISecretManagerService, certs: certificatesType) {
     try {
       this.config = config
       this.db = db
@@ -36,7 +36,7 @@ export class MPSMicroservice {
   }
 
   async CIRAConnected (guid: string): Promise<void> {
-    const device: Device = await this.db.devices.getById(guid)
+    const device: Device = await this.db.devices.getByName(guid)
     device.connectionStatus = true
     device.mpsInstance = this.config.instance_name
     const results = await this.db.devices.update(device)
@@ -52,7 +52,7 @@ export class MPSMicroservice {
   }
 
   async CIRADisconnected (guid: string): Promise<void> {
-    const device: Device = await this.db.devices.getById(guid)
+    const device: Device = await this.db.devices.getByName(guid)
     if (device != null) {
       device.connectionStatus = false
       device.mpsInstance = null

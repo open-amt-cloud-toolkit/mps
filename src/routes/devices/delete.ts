@@ -3,17 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 import { Request, Response } from 'express'
-import { DeviceDb } from '../../db/device'
 import { logger as log } from '../../utils/logger'
 
 export async function deleteDevice (req: Request, res: Response): Promise<void> {
-  const db = new DeviceDb()
   try {
-    const device = await db.getById(req.params.guid)
+    const device = await req.db.devices.getByName(req.params.guid)
     if (device == null) {
       res.status(404).json({ error: 'NOT FOUND', message: `Device ID ${req.params.guid} not found` }).end()
     } else {
-      const results = await db.delete(req.params.guid)
+      const results = await req.db.devices.delete(req.params.guid)
       if (results) {
         res.status(204).end()
       }

@@ -2,24 +2,22 @@
  * Copyright (c) Intel Corporation 2021
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
-import { DeviceDb } from '../../db/device'
 import { Device } from '../../models/models'
 import { logger as log } from '../../utils/logger'
 import { MPSValidationError } from '../../utils/MPSValidationError'
 import { Request, Response } from 'express'
 
 export async function insertDevice (req: Request, res: Response): Promise<void> {
-  const db = new DeviceDb()
   let device: Device
   try {
-    device = await db.getById(req.body.guid)
+    device = await req.db.devices.getByName(req.body.guid)
     if (device != null) {
       device.hostname = req.body.hostname ?? device.hostname
       device.tags = req.body.tags ?? device.tags
       device.connectionStatus = device.connectionStatus ?? false
       device.mpsusername = req.body.mpsusername ?? device.mpsusername
       device.tenantId = req.body.tenantId ?? ''
-      const results = await db.update(device)
+      const results = await req.db.devices.update(device)
       res.status(200).json(results)
     } else {
       device = {
@@ -31,7 +29,7 @@ export async function insertDevice (req: Request, res: Response): Promise<void> 
         mpsInstance: null,
         tenantId: req.body.tenantId ?? ''
       }
-      const results = await db.insert(device)
+      const results = await req.db.devices.insert(device)
       res.status(201).json(results)
     }
   } catch (err) {
