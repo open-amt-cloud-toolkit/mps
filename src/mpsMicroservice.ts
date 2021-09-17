@@ -10,6 +10,7 @@ import { logger as log } from './utils/logger'
 import { Device } from './models/models'
 import { ISecretManagerService } from './interfaces/ISecretManagerService'
 import { IDB } from './interfaces/IDb'
+import { MqttProvider } from './utils/mqttProvider'
 
 export class MPSMicroservice {
   mpsserver: MPSServer
@@ -41,8 +42,10 @@ export class MPSMicroservice {
     device.mpsInstance = this.config.instance_name
     const results = await this.db.devices.update(device)
     if (results) {
+      MqttProvider.publishEvent('success', ['CIRA_Connected'], 'CIRA Connection Established', guid)
       log.debug(`CIRA connection established for ${guid}`)
     } else {
+      MqttProvider.publishEvent('fail', ['CIRA_Connected'], 'CIRA Connection Failed', guid)
       log.error(`Failed to update CIRA Connection established status in DB ${guid}`)
     }
 
@@ -72,6 +75,7 @@ export class MPSMicroservice {
           status: 'disconnected'
         })
       }
+      MqttProvider.publishEvent('fail', ['CIRA_Disconnected'], 'CIRA Connection Disconnected', guid)
       log.debug(`CIRA connection disconnected for device : ${guid}`)
     }
   }
