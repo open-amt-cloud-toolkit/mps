@@ -76,7 +76,7 @@ let secrets: ISecretManagerService
 let mpsService: MPSMicroservice
 let mps: MPSServer
 
-describe('MPS Server', function () {
+xdescribe('MPS Server', function () {
   let server
   beforeAll(async function () {
     jest.setTimeout(60000)
