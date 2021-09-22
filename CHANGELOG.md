@@ -2,8 +2,15 @@
 ## [Unreleased]
 
 
-<a name="2.0.0"></a>
-## [2.0.0] - 2021-09-15
+<a name="2.0.1"></a>
+## [2.0.1] - 2021-09-22
+### Build
+- **deps:** bump tmpl from 1.0.4 to 1.0.5 (#323fa74) 
+- **version:** bump mps to v2.0.1 (#bdf9e5a) 
+
+
+<a name="v2.0.0"></a>
+## [v2.0.0] - 2021-09-15
 ### Build
 - update version to v2.0.0 (#d49ef8c) 
 - **deps:** bump ws from 8.2.1 to 8.2.2 (#41e35b5) 
@@ -23,6 +30,9 @@
 - **deps-dev:** bump [@types](https://github.com/types)/node-forge from 0.10.2 to 0.10.3 (#5ddabda) 
 - **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin (#6434938) 
 - **deps-dev:** bump eslint-plugin-import from 2.23.4 to 2.24.0 (#93d277e) 
+
+### Docs
+- **changelog:** update changelog (#10382bf) 
 
 ### Feat
 - **api:** added api for request, cancel and send user consent code to AMT ([#332](https://github.com/open-amt-cloud-toolkit/mps/issues/332)) (#e4fbe58) 
@@ -420,8 +430,9 @@ Auth is now stateless, db and vault required
 - **docker:** optimize dockerfile (#51cfb0e) 
 
 
-[Unreleased]: https://github.com/open-amt-cloud-toolkit/mps/compare/2.0.0...HEAD
-[2.0.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v1.5.0...2.0.0
+[Unreleased]: https://github.com/open-amt-cloud-toolkit/mps/compare/2.0.1...HEAD
+[2.0.1]: https://github.com/open-amt-cloud-toolkit/mps/compare/v2.0.0...2.0.1
+[v2.0.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v1.5.0...v2.0.0
 [v1.5.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v1.4.0...v1.5.0
 [v1.4.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v1.3.0...v1.4.0
 [v1.3.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v1.2.0...v1.3.0
