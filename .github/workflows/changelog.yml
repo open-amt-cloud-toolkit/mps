@@ -4,6 +4,11 @@ on:
   pull_request:
     branches: [ master ]
   workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Determine whether or not to commit changelog to repo on selected branch.'
+        required: true
+        default: "false"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,10 +25,10 @@ jobs:
             ./CHANGELOG.md
       # publish it
       - name: Publish content
-        if: ${{ github.ref == 'refs/heads/master' }}      
+        if: ${{ github.event.inputs.publish == 'true' }}      
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add ./CHANGELOG.md
           git commit -m 'docs(changelog): update changelog'
-          git push origin master
+          git push origin ${GITHUB_REF##*/}
