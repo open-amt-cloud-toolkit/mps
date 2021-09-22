@@ -46,6 +46,7 @@ export interface configType {
 export interface certificatesType {
   mps_tls_config: mpsConfigType
   web_tls_config: webConfigType
+  root_key?: string
 }
 
 export interface mpsConfigType {

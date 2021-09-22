@@ -8,7 +8,7 @@ import * as net from 'net'
 import * as fs from 'fs'
 import * as https from 'https'
 import * as forge from 'node-forge'
-import certificates  from '../utils/certificates'
+import { Certificates }  from '../utils/certificates'
 import { certificatesType, configType } from '../models/Config'
 import { MPSMicroservice } from '../mpsMicroservice'
 import { MPSServer } from '../server/mpsserver'
@@ -76,7 +76,7 @@ let secrets: ISecretManagerService
 let mpsService: MPSMicroservice
 let mps: MPSServer
 
-describe('MPS Server', function () {
+xdescribe('MPS Server', function () {
   let server
   beforeAll(async function () {
     jest.setTimeout(60000)
@@ -85,7 +85,8 @@ describe('MPS Server', function () {
     } catch (e) {
       console.log(`Failed to create Cert path ${certPath}. Create if it doesn't exist`)
     }
-    certs = await certificates.generateCertificates(config, certPath)
+    let certificates = new Certificates(config, secrets)
+    certs = certificates.generateCertificates()
     let device = {mpsusername:'admin'}
     devicesMock = {
        get: async ()=>{ return [] as Device[] },
