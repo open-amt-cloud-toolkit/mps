@@ -68,6 +68,8 @@ export class MqttProvider {
           reject(new Error('Event message failed: ' + err.message))
         }
       })
+    }).catch((error) => {
+      log.error(`Event message failed: ${error}`)
     })
   }
 
