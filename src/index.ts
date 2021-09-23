@@ -3,13 +3,11 @@
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
 
-import * as fs from 'fs'
-import * as path from 'path'
 import { logger as log } from './utils/logger'
 import { MPSMicroservice } from './mpsMicroservice'
 import { configType, certificatesType } from './models/Config'
 
-import certificates from './utils/certificates'
+import { Certificates } from './utils/certificates'
 import tlsConfig from './utils/tlsConfiguration'
 import { SecretManagerService } from './utils/SecretManagerService'
 import { parseValue } from './utils/parseEnvValue'
@@ -38,8 +36,6 @@ async function main (): Promise<void> {
     }
 
     // path where Self-signed certificates are generated
-    const certPath = path.join(__dirname, config.cert_path)
-    config.data_path = path.join(__dirname, config.data_path)
     let certs: certificatesType
     config.instance_name = config.instance_name === '{{.Task.Name}}' ? 'mps' : config.instance_name
     log.silly(`Updated config... ${JSON.stringify(config, null, 2)}`)
@@ -67,6 +63,7 @@ async function main (): Promise<void> {
     })
 
     // Certificate Configuration and Operations
+    const certificates = new Certificates(config, secrets)
     if (config.https || !config.tls_offload) {
       if (!config.generate_certificates) {
         if (config.cert_format === 'raw') { // if you want to read the cert raw from variable.
@@ -94,12 +91,8 @@ async function main (): Promise<void> {
         }
         log.debug('Loaded existing certificates')
       } else {
-        if (!fs.existsSync(certPath)) {
-          fs.mkdirSync(certPath, { recursive: true })
-        }
-        certs = certificates.generateCertificates(config, certPath)
+        certs = await certificates.getCertificates()
       }
-
       log.debug('certs loaded..')
     }
     const mps = new MPSMicroservice(config, db, secrets, certs)
