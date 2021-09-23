@@ -6,7 +6,7 @@
  **********************************************************************/
 
 import { ISecretManagerService } from '../interfaces/ISecretManagerService'
-import { configType } from '../models/Config'
+import { certificatesType, configType } from '../models/Config'
 import NodeVault = require('node-vault')
 import { ILogger } from '../models/ILogger'
 
@@ -36,7 +36,6 @@ export class SecretManagerService implements ISecretManagerService {
       this.logger.verbose(`getting secret from ${fullPath}`)
       const data = await this.vaultClient.read(fullPath)
       this.logger.debug(`received secret from ${fullPath}`)
-      // { data: data: { "key": "keyvalue"}}
       return data.data.data[key]
     } catch (error) {
       this.logger.error('getSecretFromKey error :', error)
@@ -52,9 +51,15 @@ export class SecretManagerService implements ISecretManagerService {
       this.logger.debug(`got data back from vault at path: ${fullPath}`)
       return data.data
     } catch (error) {
-      this.logger.error('getSecretAtPath error :', error)
+      this.logger.error(`getSecretAtPath ${path} error :`, error)
       return null
     }
+  }
+
+  async writeSecretWithObject (path: string, data: any): Promise<void> {
+    this.logger.verbose('writing data to vault:')
+    await this.vaultClient.write(`${this.secretsPath}${path}`, data)
+    this.logger.debug(`Successfully written data to vault at path: ${path}`)
   }
 
   async getAMTCredentials (path: string): Promise<string[]> {
@@ -63,6 +68,17 @@ export class SecretManagerService implements ISecretManagerService {
       const secret: any = await this.getSecretAtPath(`devices/${path}`)
       const amtpass = secret.data.AMT_PASSWORD
       return [user, amtpass]
+    } catch (error) {
+      this.logger.error('Error while retrieving device credentials :', error)
+      return null
+    }
+  }
+
+  async getMPSCerts (): Promise<certificatesType> {
+    try {
+      const secret: any = await this.getSecretAtPath('MPSCerts')
+      const certs: certificatesType = secret?.data
+      return certs
     } catch (error) {
       this.logger.error('Error while retrieving device credentials :', error)
       return null
