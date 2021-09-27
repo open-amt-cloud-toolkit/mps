@@ -35,5 +35,5 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
         logout: true
     - name: Push the Docker image to the registry
-      run: docker push --all-tags ${{ github.event.inputs.docker_registry }}/${{ github.event.inputs.docker_tag_name }}
+      run: docker push ${{ github.event.inputs.docker_registry }}/${{ github.event.inputs.docker_tag_name }}
 
