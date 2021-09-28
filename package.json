@@ -45,7 +45,7 @@
     "consul": "^0.40.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "express-validator": "^6.12.1",
+    "express-validator": "^6.12.2",
     "jws": "^4.0.0",
     "mqtt": "^4.2.8",
     "node-forge": "^0.10.0",
@@ -58,7 +58,7 @@
   "devDependencies": {
     "@types/body-parser": "^1.19.1",
     "@types/express": "^4.17.13",
-    "@types/jest": "^27.0.1",
+    "@types/jest": "^27.0.2",
     "@types/node": "^14.17.4",
     "@types/node-forge": "^0.10.5",
     "@types/pg": "^8.6.1",
@@ -76,6 +76,6 @@
     "jest-transform-stub": "^2.0.0",
     "ts-jest": "^27.0.5",
     "ts-node": "^10.2.1",
-    "typescript": "^4.4.2"
+    "typescript": "^4.4.3"
   }
 }
