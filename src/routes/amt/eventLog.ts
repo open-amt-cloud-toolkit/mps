@@ -19,6 +19,7 @@ export async function eventLog (req: Request, res: Response): Promise<void> {
       stack.wsman.comm.socket.sendchannelclose()
       if (status === 200) {
         MqttProvider.publishEvent('success', ['AMT_EventLog'], 'Sent Event Log', guid)
+        if (responses == null) responses = []
         res.status(200).json(responses).end()
       } else {
         log.error(`Failed during GET MessageLog guid : ${guid}.`)
