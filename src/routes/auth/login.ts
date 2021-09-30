@@ -9,10 +9,10 @@ export async function login (req: Request, res: Response): Promise<void> {
     res.status(400).json({ errors: errors.array() })
     return
   }
-  const username = req.body.username
-  const password = req.body.password
+  const username: string = req.body.username
+  const password: string = req.body.password
   // todo: implement a more advanced authentication system and RBAC
-  if (username === req.mpsService.config.web_admin_user && password === req.mpsService.config.web_admin_password) {
+  if (username.toLowerCase() === req.mpsService.config.web_admin_user.toLowerCase() && password === req.mpsService.config.web_admin_password) {
     const expirationMinutes = Number(req.mpsService.config.jwt_expiration)
     const expiration = Math.floor((Date.now() + (1000 * 60 * expirationMinutes)) / 1000)
     const signature = jws.sign({
