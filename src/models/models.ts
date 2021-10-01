@@ -1,3 +1,6 @@
+import { Socket } from 'net'
+import { DetailedPeerCertificate, TLSSocket } from 'tls'
+
 /*********************************************************************
  * Copyright (c) Intel Corporation 2021
  * SPDX-License-Identifier: Apache-2.0
@@ -28,4 +31,8 @@ export interface OpenAMTEvent {
   methods: string[]
   guid: string
   timestamp: number
+}
+
+export interface CIRASocket extends TLSSocket{
+  tag: {first: boolean, clientCert?: DetailedPeerCertificate, accumulator: string, activetunnels: number, boundPorts: any[], socket: Socket, host: string, nextchannelid: number, channels: any, nextsourceport: number, nodeid: string}
 }

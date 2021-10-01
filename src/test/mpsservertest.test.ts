@@ -111,7 +111,7 @@ xdescribe('MPS Server', function () {
       getSecretAtPath: async (path: string) => {return {} as any },
       getAMTCredentials: async (path: string) => {return ['admin','P@ssw0rd'] }
     }    
-    mpsService = new MPSMicroservice(config,db,secrets, certs)
+    mpsService = new MPSMicroservice(db, secrets, certs)
     mps = new MPSServer(mpsService)
 
     // DB initialization

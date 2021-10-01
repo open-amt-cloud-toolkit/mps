@@ -1,5 +1,5 @@
 // Import all required methods from common.js file
-import { ReadInt, ShortToStr, ReadShort, ShortToStrX, ReadShortX, IntToStr, IntToStrX, ReadIntX, MakeToArray, SplitArray, Clone, IsFilenameValid, ArrayElementMove, rstr2hex, hex2rstr, char2hex, encode_utf8, decode_utf8, data2blob, quoteSplit, parseNameValueList, toNumber, escapeHtml, objKeysToLower, validateString, validateInt, validateArray, validateStrArray, validateObject, validateEmail, validateUsername } from '../utils/common'
+import { ReadInt, ShortToStr, ReadShort, ShortToStrX, ReadShortX, IntToStr, IntToStrX, ReadIntX, MakeToArray, SplitArray, Clone, ArrayElementMove, rstr2hex, hex2rstr, char2hex, encode_utf8, decode_utf8, data2blob, quoteSplit, parseNameValueList, toNumber, escapeHtml, objKeysToLower, validateString, validateInt, validateArray, validateStrArray, validateObject, validateEmail, validateUsername } from '../utils/common'
 const v = 256
 const p = 0
 const s3 = '256'
@@ -103,45 +103,7 @@ describe('Clone string', function () {
   })
 })
 
-// Check filename validity
-describe('Validate file name 1', function () {
-  it('IsFilenameValid- should validate file name', function () {
-    const fname = 'test1'
-    expect(IsFilenameValid(fname)).toBe(true)
-  })
-})
 
-// Check filename validity- negative test
-describe('Validate file name 2', function () {
-  it('IsFilenameValid- should validate file name', function () {
-    const fname = 'test1/^tt'
-    expect(IsFilenameValid(fname)).toBe(false)
-  })
-})
-
-// Check filename validity- negative test
-describe('Validate file name 3', function () {
-  it('IsFilenameValid- should validate file name', function () {
-    const fname = '.test1'
-    expect(IsFilenameValid(fname)).toBe(false)
-  })
-})
-
-// Check filename validity- negative test
-describe('Validate file name 4', function () {
-  it('IsFilenameValid- should validate file name', function () {
-    const fname = 'test/1'
-    expect(IsFilenameValid(fname)).toBe(false)
-  })
-})
-
-// Check filename validity- negative test
-describe('Validate file name 5', function () {
-  it('IsFilenameValid- should validate file name', function () {
-    const fname = 'asgertereretterereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee8888+$$$$$$$$$$$$/'
-    expect(IsFilenameValid(fname)).toBe(false)
-  })
-})
 
 // Check array element moving from one position to other
 describe('Validate array move', function () {

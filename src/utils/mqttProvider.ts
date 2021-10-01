@@ -2,10 +2,10 @@
 // with mqtt broker
 
 import url from 'url'
-import { configType } from '../models/Config'
 import { eventType, OpenAMTEvent } from '../models/models'
 import { logger as log } from './logger'
 import { MqttClient, connect } from 'mqtt'
+import { Environment } from './Environment'
 
 export class MqttProvider {
   client: MqttClient
@@ -17,13 +17,13 @@ export class MqttProvider {
 
   static instance: MqttProvider
 
-  constructor (config: configType) {
-    if (!config.mqtt_address) {
+  constructor () {
+    if (!Environment.Config.mqtt_address) {
       this.turnedOn = false
       log.info('MQTT is turned off')
     } else {
       this.turnedOn = true
-      this.mqttUrl = new url.URL(config.mqtt_address)
+      this.mqttUrl = new url.URL(Environment.Config.mqtt_address)
       this.baseUrl = 'mqtt://' + this.mqttUrl.host
       this.port = +this.mqttUrl.port
       this.options = {

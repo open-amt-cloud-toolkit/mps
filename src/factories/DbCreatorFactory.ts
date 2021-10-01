@@ -4,21 +4,17 @@
  **********************************************************************/
 
 import { IDB } from '../interfaces/IDb'
-import { configType } from '../models/Config'
+import { Environment } from '../utils/Environment'
 
 export class DbCreatorFactory {
   static instance: IDB
-  config: configType
-  constructor (config: configType) {
-    this.config = config
-  }
 
   async getDb (): Promise<IDB> {
-    const provider = await import(`../data/${this.config.db_provider}`)
+    const provider = await import(`../data/${Environment.Config.db_provider}`)
 
     if (DbCreatorFactory.instance == null) {
       // eslint-disable-next-line new-cap
-      return new provider.default(this.config.connection_string)
+      return new provider.default(Environment.Config.connection_string)
     } else {
       return DbCreatorFactory.instance
     }

@@ -12,10 +12,10 @@
 import { Socket } from 'net'
 import { connect } from 'tls'
 import express, { Request } from 'express'
-import { createServer } from 'http'
+import { createServer, Server } from 'http'
 import * as parser from 'body-parser'
 import jws from 'jws'
-import { configType, certificatesType, queryParams } from '../models/Config'
+import { queryParams } from '../models/Config'
 import { ErrorResponse } from '../utils/amtHelper'
 import { logger as log } from '../utils/logger'
 import { constants } from 'crypto'
@@ -28,33 +28,27 @@ import WebSocket from 'ws'
 import { URL } from 'url'
 import cors from 'cors'
 import { DbCreatorFactory } from '../factories/DbCreatorFactory'
-import { IDB } from '../interfaces/IDb'
+import { Environment } from '../utils/Environment'
 
 export class WebServer {
-  db: IDB
   app: any
-  users: any = {}
-  server = null
-  notificationwss: any = null
+  server: Server = null
   relaywss: any = null
   mpsService: MPSMicroservice
-  config: configType
-  certs: certificatesType
+
   sessionParser: any
 
   constructor (mpsService: MPSMicroservice) {
     try {
       this.mpsService = mpsService
-      this.db = this.mpsService.db
-      this.config = this.mpsService.config
-      this.certs = this.mpsService.certs
+
       this.app = express()
       const options: WebSocket.ServerOptions = {
         noServer: true,
         verifyClient: (info) => {
           // verify JWT
           try {
-            const valid = jws.verify(info.req.headers['sec-websocket-protocol'], 'HS256', this.config.jwt_secret)
+            const valid = jws.verify(info.req.headers['sec-websocket-protocol'], 'HS256', Environment.Config.jwt_secret)
             if (!valid) {
               return false
             }
@@ -64,7 +58,6 @@ export class WebServer {
           return true
         }
       }
-      this.notificationwss = new WebSocket.Server(options)
       this.relaywss = new WebSocket.Server(options)
 
       // Create Server
@@ -82,7 +75,7 @@ export class WebServer {
       // Relay websocket. KVM & SOL use this websocket.
       this.relaywss.on('connection', async (ws, req) => {
         try {
-          const base = `${this.config.https ? 'https' : 'http'}://${this.config.common_name}:${this.config.web_port}/`
+          const base = `${Environment.Config.https ? 'https' : 'http'}://${Environment.Config.common_name}:${Environment.Config.web_port}/`
           const reqQueryURL = new URL(req.url, base)
           const params: queryParams = {
             host: reqQueryURL.searchParams.get('host'),
@@ -154,12 +147,9 @@ export class WebServer {
             // If this is TCP (without TLS) set a normal TCP socket
             // check if this is MPS connection
             const uuid = params.host
-            const ciraConn = this.mpsService.mpsserver.ciraConnections[uuid]
+            const ciraConn = this.mpsService.mpsserver.cira.ciraConnections.uuid
             if (uuid && ciraConn) {
-              ws.forwardclient = this.mpsService.mpsserver.SetupCiraChannel(
-                ciraConn,
-                params.port
-              )
+              ws.forwardclient = this.mpsService.mpsserver.cira.SetupCiraChannel(ciraConn, params.port)
 
               ws.forwardclient.xtls = 0
               ws.forwardclient.onData = (ciraconn, data): void => {
@@ -257,13 +247,14 @@ export class WebServer {
           }
 
           if (params.tls === 0) {
-            if (!this.mpsService.mpsComputerList[params.host]) {
-              // A TCP connection to Intel AMT just connected, send any pending data and start forwarding.
-              ws.forwardclient.connect(params.port, params.host, () => {
-                log.debug(`TCP connected to ${params.host}:${params.port}.`)
-                ws._socket.resume()
-              })
-            }
+            // TODO: hmm could be important
+            // if (!this.mpsService.mpsComputerList[params.host]) {
+            //   // A TCP connection to Intel AMT just connected, send any pending data and start forwarding.
+            //   ws.forwardclient.connect(params.port, params.host, () => {
+            //     log.debug(`TCP connected to ${params.host}:${params.port}.`)
+            //     ws._socket.resume()
+            //   })
+            // }
           }
         } catch (err) {
           log.error('Exception Caught: ', err)
@@ -272,7 +263,7 @@ export class WebServer {
 
       this.app.use('/api/v1', async (req: Request, res, next) => {
         req.mpsService = this.mpsService
-        const newDB = new DbCreatorFactory(this.mpsService.config)
+        const newDB = new DbCreatorFactory()
         req.db = await newDB.getDb()
         req.amtFactory = new AMTStackFactory(this.mpsService)
         next()
@@ -285,14 +276,14 @@ export class WebServer {
 
       // Validate port number
       let port = 3000
-      if (this.config.web_port != null) {
-        port = this.config.web_port
+      if (Environment.Config.web_port != null) {
+        port = Environment.Config.web_port
       }
 
       // Start the ExpressJS web server
 
       this.server.listen(port, () => {
-        log.info(`MPS Microservice running on ${this.config.common_name}:${port}.`)
+        log.info(`MPS Microservice running on ${Environment.Config.common_name}:${port}.`)
       }).on('error', function (err) {
         if (err.code === 'EADDRINUSE' || err.code === 'EACCES') {
           log.error('Chosen web port is invalid or not available')
@@ -309,13 +300,9 @@ export class WebServer {
 
   // Handle Upgrade - WebSocket
   handleUpgrade (request, socket, head): void {
-    const base = `${this.config.https ? 'https' : 'http'}://${this.config.common_name}:${this.config.web_port}/`
+    const base = `${Environment.Config.https ? 'https' : 'http'}://${Environment.Config.common_name}:${Environment.Config.web_port}/`
     const pathname = (new URL(request.url, base)).pathname
-    if (pathname === '/notifications/control.ashx') {
-      this.notificationwss.handleUpgrade(request, socket, head, (ws) => {
-        this.notificationwss.emit('connection', ws, request)
-      })
-    } else if (pathname === '/relay/webrelay.ashx') {
+    if (pathname === '/relay/webrelay.ashx') {
       this.relaywss.handleUpgrade(request, socket, head, (ws) => {
         this.relaywss.emit('connection', ws, request)
       })
@@ -323,17 +310,6 @@ export class WebServer {
       log.debug('Route does not exist. Closing connection...')
       socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
       socket.destroy()
-    }
-  }
-
-  // Notify clients connected through browser web socket
-  notifyUsers (msg): void {
-    for (const i in this.users) {
-      try {
-        this.users[i].send(JSON.stringify(msg))
-      } catch (error) {
-        log.error(error)
-      }
     }
   }
 }

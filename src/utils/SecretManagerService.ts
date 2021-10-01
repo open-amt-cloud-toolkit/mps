@@ -6,15 +6,16 @@
  **********************************************************************/
 
 import { ISecretManagerService } from '../interfaces/ISecretManagerService'
-import { certificatesType, configType } from '../models/Config'
+import { certificatesType } from '../models/Config'
 import NodeVault = require('node-vault')
 import { ILogger } from '../models/ILogger'
+import { Environment } from './Environment'
 
 export class SecretManagerService implements ISecretManagerService {
   vaultClient: NodeVault.client
   secretsPath: string
   logger: ILogger
-  constructor (config: configType, logger: ILogger, vault?: any) {
+  constructor (logger: ILogger, vault?: any) {
     this.logger = logger
     if (vault) {
       this.vaultClient = vault
@@ -23,10 +24,10 @@ export class SecretManagerService implements ISecretManagerService {
 
     const options: NodeVault.VaultOptions = {
       apiVersion: 'v1', // default
-      endpoint: config.vault_address, // default
-      token: config.vault_token // optional client token; can be fetched after valid initialization of the server
+      endpoint: Environment.Config.vault_address, // default
+      token: Environment.Config.vault_token // optional client token; can be fetched after valid initialization of the server
     }
-    this.secretsPath = config.secrets_path
+    this.secretsPath = Environment.Config.secrets_path
     this.vaultClient = NodeVault(options)
   }
 

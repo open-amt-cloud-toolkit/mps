@@ -3,7 +3,7 @@
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
 
-import { configType, certificatesType } from './models/Config'
+import { certificatesType } from './models/Config'
 import { WebServer } from './server/webserver'
 import { MPSServer } from './server/mpsserver'
 import { logger as log } from './utils/logger'
@@ -11,18 +11,16 @@ import { Device } from './models/models'
 import { ISecretManagerService } from './interfaces/ISecretManagerService'
 import { IDB } from './interfaces/IDb'
 import { MqttProvider } from './utils/mqttProvider'
+import { Environment } from './utils/Environment'
 
 export class MPSMicroservice {
   mpsserver: MPSServer
   webserver: WebServer
-  config: configType
   certs: certificatesType
-  mpsComputerList = {}
   db: IDB
   secrets: ISecretManagerService
-  constructor (config: configType, db: IDB, secrets: ISecretManagerService, certs: certificatesType) {
+  constructor (db: IDB, secrets: ISecretManagerService, certs: certificatesType) {
     try {
-      this.config = config
       this.db = db
       this.secrets = secrets
       this.certs = certs
@@ -39,7 +37,7 @@ export class MPSMicroservice {
   async CIRAConnected (guid: string): Promise<void> {
     const device: Device = await this.db.devices.getByName(guid)
     device.connectionStatus = true
-    device.mpsInstance = this.config.instance_name
+    device.mpsInstance = Environment.Config.instance_name
     const results = await this.db.devices.update(device)
     if (results) {
       MqttProvider.publishEvent('success', ['CIRA_Connected'], 'CIRA Connection Established', guid)
@@ -48,13 +46,11 @@ export class MPSMicroservice {
       MqttProvider.publishEvent('fail', ['CIRA_Connected'], 'CIRA Connection Failed', guid)
       log.error(`Failed to update CIRA Connection established status in DB ${guid}`)
     }
-
-    if (this.webserver) {
-      this.webserver.notifyUsers({ host: guid, event: 'node_connection', status: 'connected' })
-    }
   }
 
   async CIRADisconnected (guid: string): Promise<void> {
+    log.debug(`CIRA connection disconnected for device : ${guid}`)
+
     const device: Device = await this.db.devices.getByName(guid)
     if (device != null) {
       device.connectionStatus = false
@@ -63,20 +59,6 @@ export class MPSMicroservice {
       if (results) {
         log.debug(`Device connection status updated in db : ${guid}`)
       }
-    }
-
-    if (guid && this.mpsComputerList[guid]) {
-      log.verbose(`delete mpsComputerList[${guid}]`)
-      delete this.mpsComputerList[guid]
-      if (this.webserver) {
-        this.webserver.notifyUsers({
-          host: guid,
-          event: 'node_connection',
-          status: 'disconnected'
-        })
-      }
-      MqttProvider.publishEvent('fail', ['CIRA_Disconnected'], 'CIRA Connection Disconnected', guid)
-      log.debug(`CIRA connection disconnected for device : ${guid}`)
     }
   }
 }

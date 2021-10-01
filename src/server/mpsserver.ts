@@ -19,771 +19,145 @@
 * @version v0.2.0c
 */
 
-import * as net from 'net'
-import * as tls from 'tls'
-
-import { configType, certificatesType } from '../models/Config'
-import { APFProtocol, APFChannelOpenFailureReasonCode } from '../models/Mps'
-import { logger as log } from '../utils/logger'
+import { logger } from '../utils/logger'
 import { MPSMicroservice } from '../mpsMicroservice'
 
-import * as common from '../utils/common.js'
-import { IDB } from '../interfaces/IDb'
+import { Environment } from '../utils/Environment'
+import { Server, createServer } from 'net'
+import { createServer as tlsCreateServer } from 'tls'
+import { APFProcessor } from './APFProcessor'
+import { CIRASocket } from '../models/models'
+import { CIRAHandler } from './CIRAHandler'
 // 90 seconds max idle time, higher than the typical KEEP-ALIVE period of 60 seconds
 const MAX_IDLE = 90000
 
 export class MPSServer {
-  db: IDB
   mpsService: MPSMicroservice
-  config: configType
-  certs: certificatesType
-  ciraConnections = {}
-  server: any
+  apf: APFProcessor
+  server: Server
+  cira: CIRAHandler
 
   constructor (mpsService: MPSMicroservice) {
     this.mpsService = mpsService
-    this.db = mpsService.db
-    this.config = mpsService.config
-    this.certs = mpsService.certs
-
-    if (this.config.tls_offload) {
+    this.apf = new APFProcessor()
+    this.cira = new CIRAHandler(this.apf)
+    if (Environment.Config.tls_offload) {
       // Creates a new TCP server
-      this.server = net.createServer((socket) => {
-        this.onConnection(socket)
+      this.server = createServer((socket) => {
+        this.onConnection(socket as any)
       })
     } else {
       // Creates a TLS server for secure connection
-      this.server = tls.createServer(this.certs.mps_tls_config, (socket) => {
-        this.onConnection(socket)
+      this.server = tlsCreateServer(this.mpsService.certs.mps_tls_config, (socket) => {
+        this.onTLSConnection(socket as any)
       })
     }
 
-    this.server.listen(this.config.port, () => {
-      const mpsaliasport = (typeof this.config.alias_port === 'undefined') ? `${this.config.port}` : `${this.config.port} alias port ${this.config.alias_port}`
-      log.info(`Intel(R) AMT server running on ${this.config.common_name}:${mpsaliasport}.`)
+    this.server.listen(Environment.Config.port, () => {
+      const mpsaliasport = (typeof Environment.Config.alias_port === 'undefined') ? `${Environment.Config.port}` : `${Environment.Config.port} alias port ${Environment.Config.alias_port}`
+      logger.info(`Intel(R) AMT server running on ${Environment.Config.common_name}:${mpsaliasport}.`)
     })
 
     this.server.on('error', (err) => {
-      log.error(`ERROR: Intel(R) AMT server port ${this.config.port} is not available.`)
-      if (err)log.error(err)
-      // if (this.config.exactports) {
-      //     process.exit();
-      // }
+      logger.error(`ERROR: Intel(R) AMT server port ${Environment.Config.port} is not available.`)
+      if (err) logger.error(JSON.stringify(err))
     })
   }
 
-  onConnection = (socket): void => {
-    if (this.config.tls_offload) {
-      socket.tag = { first: true, clientCert: null, accumulator: '', activetunnels: 0, boundPorts: [], socket: socket, host: null, nextchannelid: 4, channels: {}, nextsourceport: 0 }
-    } else {
-      socket.tag = { first: true, clientCert: socket.getPeerCertificate(true), accumulator: '', activetunnels: 0, boundPorts: [], socket: socket, host: null, nextchannelid: 4, channels: {}, nextsourceport: 0 }
-    }
+  onTLSConnection = (socket: CIRASocket): void => {
+    logger.debug('MPS:New Offloaded-TLS CIRA connection')
+    socket.tag = { first: true, clientCert: socket.getPeerCertificate(true), accumulator: '', activetunnels: 0, boundPorts: [], socket: socket, host: null, nextchannelid: 4, channels: {}, nextsourceport: 0, nodeid: null }
+    this.addHandlers(socket)
+  }
+
+  onConnection = (socket: CIRASocket): void => {
+    logger.debug('MPS:New TLS CIRA connection')
+    socket.tag = { first: true, clientCert: null, accumulator: '', activetunnels: 0, boundPorts: [], socket: socket, host: null, nextchannelid: 4, channels: {}, nextsourceport: 0, nodeid: null }
+    this.addHandlers(socket)
+  }
+
+  addHandlers (socket: CIRASocket): void {
     socket.setEncoding('binary')
-    log.debug('MPS:New CIRA connection')
-
-    // Setup the CIRA keep alive timer
-    socket.setTimeout(MAX_IDLE)
-    socket.on('timeout', async (): Promise<void> => {
-      log.debug('MPS:CIRA timeout, disconnecting.')
-      try {
-        socket.end()
-        if (this.ciraConnections[socket.tag.nodeid]) {
-          delete this.ciraConnections[socket.tag.nodeid]
-          if (typeof this.mpsService.CIRADisconnected === 'function') {
-            await this.mpsService.CIRADisconnected(socket.tag.nodeid)
-          }
-        }
-      } catch (e) {
-        log.error(`Error from socket timeout: ${e}`)
-      }
-      log.debug('MPS:CIRA timeout, disconnected.')
-    })
-
-    socket.addListener('data', async (data: string): Promise<void> => {
-      // TODO: mpsdebug should be added to the config file
-      // if (this.config.mpsdebug) {
-      //     let buf = Buffer.from(data, "binary");
-      //     console.log('MPS <-- (' + buf.length + '):' + buf.toString('hex'));
-      // } // Print out received bytes
-
-      socket.tag.accumulator += data
-
-      // Detect if this is an HTTPS request, if it is, return a simple answer and disconnect. This is useful for debugging access to the MPS port.
-      if (socket.tag.first === true) {
-        if (socket.tag.accumulator.length < 3) return
-        // if (!socket.tag.clientCert.subject) { console.log("MPS Connection, no client cert: " + socket.remoteAddress); socket.write('HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\nMeshCentral2 MPS server.\r\nNo client certificate given.'); socket.end(); return; }
-        if (socket.tag.accumulator.substring(0, 3) === 'GET') {
-          log.debug(`MPS Connection, HTTP GET detected: ${socket.remoteAddress}`)
-          socket.write('HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: close\r\n\r\n<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>Intel Management Presence Server (MPS).<br />Intel&reg; AMT computers must connect here using CIRA.</body></html>')
-          socket.end()
-          return
-        }
-        socket.tag.first = false
-      }
-
-      try {
-        // Parse all of the APF data we can
-        let l = 0
-        do {
-          l = await this.processCommand(socket)
-          if (l > 0) {
-            socket.tag.accumulator = socket.tag.accumulator.substring(l)
-          }
-        } while (l > 0)
-        if (l < 0) {
-          socket.end()
-        }
-      } catch (e) {
-        log.error(e)
-      }
-    })
-
-    socket.addListener('close', async (): Promise<void> => {
-      log.debug('MPS:CIRA connection closed')
-      try {
-        if (this.ciraConnections[socket.tag.nodeid]) {
-          delete this.ciraConnections[socket.tag.nodeid]
-          if (typeof this.mpsService.CIRADisconnected === 'function') {
-            await this.mpsService.CIRADisconnected(socket.tag.nodeid)
-          }
-        }
-      } catch (e) {
-        log.error(`Error from socket close: ${e}`)
-      }
-    })
-
-    socket.addListener('error', (error
-    ) => {
-      // error "ECONNRESET" means the other side of the TCP conversation abruptly closed its end of the connection.
-      if (error.code !== 'ECONNRESET') {
-        log.error(`MPS socket error ${socket.tag.nodeid},  ${socket.remoteAddress}: ${error}`)
-      }
-    })
+    socket.setTimeout(MAX_IDLE) // Setup the CIRA keep alive timer
+    socket.on('timeout', this.onTimeout.bind(this, socket))
+    socket.addListener('data', this.onDataReceived.bind(this, socket))
+    socket.addListener('close', this.onClose.bind(this, socket))
+    socket.addListener('error', this.onError.bind(this, socket))
   }
 
-  // Process one APF command
-  processCommand = async (socket): Promise<number> => {
-    const cmd = socket.tag.accumulator.charCodeAt(0)
-    const len = socket.tag.accumulator.length
-    const data = socket.tag.accumulator
-    if (len === 0) {
-      return 0
-    }
-
-    switch (cmd) {
-      case APFProtocol.KEEPALIVE_REQUEST: {
-        if (len < 5) {
-          return 0
-        }
-        log.verbose(`MPS: KEEPALIVE_REQUEST: ${socket.tag.nodeid}`)
-        this.SendKeepAliveReply(socket, common.ReadInt(data, 1))
-        return 5
-      }
-      case APFProtocol.KEEPALIVE_REPLY: {
-        if (len < 5) return 0
-        log.silly('MPS:KEEPALIVE_REPLY')
-        return 5
-      }
-      case APFProtocol.PROTOCOLVERSION: {
-        if (len < 93) return 0
-        socket.tag.MajorVersion = common.ReadInt(data, 1)
-        socket.tag.MinorVersion = common.ReadInt(data, 5)
-        socket.tag.SystemId = this.guidToStr(common.rstr2hex(data.substring(13, 29))).toLowerCase()
-        log.silly(`MPS:PROTOCOLVERSION, ${socket.tag.MajorVersion}, ${socket.tag.MinorVersion}, ${socket.tag.SystemId}`)
-        // Check if the device exits in db
-        if (this.db.devices.getByName(socket.tag.SystemId)) {
-          socket.tag.nodeid = socket.tag.SystemId
-          if (socket.tag.certauth) {
-            this.ciraConnections[socket.tag.SystemId] = socket
-            await this.mpsService.CIRAConnected(socket.tag.nodeid)
-          }
-        } else {
-          try {
-            log.warn(`MPS:GUID ${socket.tag.SystemId} is not allowed to connect.`)
-            socket.end()
-          } catch (e) { }
-        }
-        log.silly(`device uuid: ${socket.tag.SystemId}`)
-        return 93
-      }
-      case APFProtocol.USERAUTH_REQUEST: {
-        if (len < 13) return 0
-        const usernameLen: number = common.ReadInt(data, 1)
-        const username: string = data.substring(5, 5 + usernameLen)
-        const serviceNameLen: number = common.ReadInt(data, 5 + usernameLen)
-        const serviceName: string = data.substring(9 + usernameLen, 9 + usernameLen + serviceNameLen)
-        const methodNameLen: number = common.ReadInt(data, 9 + usernameLen + serviceNameLen)
-        const methodName: string = data.substring(13 + usernameLen + serviceNameLen, 13 + usernameLen + serviceNameLen + methodNameLen)
-        let passwordLen = 0; let password: string = null
-        if (methodName === 'password') {
-          passwordLen = common.ReadInt(data, 14 + usernameLen + serviceNameLen + methodNameLen)
-          password = data.substring(18 + usernameLen + serviceNameLen + methodNameLen, 18 + usernameLen + serviceNameLen + methodNameLen + passwordLen)
-        }
-        log.silly(`MPS:USERAUTH_REQUEST usernameLen=${usernameLen} serviceNameLen=${serviceNameLen} methodNameLen=${methodNameLen}`)
-        log.silly(`MPS:USERAUTH_REQUEST user=${username} service=${serviceName} method=${methodName}`)
-        // Authenticate device connection using username and password
-        try {
-          const device = await this.db.devices.getByName(socket.tag.SystemId)
-          const pwd = await this.mpsService.secrets.getSecretFromKey(`devices/${socket.tag.SystemId}`, 'MPS_PASSWORD')
-          if (username === device?.mpsusername && password === pwd) {
-            log.debug(`MPS:CIRA Authentication successful for: ${username}`)
-            this.ciraConnections[socket.tag.SystemId] = socket
-            await this.mpsService.CIRAConnected(socket.tag.SystemId) // Notify that a connection is successful to console
-            this.SendUserAuthSuccess(socket) // Notify the auth success on the CIRA connection
-          } else {
-            log.warn(`MPS: CIRA Authentication failed for: ${username}`)
-            this.SendUserAuthFail(socket)
-          }
-        } catch (err) {
-          log.error(err)
-          this.SendUserAuthFail(socket)
-        }
-        return 18 + usernameLen + serviceNameLen + methodNameLen + passwordLen
-      }
-      case APFProtocol.SERVICE_REQUEST: {
-        if (len < 5) return 0
-        const serviceNameLen: number = common.ReadInt(data, 1)
-        if (len < 5 + serviceNameLen) return 0
-        const serviceName = data.substring(5, 5 + serviceNameLen)
-        log.silly(`MPS:SERVICE_REQUEST: ${serviceName}`)
-        if (serviceName === 'pfwd@amt.intel.com') {
-          this.SendServiceAccept(socket, 'pfwd@amt.intel.com')
-        }
-        if (serviceName === 'auth@amt.intel.com') {
-          this.SendServiceAccept(socket, 'auth@amt.intel.com')
-        }
-        return 5 + serviceNameLen
-      }
-      case APFProtocol.GLOBAL_REQUEST: {
-        if (len < 14) return 0
-        const requestLen: number = common.ReadInt(data, 1)
-        if (len < 14 + requestLen) return 0
-        const request: string = data.substring(5, 5 + requestLen)
-        // const wantResponse: string = data.charCodeAt(5 + requestLen)
-
-        if (request === 'tcpip-forward') {
-          const addrLen: number = common.ReadInt(data, 6 + requestLen)
-          if (len < 14 + requestLen + addrLen) return 0
-          let addr = data.substring(10 + requestLen, 10 + requestLen + addrLen)
-          const port = common.ReadInt(data, 10 + requestLen + addrLen)
-          if (addr === '') addr = undefined
-          log.silly(`MPS: GLOBAL_REQUEST ${socket.tag.nodeid} ${request} ${addr}: ${port}`)
-          this.ChangeHostname(socket, addr)
-          if (socket.tag.boundPorts.indexOf(port) === -1) {
-            socket.tag.boundPorts.push(port)
-          }
-          this.SendTcpForwardSuccessReply(socket, port)
-          return 14 + requestLen + addrLen
-        }
-
-        if (request === 'cancel-tcpip-forward') {
-          const addrLen: number = common.ReadInt(data, 6 + requestLen)
-          if (len < 14 + requestLen + addrLen) return 0
-          const addr: string = data.substring(10 + requestLen, 10 + requestLen + addrLen)
-          const port: number = common.ReadInt(data, 10 + requestLen + addrLen)
-          log.silly(`MPS:GLOBAL_REQUEST, ${request}, ${addr}:${port}`)
-          const portindex = socket.tag.boundPorts.indexOf(port)
-          if (portindex >= 0) {
-            socket.tag.boundPorts.splice(portindex, 1)
-          }
-          this.SendTcpForwardCancelReply(socket)
-          return 14 + requestLen + addrLen
-        }
-
-        if (request === 'udp-send-to@amt.intel.com') {
-          const addrLen: number = common.ReadInt(data, 6 + requestLen)
-          if (len < 26 + requestLen + addrLen) return 0
-          const addr: string = data.substring(10 + requestLen, 10 + requestLen + addrLen)
-          const port: number = common.ReadInt(data, 10 + requestLen + addrLen)
-          const oaddrLen: number = common.ReadInt(data, 14 + requestLen + addrLen)
-          if (len < 26 + requestLen + addrLen + oaddrLen) return 0
-          const oaddr: string = data.substring(18 + requestLen, 18 + requestLen + addrLen)
-          const oport: number = common.ReadInt(data, 18 + requestLen + addrLen + oaddrLen)
-          const datalen: number = common.ReadInt(data, 22 + requestLen + addrLen + oaddrLen)
-          if (len < 26 + requestLen + addrLen + oaddrLen + datalen) return 0
-          log.silly(`MPS:GLOBAL_REQUEST, ${request}, ${addr}:${port}, ${oaddr}:${oport}, ${datalen.toString()}`)
-          // TODO
-          return 26 + requestLen + addrLen + oaddrLen + datalen
-        }
-
-        return 6 + requestLen
-      }
-      case APFProtocol.CHANNEL_OPEN: {
-        if (len < 33) return 0
-        const ChannelTypeLength: number = common.ReadInt(data, 1)
-        if (len < (33 + ChannelTypeLength)) return 0
-
-        // Decode channel identifiers and window size
-        const ChannelType: string = data.substring(5, 5 + ChannelTypeLength)
-        const SenderChannel: number = common.ReadInt(data, 5 + ChannelTypeLength)
-        const WindowSize: number = common.ReadInt(data, 9 + ChannelTypeLength)
-
-        // Decode the target
-        const TargetLen: number = common.ReadInt(data, 17 + ChannelTypeLength)
-        if (len < (33 + ChannelTypeLength + TargetLen)) return 0
-        const Target: string = data.substring(21 + ChannelTypeLength, 21 + ChannelTypeLength + TargetLen)
-        const TargetPort: number = common.ReadInt(data, 21 + ChannelTypeLength + TargetLen)
-
-        // Decode the source
-        const SourceLen: number = common.ReadInt(data, 25 + ChannelTypeLength + TargetLen)
-        if (len < (33 + ChannelTypeLength + TargetLen + SourceLen)) return 0
-        const Source: string = data.substring(29 + ChannelTypeLength + TargetLen, 29 + ChannelTypeLength + TargetLen + SourceLen)
-        const SourcePort: number = common.ReadInt(data, 29 + ChannelTypeLength + TargetLen + SourceLen)
-
-        log.silly(`MPS:CHANNEL_OPEN, ${ChannelType}, ${SenderChannel.toString()}, ${WindowSize.toString()}, ${Target}:${TargetPort}, ${Source}:${SourcePort}`)
-
-        // Check if we understand this channel type
-        // if (ChannelType.toLowerCase() == "direct-tcpip")
-
-        // We don't understand this channel type, send an error back
-        this.SendChannelOpenFailure(socket, SenderChannel, APFChannelOpenFailureReasonCode.UnknownChannelType)
-        return 33 + ChannelTypeLength + TargetLen + SourceLen
-
-        /*
-        // This is a correct connection. Lets get it setup
-        var MeshAmtEventEndpoint = { ServerChannel: GetNextBindId(), AmtChannel: SenderChannel, MaxWindowSize: 2048, CurrentWindowSize:2048, SendWindow: WindowSize, InfoHeader: "Target: " + Target + ":" + TargetPort + ", Source: " + Source + ":" + SourcePort};
-        // TODO: Connect this socket for a WSMAN event
-        SendChannelOpenConfirmation(socket, SenderChannel, MeshAmtEventEndpoint.ServerChannel, MeshAmtEventEndpoint.MaxWindowSize);
-        */
-      }
-      case APFProtocol.CHANNEL_OPEN_CONFIRMATION: {
-        if (len < 17) return 0
-        const RecipientChannel: number = common.ReadInt(data, 1)
-        const SenderChannel: number = common.ReadInt(data, 5)
-        const WindowSize: number = common.ReadInt(data, 9)
-        socket.tag.activetunnels++
-        const cirachannel = socket.tag.channels[RecipientChannel]
-        if (cirachannel == null) {
-          /* console.log("MPS Error in CHANNEL_OPEN_CONFIRMATION: Unable to find channelid " + RecipientChannel); */
-          return 17
-        }
-        cirachannel.amtchannelid = SenderChannel
-        cirachannel.sendcredits = cirachannel.amtCiraWindow = WindowSize
-        log.silly(`MPS:CHANNEL_OPEN_CONFIRMATION, ${RecipientChannel.toString()}, ${SenderChannel.toString()}, ${WindowSize.toString()}`)
-        if (cirachannel.closing === 1) {
-          // Close this channel
-          this.SendChannelClose(cirachannel.socket, cirachannel.amtchannelid)
-        } else {
-          cirachannel.state = 2
-          // Send any pending data
-          if (cirachannel.sendBuffer != null) {
-            if (cirachannel.sendBuffer.length <= cirachannel.sendcredits) {
-              // Send the entire pending buffer
-              this.SendChannelData(cirachannel.socket, cirachannel.amtchannelid, cirachannel.sendBuffer)
-              cirachannel.sendcredits -= cirachannel.sendBuffer.length
-              delete cirachannel.sendBuffer
-              if (cirachannel.onSendOk) {
-                cirachannel.onSendOk(cirachannel)
-              }
-            } else {
-              // Send a part of the pending buffer
-              this.SendChannelData(cirachannel.socket, cirachannel.amtchannelid, cirachannel.sendBuffer.substring(0, cirachannel.sendcredits))
-              cirachannel.sendBuffer = cirachannel.sendBuffer.substring(cirachannel.sendcredits)
-              cirachannel.sendcredits = 0
-            }
-          }
-          // Indicate the channel is open
-          if (cirachannel.onStateChange) {
-            cirachannel.onStateChange(cirachannel, cirachannel.state)
-          }
-        }
-        return 17
-      }
-      case APFProtocol.CHANNEL_OPEN_FAILURE: {
-        if (len < 17) return 0
-        const RecipientChannel: number = common.ReadInt(data, 1)
-        const ReasonCode: number = common.ReadInt(data, 5)
-        log.silly(`MPS:CHANNEL_OPEN_FAILURE, ${RecipientChannel.toString()}, ${ReasonCode.toString()}`)
-        const cirachannel = socket.tag.channels[RecipientChannel]
-        if (cirachannel == null) {
-          log.error(`MPS Error in CHANNEL_OPEN_FAILURE: Unable to find channelid ${RecipientChannel}`); return 17
-        }
-        if (cirachannel.state > 0) {
-          cirachannel.state = 0
-          if (cirachannel.onStateChange) {
-            cirachannel.onStateChange(cirachannel, cirachannel.state)
-          }
-          delete socket.tag.channels[RecipientChannel]
-        }
-        return 17
-      }
-      case APFProtocol.CHANNEL_CLOSE: {
-        if (len < 5) return 0
-        const RecipientChannel: number = common.ReadInt(data, 1)
-        log.silly(`MPS:CHANNEL_CLOSE ${RecipientChannel.toString()}`)
-        const cirachannel = socket.tag.channels[RecipientChannel]
-        if (cirachannel == null) {
-          log.error(`MPS Error in CHANNEL_CLOSE: Unable to find channelid ${RecipientChannel}`); return 5
-        }
-        this.SendChannelClose(cirachannel.socket, cirachannel.amtchannelid)
-        socket.tag.activetunnels--
-        if (cirachannel.state > 0) {
-          cirachannel.state = 0
-          if (cirachannel.onStateChange) {
-            cirachannel.onStateChange(cirachannel, cirachannel.state)
-          }
-          delete socket.tag.channels[RecipientChannel]
-        }
-        return 5
-      }
-      case APFProtocol.CHANNEL_WINDOW_ADJUST: {
-        if (len < 9) return 0
-        const RecipientChannel: number = common.ReadInt(data, 1)
-        const ByteToAdd: number = common.ReadInt(data, 5)
-        const cirachannel = socket.tag.channels[RecipientChannel]
-        if (cirachannel == null) {
-          log.error(`MPS Error in CHANNEL_WINDOW_ADJUST: Unable to find channelid ${RecipientChannel}`); return 9
-        }
-        cirachannel.sendcredits += ByteToAdd
-        log.silly(`MPS:CHANNEL_WINDOW_ADJUST, ${RecipientChannel.toString()}, ${ByteToAdd.toString()}, ${cirachannel.sendcredits}`)
-        if (cirachannel.state === 2 && cirachannel.sendBuffer != null) {
-          // Compute how much data we can send
-          if (cirachannel.sendBuffer.length <= cirachannel.sendcredits) {
-            // Send the entire pending buffer
-            this.SendChannelData(cirachannel.socket, cirachannel.amtchannelid, cirachannel.sendBuffer)
-            cirachannel.sendcredits -= cirachannel.sendBuffer.length
-            delete cirachannel.sendBuffer
-            if (cirachannel.onSendOk) {
-              cirachannel.onSendOk(cirachannel)
-            }
-          } else {
-            // Send a part of the pending buffer
-            this.SendChannelData(cirachannel.socket, cirachannel.amtchannelid, cirachannel.sendBuffer.substring(0, cirachannel.sendcredits))
-            cirachannel.sendBuffer = cirachannel.sendBuffer.substring(cirachannel.sendcredits)
-            cirachannel.sendcredits = 0
-          }
-        }
-        return 9
-      }
-      case APFProtocol.CHANNEL_DATA: {
-        if (len < 9) return 0
-        const RecipientChannel: number = common.ReadInt(data, 1)
-        const LengthOfData: number = common.ReadInt(data, 5)
-        if (len < (9 + LengthOfData)) return 0
-        log.silly(`MPS:CHANNEL_DATA, ${RecipientChannel.toString()}, ${LengthOfData.toString()}`)
-        const cirachannel = socket.tag.channels[RecipientChannel]
-        if (cirachannel == null) {
-          log.error(`MPS Error in CHANNEL_DATA: Unable to find channelid ${RecipientChannel}`); return 9 + LengthOfData
-        }
-        cirachannel.amtpendingcredits += LengthOfData
-        if (cirachannel.onData) cirachannel.onData(cirachannel, data.substring(9, 9 + LengthOfData))
-        if (cirachannel.amtpendingcredits > (cirachannel.ciraWindow / 2)) {
-          this.SendChannelWindowAdjust(cirachannel.socket, cirachannel.amtchannelid, cirachannel.amtpendingcredits) // Adjust the buffer window
-          cirachannel.amtpendingcredits = 0
-        }
-        return 9 + LengthOfData
-      }
-      case APFProtocol.DISCONNECT: {
-        if (len < 7) return 0
-        const ReasonCode: number = common.ReadInt(data, 1)
-        log.silly(`MPS:DISCONNECT, ${ReasonCode.toString()}`)
-        try {
-          delete this.ciraConnections[socket.tag.nodeid]
-        } catch (e) { }
-        await this.mpsService.CIRADisconnected(socket.tag.nodeid)
-        return 7
-      }
-      default: {
-        log.warn(`MPS:Unknown CIRA command: ${cmd}`)
-        return -1
-      }
-    }
-  }
-
-  // Disconnect CIRA tunnel
-  async close (socket): Promise<void> {
+  onTimeout = async (socket: CIRASocket): Promise<void> => {
+    logger.debug('MPS:CIRA timeout, disconnecting.')
     try {
       socket.end()
-    } catch (e) { }
-    try {
-      delete this.ciraConnections[socket.tag.nodeid]
-    } catch (e) { }
-    if (this.mpsService) {
-      await this.mpsService.CIRADisconnected(socket.tag.nodeid)
-    }
-  }
-
-  SendServiceAccept (socket, service: string): void {
-    this.Write(
-      socket,
-      String.fromCharCode(APFProtocol.SERVICE_ACCEPT) +
-            common.IntToStr(service.length) +
-            service
-    )
-  }
-
-  SendTcpForwardSuccessReply (socket, port): void {
-    this.Write(
-      socket,
-      String.fromCharCode(APFProtocol.REQUEST_SUCCESS) + common.IntToStr(port)
-    )
-  }
-
-  SendTcpForwardCancelReply (socket): void {
-    this.Write(socket, String.fromCharCode(APFProtocol.REQUEST_SUCCESS))
-  }
-
-  SendKeepAliveRequest (socket, cookie): void {
-    this.Write(
-      socket,
-      String.fromCharCode(APFProtocol.KEEPALIVE_REQUEST) +
-            common.IntToStr(cookie)
-    )
-  }
-
-  SendKeepAliveReply (socket, cookie): void {
-    this.Write(
-      socket,
-      String.fromCharCode(APFProtocol.KEEPALIVE_REPLY) + common.IntToStr(cookie)
-    )
-  }
-
-  SendChannelOpenFailure (socket, senderChannel, reasonCode): void {
-    this.Write(
-      socket,
-      String.fromCharCode(APFProtocol.CHANNEL_OPEN_FAILURE) +
-            common.IntToStr(senderChannel) +
-            common.IntToStr(reasonCode) +
-            common.IntToStr(0) +
-            common.IntToStr(0)
-    )
-  }
-
-  SendChannelOpenConfirmation (socket, recipientChannelId, senderChannelId, initialWindowSize): void {
-    this.Write(
-      socket,
-      String.fromCharCode(APFProtocol.CHANNEL_OPEN_CONFIRMATION) +
-            common.IntToStr(recipientChannelId) +
-            common.IntToStr(senderChannelId) +
-            common.IntToStr(initialWindowSize) +
-            common.IntToStr(-1)
-    )
-  }
-
-  SendChannelOpen (socket, direct, channelid: number, windowSize: number, target: string, targetPort: number, source: string, sourcePort: number): void {
-    const connectionType = direct === true ? 'direct-tcpip' : 'forwarded-tcpip'
-    // TODO: Reports of target being undefined that causes target.length to fail. This is a hack.
-    if (target == null || typeof target === 'undefined') target = ''
-    this.Write(
-      socket,
-      String.fromCharCode(APFProtocol.CHANNEL_OPEN) +
-            common.IntToStr(connectionType.length) +
-            connectionType +
-            common.IntToStr(channelid) +
-            common.IntToStr(windowSize) +
-            common.IntToStr(-1) +
-            common.IntToStr(target.length) +
-            target +
-            common.IntToStr(targetPort) +
-            common.IntToStr(source.length) +
-            source +
-            common.IntToStr(sourcePort)
-    )
-  }
-
-  SendChannelClose (socket, channelid): void {
-    log.silly(`MPS:SendChannelClose, ${channelid}`)
-    this.Write(
-      socket,
-      String.fromCharCode(APFProtocol.CHANNEL_CLOSE) +
-            common.IntToStr(channelid)
-    )
-  }
-
-  SendChannelData (socket, channelid, data): void {
-    this.Write(
-      socket,
-      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-      String.fromCharCode(APFProtocol.CHANNEL_DATA) +
-            common.IntToStr(channelid) +
-            common.IntToStr(data.length) +
-            data
-    )
-  }
-
-  SendChannelWindowAdjust (socket, channelid, bytestoadd): void {
-    log.silly(`MPS:SendChannelWindowAdjust, ${channelid}, ${bytestoadd}`)
-    this.Write(
-      socket,
-      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-      String.fromCharCode(APFProtocol.CHANNEL_WINDOW_ADJUST) +
-            common.IntToStr(channelid) +
-            common.IntToStr(bytestoadd)
-    )
-  }
-
-  SendDisconnect (socket, reasonCode): void {
-    this.Write(
-      socket,
-      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-      String.fromCharCode(APFProtocol.DISCONNECT) +
-            common.IntToStr(reasonCode) +
-            common.ShortToStr(0)
-    )
-  }
-
-  SendUserAuthFail (socket): void {
-    this.Write(
-      socket,
-      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-      String.fromCharCode(APFProtocol.USERAUTH_FAILURE) +
-            common.IntToStr(8) +
-            'password' +
-            common.ShortToStr(0)
-    )
-  }
-
-  SendUserAuthSuccess (socket): void {
-    this.Write(socket, String.fromCharCode(APFProtocol.USERAUTH_SUCCESS))
-  }
-
-  Write (socket, data): void {
-    // TODO: Add mpsdebug to config file.
-    // if (this.config.mpsdebug) {
-    //   // Print out sent bytes
-    //   var buf = Buffer.from(data, "binary");
-    //   console.log("MPS --> (" + buf.length + "):" + buf.toString("hex"));
-    //   socket.write(buf);
-    // } else {
-    socket.write(Buffer.from(data, 'binary'))
-    // }
-  }
-
-  SetupCommunication = (host, port): any => {
-    const ciraconn = this.ciraConnections[host]
-    const socket = this.SetupCiraChannel(ciraconn, port)
-    return socket
-  }
-
-  // Setup CIRA Channel
-  SetupCiraChannel (socket, targetport): any {
-    const sourceport = (socket.tag.nextsourceport++ % 30000) + 1024
-    const cirachannel = {
-      targetport: targetport,
-      channelid: socket.tag.nextchannelid++,
-      socket: socket,
-      state: 1,
-      sendcredits: 0,
-      amtpendingcredits: 0,
-      amtCiraWindow: 0,
-      ciraWindow: 32768,
-      write: undefined,
-      sendBuffer: undefined,
-      amtchannelid: undefined,
-      close: undefined,
-      closing: undefined,
-      onStateChange: undefined,
-      sendchannelclose: undefined
-    }
-    this.SendChannelOpen(
-      socket,
-      false,
-      cirachannel.channelid,
-      cirachannel.ciraWindow,
-      socket.tag.host,
-      targetport,
-      '1.2.3.4',
-      sourceport
-    )
-
-    // This function writes data to this CIRA channel
-    cirachannel.write = (data: string): boolean => {
-      if (cirachannel.state === 0) return false
-      if (cirachannel.state === 1 || cirachannel.sendcredits === 0 || cirachannel.sendBuffer != null) {
-        if (cirachannel.sendBuffer == null) {
-          cirachannel.sendBuffer = data
-        } else {
-          cirachannel.sendBuffer += data
+      if (this.cira.ciraConnections[socket.tag.nodeid]) {
+        delete this.cira.ciraConnections[socket.tag.nodeid]
+        if (typeof this.mpsService.CIRADisconnected === 'function') {
+          await this.mpsService.CIRADisconnected(socket.tag.nodeid)
         }
-        return true
       }
-      // Compute how much data we can send
-      if (data.length <= cirachannel.sendcredits) {
-        // Send the entire message
-        this.SendChannelData(cirachannel.socket, cirachannel.amtchannelid, data)
-        cirachannel.sendcredits -= data.length
-        return true
-      }
-      // Send a part of the message
-      cirachannel.sendBuffer = data.substring(cirachannel.sendcredits)
-      this.SendChannelData(
-        cirachannel.socket,
-        cirachannel.amtchannelid,
-        data.substring(0, cirachannel.sendcredits)
-      )
-      cirachannel.sendcredits = 0
-      return false
+    } catch (err) {
+      logger.error(`Error from socket timeout: ${err}`)
     }
+    logger.debug('MPS:CIRA timeout, disconnected.')
+  }
 
-    // This function closes this CIRA channel
-    cirachannel.close = (): void => {
-      if (cirachannel.state === 0 || cirachannel.closing === 1) return
-      if (cirachannel.state === 1) {
-        cirachannel.closing = 1
-        cirachannel.state = 0
-        if (cirachannel.onStateChange) {
-          cirachannel.onStateChange(cirachannel, cirachannel.state)
-        }
+  onDataReceived = async (socket: CIRASocket, data: string): Promise<void> => {
+    // TODO: mpsdebug should be added to the config file
+    // if (Environment.Config.mpsdebug) {
+    //     let buf = Buffer.from(data, "binary");
+    //     console.log('MPS <-- (' + buf.length + '):' + buf.toString('hex'));
+    // } // Print out received bytes
+
+    socket.tag.accumulator += data
+
+    // Detect if this is an HTTPS request, if it is, return a simple answer and disconnect. This is useful for debugging access to the MPS port.
+    if (socket.tag.first) {
+      if (socket.tag.accumulator.length < 3) return
+      // if (!socket.tag.clientCert.subject) { console.log("MPS Connection, no client cert: " + socket.remoteAddress); socket.write('HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\nMeshCentral2 MPS server.\r\nNo client certificate given.'); socket.end(); return; }
+      if (socket.tag.accumulator.substring(0, 3) === 'GET') {
+        logger.debug(`MPS Connection, HTTP GET detected: ${socket.remoteAddress}`)
+        socket.write('HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: close\r\n\r\n<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>Intel Management Presence Server (MPS).<br />Intel&reg; AMT computers must connect here using CIRA.</body></html>')
+        socket.end()
         return
       }
-      cirachannel.state = 0
-      cirachannel.closing = 1
-      this.SendChannelClose(cirachannel.socket, cirachannel.amtchannelid)
-      if (cirachannel.onStateChange) {
-        cirachannel.onStateChange(cirachannel, cirachannel.state)
+      socket.tag.first = false
+    }
+
+    try {
+      // Parse all of the APF data we can
+      let length = 0
+      do {
+        length = await this.apf.processCommand(socket)
+        if (length > 0) {
+          socket.tag.accumulator = socket.tag.accumulator.substring(length)
+        }
+      } while (length > 0)
+      if (length < 0) {
+        socket.end()
       }
-    }
-
-    cirachannel.sendchannelclose = (): void => {
-      this.SendChannelClose(cirachannel.socket, cirachannel.amtchannelid)
-    }
-
-    socket.tag.channels[cirachannel.channelid] = cirachannel
-    return cirachannel
-  }
-
-  ChangeHostname (socket, host): void {
-    let computerEntry = {
-      name: undefined,
-      host: undefined,
-      amtuser: undefined
-    }
-    if (socket.tag.host === host) return // Nothing to change
-    log.debug(`Change hostname to: ${host}`)
-    socket.tag.host = host
-    if (this.mpsService.mpsComputerList[socket.tag.nodeid]) {
-      computerEntry = this.mpsService.mpsComputerList[socket.tag.nodeid]
-      computerEntry.name = host
-      computerEntry.host = socket.tag.nodeid
-      this.mpsService.mpsComputerList[socket.tag.nodeid] = computerEntry
-    } else {
-      computerEntry = {
-        name: host,
-        host: socket.tag.nodeid,
-        amtuser: 'admin'
-      }
-
-      this.mpsService.mpsComputerList[socket.tag.nodeid] = computerEntry
+    } catch (err) {
+      logger.error(err)
     }
   }
 
-  guidToStr (g): string {
-    return (
-      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-      g.substring(6, 8) +
-            g.substring(4, 6) +
-            g.substring(2, 4) +
-            g.substring(0, 2) +
-            '-' +
-            g.substring(10, 12) +
-            g.substring(8, 10) +
-            '-' +
-            g.substring(14, 16) +
-            g.substring(12, 14) +
-            '-' +
-            g.substring(16, 20) +
-            '-' +
-            g.substring(20)
-    )
+  onClose = async (socket: CIRASocket): Promise<void> => {
+    logger.debug('MPS:CIRA connection closed')
+    try {
+      if (this.cira.ciraConnections[socket.tag.nodeid]) {
+        delete this.cira.ciraConnections[socket.tag.nodeid]
+        if (typeof this.mpsService.CIRADisconnected === 'function') {
+          await this.mpsService.CIRADisconnected(socket.tag.nodeid)
+        }
+      }
+    } catch (e) {
+      logger.error(`Error from socket close: ${e}`)
+    }
+  }
+
+  onError = (socket: CIRASocket, error: Error): void => {
+    // er as anyror "ECONNRESET" means the other side of the TCP conversation abruptly closed its end of the connection.
+    if ((error as any).code !== 'ECONNRESET') {
+      logger.error(`MPS socket error ${socket.tag.nodeid},  ${socket.remoteAddress}: ${JSON.stringify(error)}`)
+    }
   }
 }
