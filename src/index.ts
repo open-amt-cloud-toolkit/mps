@@ -100,6 +100,7 @@ async function main (): Promise<void> {
   } catch (error) {
     log.error('Error starting MPS microservice. Check server logs.')
     log.error(error)
+    process.exit(1)
   }
 }
 
