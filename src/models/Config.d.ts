@@ -10,7 +10,6 @@ export interface configType {
   country: string
   company: string
   listen_any: boolean
-  https: boolean
   tls_offload: boolean
   web_port: number
   generate_certificates: boolean

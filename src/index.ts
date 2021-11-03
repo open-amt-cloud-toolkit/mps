@@ -64,7 +64,7 @@ async function main (): Promise<void> {
 
     // Certificate Configuration and Operations
     const certificates = new Certificates(config, secrets)
-    if (config.https || !config.tls_offload) {
+    if (!config.tls_offload) {
       if (!config.generate_certificates) {
         if (config.cert_format === 'raw') { // if you want to read the cert raw from variable.
           log.debug('using cert format raw')

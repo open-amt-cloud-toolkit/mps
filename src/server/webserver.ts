@@ -82,8 +82,7 @@ export class WebServer {
       // Relay websocket. KVM & SOL use this websocket.
       this.relaywss.on('connection', async (ws, req) => {
         try {
-          const base = `${this.config.https ? 'https' : 'http'}://${this.config.common_name}:${this.config.web_port}/`
-          const reqQueryURL = new URL(req.url, base)
+          const reqQueryURL = new URL(req.url, 'http://dummy.com')
           const params: queryParams = {
             host: reqQueryURL.searchParams.get('host'),
             port: Number(reqQueryURL.searchParams.get('port')),
@@ -245,11 +244,7 @@ export class WebServer {
 
             // If the TCP connection causes an error, disconnect the associated web socket.
             ws.forwardclient.on('error', err => {
-              log.debug(
-                `TCP disconnected with error from ${params.host}:${
-                  params.port
-                }:${err.code},${req.url}`
-              )
+              log.debug(`TCP disconnected with error from ${params.host}:${params.port}:${err.code},${req.url}`)
               try {
                 ws.close()
               } catch (e) { }
@@ -309,8 +304,7 @@ export class WebServer {
 
   // Handle Upgrade - WebSocket
   handleUpgrade (request, socket, head): void {
-    const base = `${this.config.https ? 'https' : 'http'}://${this.config.common_name}:${this.config.web_port}/`
-    const pathname = (new URL(request.url, base)).pathname
+    const pathname = (new URL(request.url, 'http://dummy.com')).pathname
     if (pathname === '/notifications/control.ashx') {
       this.notificationwss.handleUpgrade(request, socket, head, (ws) => {
         this.notificationwss.emit('connection', ws, request)
