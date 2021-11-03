@@ -26,7 +26,6 @@ const config: configType = {
   country: 'US',
   company: 'NoCorp',
   listen_any: true,
-  https: true,
   tls_offload: false,
   web_port: 3000,
   generate_certificates: true,
