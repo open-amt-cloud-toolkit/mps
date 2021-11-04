@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "b4c94d53-9206-445e-97f4-f0758ca17db4",
+		"_postman_id": "44bcbedb-ddbe-4de2-967b-f00fa307bdda",
 		"name": "MPS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -1729,7 +1729,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{protocol}}://{{host}}/api/v1/amt/power/state/1",
+							"raw": "{{protocol}}://{{host}}/api/v1/amt/version/1",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
@@ -1738,8 +1738,7 @@
 								"api",
 								"v1",
 								"amt",
-								"power",
-								"state",
+								"version",
 								"1"
 							]
 						}
