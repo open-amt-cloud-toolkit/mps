@@ -29,3 +29,11 @@ export interface OpenAMTEvent {
   guid: string
   timestamp: number
 }
+export interface HealthCheck {
+  db: HealthCheckStatus
+  secretStore: HealthCheckStatus
+}
+export interface HealthCheckStatus{
+  name: string
+  status: any
+}
