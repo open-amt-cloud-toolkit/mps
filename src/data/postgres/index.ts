@@ -31,3 +31,21 @@ export class PostgresDb implements IDB {
   }
 }
 export default PostgresDb
+
+export const POSTGRES_RESPONSE_CODES = (statusCode: any = null): string => {
+  let vaultError: string
+  if (statusCode != null) {
+    switch (statusCode) {
+      case '28P01':
+        vaultError = 'invalid_password'
+        break
+      default:
+        vaultError = 'unknown error'
+        break
+    }
+  } else {
+    vaultError = 'statusCode null'
+  }
+
+  return vaultError
+}

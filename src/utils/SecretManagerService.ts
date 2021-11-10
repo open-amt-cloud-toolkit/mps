@@ -84,4 +84,9 @@ export class SecretManagerService implements ISecretManagerService {
       return null
     }
   }
+
+  async health (): Promise<any> {
+    const result = await this.vaultClient.health()
+    return result
+  }
 }

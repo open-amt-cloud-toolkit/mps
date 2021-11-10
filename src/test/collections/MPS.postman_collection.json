@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "44bcbedb-ddbe-4de2-967b-f00fa307bdda",
+		"_postman_id": "09400cc1-0adf-4e7e-abaf-37f7686596d0",
 		"name": "MPS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -1899,6 +1899,55 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Get Health",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {    \r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Version request should succeed\", function () {\r",
+							"    var result = pm.response.json();\r",
+							"    pm.expect(result.db.status).to.eql(\"OK\")\r",
+							"    pm.expect(result.secretStore.status.initialized).to.eql(true)\r",
+							"    pm.expect(result.secretStore.status.sealed).to.eql(false)\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJZCI6IiIsImlzcyI6IjlFbVJKVGJJaUliNGJJZVNzbWdjV0lqclI2SHlFVHFjIiwiZXhwIjoxNjM2NTg1OTU5fQ.avy8aQdpMZoos-q63qTPObbR3iFiWuod6pjoElNRUu0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{protocol}}://{{host}}/api/v1/health",
+					"protocol": "{{protocol}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"health"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"auth": {
