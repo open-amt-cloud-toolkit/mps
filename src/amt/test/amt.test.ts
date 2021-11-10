@@ -3,7 +3,7 @@
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
 
-import { AMT } from "../amt"
+import { AMT } from '../amt'
 import { AMT_Methods, AMT_Classes } from '../enums/amt_enums'
 import { CIM_Methods } from '../enums/cim_enums'
 import { AMT_BootSettingData, AMT_EnvironmentDetectionSettingData, AMT_EthernetPortSettings, MPServer, RemoteAccessPolicyRule } from '../models/amt_models'
