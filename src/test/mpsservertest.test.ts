@@ -8,7 +8,7 @@ import * as net from 'net'
 import * as fs from 'fs'
 import * as https from 'https'
 import * as forge from 'node-forge'
-import { Certificates }  from '../utils/certificates'
+import { Certificates } from '../utils/certificates'
 import { certificatesType, configType } from '../models/Config'
 import { MPSMicroservice } from '../mpsMicroservice'
 import { MPSServer } from '../server/mpsserver'
@@ -17,7 +17,6 @@ import { ISecretManagerService } from '../interfaces/ISecretManagerService'
 import { Device } from '../models/models'
 import { IDeviceTable } from '../interfaces/IDeviceTable'
 import { IDB } from '../interfaces/IDb'
-
 
 // Parsing configuration
 const config: configType = {
@@ -34,13 +33,13 @@ const config: configType = {
   data_path: join(__dirname, 'private', 'data.json'),
   web_admin_user: 'standalone',
   web_admin_password: 'G@ppm0ym',
-  jwt_secret: "secret",
-  jwt_issuer: "issuer",
+  jwt_secret: 'secret',
+  jwt_issuer: 'issuer',
   jwt_expiration: 24,
   connection_string: '',
-  cors_origin:'*',
-  cors_headers:'*',
-  cors_methods:'*',
+  cors_origin: '*',
+  cors_headers: '*',
+  cors_methods: '*',
   instance_name: 'localhost',
   mps_tls_config: {
     key: '../private/mpsserver-cert-private.key',
@@ -57,17 +56,17 @@ const config: configType = {
     ca: ['../private/root-cert-public.crt'],
     secureOptions: ['SSL_OP_NO_SSLv2', 'SSL_OP_NO_SSLv3', 'SSL_OP_NO_COMPRESSION', 'SSL_OP_CIPHER_SERVER_PREFERENCE', 'SSL_OP_NO_TLSv1', 'SSL_OP_NO_TLSv11']
   },
-  db_provider: "postgres",
-  tls_cert: "",
-  tls_cert_key: "",
-  tls_cert_ca: "",
-  web_tls_cert: "",
-  web_tls_cert_key: "",
-  web_tls_cert_ca: "",
+  db_provider: 'postgres',
+  tls_cert: '',
+  tls_cert_key: '',
+  tls_cert_ca: '',
+  web_tls_cert: '',
+  web_tls_cert_key: '',
+  web_tls_cert_ca: ''
 }
 
 const pki = forge.pki
-let certs : certificatesType
+let certs: certificatesType
 const certPath = config.cert_path
 let db: IDB
 let devicesMock: IDeviceTable
@@ -84,37 +83,38 @@ xdescribe('MPS Server', function () {
     } catch (e) {
       console.log(`Failed to create Cert path ${certPath}. Create if it doesn't exist`)
     }
-    let certificates = new Certificates(config, secrets)
+    const certificates = new Certificates(config, secrets)
     certs = certificates.generateCertificates()
-    let device = {mpsusername:'admin'}
+    const device = { mpsusername: 'admin' }
     devicesMock = {
-       get: async ()=>{ return [] as Device[] },
-       getCount: async ()=>{ return 0 },
-       getDistinctTags:async ()=>{return ['tag']},
-       getByName:async (guid)=>{return device as Device},
-       getByTags:async (tags)=>{return [device] as Device[]},
-       clearInstanceStatus: async () => {},
-       delete:async (guid)=>{return true},
-       insert:async (device)=>{return {} as Device},
-       update:async ()=>{return {} as Device},
+      get: async () => { return [] as Device[] },
+      getCount: async () => { return 0 },
+      getDistinctTags: async () => { return ['tag'] },
+      getByName: async (guid) => { return device as Device },
+      getByTags: async (tags) => { return [device] as Device[] },
+      clearInstanceStatus: async () => {},
+      delete: async (guid) => { return true },
+      insert: async (device) => { return {} as Device },
+      update: async () => { return {} as Device }
     }
-    
-    db = {
-        devices: devicesMock,
-        query: async (text,params): Promise<any> =>{
 
-        }
+    db = {
+      devices: devicesMock,
+      query: async (text, params): Promise<any> => {
+
+      }
     }
     secrets = {
-      getSecretFromKey: async (path: string, key: string) => {return "P@ssw0rd" },
-      getSecretAtPath: async (path: string) => {return {} as any },
-      getAMTCredentials: async (path: string) => {return ['admin','P@ssw0rd'] }
-    }    
-    mpsService = new MPSMicroservice(config,db,secrets, certs)
+      getSecretFromKey: async (path: string, key: string) => { return 'P@ssw0rd' },
+      getSecretAtPath: async (path: string) => { return {} as any },
+      getAMTCredentials: async (path: string) => { return ['admin', 'P@ssw0rd'] },
+      health: async () => { return {} }
+    }
+    mpsService = new MPSMicroservice(config, db, secrets, certs)
     mps = new MPSServer(mpsService)
 
     // DB initialization
-    server = mps
+    // server = mps
   })
 
   it('Accept TLS connection test', function (done) {
@@ -204,7 +204,7 @@ xdescribe('MPS Server', function () {
 
   it('Validate UserAuth for a valid MPS connection request', function (done) {
     jest.setTimeout(60000)
-    const obj : any = {}
+    const obj: any = {}
     const args = {
       host: config.common_name,
       port: config.port,
@@ -225,7 +225,7 @@ xdescribe('MPS Server', function () {
 
   it('Validate APF USERAUTH_SERVICE_ACCEPT Message', function (done) {
     jest.setTimeout(60000)
-    const obj : any = {}
+    const obj: any = {}
     const args = {
       host: config.common_name,
       port: config.port,
@@ -247,7 +247,7 @@ xdescribe('MPS Server', function () {
 
   it('Validate APF PFWD_SERVICE_ACCEPT Message', function (done) {
     jest.setTimeout(60000)
-    const obj:any = {}
+    const obj: any = {}
     const args = {
       host: config.common_name,
       port: config.port,
@@ -269,7 +269,7 @@ xdescribe('MPS Server', function () {
 
   it('Validate APF GLOBAL_REQUEST_SUCCESS Message', function (done) {
     jest.setTimeout(60000)
-    const obj:any = {}
+    const obj: any = {}
     const args = {
       host: config.common_name,
       port: config.port,
@@ -291,7 +291,7 @@ xdescribe('MPS Server', function () {
 
   it('Validate APF PROTOCOL_VERSION_SENT Message', function (done) {
     jest.setTimeout(60000)
-    const obj:any = {}
+    const obj: any = {}
     const args = {
       host: config.common_name,
       port: config.port,
@@ -313,7 +313,7 @@ xdescribe('MPS Server', function () {
 
   it('Validate APF KEEPALIVE_REPLY Message', function (done) {
     jest.setTimeout(15000)
-    const obj:any = {}
+    const obj: any = {}
     const args = {
       host: config.common_name,
       port: config.port,
@@ -335,7 +335,7 @@ xdescribe('MPS Server', function () {
 
   it('Validate APF USERAUTH_FAILURE Message (using wrong password)', function (done) {
     jest.setTimeout(60000)
-    const obj:any = {}
+    const obj: any = {}
     const args = {
       host: config.common_name,
       port: config.port,
