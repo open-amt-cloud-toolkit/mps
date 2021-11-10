@@ -2,8 +2,77 @@
 ## [Unreleased]
 
 
-<a name="2.0.0"></a>
-## [2.0.0] - 2021-09-15
+<a name="2.1.0"></a>
+## [2.1.0] - 2021-11-08
+### Build
+- **dep:** update jest to 27.2.1 (#491c247) 
+- **deps:** bump express-validator from 6.12.2 to 6.13.0 (#8bab749) 
+- **deps:** bump validator from 13.6.0 to 13.7.0 (#8370149) 
+- **deps:** bump ansi-regex from 5.0.0 to 5.0.1 (#ed63d57) 
+- **deps:** bump express-validator from 6.12.1 to 6.12.2 (#d00f363) 
+- **deps:** bump ws from 8.2.2 to 8.2.3 (#6a48713) 
+- **deps:** bump tmpl from 1.0.4 to 1.0.5 (#6818e24) 
+- **deps-dev:** bump jest from 27.2.4 to 27.2.5 (#92d27aa) 
+- **deps-dev:** bump typescript from 4.4.3 to 4.4.4 (#0a865a2) 
+- **deps-dev:** bump ts-jest from 27.0.5 to 27.0.6 (#7a85af2) 
+- **deps-dev:** bump eslint-plugin-import from 2.24.2 to 2.25.2 (#c2bb948) 
+- **deps-dev:** bump [@types](https://github.com/types)/node-forge from 0.10.7 to 0.10.8 (#5f4db8b) 
+- **deps-dev:** bump ts-node from 10.2.1 to 10.3.0 (#cd431c3) 
+- **deps-dev:** bump [@types](https://github.com/types)/node-forge from 0.10.5 to 0.10.7 (#1ad32c4) 
+- **deps-dev:** bump jest from 27.2.5 to 27.3.1 (#16eceed) 
+- **deps-dev:** bump ts-jest from 27.0.6 to 27.0.7 (#82a4432) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin (#b696a6e) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 4.32.0 to 4.33.0 (#6acbbdd) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin (#d2e1130) 
+- **deps-dev:** bump jest from 27.2.1 to 27.2.4 (#312a3c8) 
+- **deps-dev:** bump [@types](https://github.com/types)/ws from 7.4.7 to 8.2.0 (#9e6f0bd) 
+- **deps-dev:** bump eslint-plugin-promise from 5.1.0 to 5.1.1 (#f73a729) 
+- **deps-dev:** bump typescript from 4.4.2 to 4.4.3 (#9d2d7d7) 
+- **deps-dev:** bump [@types](https://github.com/types)/jest from 27.0.1 to 27.0.2 (#3b49f38) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 4.31.0 to 4.32.0 (#c284401) 
+- **deps-dev:** bump ts-node from 10.3.0 to 10.4.0 (#7fb4685) 
+- **deps-dev:** bump [@types](https://github.com/types)/node-forge from 0.10.4 to 0.10.5 (#7f1f391) 
+- **deps-dev:** bump [@types](https://github.com/types)/node-forge from 0.10.8 to 0.10.9 (#d5858d4) 
+- **version:** bump to v2.1.0 (#7d7ebb3) 
+
+### Ci
+- rename master to main for jobs (#9bfebe5) 
+- update docker-compose startup order (#0cafff7) 
+- **changelog:** update changelog for publish option (#85865ba) 
+- **docker:** fix manual build workflow (#17fa03a) 
+
+### Docs
+- adds issue template (#2373ba3) 
+- add contributing guidelines (#c0673e9) 
+- **github:** add pull request template (#01051ae) 
+
+### Feat
+- **telemetry:** add events for CIRA Disconnect/Connection (#1cde473) 
+
+### Fix
+- empty event log now returns empty array instead of null (#0c6dfc0) 
+- **api:** updated version api test uri (#054762d) 
+- **certs:** exit process if vault  unavailable or error occurs on startup (#7df7a00) 
+- **certs:** now self-signed certs are stored in vault (#b2d61a4) 
+- **login:** username check should be case insensitive (#5767483) 
+- **test:** handled rejections (#f567a85) 
+
+### Refactor
+- **config:** remove https from options (#564e147) 
+
+
+<a name="v2.0.1"></a>
+## [v2.0.1] - 2021-09-22
+### Build
+- **deps:** bump tmpl from 1.0.4 to 1.0.5 (#323fa74) 
+- **version:** bump mps to v2.0.1 (#bdf9e5a) 
+
+### Docs
+- **changelog:** update changelog (#872cf68) 
+
+
+<a name="v2.0.0"></a>
+## [v2.0.0] - 2021-09-15
 ### Build
 - update version to v2.0.0 (#d49ef8c) 
 - **deps:** bump ws from 8.2.1 to 8.2.2 (#41e35b5) 
@@ -23,6 +92,9 @@
 - **deps-dev:** bump [@types](https://github.com/types)/node-forge from 0.10.2 to 0.10.3 (#5ddabda) 
 - **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin (#6434938) 
 - **deps-dev:** bump eslint-plugin-import from 2.23.4 to 2.24.0 (#93d277e) 
+
+### Docs
+- **changelog:** update changelog (#10382bf) 
 
 ### Feat
 - **api:** added api for request, cancel and send user consent code to AMT ([#332](https://github.com/open-amt-cloud-toolkit/mps/issues/332)) (#e4fbe58) 
@@ -420,8 +492,10 @@ Auth is now stateless, db and vault required
 - **docker:** optimize dockerfile (#51cfb0e) 
 
 
-[Unreleased]: https://github.com/open-amt-cloud-toolkit/mps/compare/2.0.0...HEAD
-[2.0.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v1.5.0...2.0.0
+[Unreleased]: https://github.com/open-amt-cloud-toolkit/mps/compare/2.1.0...HEAD
+[2.1.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v2.0.1...2.1.0
+[v2.0.1]: https://github.com/open-amt-cloud-toolkit/mps/compare/v2.0.0...v2.0.1
+[v2.0.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v1.5.0...v2.0.0
 [v1.5.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v1.4.0...v1.5.0
 [v1.4.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v1.3.0...v1.4.0
 [v1.3.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v1.2.0...v1.3.0
