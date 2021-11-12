@@ -34,4 +34,13 @@ pipeline{
             }
         }
     }
+    post{
+        failure {
+             script{
+                slackBuildNotify {
+                    slackFailureChannel = '#open-amt-cloud-toolkit-build'
+                }
+            }
+        }
+    }
 }
