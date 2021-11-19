@@ -52,9 +52,9 @@ async function main (): Promise<void> {
     // Cleans the DB before exit when it listens to the signals
     const signals = ['SIGINT', 'exit', 'uncaughtException', 'SIGTERM', 'SIGHUP']
     signals.forEach((signal) => {
-      process.on(signal, () => {
+      process.on(signal, async () => {
         log.debug('signal received :', signal)
-        db.devices.clearInstanceStatus(Environment.Config.instance_name)
+        await db.devices.clearInstanceStatus(Environment.Config.instance_name)
         MqttProvider.endBroker()
         if (signal !== 'exit') {
           setTimeout(() => process.exit(), 1000)
