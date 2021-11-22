@@ -22,7 +22,7 @@ export class DeviceTable implements IDeviceTable {
     WHERE tenantid = $1`, [tenantId])
     let count = 0
     if (result != null) {
-      count = Number(result?.rows[0]?.total_count)
+      count = Number(result.rows[0]?.total_count)
     }
     return count
   }
@@ -180,9 +180,9 @@ export class DeviceTable implements IDeviceTable {
   * @param {string} mpsInstance
   * @returns {void}
   */
-  clearInstanceStatus (mpsInstance: string, tenantId: string = ''): void {
+  async clearInstanceStatus (mpsInstance: string, tenantId: string = ''): Promise<boolean> {
     try {
-      const results = this.db.query(`
+      const results = await this.db.query(`
       UPDATE devices 
       SET mpsinstance=$2, connectionstatus=$3 
       WHERE mpsinstance=$1 and tenantId = $4`,
@@ -193,9 +193,11 @@ export class DeviceTable implements IDeviceTable {
         tenantId
       ])
       log.debug('Clean DB instance before exit', results)
+      return true
     } catch (error) {
       log.error('Failed to update DB:', error)
     }
+    return false
   }
 
   /**
