@@ -9,6 +9,7 @@ import { ISecretManagerService } from '../interfaces/ISecretManagerService'
 import { certificatesType, configType } from '../models/Config'
 import NodeVault = require('node-vault')
 import { ILogger } from '../models/ILogger'
+import { DeviceSecrets } from '../models/models'
 
 export class SecretManagerService implements ISecretManagerService {
   vaultClient: NodeVault.client
@@ -16,6 +17,7 @@ export class SecretManagerService implements ISecretManagerService {
   logger: ILogger
   constructor (config: configType, logger: ILogger, vault?: any) {
     this.logger = logger
+    this.secretsPath = config.secrets_path
     if (vault) {
       this.vaultClient = vault
       return
@@ -26,7 +28,6 @@ export class SecretManagerService implements ISecretManagerService {
       endpoint: config.vault_address, // default
       token: config.vault_token // optional client token; can be fetched after valid initialization of the server
     }
-    this.secretsPath = config.secrets_path
     this.vaultClient = NodeVault(options)
   }
 
@@ -36,11 +37,13 @@ export class SecretManagerService implements ISecretManagerService {
       this.logger.verbose(`getting secret from ${fullPath}`)
       const data = await this.vaultClient.read(fullPath)
       this.logger.debug(`received secret from ${fullPath}`)
-      return data.data.data[key]
+      if (data.data.data[key] != null) {
+        return data.data.data[key]
+      }
     } catch (error) {
       this.logger.error('getSecretFromKey error :', error)
-      return null
     }
+    return null
   }
 
   async getSecretAtPath (path: string): Promise<any> {
@@ -56,33 +59,35 @@ export class SecretManagerService implements ISecretManagerService {
     }
   }
 
-  async writeSecretWithObject (path: string, data: any): Promise<void> {
-    this.logger.verbose('writing data to vault:')
-    await this.vaultClient.write(`${this.secretsPath}${path}`, data)
-    this.logger.debug(`Successfully written data to vault at path: ${path}`)
+  async writeSecretWithObject (path: string, data: any): Promise<boolean> {
+    try {
+      this.logger.verbose('writing data to vault:')
+      await this.vaultClient.write(`${this.secretsPath}${path}`, data)
+      this.logger.debug(`Successfully written data to vault at path: ${path}`)
+      return true
+    } catch (error) {
+      this.logger.error('Error while writing secrets :', error)
+      return false
+    }
   }
 
   async getAMTCredentials (path: string): Promise<string[]> {
-    try {
-      const user = 'admin'
-      const secret: any = await this.getSecretAtPath(`devices/${path}`)
-      const amtpass = secret.data.AMT_PASSWORD
-      return [user, amtpass]
-    } catch (error) {
-      this.logger.error('Error while retrieving device credentials :', error)
+    const user = 'admin'
+    const secret: {data: DeviceSecrets} = await this.getSecretAtPath(`devices/${path}`)
+    if (secret == null) {
       return null
     }
+    const amtpass: string = secret.data.AMT_PASSWORD
+    return [user, amtpass]
   }
 
   async getMPSCerts (): Promise<certificatesType> {
-    try {
-      const secret: any = await this.getSecretAtPath('MPSCerts')
-      const certs: certificatesType = secret?.data
-      return certs
-    } catch (error) {
-      this.logger.error('Error while retrieving device credentials :', error)
+    const secret: {data: certificatesType} = await this.getSecretAtPath('MPSCerts')
+    if (secret == null) {
       return null
     }
+    const certs: certificatesType = secret.data
+    return certs
   }
 
   async health (): Promise<any> {

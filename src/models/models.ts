@@ -37,3 +37,9 @@ export interface HealthCheckStatus{
   name: string
   status: any
 }
+
+export interface DeviceSecrets{
+  AMT_PASSWORD: string
+  MEBX_PASSWORD?: string
+  MPS_PASSWORD?: string
+}
