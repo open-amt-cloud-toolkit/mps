@@ -9,61 +9,14 @@ import * as fs from 'fs'
 import * as https from 'https'
 import * as forge from 'node-forge'
 import { Certificates } from '../utils/certificates'
-import { certificatesType, configType } from '../models/Config'
+import { certificatesType } from '../models/Config'
 import { MPSMicroservice } from '../mpsMicroservice'
 import { MPSServer } from '../server/mpsserver'
-import { join } from 'path'
 import { ISecretManagerService } from '../interfaces/ISecretManagerService'
 import { Device } from '../models/models'
 import { IDeviceTable } from '../interfaces/IDeviceTable'
 import { IDB } from '../interfaces/IDb'
-
-// Parsing configuration
-const config: configType = {
-  common_name: 'localhost',
-  port: 4433,
-  country: 'US',
-  company: 'NoCorp',
-  listen_any: true,
-  tls_offload: false,
-  web_port: 3000,
-  generate_certificates: true,
-  cert_format: 'file',
-  cert_path: join(__dirname, 'private'),
-  data_path: join(__dirname, 'private', 'data.json'),
-  web_admin_user: 'standalone',
-  web_admin_password: 'G@ppm0ym',
-  jwt_secret: 'secret',
-  jwt_issuer: 'issuer',
-  jwt_expiration: 24,
-  connection_string: '',
-  cors_origin: '*',
-  cors_headers: '*',
-  cors_methods: '*',
-  instance_name: 'localhost',
-  mps_tls_config: {
-    key: '../private/mpsserver-cert-private.key',
-    cert: '../private/mpsserver-cert-public.crt',
-    requestCert: true,
-    rejectUnauthorized: false,
-    minVersion: 'TLSv1',
-    ciphers: null,
-    secureOptions: ['SSL_OP_NO_SSLv2', 'SSL_OP_NO_SSLv3']
-  },
-  web_tls_config: {
-    key: '../private/mpsserver-cert-private.key',
-    cert: '../private/mpsserver-cert-public.crt',
-    ca: ['../private/root-cert-public.crt'],
-    secureOptions: ['SSL_OP_NO_SSLv2', 'SSL_OP_NO_SSLv3', 'SSL_OP_NO_COMPRESSION', 'SSL_OP_CIPHER_SERVER_PREFERENCE', 'SSL_OP_NO_TLSv1', 'SSL_OP_NO_TLSv11']
-  },
-  db_provider: 'postgres',
-  tls_cert: '',
-  tls_cert_key: '',
-  tls_cert_ca: '',
-  web_tls_cert: '',
-  web_tls_cert_key: '',
-  web_tls_cert_ca: ''
-}
+import { config } from './helper/config' 
 
 const pki = forge.pki
 let certs: certificatesType
