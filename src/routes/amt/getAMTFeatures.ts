@@ -11,7 +11,7 @@ import { AMTFeaturesConst, UserConsentOptions } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 import AMTFeatures from '../../utils/AMTFeatures'
 import { MPSValidationError } from '../../utils/MPSValidationError'
-import { MqttProvider } from '../../utils/mqttProvider'
+import { MqttProvider } from '../../utils/MqttProvider'
 
 export async function getAMTFeatures (req: Request, res: Response): Promise<void> {
   try {

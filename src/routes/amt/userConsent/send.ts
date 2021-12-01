@@ -5,7 +5,7 @@
 import { Response, Request } from 'express'
 import { logger as log } from '../../../utils/logger'
 import { ErrorResponse } from '../../../utils/amtHelper'
-import { MqttProvider } from '../../../utils/mqttProvider'
+import { MqttProvider } from '../../../utils/MqttProvider'
 export async function send (req: Request, res: Response): Promise<void> {
   const userConsentCode = req.body.consentCode
   const guid: string = req.params.guid

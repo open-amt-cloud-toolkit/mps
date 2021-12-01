@@ -4,11 +4,13 @@
  **********************************************************************/
 
 import { IDB } from './interfaces/IDb'
-import { MPSMicroservice } from './mpsMicroservice'
+import { ISecretManagerService } from './interfaces/ISecretManagerService'
+import { certificatesType } from './models/Config'
 
 declare module 'express' {
   export interface Request {
-    mpsService: MPSMicroservice
+    secrets: ISecretManagerService
+    certs: certificatesType
     db: IDB
     amtFactory: any
     amtStack: any

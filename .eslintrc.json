@@ -9,8 +9,8 @@
     ],
     "ignorePatterns": [
         "**/*.js",
-        "**/*.spec.ts",
-        "**/*.test.ts"
+        "**/*.spec.ts"
+        // "**/*.test.ts"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {

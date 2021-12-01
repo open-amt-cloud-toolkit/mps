@@ -7,7 +7,7 @@
 import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
 import { ErrorResponse } from '../../utils/amtHelper'
-import { MqttProvider } from '../../utils/mqttProvider'
+import { MqttProvider } from '../../utils/MqttProvider'
 
 export async function auditLog (req: Request<any, any, any, { startIndex?: number }>, res: Response): Promise<void> {
   try {

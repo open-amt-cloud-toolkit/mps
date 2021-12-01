@@ -10,10 +10,9 @@ export interface configType {
   country: string
   company: string
   listen_any: boolean
-  tls_offload: boolean
+  https?: boolean
   web_port: number
   generate_certificates: boolean
-  alias_port?: number
   secrets_path?: string
   data_path?: string
   cert_path: string
@@ -34,9 +33,6 @@ export interface configType {
   web_tls_cert: string
   web_tls_cert_key: string
   web_tls_cert_ca: string
-  cors_origin: string
-  cors_headers: string
-  cors_methods: string
   db_provider: string
   connection_string: string
   instance_name: string

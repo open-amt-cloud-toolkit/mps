@@ -8,9 +8,7 @@
 
 import { logger as log } from './logger'
 import { certificatesType, mpsConfigType, webConfigType, certAndKeyType } from '../models/Config'
-import { CertificateOperations } from './certoperations.js'
-
-const certoperation = CertificateOperations()
+import forge from 'node-forge'
 
 export class Certificates {
   constructor (private readonly config: any, private readonly secrets: any) {
@@ -29,14 +27,14 @@ export class Certificates {
 
   generateCertificates (): certificatesType {
     log.info('Generating Root certificate...')
-    const rootCertAndKey: certAndKeyType = certoperation.GenerateRootCertificate(true, 'MPSRoot', null, null, true)
-    const rootCertificate = certoperation.pki.certificateToPem(rootCertAndKey.cert)
-    const rootPrivateKey = certoperation.pki.privateKeyToPem(rootCertAndKey.key)
+    const rootCertAndKey: certAndKeyType = this.GenerateRootCertificate(true, 'MPSRoot', null, null, true)
+    const rootCertificate = forge.pki.certificateToPem(rootCertAndKey.cert)
+    const rootPrivateKey = forge.pki.privateKeyToPem(rootCertAndKey.key)
 
     log.info('Generating Intel AMT MPS certificate...')
-    const mpsCertAndKey: certAndKeyType = certoperation.IssueWebServerCertificate(rootCertAndKey, false, this.config.common_name, this.config.country, this.config.organization, null, false)
-    const mpsCertificate = certoperation.pki.certificateToPem(mpsCertAndKey.cert)
-    const mpsPrivateKey = certoperation.pki.privateKeyToPem(mpsCertAndKey.key)
+    const mpsCertAndKey: certAndKeyType = this.IssueWebServerCertificate(rootCertAndKey, false, this.config.common_name, this.config.country, this.config.organization, null, false)
+    const mpsCertificate = forge.pki.certificateToPem(mpsCertAndKey.cert)
+    const mpsPrivateKey = forge.pki.privateKeyToPem(mpsCertAndKey.key)
 
     // Set MPS TLS Configuration
     const mpsConfig: mpsConfigType = { cert: mpsCertificate, key: mpsPrivateKey, minVersion: 'TLSv1', requestCert: true, rejectUnauthorized: false }
@@ -51,5 +49,98 @@ export class Certificates {
       data: certificates
     }
     await this.secrets.writeSecretWithObject('MPSCerts', data)
+  }
+
+  GenerateRootCertificate = (addThumbPrintToName: boolean, commonName: string, country: string, organization: string, strong: boolean): any => {
+    const keys = forge.pki.rsa.generateKeyPair((strong) ? 3072 : 2048)
+    const cert = forge.pki.createCertificate()
+    cert.publicKey = keys.publicKey
+    cert.serialNumber = '' + Math.floor((Math.random() * 100000) + 1)
+    cert.validity.notBefore = new Date()
+    cert.validity.notBefore.setFullYear(cert.validity.notBefore.getFullYear() - 1) // Create a certificate that is valid one year before, to make sure out-of-sync clocks don't reject this cert.
+    cert.validity.notAfter = new Date()
+    cert.validity.notAfter.setFullYear(cert.validity.notAfter.getFullYear() + 30)
+    if (addThumbPrintToName) { commonName += '-' + forge.pki.getPublicKeyFingerprint(cert.publicKey, { encoding: 'hex' }).substring(0, 6) }
+    if (country == null) { country = 'unknown' }
+    if (organization == null) { organization = 'unknown' }
+    const attrs = [{ name: 'commonName', value: commonName }, { name: 'organizationName', value: organization }, { name: 'countryName', value: country }]
+    cert.setSubject(attrs)
+    cert.setIssuer(attrs)
+    // Create a root certificate
+    cert.setExtensions([{
+      name: 'basicConstraints',
+      cA: true
+    }, {
+      name: 'nsCertType',
+      sslCA: true,
+      emailCA: true,
+      objCA: true
+    }, {
+      name: 'subjectKeyIdentifier',
+      hash: true
+    }])
+    cert.sign(keys.privateKey, forge.md.sha384.create())
+
+    return { cert: cert, key: keys.privateKey }
+  }
+
+  IssueWebServerCertificate = (rootcert, addThumbPrintToName: boolean, commonName: string, country: string, organization: string, extKeyUsage, strong: boolean): any => {
+    const keys = forge.pki.rsa.generateKeyPair((strong) ? 3072 : 2048)
+    const cert = forge.pki.createCertificate()
+    cert.publicKey = keys.publicKey
+    cert.serialNumber = '' + Math.floor((Math.random() * 100000) + 1)
+    cert.validity.notBefore = new Date()
+    cert.validity.notBefore.setFullYear(cert.validity.notAfter.getFullYear() - 1) // Create a certificate that is valid one year before, to make sure out-of-sync clocks don't reject this cert.
+    cert.validity.notAfter = new Date()
+    cert.validity.notAfter.setFullYear(cert.validity.notAfter.getFullYear() + 30)
+    if (addThumbPrintToName) { commonName += '-' + forge.pki.getPublicKeyFingerprint(cert.publicKey, { encoding: 'hex' }).substring(0, 6) }
+    const attrs = [{ name: 'commonName', value: commonName }]
+    if (country != null) attrs.push({ name: 'countryName', value: country })
+    if (organization != null) attrs.push({ name: 'organizationName', value: organization })
+    cert.setSubject(attrs)
+    cert.setIssuer(rootcert.cert.subject.attributes)
+
+    if (extKeyUsage == null) { extKeyUsage = { name: 'extKeyUsage', serverAuth: true } } else { extKeyUsage.name = 'extKeyUsage' }
+    let subjectAltName = null
+    if (extKeyUsage.serverAuth === true) {
+      subjectAltName = {
+        name: 'subjectAltName',
+        altNames: [{
+          type: 6, // URI
+          value: 'http://' + commonName + '/'
+        }, {
+          type: 6, // URL
+          value: 'http://localhost/'
+        }]
+      }
+    }
+
+    const extensions = [{
+      name: 'basicConstraints',
+      cA: false
+    }, {
+      name: 'keyUsage',
+      keyCertSign: true,
+      digitalSignature: true,
+      nonRepudiation: true,
+      keyEncipherment: true,
+      dataEncipherment: true
+    }, extKeyUsage, {
+      name: 'nsCertType',
+      client: false,
+      server: true,
+      email: false,
+      objsign: false,
+      sslCA: false,
+      emailCA: false,
+      objCA: false
+    }, {
+      name: 'subjectKeyIdentifier'
+    }]
+    if (subjectAltName != null) extensions.push(subjectAltName)
+    cert.setExtensions(extensions)
+    cert.sign(rootcert.key, forge.md.sha384.create())
+
+    return { cert: cert, key: keys.privateKey }
   }
 }

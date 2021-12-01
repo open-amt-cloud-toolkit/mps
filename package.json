@@ -46,6 +46,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-validator": "^6.13.0",
+    "http-z": "^6.1.2",
     "jws": "^4.0.0",
     "mqtt": "^4.2.8",
     "node-forge": "^0.10.0",
@@ -53,7 +54,8 @@
     "pg": "^8.7.1",
     "rc": "^1.2.8",
     "winston": "^3.0.0",
-    "ws": "^8.3.0"
+    "ws": "^8.3.0",
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.2",

@@ -8,11 +8,11 @@ import { ErrorResponse } from '../../utils/amtHelper'
 
 export async function mpsrootcert (req: Request, res: Response): Promise<void> {
   try {
-    if (req.mpsService.certs?.web_tls_config?.ca == null) {
+    if (req.certs?.web_tls_config?.ca == null) {
       res.status(500).json(ErrorResponse(500, 'MPS root certificate does not exists.')).end()
       return
     }
-    res.send(req.mpsService.certs.web_tls_config.ca)
+    res.send(req.certs.web_tls_config.ca)
   } catch (error) {
     log.error(`Exception while downloading MPS root certificate: ${error}`)
     res.status(500).json(ErrorResponse(500, 'Request failed while downloading MPS root certificate.')).end()

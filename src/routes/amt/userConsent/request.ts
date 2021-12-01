@@ -6,7 +6,7 @@
 import { Response, Request } from 'express'
 import { logger as log } from '../../../utils/logger'
 import { ErrorResponse } from '../../../utils/amtHelper'
-import { MqttProvider } from '../../../utils/mqttProvider'
+import { MqttProvider } from '../../../utils/MqttProvider'
 export async function request (req: Request, res: Response): Promise<void> {
   try {
     const guid: string = req.params.guid

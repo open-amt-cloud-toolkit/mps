@@ -3,11 +3,12 @@
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
 
-import { AMT } from '../amt'
-import { AMT_Methods, AMT_Classes } from '../enums/amt_enums'
-import { CIM_Methods } from '../enums/cim_enums'
-import { AMT_BootSettingData, AMT_EnvironmentDetectionSettingData, AMT_EthernetPortSettings, MPServer, RemoteAccessPolicyRule } from '../models/amt_models'
-import { Selector, WSManErrors } from '../wsman'
+import { AMT } from './AMT'
+import { Methods } from './cim/methods'
+import { AMT_Methods, AMT_Classes } from './enums/amt_enums'
+
+import { AMT_BootSettingData, AMT_EnvironmentDetectionSettingData, AMT_EthernetPortSettings, MPServer, RemoteAccessPolicyRule } from './models/amt_models'
+import { Selector, WSManErrors } from './WSMan'
 
 describe('AMT Tests', () => {
   const amtClass = new AMT()
@@ -82,13 +83,13 @@ describe('AMT Tests', () => {
       expect(response).toEqual(correctResponse)
     })
     it('should throw error if an unsupported method is called', () => {
-      expect(() => { castedAMTClass.amt_AuditLog(CIM_Methods.GET, messageId) }).toThrow(WSManErrors.UNSUPPORTED_METHOD)
+      expect(() => { castedAMTClass.amt_AuditLog(Methods.GET, messageId) }).toThrow(WSManErrors.UNSUPPORTED_METHOD)
     })
   })
   describe('amt_RedirectionService Tests', () => {
     it('should return a valid amt_RedirectionService Get wsman message', () => {
       const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/transfer/Get</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RedirectionService</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body /></Envelope>`
-      const boundCall = amtClass.amt_RedirectionService.bind(this, CIM_Methods.GET, messageId)
+      const boundCall = amtClass.amt_RedirectionService.bind(this, Methods.GET, messageId)
       const response = boundCall()
       expect(response).toEqual(correctResponse)
     })
@@ -96,88 +97,88 @@ describe('AMT Tests', () => {
   describe('amt_SetupAndConfigurationService Tests', () => {
     it('should return a valid amt_SetupAndConfigurationService Get wsman message', () => {
       const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/transfer/Get</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_SetupAndConfigurationService</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body /></Envelope>`
-      const response = amtClass.amt_SetupAndConfigurationService(CIM_Methods.GET, messageId)
+      const response = amtClass.amt_SetupAndConfigurationService(Methods.GET, messageId)
       expect(response).toEqual(correctResponse)
     })
   })
   describe('amt_GeneralSettings Tests', () => {
     it('should return a valid amt_GeneralSettings Get wsman message', () => {
       const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/transfer/Get</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_GeneralSettings</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body /></Envelope>`
-      const response = amtClass.amt_GeneralSettings(CIM_Methods.GET, messageId)
+      const response = amtClass.amt_GeneralSettings(Methods.GET, messageId)
       expect(response).toEqual(correctResponse)
     })
   })
   describe('amt_EthernetPortSettings Tests', () => {
     it('should return a valid amt_EthernetPortSettings Get wsman message', () => {
       const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/enumeration/Enumerate</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_EthernetPortSettings</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body><Enumerate xmlns="http://schemas.xmlsoap.org/ws/2004/09/enumeration" /></Body></Envelope>`
-      const response = amtClass.amt_EthernetPortSettings(CIM_Methods.ENUMERATE, messageId)
+      const response = amtClass.amt_EthernetPortSettings(Methods.ENUMERATE, messageId)
       expect(response).toEqual(correctResponse)
     })
     it('should create a valid amt_EthernetPortSettings Pull wsman message', () => {
       const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/enumeration/Pull</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_EthernetPortSettings</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body><Pull xmlns="http://schemas.xmlsoap.org/ws/2004/09/enumeration"><EnumerationContext>${enumerationContext}</EnumerationContext><MaxElements>999</MaxElements><MaxCharacters>99999</MaxCharacters></Pull></Body></Envelope>`
-      const response = amtClass.amt_EthernetPortSettings(CIM_Methods.PULL, messageId, enumerationContext)
+      const response = amtClass.amt_EthernetPortSettings(Methods.PULL, messageId, enumerationContext)
       expect(response).toEqual(correctResponse)
     })
     it('should create a valid amt_EthernetPortSettings Put wsman message', () => {
       const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/transfer/Put</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_EthernetPortSettings</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout><w:SelectorSet><w:Selector Name="InstanceID">Intel(r) AMT Ethernet Port Settings 0</w:Selector></w:SelectorSet></Header><Body><r:AMT_EthernetPortSettings xmlns:r="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_EthernetPortSettings"><r:DHCPEnabled>true</r:DHCPEnabled><r:ElementName>Intel(r) AMT Ethernet Port Settings</r:ElementName><r:InstanceID>Intel(r) AMT Ethernet Port Settings 0</r:InstanceID><r:IpSyncEnabled>true</r:IpSyncEnabled><r:LinkIsUp>true</r:LinkIsUp><r:LinkPolicy>1</r:LinkPolicy><r:LinkPolicy>14</r:LinkPolicy><r:LinkPolicy>16</r:LinkPolicy><r:MACAddress>a4-ae-11-1c-02-4d</r:MACAddress><r:PhysicalConnectionType>0</r:PhysicalConnectionType><r:SharedDynamicIP>true</r:SharedDynamicIP><r:SharedMAC>true</r:SharedMAC><r:SharedStaticIp>false</r:SharedStaticIp></r:AMT_EthernetPortSettings></Body></Envelope>`
-      const response = amtClass.amt_EthernetPortSettings(CIM_Methods.PUT, messageId, null, ethernetPortObject)
+      const response = amtClass.amt_EthernetPortSettings(Methods.PUT, messageId, null, ethernetPortObject)
       expect(response).toEqual(correctResponse)
     })
     it('should throw error if ethernetPortObject is missing from amt_EthernetPortSettings Pull request', () => {
-      expect(() => { amtClass.amt_EthernetPortSettings(CIM_Methods.PUT, messageId) }).toThrow(WSManErrors.ETHERNET_PORT_OBJECT)
+      expect(() => { amtClass.amt_EthernetPortSettings(Methods.PUT, messageId) }).toThrow(WSManErrors.ETHERNET_PORT_OBJECT)
     })
     it('should throw error if enumerationContext is missing from amt_EthernetPortSettings Pull request', () => {
-      expect(() => { amtClass.amt_EthernetPortSettings(CIM_Methods.PULL, messageId) }).toThrow(WSManErrors.ENUMERATION_CONTEXT)
+      expect(() => { amtClass.amt_EthernetPortSettings(Methods.PULL, messageId) }).toThrow(WSManErrors.ENUMERATION_CONTEXT)
     })
     it('should throw error if an unsupported method is called', () => {
-      expect(() => { castedAMTClass.amt_EthernetPortSettings(CIM_Methods.SET_BOOT_CONFIG_ROLE, messageId) }).toThrow(WSManErrors.UNSUPPORTED_METHOD)
+      expect(() => { castedAMTClass.amt_EthernetPortSettings(Methods.SET_BOOT_CONFIG_ROLE, messageId) }).toThrow(WSManErrors.UNSUPPORTED_METHOD)
     })
   })
   describe('amt_RemoteAccessPolicyRule Tests', () => {
     it('should create a valid amt_RemoteAccessPolicyRule Delete wsman message', () => {
       const selector: Selector = { name: 'PolicyRuleName', value: 'User Initiated' }
       const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/transfer/Delete</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RemoteAccessPolicyRule</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout><w:SelectorSet><w:Selector Name="PolicyRuleName">User Initiated</w:Selector></w:SelectorSet></Header><Body /></Envelope>`
-      const response = amtClass.amt_RemoteAccessPolicyRule(CIM_Methods.DELETE, messageId, selector)
+      const response = amtClass.amt_RemoteAccessPolicyRule(Methods.DELETE, messageId, selector)
       expect(response).toEqual(correctResponse)
     })
     it('should throw error if selector is missing from amt_RemoteAccessPolicyRule Delete method', () => {
-      expect(() => { amtClass.amt_RemoteAccessPolicyRule(CIM_Methods.DELETE, messageId) }).toThrow(WSManErrors.SELECTOR)
+      expect(() => { amtClass.amt_RemoteAccessPolicyRule(Methods.DELETE, messageId) }).toThrow(WSManErrors.SELECTOR)
     })
   })
   describe('amt_ManagementPresenceRemoteSAP Tests', () => {
     it('should return a valid amt_ManagementPresenceRemoteSAP Get wsman message', () => {
       const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/enumeration/Enumerate</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_ManagementPresenceRemoteSAP</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body><Enumerate xmlns="http://schemas.xmlsoap.org/ws/2004/09/enumeration" /></Body></Envelope>`
-      const response = amtClass.amt_ManagementPresenceRemoteSAP(CIM_Methods.ENUMERATE, messageId)
+      const response = amtClass.amt_ManagementPresenceRemoteSAP(Methods.ENUMERATE, messageId)
       expect(response).toEqual(correctResponse)
     })
     it('should create a valid amt_ManagementPresenceRemoteSAP Pull wsman message', () => {
       const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/enumeration/Pull</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_ManagementPresenceRemoteSAP</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body><Pull xmlns="http://schemas.xmlsoap.org/ws/2004/09/enumeration"><EnumerationContext>${enumerationContext}</EnumerationContext><MaxElements>999</MaxElements><MaxCharacters>99999</MaxCharacters></Pull></Body></Envelope>`
-      const response = amtClass.amt_ManagementPresenceRemoteSAP(CIM_Methods.PULL, messageId, enumerationContext)
+      const response = amtClass.amt_ManagementPresenceRemoteSAP(Methods.PULL, messageId, enumerationContext)
       expect(response).toEqual(correctResponse)
     })
     it('should throw error if enumerationContext is missing from amt_ManagementPresenceRemoteSAP Pull request', () => {
-      expect(() => { amtClass.amt_ManagementPresenceRemoteSAP(CIM_Methods.PULL, messageId) }).toThrow(WSManErrors.ENUMERATION_CONTEXT)
+      expect(() => { amtClass.amt_ManagementPresenceRemoteSAP(Methods.PULL, messageId) }).toThrow(WSManErrors.ENUMERATION_CONTEXT)
     })
   })
   describe('amt_PublicKeyCertificate Tests', () => {
     it('should return a valid amt_PublicKeyCertificate Get wsman message', () => {
       const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/enumeration/Enumerate</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_PublicKeyCertificate</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body><Enumerate xmlns="http://schemas.xmlsoap.org/ws/2004/09/enumeration" /></Body></Envelope>`
-      const response = amtClass.amt_PublicKeyCertificate(CIM_Methods.ENUMERATE, messageId)
+      const response = amtClass.amt_PublicKeyCertificate(Methods.ENUMERATE, messageId)
       expect(response).toEqual(correctResponse)
     })
     it('should create a valid amt_PublicKeyCertificate Pull wsman message', () => {
       const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/enumeration/Pull</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_PublicKeyCertificate</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body><Pull xmlns="http://schemas.xmlsoap.org/ws/2004/09/enumeration"><EnumerationContext>${enumerationContext}</EnumerationContext><MaxElements>999</MaxElements><MaxCharacters>99999</MaxCharacters></Pull></Body></Envelope>`
-      const response = amtClass.amt_PublicKeyCertificate(CIM_Methods.PULL, messageId, enumerationContext)
+      const response = amtClass.amt_PublicKeyCertificate(Methods.PULL, messageId, enumerationContext)
       expect(response).toEqual(correctResponse)
     })
     it('should throw error if enumerationContext is missing from amt_PublicKeyCertificate Pull request', () => {
-      expect(() => { amtClass.amt_PublicKeyCertificate(CIM_Methods.PULL, messageId) }).toThrow(WSManErrors.ENUMERATION_CONTEXT)
+      expect(() => { amtClass.amt_PublicKeyCertificate(Methods.PULL, messageId) }).toThrow(WSManErrors.ENUMERATION_CONTEXT)
     })
   })
   describe('amt_EnvironmentDetectionSettingData Tests', () => {
     it('should return a valid amt_EnvironmentDetectionSettingData Get wsman message', () => {
       const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/transfer/Get</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_EnvironmentDetectionSettingData</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body /></Envelope>`
-      const response = amtClass.amt_EnvironmentDetectionSettingData(CIM_Methods.GET, messageId)
+      const response = amtClass.amt_EnvironmentDetectionSettingData(Methods.GET, messageId)
       expect(response).toEqual(correctResponse)
     })
     it('should create a valid amt_EnvironmentDetectionSettingData Put wsman message', () => {
@@ -188,14 +189,14 @@ describe('AMT Tests', () => {
         detectionStrings: ['dummy.com']
       }
       const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/transfer/Put</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_EnvironmentDetectionSettingData</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout><w:SelectorSet><w:Selector Name="InstanceID">${environmentDetectionSettingData.instanceId}</w:Selector></w:SelectorSet></Header><Body><r:AMT_EnvironmentDetectionSettingData xmlns:r="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_EnvironmentDetectionSettingData"><r:DetectionAlgorithm>${environmentDetectionSettingData.detectionAlgorithm}</r:DetectionAlgorithm><r:ElementName>${environmentDetectionSettingData.elementName}</r:ElementName><r:InstanceID>${environmentDetectionSettingData.instanceId}</r:InstanceID><r:DetectionStrings>${environmentDetectionSettingData.detectionStrings}</r:DetectionStrings></r:AMT_EnvironmentDetectionSettingData></Body></Envelope>`
-      const response = amtClass.amt_EnvironmentDetectionSettingData(CIM_Methods.PUT, messageId, environmentDetectionSettingData)
+      const response = amtClass.amt_EnvironmentDetectionSettingData(Methods.PUT, messageId, environmentDetectionSettingData)
       expect(response).toEqual(correctResponse)
     })
     it('should throw error if environmentDetectionSettingData is missing from amt_EnvironmentDetectionSettingData Pull request', () => {
-      expect(() => { amtClass.amt_EnvironmentDetectionSettingData(CIM_Methods.PUT, messageId) }).toThrow(WSManErrors.ENVIRONMENT_DETECTION_SETTING_DATA)
+      expect(() => { amtClass.amt_EnvironmentDetectionSettingData(Methods.PUT, messageId) }).toThrow(WSManErrors.ENVIRONMENT_DETECTION_SETTING_DATA)
     })
     it('should throw error if an unsupported method is called', () => {
-      expect(() => { castedAMTClass.amt_EnvironmentDetectionSettingData(CIM_Methods.SET_BOOT_CONFIG_ROLE, messageId) }).toThrow(WSManErrors.UNSUPPORTED_METHOD)
+      expect(() => { castedAMTClass.amt_EnvironmentDetectionSettingData(Methods.SET_BOOT_CONFIG_ROLE, messageId) }).toThrow(WSManErrors.UNSUPPORTED_METHOD)
     })
   })
   describe('amt_PublicKeyManagementService Tests', () => {
@@ -208,7 +209,7 @@ describe('AMT Tests', () => {
       expect(() => { amtClass.amt_PublicKeyManagementService(AMT_Methods.ADD_TRUSTED_ROOT_CERTIFICATE, messageId) }).toThrow(WSManErrors.CERTIFICATE_BLOB)
     })
     it('should throw error if an unsupported method is called', () => {
-      expect(() => { castedAMTClass.amt_PublicKeyManagementService(CIM_Methods.SET_BOOT_CONFIG_ROLE, messageId) }).toThrow(WSManErrors.UNSUPPORTED_METHOD)
+      expect(() => { castedAMTClass.amt_PublicKeyManagementService(Methods.SET_BOOT_CONFIG_ROLE, messageId) }).toThrow(WSManErrors.UNSUPPORTED_METHOD)
     })
   })
   describe('amt_RemoteAccessService Tests', () => {
@@ -234,7 +235,7 @@ describe('AMT Tests', () => {
       expect(() => { amtClass.amt_RemoteAccessService(AMT_Methods.ADD_REMOTE_ACCESS_POLICY_RULE, messageId, null, remoteAccessPolicyRule) }).toThrow(WSManErrors.SELECTOR)
     })
     it('should throw error if an unsupported method is called', () => {
-      expect(() => { castedAMTClass.amt_RemoteAccessService(CIM_Methods.SET_BOOT_CONFIG_ROLE, messageId) }).toThrow(WSManErrors.UNSUPPORTED_METHOD)
+      expect(() => { castedAMTClass.amt_RemoteAccessService(Methods.SET_BOOT_CONFIG_ROLE, messageId) }).toThrow(WSManErrors.UNSUPPORTED_METHOD)
     })
   })
   describe('amt_UserInitiatedConnectionService Tests', () => {
@@ -251,19 +252,19 @@ describe('AMT Tests', () => {
   describe('amt_BootSettingData Tests', () => {
     it('should return a valid amt_BootSettingData Get wsman message', () => {
       const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/transfer/Get</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_BootSettingData</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body /></Envelope>`
-      const response = amtClass.amt_BootSettingData(CIM_Methods.GET, messageId)
+      const response = amtClass.amt_BootSettingData(Methods.GET, messageId)
       expect(response).toEqual(correctResponse)
     })
     it('should return a valid amt_BootSettingData Put wsman message', () => {
       const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/transfer/Put</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_BootSettingData</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body><r:AMT_BootSettingData xmlns:r="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_BootSettingData"><r:BIOSLastStatus>${bootSettingData.biosLastStatus[0]}</r:BIOSLastStatus><r:BIOSLastStatus>${bootSettingData.biosLastStatus[1]}</r:BIOSLastStatus><r:UEFIBootNumberOfParams>${bootSettingData.uefiBootNumberOfParams[0]}</r:UEFIBootNumberOfParams><r:UEFIBootParametersArray>${bootSettingData.uefiBootParametersArray[0]}</r:UEFIBootParametersArray><r:BIOSPause>${bootSettingData.biosPause}</r:BIOSPause><r:BIOSSetup>${bootSettingData.biosSetup}</r:BIOSSetup><r:BootMediaIndex>${bootSettingData.bootMediaIndex}</r:BootMediaIndex><r:ConfigurationDataReset>${bootSettingData.configurationDataReset}</r:ConfigurationDataReset><r:ElementName>${bootSettingData.elementName}</r:ElementName><r:EnforceSecureBoot>${bootSettingData.enforceSecureBoot}</r:EnforceSecureBoot><r:FirmwareVerbosity>${bootSettingData.firmwareVerbosity}</r:FirmwareVerbosity><r:ForcedProgressEvents>${bootSettingData.forcedProgressEvents}</r:ForcedProgressEvents><r:IDERBootDevice>${bootSettingData.iderBootDevice}</r:IDERBootDevice><r:InstanceID>${bootSettingData.instanceId}</r:InstanceID><r:LockKeyboard>${bootSettingData.lockKeyboard}</r:LockKeyboard><r:LockPowerButton>${bootSettingData.lockPowerButton}</r:LockPowerButton><r:LockResetButton>${bootSettingData.lockResetButton}</r:LockResetButton><r:LockSleepButton>${bootSettingData.lockSleepButton}</r:LockSleepButton><r:OptionsCleared>${bootSettingData.optionsCleared}</r:OptionsCleared><r:OwningEntity>${bootSettingData.owningEntity}</r:OwningEntity><r:ReflashBIOS>${bootSettingData.reflashBIOS}</r:ReflashBIOS><r:SecureErase>${bootSettingData.secureErase}</r:SecureErase><r:UseIDER>${bootSettingData.useIDER}</r:UseIDER><r:UseSOL>${bootSettingData.useSOL}</r:UseSOL><r:UseSafeMode>${bootSettingData.useSafeMode}</r:UseSafeMode><r:UserPasswordBypass>${bootSettingData.userPasswordBypass}</r:UserPasswordBypass></r:AMT_BootSettingData></Body></Envelope>`
-      const response = amtClass.amt_BootSettingData(CIM_Methods.PUT, messageId, bootSettingData)
+      const response = amtClass.amt_BootSettingData(Methods.PUT, messageId, bootSettingData)
       expect(response).toEqual(correctResponse)
     })
     it('should throw error if bootSettingData is missing from amt_BootSettingData Put method', () => {
-      expect(() => { amtClass.amt_BootSettingData(CIM_Methods.PUT, messageId) }).toThrow(WSManErrors.BOOT_SETTING_DATA)
+      expect(() => { amtClass.amt_BootSettingData(Methods.PUT, messageId) }).toThrow(WSManErrors.BOOT_SETTING_DATA)
     })
     it('should throw error if an unsupported method is called', () => {
-      expect(() => { castedAMTClass.amt_BootSettingData(CIM_Methods.SET_BOOT_CONFIG_ROLE, messageId) }).toThrow(WSManErrors.UNSUPPORTED_METHOD)
+      expect(() => { castedAMTClass.amt_BootSettingData(Methods.SET_BOOT_CONFIG_ROLE, messageId) }).toThrow(WSManErrors.UNSUPPORTED_METHOD)
     })
   })
 })

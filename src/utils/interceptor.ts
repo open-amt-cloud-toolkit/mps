@@ -7,7 +7,7 @@
 */
 
 import { createHash, randomBytes } from 'crypto'
-import common from './common.js'
+import Common from './common'
 
 const HttpInterceptorAuthentications = {}
 
@@ -292,7 +292,7 @@ const CreateRedirInterceptor = (args): any => {
         }
         case obj.RedirectCommands.AuthenticateSessionReply: {
           if (obj.amt.acc.length < 9) return ''
-          const l = common.ReadIntX(obj.amt.acc, 5)
+          const l = Common.ReadIntX(obj.amt.acc, 5)
           if (obj.amt.acc.length < 9 + l) return ''
           const authstatus = obj.amt.acc.charCodeAt(1)
           const authType = obj.amt.acc.charCodeAt(4)
@@ -356,7 +356,7 @@ const CreateRedirInterceptor = (args): any => {
         }
         case obj.RedirectCommands.AuthenticateSession: {
           if (obj.ws.acc.length < 9) return ''
-          const l = common.ReadIntX(obj.ws.acc, 5)
+          const l = Common.ReadIntX(obj.ws.acc, 5)
           if (obj.ws.acc.length < 9 + l) return ''
 
           const authType = obj.ws.acc.charCodeAt(4)
@@ -372,7 +372,7 @@ const CreateRedirInterceptor = (args): any => {
               // Replace this authentication digest with a server created one
               // We have everything we need to authenticate
               let r = String.fromCharCode(0x13, 0x00, 0x00, 0x00, 0x04)
-              r += common.IntToStrX(obj.args.user.length + obj.amt.digestRealm.length + obj.amt.digestNonce.length + authurl.length + obj.ws.authCNonce.length + nc.toString().length + digest.length + obj.amt.digestQOP.length + 8)
+              r += Common.IntToStrX(obj.args.user.length + obj.amt.digestRealm.length + obj.amt.digestNonce.length + authurl.length + obj.ws.authCNonce.length + nc.toString().length + digest.length + obj.amt.digestQOP.length + 8)
               r += String.fromCharCode(obj.args.user.length) // Username Length
               r += obj.args.user // Username
               r += String.fromCharCode(obj.amt.digestRealm.length) // Realm Length
@@ -396,7 +396,7 @@ const CreateRedirInterceptor = (args): any => {
               // Replace this authentication digest with a server created one
               // Since we don't have authentication parameters, fill them in with blanks to get an error back what that info.
               let r = String.fromCharCode(0x13, 0x00, 0x00, 0x00, 0x04)
-              r += common.IntToStrX(obj.args.user.length + authurl.length + 8)
+              r += Common.IntToStrX(obj.args.user.length + authurl.length + 8)
               r += String.fromCharCode(obj.args.user.length)
               r += obj.args.user
               r += String.fromCharCode(0x00, 0x00, authurl.length)

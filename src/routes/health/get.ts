@@ -9,7 +9,7 @@ import { HealthCheck } from '../../models/models'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { Environment } from '../../utils/Environment'
 import { logger } from '../../utils/logger'
-import { MqttProvider } from '../../utils/mqttProvider'
+import { MqttProvider } from '../../utils/MqttProvider'
 
 export async function getHealthCheck (req: Request, res: Response): Promise<void> {
   try {
@@ -29,7 +29,7 @@ export async function getHealthCheck (req: Request, res: Response): Promise<void
       status.db.status = POSTGRES_RESPONSE_CODES(dbError?.code)
     }
     try {
-      const secretManagerHealth = await req.mpsService.secrets.health()
+      const secretManagerHealth = await req.secrets.health()
       status.secretStore.status = secretManagerHealth
     } catch (secretProviderError) {
       if (secretProviderError.error) {
