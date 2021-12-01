@@ -3,7 +3,7 @@
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
 
-import { Selector, WSManErrors, WSManMessageCreator } from '../wsman'
+import { Selector, WSManErrors, WSManMessageCreator } from './WSMan'
 
 const wsmanMessageCreator = new WSManMessageCreator()
 describe('WSManMessageCreator Tests', function () {

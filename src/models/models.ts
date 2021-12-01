@@ -2,6 +2,11 @@
  * Copyright (c) Intel Corporation 2021
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
+
+import { Socket } from 'net'
+import { DetailedPeerCertificate, TLSSocket } from 'tls'
+import { CIRAChannel } from '../amt/CIRAHandler'
+
 export interface Device {
   connectionStatus: boolean
   mpsInstance: string
@@ -28,6 +33,26 @@ export interface OpenAMTEvent {
   methods: string[]
   guid: string
   timestamp: number
+}
+
+export interface CIRASocket extends TLSSocket{
+  tag?: {
+    first: boolean
+    clientCert?: DetailedPeerCertificate
+    accumulator: string
+    activetunnels: number
+    boundPorts: number[]
+    socket: Socket
+    host: string
+    nextchannelid: number
+    channels: {[key: string]: CIRAChannel}
+    nextsourceport: number
+    nodeid: string
+    SystemId?: string // same as nodeid?
+    MajorVersion?: Number
+    MinorVersion?: Number
+    certauth?: string
+  }
 }
 export interface HealthCheck {
   db: HealthCheckStatus

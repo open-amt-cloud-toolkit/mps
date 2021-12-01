@@ -3,15 +3,16 @@
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
 
-import { Selector, WSManMessageCreator, WSManErrors } from './wsman'
+import { Selector, WSManMessageCreator, WSManErrors } from './WSMan'
 import { AMT_Methods, AMT_Actions, AMT_Classes } from './enums/amt_enums'
-import { CIM_Actions, CIM_Methods } from './enums/cim_enums'
 import { AMT_EthernetPortSettings, MPServer, RemoteAccessPolicyRule, AMT_EnvironmentDetectionSettingData, AMT_BootSettingData } from './models/amt_models'
+import { Actions } from './cim/actions'
+import { Methods } from './cim/methods'
 
-type Actions = AMT_Actions | CIM_Actions // Allows for Action reuse between CIM and AMT
+type AllActions = AMT_Actions | Actions // Allows for Action reuse between CIM and AMT
 
 interface AMTCall {
-  method: CIM_Methods | AMT_Methods
+  method: Methods | AMT_Methods
   class: AMT_Classes
   messageId: string
   enumerationContext?: string
@@ -23,31 +24,31 @@ export class AMT {
   wsmanMessageCreator: WSManMessageCreator = new WSManMessageCreator()
   readonly resourceUriBase: string = 'http://intel.com/wbem/wscim/1/amt-schema/1/'
 
-  private readonly get = (action: Actions, amtClass: AMT_Classes, messageId: string): string => {
+  private readonly get = (action: AllActions, amtClass: AMT_Classes, messageId: string): string => {
     const header: string = this.wsmanMessageCreator.createHeader(action, `${this.resourceUriBase}${amtClass}`, messageId)
-    const body: string = this.wsmanMessageCreator.createBody(CIM_Methods.GET)
+    const body: string = this.wsmanMessageCreator.createBody(Methods.GET)
     return this.wsmanMessageCreator.createXml(header, body)
   }
 
-  private readonly enumerate = (action: Actions, amtClass: AMT_Classes, messageId: string): string => {
+  private readonly enumerate = (action: AllActions, amtClass: AMT_Classes, messageId: string): string => {
     const header: string = this.wsmanMessageCreator.createHeader(action, `${this.resourceUriBase}${amtClass}`, messageId)
-    const body: string = this.wsmanMessageCreator.createBody(CIM_Methods.ENUMERATE)
+    const body: string = this.wsmanMessageCreator.createBody(Methods.ENUMERATE)
     return this.wsmanMessageCreator.createXml(header, body)
   }
 
-  private readonly pull = (action: Actions, amtClass: AMT_Classes, messageId: string, enumerationContext: string): string => {
+  private readonly pull = (action: AllActions, amtClass: AMT_Classes, messageId: string, enumerationContext: string): string => {
     const header: string = this.wsmanMessageCreator.createHeader(action, `${this.resourceUriBase}${amtClass}`, messageId)
-    const body: string = this.wsmanMessageCreator.createBody(CIM_Methods.PULL, enumerationContext)
+    const body: string = this.wsmanMessageCreator.createBody(Methods.PULL, enumerationContext)
     return this.wsmanMessageCreator.createXml(header, body)
   }
 
-  private readonly delete = (action: Actions, amtClass: AMT_Classes, messageId: string, selector: Selector): string => {
+  private readonly delete = (action: AllActions, amtClass: AMT_Classes, messageId: string, selector: Selector): string => {
     const header: string = this.wsmanMessageCreator.createHeader(action, `${this.resourceUriBase}${amtClass}`, messageId, null, null, selector)
-    const body: string = this.wsmanMessageCreator.createBody(CIM_Methods.DELETE)
+    const body: string = this.wsmanMessageCreator.createBody(Methods.DELETE)
     return this.wsmanMessageCreator.createXml(header, body)
   }
 
-  private readonly requestStateChange = (action: Actions, amtClass: AMT_Classes, messageId: string, requestedState: number): string => {
+  private readonly requestStateChange = (action: AllActions, amtClass: AMT_Classes, messageId: string, requestedState: number): string => {
     const header: string = this.wsmanMessageCreator.createHeader(action, `${this.resourceUriBase}${amtClass}`, messageId)
     const body: string = this.wsmanMessageCreator.createBody(AMT_Methods.REQUEST_STATE_CHANGE, null, `${this.resourceUriBase}${amtClass}`, requestedState)
     return this.wsmanMessageCreator.createXml(header, body)
@@ -55,16 +56,16 @@ export class AMT {
 
   private readonly amtSwitch = (amt: AMTCall): string => {
     switch (amt.method) {
-      case CIM_Methods.GET:
-        return this.get(CIM_Actions.GET, amt.class, amt.messageId)
-      case CIM_Methods.PULL:
+      case Methods.GET:
+        return this.get(Actions.GET, amt.class, amt.messageId)
+      case Methods.PULL:
         if (amt.enumerationContext == null) { throw new Error(WSManErrors.ENUMERATION_CONTEXT) }
-        return this.pull(CIM_Actions.PULL, amt.class, amt.messageId, amt.enumerationContext)
-      case CIM_Methods.ENUMERATE:
-        return this.enumerate(CIM_Actions.ENUMERATE, amt.class, amt.messageId)
-      case CIM_Methods.DELETE:
+        return this.pull(Actions.PULL, amt.class, amt.messageId, amt.enumerationContext)
+      case Methods.ENUMERATE:
+        return this.enumerate(Actions.ENUMERATE, amt.class, amt.messageId)
+      case Methods.DELETE:
         if (amt.selector == null) { throw new Error(WSManErrors.SELECTOR) }
-        return this.delete(CIM_Actions.DELETE, amt.class, amt.messageId, amt.selector)
+        return this.delete(Actions.DELETE, amt.class, amt.messageId, amt.selector)
       case AMT_Methods.REQUEST_STATE_CHANGE:
         if (amt.requestedState == null) { throw new Error(WSManErrors.REQUESTED_STATE) }
         return this.requestStateChange(AMT_Actions.REQUEST_STATE_CHANGE, amt.class, amt.messageId, amt.requestedState)
@@ -85,27 +86,27 @@ export class AMT {
     }
   }
 
-  amt_RedirectionService = (method: CIM_Methods.GET, messageId: string): string => {
+  amt_RedirectionService = (method: Methods.GET, messageId: string): string => {
     return this.amtSwitch({ method: method, messageId: messageId, class: AMT_Classes.AMT_REDIRECTION_SERVICE })
   }
 
-  amt_SetupAndConfigurationService = (method: CIM_Methods.GET, messageId: string): string => {
+  amt_SetupAndConfigurationService = (method: Methods.GET, messageId: string): string => {
     return this.amtSwitch({ method: method, messageId: messageId, class: AMT_Classes.AMT_SETUP_AND_CONFIGURATION_SERVICE })
   }
 
-  amt_GeneralSettings = (method: CIM_Methods.GET, messageId: string): string => {
+  amt_GeneralSettings = (method: Methods.GET, messageId: string): string => {
     return this.amtSwitch({ method: method, messageId: messageId, class: AMT_Classes.AMT_GENERAL_SETTINGS })
   }
 
-  amt_EthernetPortSettings = (method: CIM_Methods.PULL | CIM_Methods.ENUMERATE | CIM_Methods.PUT, messageId: string, enumerationContext?: string, ethernetPortObject?: AMT_EthernetPortSettings): string => {
+  amt_EthernetPortSettings = (method: Methods.PULL | Methods.ENUMERATE | Methods.PUT, messageId: string, enumerationContext?: string, ethernetPortObject?: AMT_EthernetPortSettings): string => {
     switch (method) {
-      case CIM_Methods.PULL:
-      case CIM_Methods.ENUMERATE:
+      case Methods.PULL:
+      case Methods.ENUMERATE:
         return this.amtSwitch({ method: method, messageId: messageId, class: AMT_Classes.AMT_ETHERNET_PORT_SETTINGS, enumerationContext })
-      case CIM_Methods.PUT: {
+      case Methods.PUT: {
         if (ethernetPortObject == null) { throw new Error(WSManErrors.ETHERNET_PORT_OBJECT) }
         const selector: Selector = { name: 'InstanceID', value: ethernetPortObject.instanceId }
-        const header = this.wsmanMessageCreator.createHeader(CIM_Actions.PUT, `${this.resourceUriBase}${AMT_Classes.AMT_ETHERNET_PORT_SETTINGS}`, messageId, null, null, selector)
+        const header = this.wsmanMessageCreator.createHeader(Actions.PUT, `${this.resourceUriBase}${AMT_Classes.AMT_ETHERNET_PORT_SETTINGS}`, messageId, null, null, selector)
         let body = `<Body><r:AMT_EthernetPortSettings xmlns:r="${this.resourceUriBase}${AMT_Classes.AMT_ETHERNET_PORT_SETTINGS}"><r:DHCPEnabled>${String(ethernetPortObject.dhcpEnabled)}</r:DHCPEnabled><r:ElementName>${ethernetPortObject.elementName}</r:ElementName><r:InstanceID>${ethernetPortObject.instanceId}</r:InstanceID><r:IpSyncEnabled>${String(ethernetPortObject.ipSyncEnabled)}</r:IpSyncEnabled><r:LinkIsUp>${String(ethernetPortObject.linkIsUp)}</r:LinkIsUp>`
         ethernetPortObject.linkPolicy.forEach(function (item) {
           body += `<r:LinkPolicy>${item}</r:LinkPolicy>`
@@ -118,26 +119,26 @@ export class AMT {
     }
   }
 
-  amt_RemoteAccessPolicyRule = (method: CIM_Methods.DELETE, messageId: string, selector?: Selector): string => {
+  amt_RemoteAccessPolicyRule = (method: Methods.DELETE, messageId: string, selector?: Selector): string => {
     return this.amtSwitch({ method: method, messageId: messageId, class: AMT_Classes.AMT_REMOTE_ACCESS_POLICY_RULE, selector: selector })
   }
 
-  amt_ManagementPresenceRemoteSAP = (method: CIM_Methods.PULL | CIM_Methods.ENUMERATE, messageId: string, enumerationContext?: string): string => {
+  amt_ManagementPresenceRemoteSAP = (method: Methods.PULL | Methods.ENUMERATE, messageId: string, enumerationContext?: string): string => {
     return this.amtSwitch({ method: method, messageId: messageId, class: AMT_Classes.AMT_MANAGEMENT_PRESENCE_REMOTE_SAP, enumerationContext: enumerationContext })
   }
 
-  amt_PublicKeyCertificate = (method: CIM_Methods.PULL | CIM_Methods.ENUMERATE, messageId: string, enumerationContext?: string): string => {
+  amt_PublicKeyCertificate = (method: Methods.PULL | Methods.ENUMERATE, messageId: string, enumerationContext?: string): string => {
     return this.amtSwitch({ method: method, messageId: messageId, class: AMT_Classes.AMT_PUBLIC_KEY_CERTIFICATE, enumerationContext: enumerationContext })
   }
 
-  amt_EnvironmentDetectionSettingData = (method: CIM_Methods.GET | CIM_Methods.PUT, messageId: string, environmentDetectionSettingData?: AMT_EnvironmentDetectionSettingData): string => {
+  amt_EnvironmentDetectionSettingData = (method: Methods.GET | Methods.PUT, messageId: string, environmentDetectionSettingData?: AMT_EnvironmentDetectionSettingData): string => {
     switch (method) {
-      case CIM_Methods.GET:
+      case Methods.GET:
         return this.amtSwitch({ method: method, messageId: messageId, class: AMT_Classes.AMT_ENVIRONMENT_DETECTION_SETTING_DATA })
-      case CIM_Methods.PUT: {
+      case Methods.PUT: {
         if (environmentDetectionSettingData == null) { throw new Error(WSManErrors.ENVIRONMENT_DETECTION_SETTING_DATA) }
         const selector: Selector = { name: 'InstanceID', value: environmentDetectionSettingData.instanceId }
-        const header = this.wsmanMessageCreator.createHeader(CIM_Actions.PUT, `${this.resourceUriBase}${AMT_Classes.AMT_ENVIRONMENT_DETECTION_SETTING_DATA}`, messageId, null, null, selector)
+        const header = this.wsmanMessageCreator.createHeader(Actions.PUT, `${this.resourceUriBase}${AMT_Classes.AMT_ENVIRONMENT_DETECTION_SETTING_DATA}`, messageId, null, null, selector)
         let body = `<Body><r:AMT_EnvironmentDetectionSettingData xmlns:r="${this.resourceUriBase}${AMT_Classes.AMT_ENVIRONMENT_DETECTION_SETTING_DATA}"><r:DetectionAlgorithm>${environmentDetectionSettingData.detectionAlgorithm}</r:DetectionAlgorithm><r:ElementName>${environmentDetectionSettingData.elementName}</r:ElementName><r:InstanceID>${environmentDetectionSettingData.instanceId}</r:InstanceID>`
         environmentDetectionSettingData.detectionStrings.forEach(function (item) {
           body += `<r:DetectionStrings>${item}</r:DetectionStrings>`
@@ -187,13 +188,13 @@ export class AMT {
     return this.amtSwitch({ method: method, messageId: messageId, class: AMT_Classes.AMT_USER_INITIATED_CONNECTION_SERVICE, requestedState: requestedState })
   }
 
-  amt_BootSettingData = (method: CIM_Methods.GET | CIM_Methods.PUT, messageId: string, bootSettingData?: AMT_BootSettingData): string => {
+  amt_BootSettingData = (method: Methods.GET | Methods.PUT, messageId: string, bootSettingData?: AMT_BootSettingData): string => {
     switch (method) {
-      case CIM_Methods.GET:
+      case Methods.GET:
         return this.amtSwitch({ method: method, messageId: messageId, class: AMT_Classes.AMT_BOOT_SETTING_DATA })
-      case CIM_Methods.PUT: {
+      case Methods.PUT: {
         if (bootSettingData == null) { throw new Error(WSManErrors.BOOT_SETTING_DATA) }
-        const header = this.wsmanMessageCreator.createHeader(CIM_Actions.PUT, `${this.resourceUriBase}${AMT_Classes.AMT_BOOT_SETTING_DATA}`, messageId)
+        const header = this.wsmanMessageCreator.createHeader(Actions.PUT, `${this.resourceUriBase}${AMT_Classes.AMT_BOOT_SETTING_DATA}`, messageId)
         let body = '<Body><r:AMT_BootSettingData xmlns:r="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_BootSettingData">'
         bootSettingData.biosLastStatus?.forEach(function (item) {
           body += `<r:BIOSLastStatus>${item}</r:BIOSLastStatus>`

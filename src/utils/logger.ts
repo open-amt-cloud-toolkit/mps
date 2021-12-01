@@ -4,7 +4,7 @@
 **********************************************************************/
 
 import * as winston from 'winston'
-import { ILogger } from '../models/ILogger'
+import { ILogger } from '../interfaces/ILogger'
 
 const { combine, timestamp, printf } = winston.format
 const myFormat = printf(info => {

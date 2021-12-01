@@ -1,13 +1,13 @@
-import { MqttProvider } from '../utils/mqttProvider'
-import { config } from './helper/config'
-
-jest.mock('mqtt', () => ({ ...jest.requireActual('mqtt') as object }))
-const mqtt1 = require('mqtt')
+import { MqttProvider } from './MqttProvider'
+import { Environment } from './Environment'
+import { config } from '../test/helper/config'
+import mqtt1 from 'mqtt'
 
 describe('MQTT Turned ON Tests', () => {
   beforeEach(() => {
+    Environment.Config = config
     config.mqtt_address = 'mqtt://127.0.0.1:8883'
-    MqttProvider.instance = new MqttProvider(config)
+    MqttProvider.instance = new MqttProvider()
   })
 
   it('Creates MQTT Helper', async () => {
@@ -89,7 +89,7 @@ describe('MQTT Turned ON Tests', () => {
 
 describe('MQTT Turned OFF Tests', () => {
   beforeEach(() => {
-    MqttProvider.instance = new MqttProvider(config)
+    MqttProvider.instance = new MqttProvider()
   })
 
   it('Should NOT Send an event message when turned off', async () => {

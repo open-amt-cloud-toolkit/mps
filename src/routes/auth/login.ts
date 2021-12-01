@@ -2,6 +2,7 @@ import { validationResult } from 'express-validator'
 import jws from 'jws'
 import { Request, Response } from 'express'
 import { logger as log } from '../../utils/logger'
+import { Environment } from '../../utils/Environment'
 
 export async function login (req: Request, res: Response): Promise<void> {
   const errors = validationResult(req)
@@ -12,17 +13,17 @@ export async function login (req: Request, res: Response): Promise<void> {
   const username: string = req.body.username
   const password: string = req.body.password
   // todo: implement a more advanced authentication system and RBAC
-  if (username.toLowerCase() === req.mpsService.config.web_admin_user.toLowerCase() && password === req.mpsService.config.web_admin_password) {
-    const expirationMinutes = Number(req.mpsService.config.jwt_expiration)
+  if (username.toLowerCase() === Environment.Config.web_admin_user.toLowerCase() && password === Environment.Config.web_admin_password) {
+    const expirationMinutes = Number(Environment.Config.jwt_expiration)
     const expiration = Math.floor((Date.now() + (1000 * 60 * expirationMinutes)) / 1000)
     const signature = jws.sign({
       header: { alg: 'HS256', typ: 'JWT' },
       payload: {
         tenantId: '',
-        iss: req.mpsService.config.jwt_issuer,
+        iss: Environment.Config.jwt_issuer,
         exp: expiration
       },
-      secret: req.mpsService.config.jwt_secret
+      secret: Environment.Config.jwt_secret
     })
     res.status(200).send({ token: signature })
   } else {

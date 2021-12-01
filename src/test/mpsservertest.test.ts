@@ -10,13 +10,12 @@ import * as https from 'https'
 import * as forge from 'node-forge'
 import { Certificates } from '../utils/certificates'
 import { certificatesType } from '../models/Config'
-import { MPSMicroservice } from '../mpsMicroservice'
 import { MPSServer } from '../server/mpsserver'
 import { ISecretManagerService } from '../interfaces/ISecretManagerService'
 import { Device } from '../models/models'
 import { IDeviceTable } from '../interfaces/IDeviceTable'
 import { IDB } from '../interfaces/IDb'
-import { config } from './helper/config' 
+import { config } from './helper/config'
 
 const pki = forge.pki
 let certs: certificatesType
@@ -24,11 +23,9 @@ const certPath = config.cert_path
 let db: IDB
 let devicesMock: IDeviceTable
 let secrets: ISecretManagerService
-let mpsService: MPSMicroservice
 let mps: MPSServer
 
 xdescribe('MPS Server', function () {
-  let server
   beforeAll(async function () {
     jest.setTimeout(60000)
     try {
@@ -47,8 +44,8 @@ xdescribe('MPS Server', function () {
       getByTags: async (tags) => { return [device] as Device[] },
       clearInstanceStatus: async () => {},
       delete: async (guid) => { return true },
-      insert: async (device) => { return {} as Device },
-      update: async () => { return {} as Device }
+      insert: async (device) => { return device },
+      update: async () => { return device as Device }
     }
 
     db = {
@@ -63,17 +60,13 @@ xdescribe('MPS Server', function () {
       getAMTCredentials: async (path: string) => { return ['admin', 'P@ssw0rd'] },
       health: async () => { return {} }
     }
-    mpsService = new MPSMicroservice(config, db, secrets, certs)
-    mps = new MPSServer(mpsService)
-
-    // DB initialization
-    // server = mps
+    mps = new MPSServer(certs, db, secrets)
   })
 
   it('Accept TLS connection test', function (done) {
     const tlsOptions = { rejectUnauthorized: false, secureProtocol: 'TLSv1_1_method' }
     try {
-      var socket = tls.connect(config.port, 'localhost', tlsOptions, function () {
+      const socket = tls.connect(config.port, 'localhost', tlsOptions, function () {
         socket.end()
         done()
       })
@@ -109,15 +102,15 @@ xdescribe('MPS Server', function () {
 
   it('Server Fingerprint Test', function (done) {
     const tlsOptions = { rejectUnauthorized: false, secureProtocol: 'TLSv1_1_method' }
-    var socket = tls.connect(config.port, 'localhost', tlsOptions, function () {
-      const fingerprint = socket.getPeerCertificate().fingerprint.toLowerCase().replace(/\:/gi, '')
+    const socket = tls.connect(config.port, 'localhost', tlsOptions, function () {
+      const fingerprint = socket.getPeerCertificate().fingerprint.toLowerCase().replace(/:/gi, '')
       socket.end()
 
       // Generate Thumbprint of the certificate
       const md = forge.md.sha1.create()
       md.update(forge.asn1.toDer(forge.pki.certificateToAsn1(pki.certificateFromPem(mps.certs.mps_tls_config.cert))).getBytes())
       const serverFingerprint = md.digest().toHex()
-      if (serverFingerprint == fingerprint) {
+      if (serverFingerprint === fingerprint) {
         done()
       } else {
         done(new Error('Certificate fingerprint mismatch'))
@@ -126,7 +119,7 @@ xdescribe('MPS Server', function () {
   })
 
   it('Get MPS details on HTTPS GET', function (done) {
-    const get_options = {
+    const getOptions = {
       hostname: 'localhost',
       port: config.port,
       path: '/',
@@ -136,14 +129,14 @@ xdescribe('MPS Server', function () {
       rejectUnauthorized: false
     }
     // console.log(get_options);
-    https.get(get_options, (res) => {
-      let data = ''
+    https.get(getOptions, (res) => {
+      // let data = ''
       res.on('data', (chunk) => {
-        data += chunk
+        // data += chunk
       })
 
       res.on('end', () => {
-        if (res.statusCode == 200) {
+        if (res.statusCode === 200) {
           done()
         } else {
           console.log('Status code and message from mps server', res.statusCode, res.statusMessage)
@@ -169,6 +162,8 @@ xdescribe('MPS Server', function () {
       debug: false,
       testciraState: 'USERAUTH_SUCCESS' // USERAUTH_SERVICE_ACCEPT, PFWD_SERVICE_ACCEPT, GLOBAL_REQUEST_SUCCESS, USERAUTH_SUCCESS, USERAUTH_FAILURE, PROTOCOL_VERSION_SENT, KEEPALIVE_REPLY
     }
+
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     obj.ciraclient = require('./helper/ciraclient.js').CreateCiraClient(obj, args)
     obj.ciraclient.connect(function () {
       obj.ciraclient.disconnect()
@@ -191,6 +186,7 @@ xdescribe('MPS Server', function () {
       testciraState: 'USERAUTH_SERVICE_ACCEPT' // USERAUTH_SERVICE_ACCEPT, PFWD_SERVICE_ACCEPT, GLOBAL_REQUEST_SUCCESS, USERAUTH_SUCCESS, USERAUTH_FAILURE, PROTOCOL_VERSION_SENT, KEEPALIVE_REPLY
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     obj.ciraclient = require('./helper/ciraclient.js').CreateCiraClient(obj, args)
     obj.ciraclient.connect(function () {
       obj.ciraclient.disconnect()
@@ -213,6 +209,7 @@ xdescribe('MPS Server', function () {
       testciraState: 'PFWD_SERVICE_ACCEPT' // USERAUTH_SERVICE_ACCEPT, PFWD_SERVICE_ACCEPT, GLOBAL_REQUEST_SUCCESS, USERAUTH_SUCCESS, USERAUTH_FAILURE, PROTOCOL_VERSION_SENT, KEEPALIVE_REPLY
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     obj.ciraclient = require('./helper/ciraclient.js').CreateCiraClient(obj, args)
     obj.ciraclient.connect(function () {
       obj.ciraclient.disconnect()
@@ -235,6 +232,7 @@ xdescribe('MPS Server', function () {
       testciraState: 'GLOBAL_REQUEST_SUCCESS' // USERAUTH_SERVICE_ACCEPT, PFWD_SERVICE_ACCEPT, GLOBAL_REQUEST_SUCCESS, USERAUTH_SUCCESS, USERAUTH_FAILURE, PROTOCOL_VERSION_SENT, KEEPALIVE_REPLY
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     obj.ciraclient = require('./helper/ciraclient.js').CreateCiraClient(obj, args)
     obj.ciraclient.connect(function () {
       obj.ciraclient.disconnect()
@@ -257,6 +255,7 @@ xdescribe('MPS Server', function () {
       testciraState: 'PROTOCOL_VERSION_SENT' // USERAUTH_SERVICE_ACCEPT, PFWD_SERVICE_ACCEPT, GLOBAL_REQUEST_SUCCESS, USERAUTH_SUCCESS, USERAUTH_FAILURE, PROTOCOL_VERSION_SENT, KEEPALIVE_REPLY
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     obj.ciraclient = require('./helper/ciraclient.js').CreateCiraClient(obj, args)
     obj.ciraclient.connect(function () {
       obj.ciraclient.disconnect()
@@ -279,6 +278,7 @@ xdescribe('MPS Server', function () {
       testciraState: 'KEEPALIVE_REPLY' // USERAUTH_SERVICE_ACCEPT, PFWD_SERVICE_ACCEPT, GLOBAL_REQUEST_SUCCESS, USERAUTH_SUCCESS, USERAUTH_FAILURE, PROTOCOL_VERSION_SENT, KEEPALIVE_REPLY
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     obj.ciraclient = require('./helper/ciraclient.js').CreateCiraClient(obj, args)
     obj.ciraclient.connect(function () {
       obj.ciraclient.disconnect()
@@ -301,6 +301,7 @@ xdescribe('MPS Server', function () {
       testciraState: 'USERAUTH_FAILURE' // USERAUTH_SERVICE_ACCEPT, PFWD_SERVICE_ACCEPT, GLOBAL_REQUEST_SUCCESS, USERAUTH_SUCCESS, USERAUTH_FAILURE, PROTOCOL_VERSION_SENT, KEEPALIVE_REPLY
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     obj.ciraclient = require('./helper/ciraclient.js').CreateCiraClient(obj, args)
     obj.ciraclient.connect(function () {
       obj.ciraclient.disconnect()

@@ -3,25 +3,26 @@
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
 
-import { WSManErrors, WSManMessageCreator } from './wsman'
-import { CIM_Actions, CIM_Methods } from './enums/cim_enums'
+import { WSManErrors, WSManMessageCreator } from './WSMan'
 import { IPS_Actions, IPS_Classes, IPS_Methods } from './enums/ips_enums'
+import { Actions } from './cim/actions'
+import { Methods } from './cim/methods'
 
-type Actions = CIM_Actions | IPS_Actions
+type AllActions = Actions | IPS_Actions
 
 export class IPS {
   wsmanMessageCreator: WSManMessageCreator = new WSManMessageCreator()
   readonly resourceUriBase: string = 'http://intel.com/wbem/wscim/1/ips-schema/1/'
-  private readonly get = (action: Actions, ipsClass: IPS_Classes, messageId: string): string => {
+  private readonly get = (action: AllActions, ipsClass: IPS_Classes, messageId: string): string => {
     const header: string = this.wsmanMessageCreator.createHeader(action, `${this.resourceUriBase}${ipsClass}`, messageId)
-    const body: string = this.wsmanMessageCreator.createBody(CIM_Methods.GET)
+    const body: string = this.wsmanMessageCreator.createBody(Methods.GET)
     return this.wsmanMessageCreator.createXml(header, body)
   }
 
-  ips_OptInService = (method: CIM_Methods.GET, messageId: string): string => {
+  ips_OptInService = (method: Methods.GET, messageId: string): string => {
     switch (method) {
-      case CIM_Methods.GET:
-        return this.get(CIM_Actions.GET, IPS_Classes.IPS_OPT_IN_SERVICE, messageId)
+      case Methods.GET:
+        return this.get(Actions.GET, IPS_Classes.IPS_OPT_IN_SERVICE, messageId)
       default:
         throw new Error(WSManErrors.UNSUPPORTED_METHOD)
     }
