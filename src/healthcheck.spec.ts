@@ -1,6 +1,6 @@
-import { getHealthCheck } from '../../routes/health/get'
-import { Environment } from '../../utils/Environment'
-import { createSpyObj } from '../helper/jest'
+import { getHealthCheck } from './routes/health/get'
+import { Environment } from './utils/Environment'
+import { createSpyObj } from './test/helper/jest'
 
 describe('Healthcheck', () => {
   let resSpy

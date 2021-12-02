@@ -1,5 +1,5 @@
 import { QueryResult } from 'pg'
-import PostgresDb, { POSTGRES_RESPONSE_CODES } from '../data/postgres'
+import PostgresDb, { POSTGRES_RESPONSE_CODES } from '.'
 
 const db: PostgresDb = new PostgresDb('postgresql://postgresadmin:admin123@localhost:5432/mpsdb?sslmode=no-verify')
 describe('Postgres', () => {

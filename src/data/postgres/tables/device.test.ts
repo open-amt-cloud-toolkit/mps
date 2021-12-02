@@ -1,7 +1,7 @@
-import { DeviceTable } from '../data/postgres/tables/device'
-import { Device } from '../models/models'
-import PostgresDb from '../data/postgres'
-import { MPSValidationError } from '../utils/MPSValidationError'
+import { DeviceTable } from './device'
+import { Device } from '../../../models/models'
+import PostgresDb from '..'
+import { MPSValidationError } from '../../../utils/MPSValidationError'
 
 const db: PostgresDb = new PostgresDb('postgresql://postgresadmin:admin123@localhost:5432/mpsdb?sslmode=no-verify')
 const deviceTable: DeviceTable = new DeviceTable(db)
