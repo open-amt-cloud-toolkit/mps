@@ -10,12 +10,12 @@ import * as https from 'https'
 import * as forge from 'node-forge'
 import { Certificates } from '../utils/certificates'
 import { certificatesType } from '../models/Config'
-import { MPSServer } from '../server/mpsserver'
+import { MPSServer } from './mpsserver'
 import { ISecretManagerService } from '../interfaces/ISecretManagerService'
 import { Device } from '../models/models'
 import { IDeviceTable } from '../interfaces/IDeviceTable'
 import { IDB } from '../interfaces/IDb'
-import { config } from './helper/config'
+import { config } from '../test/helper/config'
 
 const pki = forge.pki
 let certs: certificatesType

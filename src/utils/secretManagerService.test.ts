@@ -1,8 +1,8 @@
-import { SecretManagerService } from '../utils/SecretManagerService'
-import { logger as log } from '../utils/logger'
-import { config } from './helper/config'
+import { SecretManagerService } from './SecretManagerService'
+import { logger as log } from './logger'
+import { config } from '../test/helper/config'
 import NodeVault from 'node-vault'
-import { Environment } from '../utils/Environment'
+import { Environment } from './Environment'
 
 let secretManagerService: SecretManagerService = null
 Environment.Config = config
