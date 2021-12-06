@@ -15,5 +15,6 @@ module.exports = {
     '**/*.test.ts',
     '**/*.spec.ts'
   ],
+  reporters: ["default", "jest-junit"],
   testEnvironment: 'node'
 }
