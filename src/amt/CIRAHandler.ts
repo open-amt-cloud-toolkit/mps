@@ -119,7 +119,7 @@ export class CIRAHandler {
             // if (item.name === 'Content-Length' && message.bodySize === parseInt(item.value)) {
             reject(new Error('Unauthorized')) // could be better
           }
-        } else if (this.rawChunkedData.includes('</a:Envelope>')) {
+        } else if (this.rawChunkedData.includes('0\r\n\r\n')) {
           const response = this.parseBody(this.rawChunkedData)
           resolve(response)
         }
