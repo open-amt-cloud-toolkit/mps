@@ -3,7 +3,7 @@
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
 
-import { CIM_ManagedElement, CIM_SettingData, CIM_EthernetPort, CIM_BootSettingData } from './cim_models'
+import { CIM_ManagedElement, CIM_SettingData, CIM_EthernetPort, CIM_BootSettingData, CIM_CredentialManagementService } from './cim_models'
 
 export interface amtAuthenticateObject {
   nonce?: number[]
@@ -136,4 +136,21 @@ export interface AMT_BootSettingData extends CIM_BootSettingData<AMT_BootSetting
   biosLastStatus?: number[]
   uefiBootParametersArray?: number[]
   uefiBootNumberOfParams?: number[]
+}
+
+export interface AMT_SetupAndConfigurationService extends CIM_CredentialManagementService {
+  AMT_SetupAndConfigurationService: {
+    CreationClassName: string
+    ElementName: string
+    EnabledState: string
+    Name: string
+    PasswordModel: string
+    ProvisioningMode: string
+    ProvisioningServerOTP: string
+    ProvisioningState: string
+    RequestedState: string
+    SystemCreationClassName: string
+    SystemName: string
+    ZeroTouchConfigurationEnabled: string
+  }
 }

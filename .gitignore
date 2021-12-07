@@ -10,6 +10,7 @@ src/test/private/*.key
 # build output folder
 dist/
 
+junit.xml
 
 # Logs
 logs

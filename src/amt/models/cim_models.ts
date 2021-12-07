@@ -1,7 +1,7 @@
 /*********************************************************************
-* Copyright (c) Intel Corporation 2021
-* SPDX-License-Identifier: Apache-2.0
-**********************************************************************/
+ * Copyright (c) Intel Corporation 2021
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
 
 export interface CIM_ManagedElement<T> {
   caption?: string
@@ -69,8 +69,7 @@ export interface CIM_PhysicalMemory extends CIM_Chip<CIM_PhysicalMemory> {
 export interface CIM_PhysicalPackage<T> extends CIM_PhysicalElement<T> {
   packageType?: number
 }
-export interface CIM_Card extends CIM_PhysicalPackage<CIM_Card> {
-}
+export interface CIM_Card extends CIM_PhysicalPackage<CIM_Card> {}
 export interface CIM_PhysicalFrame<T> extends CIM_PhysicalPackage<T> {
   vendorCompatibilityStrings?: string[]
   otherPackageType?: string
@@ -95,8 +94,7 @@ export interface CIM_PhysicalFrame<T> extends CIM_PhysicalPackage<T> {
 export interface CIM_Chassis extends CIM_PhysicalFrame<CIM_Chassis> {
   chassisPackageType?: number
 }
-export interface CIM_LogicalElement<T> extends CIM_ManagedSystemElement<T> {
-}
+export interface CIM_LogicalElement<T> extends CIM_ManagedSystemElement<T> {}
 export interface CIM_SoftwareElement<T> extends CIM_LogicalElement<T> {
   version?: string
   softwareElementState?: number
@@ -120,7 +118,10 @@ export interface CIM_EnabledLogicalElement<T> extends CIM_LogicalElement<T> {
   requestedState?: number
   enabledDefault?: number
   timeOfLastStateChange?: Date
-  requestStateChange?: (requestedState: number, timeoutPeriod?: Date) => CIM_ConcreteJob
+  requestStateChange?: (
+    requestedState: number,
+    timeoutPeriod?: Date
+  ) => CIM_ConcreteJob
 }
 export interface CIM_Job<T> extends CIM_LogicalElement<T> {
   instanceId?: string
@@ -188,7 +189,8 @@ export interface CIM_Processor extends CIM_LogicalDevice<CIM_Processor> {
   cpuStatus?: number
   externalBusClockSpeed?: number
 }
-export interface CIM_MediaAccessDevice extends CIM_LogicalDevice<CIM_MediaAccessDevice> {
+export interface CIM_MediaAccessDevice
+  extends CIM_LogicalDevice<CIM_MediaAccessDevice> {
   capabilities?: number[]
   maxMediaSize?: number
   security?: number
@@ -204,8 +206,7 @@ export interface CIM_Service<T> extends CIM_EnabledLogicalElement<T> {
   startService?: () => number
   stopService?: () => number
 }
-export interface CIM_SecurityService<T> extends CIM_Service<T> {
-}
+export interface CIM_SecurityService<T> extends CIM_Service<T> {}
 export interface CIM_SettingData<T> extends CIM_ManagedElement<T> {
   instanceId?: string
 }
@@ -220,9 +221,9 @@ export interface CIM_Dependency<T> {
   subscribe?: () => T
   unsubscribe?: () => T
 }
-export interface CIM_SystemPackaging<T> extends CIM_Dependency<T> {
-}
-export interface CIM_ComputerSystemPackage extends CIM_SystemPackaging<CIM_ComputerSystemPackage> {
+export interface CIM_SystemPackaging<T> extends CIM_Dependency<T> {}
+export interface CIM_ComputerSystemPackage
+  extends CIM_SystemPackaging<CIM_ComputerSystemPackage> {
   platformGuid?: string
 }
 
@@ -260,4 +261,51 @@ export interface CIM_Role extends CIM_Collection<CIM_Role> {
   name?: string
   commonName?: string
   roleCharacteristics?: number[]
+}
+
+export interface CIM_AuthenticationService extends CIM_SecurityService<CIM_AuthenticationService> {
+}
+export interface CIM_CredentialManagementService extends CIM_AuthenticationService {
+  // InstanceID is an optional property that may be used to opaquely and uniquely identify an instance of this class within the scope of the instantiating Namespace . . .
+  InstanceID: string
+}
+
+export interface CIM_ServiceAvailableToElement {
+  ServiceProvided: {
+    Address: string
+    ReferenceParameters: {
+      ResourceURI: string
+      SelectorSet: {
+        Selector: string[]
+      }
+    }
+  }
+  UserOfService: {
+    Address: string
+    ReferenceParameters: {
+      ResourceURI: string
+      SelectorSet: {
+        Selector: string[]
+      }
+    }
+  }
+}
+
+export interface CIM_AssociatedPowerManagementService
+  extends CIM_ServiceAvailableToElement {
+  CIM_AssociatedPowerManagementService: {
+    AvailableRequestedPowerStates: string[]
+    PowerState: string
+  } & CIM_ServiceAvailableToElement
+}
+
+export interface CIM_SoftwareIdentity
+  extends CIM_LogicalElement<CIM_SoftwareIdentity> {
+  CIM_SoftwareIdentity: Array<
+  {
+    InstanceID: string
+    VersionString: string
+    IsEntity: boolean
+  } & CIM_LogicalElement<CIM_SoftwareIdentity>
+  >
 }
