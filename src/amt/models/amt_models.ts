@@ -106,7 +106,70 @@ export interface AMT_SystemDefencePolicy extends CIM_ManagedElement<AMT_SystemDe
   setTimeout?: (number) => number
   updateStatistics?: (networkInterface: CIM_EthernetPort, resetOnRead: boolean) => number
 }
-
+export interface AMT_BootCapabilities extends CIM_ManagedElement<AMT_BootCapabilities>{
+  AMT_BootCapabilities: {
+  // The user friendly name for this instance of Capabilities . . .
+    ElementName: string
+    // Within the scope of the instantiating Namespace, InstanceID opaquely and uniquely identifies an instance of this class . . .
+    InstanceID: string
+    // Indicates whether Intel(R) AMT device supports 'IDE Redirection'
+    IDER: boolean
+    // Indicates whether Intel(R) AMT device supports 'Serial Over Lan'
+    SOL: boolean
+    // Indicates whether Intel(R) AMT device supports 'BIOS Reflash'
+    BIOSReflash: boolean
+    // Indicates whether Intel(R) AMT device supports 'BIOS Setup'
+    BIOSSetup: boolean
+    // Indicates whether Intel(R) AMT device supports 'BIOS Pause'
+    BIOSPause: boolean
+    // Indicates whether Intel(R) AMT device supports 'Force PXE Boot'
+    ForcePXEBoot: boolean
+    // Indicates whether Intel(R) AMT device supports 'Force Hard Drive Boot'
+    ForceHardDriveBoot: boolean
+    // Indicates whether Intel(R) AMT device supports 'Force Hard Drive Safe Mode Boot'
+    ForceHardDriveSafeModeBoot: boolean
+    // Indicates whether Intel(R) AMT device supports 'Force Diagnostic Boot'
+    ForceDiagnosticBoot: boolean
+    // Indicates whether Intel(R) AMT device supports 'Force CD or DVD Boot'
+    ForceCDorDVDBoot: boolean
+    // Indicates whether Intel(R) AMT device supports 'Verbosity Screen Blank'
+    VerbosityScreenBlank: boolean
+    // Indicates whether Intel(R) AMT device supports 'Power Button Lock'
+    PowerButtonLock: boolean
+    // Indicates whether Intel(R) AMT device supports 'Reset Button Lock'
+    ResetButtonLock: boolean
+    // Indicates whether Intel(R) AMT device supports 'Keyboard Lock'
+    KeyboardLock: boolean
+    // Indicates whether Intel(R) AMT device supports 'Sleep Button Lock'
+    SleepButtonLock: boolean
+    // Indicates whether Intel(R) AMT device supports 'User Password Bypass'
+    UserPasswordBypass: boolean
+    // Indicates whether Intel(R) AMT device supports 'Forced Progress Events'
+    ForcedProgressEvents: boolean
+    // Indicates whether Intel(R) AMT device supports 'Verbosity/Verbose'
+    VerbosityVerbose: boolean
+    // Indicates whether Intel(R) AMT device supports 'Verbosity/Quiet'
+    VerbosityQuiet: boolean
+    // Indicates whether Intel(R) AMT device supports 'Configuration Data Reset'
+    ConfigurationDataReset: boolean
+    // Indicates whether Intel(R) AMT device supports 'BIOS Secure Boot'
+    BIOSSecureBoot: boolean
+    // Indicates whether Intel(R) AMT device supports 'Secure Erase'
+    SecureErase: boolean
+    // Supports Intel AMT invoking boot to WinRE
+    ForceWinREBoot: boolean
+    // Supports booting to an ISV’s PBA
+    ForceUEFILocalPBABoot: boolean
+    // Supports Intel AMT invoking HTTPS boot
+    ForceUEFIHTTPSBoot: boolean
+    // Determines whether Intel AMT is privileged by BIOS to disable secure boot for an AMT triggered boot option. If true, the BIOS allows Intel AMT to control the secure boot (i.e., to disable secure boot in recovery from HTTPS under certain conditions).
+    AMTSecureBootControl: boolean
+    // Read-only field, determines whether UEFI BIOS and Intel AMT WiFi profile share is supported.
+    UEFIWiFiCoExistenceAndProfileShare: boolean
+    // Indicates whether the Intel AMT device supports Remote Secure Platform Erase (i.e., whether the OEM's BIOS includes support for the feature), and shows the devices that can be erased.
+    PlatformErase: number
+  }
+}
 export interface AMT_BootSettingData extends CIM_BootSettingData<AMT_BootSettingData> {
   useSOL?: boolean
   useSafeMode?: boolean
