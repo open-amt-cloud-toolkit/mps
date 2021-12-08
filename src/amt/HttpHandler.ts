@@ -31,45 +31,48 @@ export class HttpHandler {
   }
 
   wrapIt (connectionParams: connectionParams, data: string): string {
-    const url = '/wsman'
-    const action = 'POST'
-    let message = `${action} ${url} HTTP/1.1\r\n`
-    if (connectionParams.digestChallenge != null) {
-      // Prepare an Authorization request header from the 401 unauthorized response from AMT
-      let responseDigest = null
-      // console nonce should be a unique opaque quoted string
-      connectionParams.consoleNonce = Math.random().toString(36).substring(7)
-      try {
+    try {
+      const url = '/wsman'
+      const action = 'POST'
+      let message = `${action} ${url} HTTP/1.1\r\n`
+      if (data == null) {
+        return null
+      }
+      if (connectionParams.digestChallenge != null) {
+        // Prepare an Authorization request header from the 401 unauthorized response from AMT
+        let responseDigest = null
+        // console nonce should be a unique opaque quoted string
+        connectionParams.consoleNonce = Math.random().toString(36).substring(7)
         const HA1 = this.hashIt(`${connectionParams.username}:${connectionParams.digestChallenge.realm}:${connectionParams.password}`)
         const HA2 = this.hashIt(`${action}:${url}`)
         responseDigest = this.hashIt(`${HA1}:${connectionParams.digestChallenge.nonce}:${this.nonceCounter}:${connectionParams.consoleNonce}:${connectionParams.digestChallenge.qop}:${HA2}`)
-      } catch (err) {
-        logger.error('httpHandler unable to create hashed string: ', err.message)
-        return null
+        const authorizationRequestHeader = this.digestIt({
+          username: connectionParams.username,
+          realm: connectionParams.digestChallenge.realm,
+          nonce: connectionParams.digestChallenge.nonce,
+          uri: url,
+          qop: connectionParams.digestChallenge.qop,
+          response: responseDigest,
+          nc: this.nonceCounter++,
+          cnonce: connectionParams.consoleNonce
+        })
+        message += `Authorization: ${authorizationRequestHeader}\r\n`
       }
-      const authorizationRequestHeader = this.digestIt({
-        username: connectionParams.username,
-        realm: connectionParams.digestChallenge.realm,
-        nonce: connectionParams.digestChallenge.nonce,
-        uri: url,
-        qop: connectionParams.digestChallenge.qop,
-        response: responseDigest,
-        nc: this.nonceCounter++,
-        cnonce: connectionParams.consoleNonce
-      })
-      message += `Authorization: ${authorizationRequestHeader}\r\n`
+      // Use Chunked-Encoding
+      message += Buffer.from([
+        `Host: ${connectionParams.guid}:${connectionParams.port}`,
+        'Transfer-Encoding: chunked',
+        '',
+        data.length.toString(16).toUpperCase(),
+        data,
+        0,
+        '\r\n'
+      ].join('\r\n'), 'utf8')
+      return message
+    } catch (err) {
+      logger.error('httpHandler unable to create hashed string: ', err.message)
+      return null
     }
-    // Use Chunked-Encoding
-    message += Buffer.from([
-      `Host: ${connectionParams.guid}:${connectionParams.port}`,
-      'Transfer-Encoding: chunked',
-      '',
-      data.length.toString(16).toUpperCase(),
-      data,
-      0,
-      '\r\n'
-    ].join('\r\n'), 'utf8')
-    return message
   }
 
   hashIt (data: string): string {
@@ -98,8 +101,12 @@ export class HttpHandler {
   parseXML (xmlBody: string): any {
     let wsmanResponse: string
     this.parser.parseString(xmlBody, (err, result) => {
-      if (err) return null
-      wsmanResponse = result
+      if (err) {
+        logger.error('failed to parse XML :', err)
+        wsmanResponse = null
+      } else {
+        wsmanResponse = result
+      }
     })
     return wsmanResponse
   }

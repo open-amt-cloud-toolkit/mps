@@ -8,26 +8,18 @@ import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
+import { devices } from '../../server/mpsserver'
 
 export async function powerCapabilities (req: Request, res: Response): Promise<void> {
   try {
     const guid: string = req.params.guid
 
     MqttProvider.publishEvent('request', ['AMT_BootCapabilities'], 'Power Capabilities Requested', guid)
-
-    getVersion(req, res, (responses, res) => {
-      const versionData = responses
-      req.amtStack.Get('AMT_BootCapabilities', async (stack, name, responses, status) => {
-        if (status !== 200) {
-          log.error(`Request failed during GET AMT_BootCapabilities for guid : ${guid}`)
-          return res.status(status).json(ErrorResponse(status, `Request failed during GET AMT_BootCapabilities for guid : ${guid}`)).end()
-        }
-        // console.log("AMT_BootCapabilities info of " + uuid + " sent.");
-        const powerCap = await bootCapabilities(versionData, responses.Body)
-        MqttProvider.publishEvent('success', ['AMT_BootCapabilities'], 'Sent Power Capabilities', guid)
-        return res.status(200).json(powerCap).end()
-      }, 0, 1)
-    })
+    const version = await devices[guid].getVersion()
+    const powerCapabilities = await devices[guid].getPowerCapabilities()
+    const bootCaps = bootCapabilities(version, powerCapabilities.Envelope.Body.AMT_BootCapabilities)
+    MqttProvider.publishEvent('success', ['AMT_BootCapabilities'], 'Sent Power Capabilities', guid)
+    return res.status(200).json(bootCaps).end()
   } catch (error) {
     log.error(`Exception in AMT PowerCapabilities : ${error}`)
     MqttProvider.publishEvent('fail', ['AMT_BootCapabilities'], 'Internal Server Error')
@@ -67,31 +59,10 @@ function bootCapabilities (amtVersionData, response): any {
 
 // Parse Version Data
 function parseVersionData (amtVersionData): number {
-  const verList = amtVersionData.CIM_SoftwareIdentity.responses
+  const verList = amtVersionData.CIM_SoftwareIdentity
   for (const i in verList) {
     if (verList[i].InstanceID === 'AMT') {
       return parseInt(verList[i].VersionString.split('.')[0])
     }
-  }
-}
-
-// Returns AMT version data
-function getVersion (req: Request, res: Response, func): void {
-  try {
-    req.amtStack.BatchEnum('', ['CIM_SoftwareIdentity', '*AMT_SetupAndConfigurationService'],
-      (stack, name, responses, status) => {
-        stack.wsman.comm.socket.sendchannelclose()
-        if (status !== 200) {
-          res.status(status).json(ErrorResponse(status, 'Request failed during AMTVersion BatchEnum Exec.')).end()
-          return
-        }
-        if (!func) {
-          res.status(200).json(responses).end()
-        } else {
-          func(responses, res)
-        }
-      })
-  } catch (ex) {
-    res.status(500).json(ErrorResponse(500, 'Request failed during AMTVersion BatchEnum Exec.')).end()
   }
 }

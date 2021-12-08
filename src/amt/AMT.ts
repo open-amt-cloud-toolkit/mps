@@ -86,6 +86,10 @@ export class AMT {
     }
   }
 
+  amt_BootCapabilities = (method: Methods.GET, messageId: string): string => {
+    return this.amtSwitch({ method: method, messageId: messageId, class: AMT_Classes.AMT_BOOT_CAPABILITIES })
+  }
+
   amt_RedirectionService = (method: Methods.GET, messageId: string): string => {
     return this.amtSwitch({ method: method, messageId: messageId, class: AMT_Classes.AMT_REDIRECTION_SERVICE })
   }

@@ -1,7 +1,7 @@
 /*********************************************************************
-* Copyright (c) Intel Corporation 2021
-* SPDX-License-Identifier: Apache-2.0
-**********************************************************************/
+ * Copyright (c) Intel Corporation 2021
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
 
 export interface CIM_ManagedElement<T> {
   Caption?: string
@@ -299,4 +299,51 @@ export interface CIM_Role extends CIM_Collection<CIM_Role> {
   Name?: string
   CommonName?: string
   RoleCharacteristics?: number[]
+}
+
+export interface CIM_AuthenticationService extends CIM_SecurityService<CIM_AuthenticationService> {
+}
+export interface CIM_CredentialManagementService extends CIM_AuthenticationService {
+  // InstanceID is an optional property that may be used to opaquely and uniquely identify an instance of this class within the scope of the instantiating Namespace . . .
+  InstanceID: string
+}
+
+export interface CIM_ServiceAvailableToElement {
+  ServiceProvided: {
+    Address: string
+    ReferenceParameters: {
+      ResourceURI: string
+      SelectorSet: {
+        Selector: string[]
+      }
+    }
+  }
+  UserOfService: {
+    Address: string
+    ReferenceParameters: {
+      ResourceURI: string
+      SelectorSet: {
+        Selector: string[]
+      }
+    }
+  }
+}
+
+export interface CIM_AssociatedPowerManagementService
+  extends CIM_ServiceAvailableToElement {
+  CIM_AssociatedPowerManagementService: {
+    AvailableRequestedPowerStates: string[]
+    PowerState: string
+  } & CIM_ServiceAvailableToElement
+}
+
+export interface CIM_SoftwareIdentity
+  extends CIM_LogicalElement<CIM_SoftwareIdentity> {
+  CIM_SoftwareIdentity: Array<
+  {
+    InstanceID: string
+    VersionString: string
+    IsEntity: boolean
+  } & CIM_LogicalElement<CIM_SoftwareIdentity>
+  >
 }
