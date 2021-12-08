@@ -17,58 +17,58 @@ describe('AMT Tests', () => {
   const enumerationContext = 'AC070000-0000-0000-0000-000000000000'
   const operationTimeout = 'PT60S'
   const ethernetPortObject: AMT_EthernetPortSettings = {
-    instanceId: 'Intel(r) AMT Ethernet Port Settings 0',
-    elementName: 'Intel(r) AMT Ethernet Port Settings',
-    sharedMAC: true,
-    macAddress: 'a4-ae-11-1c-02-4d',
-    linkIsUp: true,
-    linkPolicy: [1, 14, 16],
-    sharedStaticIp: false,
-    sharedDynamicIp: true,
-    ipSyncEnabled: true,
-    dhcpEnabled: true,
-    physicalConnectionType: 0
+    InstanceId: 'Intel(r) AMT Ethernet Port Settings 0',
+    ElementName: 'Intel(r) AMT Ethernet Port Settings',
+    SharedMAC: true,
+    MACAddress: 'a4-ae-11-1c-02-4d',
+    LinkIsUp: true,
+    LinkPolicy: [1, 14, 16],
+    SharedStaticIp: false,
+    SharedDynamicIp: true,
+    IpSyncEnabled: true,
+    DHCPEnabled: true,
+    PhysicalConnectionType: 0
   }
   const mpsServer: MPServer = {
-    accessInfo: '192.168.0.38',
-    infoFormat: 3,
-    port: 4433,
-    authMethod: 2,
-    username: 'admin',
-    password: 'eD9J*56Bn7ieEsVR',
-    commonName: '192.168.0.38'
+    AccessInfo: '192.168.0.38',
+    InfoFormat: 3,
+    Port: 4433,
+    AuthMethod: 2,
+    Username: 'admin',
+    Password: 'eD9J*56Bn7ieEsVR',
+    CommonName: '192.168.0.38'
   }
   const remoteAccessPolicyRule: RemoteAccessPolicyRule = {
-    trigger: 2,
-    tunnelLifeTime: 0,
-    extendedData: 'AAAAAAAAABk='
+    Trigger: 2,
+    TunnelLifeTime: 0,
+    ExtendedData: 'AAAAAAAAABk='
   }
   const bootSettingData: AMT_BootSettingData = {
-    biosLastStatus: [2, 0],
-    biosPause: false,
-    biosSetup: false,
-    bootMediaIndex: 0,
-    configurationDataReset: false,
-    elementName: 'Intel(r) AMT Boot Configuration Settings',
-    enforceSecureBoot: false,
-    firmwareVerbosity: 0,
-    forcedProgressEvents: false,
-    iderBootDevice: 0,
-    instanceId: 'Intel(r) AMT:BootSettingData 0',
-    lockKeyboard: false,
-    lockPowerButton: false,
-    lockResetButton: false,
-    lockSleepButton: false,
-    optionsCleared: true,
-    owningEntity: 'Intel(r) AMT',
-    reflashBIOS: false,
-    secureErase: false,
-    useIDER: false,
-    useSOL: false,
-    useSafeMode: false,
-    userPasswordBypass: false,
-    uefiBootNumberOfParams: [1],
-    uefiBootParametersArray: [1]
+    BiosLastStatus: [2, 0],
+    BiosPause: false,
+    BiosSetup: false,
+    BootMediaIndex: 0,
+    ConfigurationDataReset: false,
+    ElementName: 'Intel(r) AMT Boot Configuration Settings',
+    EnforceSecureBoot: false,
+    FirmwareVerbosity: 0,
+    ForcedProgressEvents: false,
+    IDERBootDevice: 0,
+    InstanceId: 'Intel(r) AMT:BootSettingData 0',
+    LockKeyboard: false,
+    LockPowerButton: false,
+    LockResetButton: false,
+    LockSleepButton: false,
+    OptionsCleared: true,
+    OwningEntity: 'Intel(r) AMT',
+    ReflashBIOS: false,
+    SecureErase: false,
+    UseIDER: false,
+    UseSOL: false,
+    UseSafeMode: false,
+    UserPasswordBypass: false,
+    UEFIBootNumberOfParams: [1],
+    UEFIBootParametersArray: [1]
   }
   const trustedRootCert = 'MIIEOzCCAqOgAwIBAgIDAZiFMA0GCSqGSIb3DQEBDAUAMD0xFzAVBgNVBAMTDk1QU1Jvb3QtNjE0ZDg4MRAwDgYDVQQKEwd1bmtub3duMRAwDgYDVQQGEwd1bmtub3duMCAXDTIwMDgyNTE4MzMzN1oYDzIwNTEwODI1MTgzMzM3WjA9MRcwFQYDVQQDEw5NUFNSb290LTYxNGQ4ODEQMA4GA1UEChMHdW5rbm93bjEQMA4GA1UEBhMHdW5rbm93bjCCAaIwDQYJKoZIhvcNAQEBBQADggGPADCCAYoCggGBAOi1jx9L8DG6gBPxd9gmJ6vqQC/F/TBMTJvb3ZAuRbDxUKnxZk3PafyNM6fO8QTL4qZVhvyGEZaIzVePrdJj31aZ93mNY2TJee3/DLRsJUIZHGFufBvi8pgQL+JjE9JmFD5/S2yciHIEVpKmXo1CbGmZGsnb8NRjaQVwB94pI1mg8JFMxyKzU/cUoCBfI+wmeMgBVdOJPNpH2zjC/GxwEFNQaxGe9GHmYbwoeiDeMPo75E/o+Gw6kJm429cuhJBC3KqHevAJj9V2nSUvoO0oxKqzLVkUYcjHEGYjxIvP6a6uo7x9llwfshJsBZ3PE5hucNdWS3dY3GeCqOwcaAQQIj2jULpZ/KlgVAdBK/o5QjE+IIQXCVK9USvktGzz7I5oH98zy8jCFStbGM7PQCo+DEnHn/SANmVbcy3hjzrXC8zf5dvmKiUb2eKnpv+z3FHsi64sVwFqBArB2ipcTM/qv4nEM6uLW1t+7+NB0OyaBmLktJrpb6af7z/EW1QuPIfTcQIDAQABo0IwQDAMBgNVHRMEBTADAQH/MBEGCWCGSAGG+EIBAQQEAwIABzAdBgNVHQ4EFgQUYU2IeTFqWXI1rG+JqZq8eVDO/LMwDQYJKoZIhvcNAQEMBQADggGBANoKIsFOn8/Lrb98DjOP+LUeopoU9KQ70ndreNqchrkPmM61V9IdD9OZiLr/7OY/rLGZwNvkhQYRPUa842Mqjfpr4YcV6HC0j6Zg0lcpxQ5eGGBkLb/teBcboi3sZcJvbCFUW2DJjhy7uqYxzE4eqSsKx5fEjp/wa6oNzNrgWRXyxQlaOo42RjXnOXS7sB0jPrgO0FClL1Xzif06kFHzzyJCVUqzNEJv0ynLgkpzCVdUUfoMM1RcKc3xJes5C0zg64ugj2R9e4VwJfn9W3+rlYS1So1q1jL8w+3qOM7lXyvr8Bdgc5BMvrOvHxzdOnpZmUEJkbKty62e8fYKN+WP7BrpxnzFQSzczX5S0uN4rn0rLO4wxVf2rtnTqIhKKYTsPMRBVEjpbRT1smzPPdINKu5l/Rz/zZS0b5I4yKJrkTYNgoPC/QSq8A9uXZxxQvj6x1bWZJVWywmaqYolEp8NaVHd+JYnlTmr4XpMHm01TPi1laowtY3ZepnKm8I55Ly0JA=='
   describe('AMT private function Tests', () => {
@@ -183,12 +183,12 @@ describe('AMT Tests', () => {
     })
     it('should create a valid amt_EnvironmentDetectionSettingData Put wsman message', () => {
       const environmentDetectionSettingData: AMT_EnvironmentDetectionSettingData = {
-        instanceId: 'Intel(r) AMT Environment Detection Settings',
-        detectionAlgorithm: 0,
-        elementName: 'Intel(r) AMT Environment Detection Settings',
-        detectionStrings: ['dummy.com']
+        InstanceId: 'Intel(r) AMT Environment Detection Settings',
+        DetectionAlgorithm: 0,
+        ElementName: 'Intel(r) AMT Environment Detection Settings',
+        DetectionStrings: ['dummy.com']
       }
-      const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/transfer/Put</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_EnvironmentDetectionSettingData</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout><w:SelectorSet><w:Selector Name="InstanceID">${environmentDetectionSettingData.instanceId}</w:Selector></w:SelectorSet></Header><Body><r:AMT_EnvironmentDetectionSettingData xmlns:r="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_EnvironmentDetectionSettingData"><r:DetectionAlgorithm>${environmentDetectionSettingData.detectionAlgorithm}</r:DetectionAlgorithm><r:ElementName>${environmentDetectionSettingData.elementName}</r:ElementName><r:InstanceID>${environmentDetectionSettingData.instanceId}</r:InstanceID><r:DetectionStrings>${environmentDetectionSettingData.detectionStrings}</r:DetectionStrings></r:AMT_EnvironmentDetectionSettingData></Body></Envelope>`
+      const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/transfer/Put</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_EnvironmentDetectionSettingData</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout><w:SelectorSet><w:Selector Name="InstanceID">${environmentDetectionSettingData.InstanceId}</w:Selector></w:SelectorSet></Header><Body><r:AMT_EnvironmentDetectionSettingData xmlns:r="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_EnvironmentDetectionSettingData"><r:DetectionAlgorithm>${environmentDetectionSettingData.DetectionAlgorithm}</r:DetectionAlgorithm><r:ElementName>${environmentDetectionSettingData.ElementName}</r:ElementName><r:InstanceID>${environmentDetectionSettingData.InstanceId}</r:InstanceID><r:DetectionStrings>${environmentDetectionSettingData.DetectionStrings}</r:DetectionStrings></r:AMT_EnvironmentDetectionSettingData></Body></Envelope>`
       const response = amtClass.amt_EnvironmentDetectionSettingData(Methods.PUT, messageId, environmentDetectionSettingData)
       expect(response).toEqual(correctResponse)
     })
@@ -214,13 +214,13 @@ describe('AMT Tests', () => {
   })
   describe('amt_RemoteAccessService Tests', () => {
     it('should return a valid amt_RemoteAccessService addMpsServer wsman message', () => {
-      const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RemoteAccessService/AddMpServer</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RemoteAccessService</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body><r:AddMpServer_INPUT xmlns:r="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RemoteAccessService"><r:AccessInfo>${mpsServer.accessInfo}</r:AccessInfo><r:InfoFormat>${mpsServer.infoFormat}</r:InfoFormat><r:Port>${mpsServer.port}</r:Port><r:AuthMethod>${mpsServer.authMethod}</r:AuthMethod><r:Username>${mpsServer.username}</r:Username><r:Password>${mpsServer.password}</r:Password><r:CN>${mpsServer.commonName}</r:CN></r:AddMpServer_INPUT></Body></Envelope>`
+      const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RemoteAccessService/AddMpServer</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RemoteAccessService</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body><r:AddMpServer_INPUT xmlns:r="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RemoteAccessService"><r:AccessInfo>${mpsServer.AccessInfo}</r:AccessInfo><r:InfoFormat>${mpsServer.InfoFormat}</r:InfoFormat><r:Port>${mpsServer.Port}</r:Port><r:AuthMethod>${mpsServer.AuthMethod}</r:AuthMethod><r:Username>${mpsServer.Username}</r:Username><r:Password>${mpsServer.Password}</r:Password><r:CN>${mpsServer.CommonName}</r:CN></r:AddMpServer_INPUT></Body></Envelope>`
       const response = amtClass.amt_RemoteAccessService(AMT_Methods.ADD_MPS, messageId, mpsServer)
       expect(response).toEqual(correctResponse)
     })
     it('should return a valid amt_RemoteAccessService AddRemoteAccessPolicyRule wsman message', () => {
       const selector: Selector = { name: 'Name', value: 'Intel(r) AMT:Management Presence Server 0' }
-      const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RemoteAccessService/AddRemoteAccessPolicyRule</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RemoteAccessService</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body><r:AddRemoteAccessPolicyRule_INPUT xmlns:r="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RemoteAccessService"><r:Trigger>${remoteAccessPolicyRule.trigger}</r:Trigger><r:TunnelLifeTime>${remoteAccessPolicyRule.tunnelLifeTime}</r:TunnelLifeTime><r:ExtendedData>${remoteAccessPolicyRule.extendedData}</r:ExtendedData><r:MpServer><Address xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing">http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</Address><ReferenceParameters xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing"><ResourceURI xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">http://intel.com/wbem/wscim/1/amt-schema/1/AMT_ManagementPresenceRemoteSAP</ResourceURI><SelectorSet xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"><Selector Name="${selector.name}">${selector.value}</Selector></SelectorSet></ReferenceParameters></r:MpServer></r:AddRemoteAccessPolicyRule_INPUT></Body></Envelope>`
+      const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RemoteAccessService/AddRemoteAccessPolicyRule</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RemoteAccessService</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body><r:AddRemoteAccessPolicyRule_INPUT xmlns:r="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RemoteAccessService"><r:Trigger>${remoteAccessPolicyRule.Trigger}</r:Trigger><r:TunnelLifeTime>${remoteAccessPolicyRule.TunnelLifeTime}</r:TunnelLifeTime><r:ExtendedData>${remoteAccessPolicyRule.ExtendedData}</r:ExtendedData><r:MpServer><Address xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing">http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</Address><ReferenceParameters xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing"><ResourceURI xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">http://intel.com/wbem/wscim/1/amt-schema/1/AMT_ManagementPresenceRemoteSAP</ResourceURI><SelectorSet xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"><Selector Name="${selector.name}">${selector.value}</Selector></SelectorSet></ReferenceParameters></r:MpServer></r:AddRemoteAccessPolicyRule_INPUT></Body></Envelope>`
       const response = amtClass.amt_RemoteAccessService(AMT_Methods.ADD_REMOTE_ACCESS_POLICY_RULE, messageId, null, remoteAccessPolicyRule, selector)
       expect(response).toEqual(correctResponse)
     })
@@ -256,7 +256,7 @@ describe('AMT Tests', () => {
       expect(response).toEqual(correctResponse)
     })
     it('should return a valid amt_BootSettingData Put wsman message', () => {
-      const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/transfer/Put</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_BootSettingData</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body><r:AMT_BootSettingData xmlns:r="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_BootSettingData"><r:BIOSLastStatus>${bootSettingData.biosLastStatus[0]}</r:BIOSLastStatus><r:BIOSLastStatus>${bootSettingData.biosLastStatus[1]}</r:BIOSLastStatus><r:UEFIBootNumberOfParams>${bootSettingData.uefiBootNumberOfParams[0]}</r:UEFIBootNumberOfParams><r:UEFIBootParametersArray>${bootSettingData.uefiBootParametersArray[0]}</r:UEFIBootParametersArray><r:BIOSPause>${bootSettingData.biosPause}</r:BIOSPause><r:BIOSSetup>${bootSettingData.biosSetup}</r:BIOSSetup><r:BootMediaIndex>${bootSettingData.bootMediaIndex}</r:BootMediaIndex><r:ConfigurationDataReset>${bootSettingData.configurationDataReset}</r:ConfigurationDataReset><r:ElementName>${bootSettingData.elementName}</r:ElementName><r:EnforceSecureBoot>${bootSettingData.enforceSecureBoot}</r:EnforceSecureBoot><r:FirmwareVerbosity>${bootSettingData.firmwareVerbosity}</r:FirmwareVerbosity><r:ForcedProgressEvents>${bootSettingData.forcedProgressEvents}</r:ForcedProgressEvents><r:IDERBootDevice>${bootSettingData.iderBootDevice}</r:IDERBootDevice><r:InstanceID>${bootSettingData.instanceId}</r:InstanceID><r:LockKeyboard>${bootSettingData.lockKeyboard}</r:LockKeyboard><r:LockPowerButton>${bootSettingData.lockPowerButton}</r:LockPowerButton><r:LockResetButton>${bootSettingData.lockResetButton}</r:LockResetButton><r:LockSleepButton>${bootSettingData.lockSleepButton}</r:LockSleepButton><r:OptionsCleared>${bootSettingData.optionsCleared}</r:OptionsCleared><r:OwningEntity>${bootSettingData.owningEntity}</r:OwningEntity><r:ReflashBIOS>${bootSettingData.reflashBIOS}</r:ReflashBIOS><r:SecureErase>${bootSettingData.secureErase}</r:SecureErase><r:UseIDER>${bootSettingData.useIDER}</r:UseIDER><r:UseSOL>${bootSettingData.useSOL}</r:UseSOL><r:UseSafeMode>${bootSettingData.useSafeMode}</r:UseSafeMode><r:UserPasswordBypass>${bootSettingData.userPasswordBypass}</r:UserPasswordBypass></r:AMT_BootSettingData></Body></Envelope>`
+      const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/transfer/Put</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_BootSettingData</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body><r:AMT_BootSettingData xmlns:r="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_BootSettingData"><r:BIOSLastStatus>${bootSettingData.BiosLastStatus[0]}</r:BIOSLastStatus><r:BIOSLastStatus>${bootSettingData.BiosLastStatus[1]}</r:BIOSLastStatus><r:UEFIBootNumberOfParams>${bootSettingData.UEFIBootNumberOfParams[0]}</r:UEFIBootNumberOfParams><r:UEFIBootParametersArray>${bootSettingData.UEFIBootParametersArray[0]}</r:UEFIBootParametersArray><r:BIOSPause>${bootSettingData.BiosPause}</r:BIOSPause><r:BIOSSetup>${bootSettingData.BiosSetup}</r:BIOSSetup><r:BootMediaIndex>${bootSettingData.BootMediaIndex}</r:BootMediaIndex><r:ConfigurationDataReset>${bootSettingData.ConfigurationDataReset}</r:ConfigurationDataReset><r:ElementName>${bootSettingData.ElementName}</r:ElementName><r:EnforceSecureBoot>${bootSettingData.EnforceSecureBoot}</r:EnforceSecureBoot><r:FirmwareVerbosity>${bootSettingData.FirmwareVerbosity}</r:FirmwareVerbosity><r:ForcedProgressEvents>${bootSettingData.ForcedProgressEvents}</r:ForcedProgressEvents><r:IDERBootDevice>${bootSettingData.IDERBootDevice}</r:IDERBootDevice><r:InstanceID>${bootSettingData.InstanceId}</r:InstanceID><r:LockKeyboard>${bootSettingData.LockKeyboard}</r:LockKeyboard><r:LockPowerButton>${bootSettingData.LockPowerButton}</r:LockPowerButton><r:LockResetButton>${bootSettingData.LockResetButton}</r:LockResetButton><r:LockSleepButton>${bootSettingData.LockSleepButton}</r:LockSleepButton><r:OptionsCleared>${bootSettingData.OptionsCleared}</r:OptionsCleared><r:OwningEntity>${bootSettingData.OwningEntity}</r:OwningEntity><r:ReflashBIOS>${bootSettingData.ReflashBIOS}</r:ReflashBIOS><r:SecureErase>${bootSettingData.SecureErase}</r:SecureErase><r:UseIDER>${bootSettingData.UseIDER}</r:UseIDER><r:UseSOL>${bootSettingData.UseSOL}</r:UseSOL><r:UseSafeMode>${bootSettingData.UseSafeMode}</r:UseSafeMode><r:UserPasswordBypass>${bootSettingData.UserPasswordBypass}</r:UserPasswordBypass></r:AMT_BootSettingData></Body></Envelope>`
       const response = amtClass.amt_BootSettingData(Methods.PUT, messageId, bootSettingData)
       expect(response).toEqual(correctResponse)
     })

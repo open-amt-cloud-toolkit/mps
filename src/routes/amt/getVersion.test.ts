@@ -1,4 +1,4 @@
-import { version } from './version'
+import { version } from './getVersion'
 import { createSpyObj } from '../../test/helper/jest'
 import { devices } from '../../server/mpsserver'
 import { ConnectedDevice } from '../../amt/ConnectedDevice'

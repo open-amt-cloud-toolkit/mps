@@ -1,4 +1,4 @@
-import { powerState } from './powerState'
+import { powerState } from './getPowerState'
 import { createSpyObj } from '../../test/helper/jest'
 import { devices } from '../../server/mpsserver'
 import { ConnectedDevice } from '../../amt/ConnectedDevice'
