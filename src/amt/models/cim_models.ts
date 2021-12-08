@@ -7,16 +7,24 @@ export interface CIM_ManagedElement<T> {
   Caption?: string
   Description?: string
   ElementName?: string
-  Create?: (instance: T) => T
-  Put?: (instance: T) => T
+  Create?: (
+    Instance: T
+  ) => T
+  Put?: (Instance: T) => T
   Get?: () => T
   Delete?: () => T
-  Pull?: (enumerationContext: string, maxElements: string) => T[]
+  Pull?: (
+    EnumerationContext: string,
+    MaxElements: string
+  ) => T[]
   Enumerate?: () => T
-  Release?: (enumerationContext: string) => T
+  Release?: (
+    EnumerationContext: string
+  ) => T
   Subscribe?: () => T
   Unsubscribe?: () => T
 }
+
 export interface CIM_ManagedSystemElement<T> extends CIM_ManagedElement<T> {
   InstallDate?: Date
   Name?: string
@@ -25,6 +33,7 @@ export interface CIM_ManagedSystemElement<T> extends CIM_ManagedElement<T> {
   Status?: string
   HealthState?: number
 }
+
 export interface CIM_PhysicalElement<T> extends CIM_ManagedSystemElement<T> {
   Tag?: string
   CreationClassName?: string
@@ -41,12 +50,14 @@ export interface CIM_PhysicalElement<T> extends CIM_ManagedSystemElement<T> {
   UserTracking?: string
   CanBeFRUed?: boolean
 }
+
 export interface CIM_PhysicalComponent<T> extends CIM_PhysicalElement<T> {
   RemovalConditions?: number
   Removable?: boolean
   Replaceable?: boolean
   HotSwappable?: boolean
 }
+
 export interface CIM_Chip<T> extends CIM_PhysicalComponent<T> {
   OperationalStatus?: number[]
   Tag?: string
@@ -56,6 +67,7 @@ export interface CIM_Chip<T> extends CIM_PhysicalComponent<T> {
   Version?: string
   CanBeFRUed?: boolean
 }
+
 export interface CIM_PhysicalMemory extends CIM_Chip<CIM_PhysicalMemory> {
   FormFactor?: number
   MemoryType?: number
@@ -66,10 +78,13 @@ export interface CIM_PhysicalMemory extends CIM_Chip<CIM_PhysicalMemory> {
   IsSpeedInMhz?: boolean
   MaxMemorySpeed?: number
 }
+
 export interface CIM_PhysicalPackage<T> extends CIM_PhysicalElement<T> {
   PackageType?: number
 }
+
 export interface CIM_Card extends CIM_PhysicalPackage<CIM_Card> {}
+
 export interface CIM_PhysicalFrame<T> extends CIM_PhysicalPackage<T> {
   VendorCompatibilityStrings?: string[]
   OtherPackageType?: string
@@ -91,10 +106,13 @@ export interface CIM_PhysicalFrame<T> extends CIM_PhysicalPackage<T> {
   BreachDescription?: string
   IsLocked?: boolean
 }
+
 export interface CIM_Chassis extends CIM_PhysicalFrame<CIM_Chassis> {
   ChassisPackageType?: number
 }
+
 export interface CIM_LogicalElement<T> extends CIM_ManagedSystemElement<T> {}
+
 export interface CIM_SoftwareElement<T> extends CIM_LogicalElement<T> {
   Version?: string
   SoftwareElementState?: number
@@ -108,10 +126,12 @@ export interface CIM_SoftwareElement<T> extends CIM_LogicalElement<T> {
   IdentificationCode?: string
   LanguageEdition?: string
 }
+
 export interface CIM_BIOSElement extends CIM_SoftwareElement<CIM_BIOSElement> {
   PrimaryBIOS?: boolean
   ReleaseDate?: Date
 }
+
 export interface CIM_EnabledLogicalElement<T> extends CIM_LogicalElement<T> {
   EnabledState?: number
   OtherEnabledState?: string
@@ -119,10 +139,11 @@ export interface CIM_EnabledLogicalElement<T> extends CIM_LogicalElement<T> {
   EnabledDefault?: number
   TimeOfLastStateChange?: Date
   RequestStateChange?: (
-    requestedState: number,
-    timeoutPeriod?: Date
+    RequestedState: number,
+    TimeoutPeriod?: Date
   ) => CIM_ConcreteJob
 }
+
 export interface CIM_Job<T> extends CIM_LogicalElement<T> {
   InstanceId?: string
   CommunicationStatus?: number
@@ -150,12 +171,14 @@ export interface CIM_Job<T> extends CIM_LogicalElement<T> {
   RecoveryAction?: number
   OtherRecoveryAction?: string
 }
+
 export interface CIM_ConcreteJob extends CIM_Job<CIM_ConcreteJob> {
   UntilTime?: Date
   JobState?: number
   TimeOfLastStateChange?: Date
   TimeBeforeRemoval?: Date
 }
+
 export interface CIM_LogicalDevice<T> extends CIM_EnabledLogicalElement<T> {
   SystemCreationClassName?: string
   SystemName?: string
@@ -178,6 +201,7 @@ export interface CIM_LogicalDevice<T> extends CIM_EnabledLogicalElement<T> {
   SaveProperties?: () => number
   RestoreProperties?: () => number
 }
+
 export interface CIM_Processor extends CIM_LogicalDevice<CIM_Processor> {
   Role?: string
   Family?: number
@@ -189,12 +213,13 @@ export interface CIM_Processor extends CIM_LogicalDevice<CIM_Processor> {
   CPUStatus?: number
   ExternalBusClockSpeed?: number
 }
-export interface CIM_MediaAccessDevice
-  extends CIM_LogicalDevice<CIM_MediaAccessDevice> {
+
+export interface CIM_MediaAccessDevice extends CIM_LogicalDevice<CIM_MediaAccessDevice> {
   Capabilities?: number[]
   MaxMediaSize?: number
   Security?: number
 }
+
 export interface CIM_Service<T> extends CIM_EnabledLogicalElement<T> {
   SystemCreationClassName?: string
   SystemName?: string
@@ -206,25 +231,38 @@ export interface CIM_Service<T> extends CIM_EnabledLogicalElement<T> {
   StartService?: () => number
   StopService?: () => number
 }
+
 export interface CIM_SecurityService<T> extends CIM_Service<T> {}
+
 export interface CIM_SettingData<T> extends CIM_ManagedElement<T> {
   InstanceId?: string
 }
+
 export interface CIM_Dependency<T> {
-  Create?: (instance: T) => T
-  Put?: (instance: T) => T
+  Create?: (
+    Instance: T
+  ) => T
+  Put?: (
+    Instance: T
+  ) => T
   Get?: () => T
   Delete?: () => T
-  Pull?: (enumerationContext: string, maxElements: string) => T[]
+  Pull?: (
+    EnumerationContext: string,
+    MaxElements: string
+  ) => T[]
   Enumerate?: () => T
-  Release?: (enumerationContext: string) => T
+  Release?: (
+    EnumerationContext: string
+  ) => T
   Subscribe?: () => T
   Unsubscribe?: () => T
 }
+
 export interface CIM_SystemPackaging<T> extends CIM_Dependency<T> {}
-export interface CIM_ComputerSystemPackage
-  extends CIM_SystemPackaging<CIM_ComputerSystemPackage> {
-  PlatformGUID?: string
+
+export interface CIM_ComputerSystemPackage extends CIM_SystemPackaging<CIM_ComputerSystemPackage> {
+  PlatformGuid?: string
 }
 
 export interface CIM_LogicalPort<T> extends CIM_LogicalDevice<T> {
