@@ -5,13 +5,9 @@ import { HttpHandler } from './HttpHandler'
 import { CIRAChannel, CIRAHandler } from './CIRAHandler'
 import { logger } from '../utils/logger'
 import { AMT } from './AMT'
-import {
-  AMT_SetupAndConfigurationService,
-  CIM_ServiceAvailableToElement_Pull,
-  CIM_SoftwareIdentity,
-  Enumerate
-} from './models/cim_response'
-
+import { CIM_AssociatedPowerManagementService, CIM_SoftwareIdentity } from './models/cim_models'
+import { AMT_SetupAndConfigurationService } from './models/amt_models'
+import { Pull, Response } from './models/common'
 export class ConnectedDevice {
   isConnected: boolean = false
   httpHandler: HttpHandler
@@ -30,15 +26,17 @@ export class ConnectedDevice {
     this.ciraHandler = new CIRAHandler(this.httpHandler, username, password)
   }
 
-  async getPowerState (): Promise<any> {
+  async getPowerState (): Promise<Response<Pull<CIM_AssociatedPowerManagementService>>> {
     const cim = new CIM()
     let xmlRequestBody = cim.ServiceAvailableToElement(Methods.ENUMERATE, (this.messageId++).toString())
-
-    const result = await this.ciraHandler.Send(this.ciraSocket, xmlRequestBody)
-
-    const enumContext: string = result.Envelope.Body.EnumerateResponse.EnumerationContext
+    const result = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
+    const enumContext: string = result?.Envelope?.Body?.EnumerateResponse?.EnumerationContext
+    if (enumContext == null) {
+      logger.error('failed to pull CIM_ServiceAvailableToElement in get power state')
+      return null
+    }
     xmlRequestBody = cim.ServiceAvailableToElement(Methods.PULL, (this.messageId++).toString(), enumContext)
-    const pullResponse: CIM_ServiceAvailableToElement_Pull = await this.ciraHandler.Send(this.ciraSocket, xmlRequestBody)
+    const pullResponse = await this.ciraHandler.Pull<CIM_AssociatedPowerManagementService>(this.ciraSocket, xmlRequestBody)
     if (pullResponse == null) {
       logger.error('failed to pull CIM_ServiceAvailableToElement in get power state')
       return null
@@ -48,24 +46,38 @@ export class ConnectedDevice {
 
   async getVersion (): Promise<any> {
     let xmlRequestBody = this.cim.SoftwareIdentity(Methods.ENUMERATE, (this.messageId++).toString())
-    const result: Enumerate|any = await this.ciraHandler.Send(this.ciraSocket, xmlRequestBody)
-
-    const enumContext: string = result.Envelope.Body.EnumerateResponse.EnumerationContext
+    const result = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
+    const enumContext: string = result?.Envelope.Body?.EnumerateResponse?.EnumerationContext
+    if (enumContext == null) {
+      logger.error('failed to pull CIM_SoftwareIdentity in get version')
+      return null
+    }
     xmlRequestBody = this.cim.SoftwareIdentity(Methods.PULL, (this.messageId++).toString(), enumContext)
-    const pullResponse: CIM_SoftwareIdentity = await this.ciraHandler.Send(this.ciraSocket, xmlRequestBody)
+    const pullResponse = await this.ciraHandler.Pull<CIM_SoftwareIdentity>(this.ciraSocket, xmlRequestBody)
     if (pullResponse == null) {
       logger.error('failed to pull CIM_SoftwareIdentity in get version')
       return null
     }
     xmlRequestBody = this.amt.amt_SetupAndConfigurationService(Methods.GET, (this.messageId++).toString())
-    const getResponse: AMT_SetupAndConfigurationService = await this.ciraHandler.Send(this.ciraSocket, xmlRequestBody)
+    const getResponse = await this.ciraHandler.Get<AMT_SetupAndConfigurationService>(this.ciraSocket, xmlRequestBody)
     if (getResponse == null) {
       logger.error('failed to get AMT_SetupAndConfigurationService in get version')
       return null
     }
+    // matches version 2.x API for Open AMT
     const response = {
-      ...pullResponse.Envelope.Body.PullResponse.Items,
-      ...getResponse.Envelope.Body
+      CIM_SoftwareIdentity: {
+        responses: pullResponse.Envelope.Body.PullResponse.Items.CIM_SoftwareIdentity,
+        status: 200
+      },
+      AMT_SetupAndConfigurationService: {
+        response: getResponse.Envelope.Body.AMT_SetupAndConfigurationService,
+        responses: {
+          Header: getResponse.Envelope.Header,
+          Body: getResponse.Envelope.Body.AMT_SetupAndConfigurationService
+        },
+        status: 200
+      }
     }
     return response
   }

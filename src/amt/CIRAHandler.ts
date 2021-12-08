@@ -6,11 +6,10 @@
 import { CIRASocket } from '../models/models'
 import APFProcessor from './APFProcessor'
 import { connectionParams, HttpHandler } from './HttpHandler'
-import { DigestChallenge } from './models/common'
+import { DigestChallenge, Enumerate, Pull, Response } from './models/common'
 import { logger } from '../utils/logger'
 import httpZ from 'http-z'
 import { amtPort } from '../utils/constants'
-import { Enumerate } from './models/cim_response'
 export interface CIRAChannel {
   targetport: number
   channelid: number
@@ -94,7 +93,19 @@ export class CIRAHandler {
     return channel
   }
 
-  async Send (socket: CIRASocket, rawXml: string): Promise<Enumerate | any> {
+  async Enumerate (socket: CIRASocket, rawXml: string): Promise<Response<Enumerate>> {
+    return await this.Send(socket, rawXml)
+  }
+
+  async Pull<T>(socket: CIRASocket, rawXml: string): Promise<Response<Pull<T>>> {
+    return await this.Send(socket, rawXml)
+  }
+
+  async Get<T>(socket: CIRASocket, rawXml: string): Promise<Response<T>> {
+    return await this.Send(socket, rawXml)
+  }
+
+  async Send (socket: CIRASocket, rawXml: string): Promise<any> {
     let result
     try {
       result = await this.Go(this.SetupCiraChannel(socket, amtPort), rawXml)
@@ -119,7 +130,7 @@ export class CIRAHandler {
             // if (item.name === 'Content-Length' && message.bodySize === parseInt(item.value)) {
             reject(new Error('Unauthorized')) // could be better
           }
-        } else if (this.rawChunkedData.includes('</a:Envelope>')) {
+        } else if (this.rawChunkedData.includes('0\r\n\r\n')) {
           const response = this.parseBody(this.rawChunkedData)
           resolve(response)
         }
@@ -185,7 +196,7 @@ export class CIRAHandler {
     }
     // Compute how much data we can send
     if (wsmanrequest.length <= channel.sendcredits) {
-    // Send the entire message
+      // Send the entire message
       APFProcessor.SendChannelData(channel.socket, channel.amtchannelid, wsmanrequest)
       channel.sendcredits -= wsmanrequest.length
       return true
