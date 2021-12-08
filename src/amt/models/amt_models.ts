@@ -42,7 +42,7 @@ export interface AMT_GeneralSettings extends CIM_SettingData<AMT_GeneralSettings
 }
 
 export interface AMT_EthernetPortSettings extends CIM_SettingData<AMT_EthernetPortSettings> {
-  VlanTag?: number
+  VLANTag?: number
   SharedMAC?: boolean
   MACAddress?: string
   LinkIsUp?: boolean
@@ -87,14 +87,14 @@ export interface AMT_EnvironmentDetectionSettingData extends CIM_SettingData<AMT
   DetectionAlgorithm?: number
   DetectionStrings?: string[]
   DetectionIPv6LocalPrefixes?: string[]
-  SetSystemDefensePolicy?: (policy: AMT_SystemDefencePolicy) => number
+  SetSystemDefensePolicy?: (policy: AMT_SystemDefensePolicy) => number
   EnableVpnRouting?: (enable: boolean) => number
 }
 
-export interface AMT_SystemDefencePolicy extends CIM_ManagedElement<AMT_SystemDefencePolicy> {
+export interface AMT_SystemDefensePolicy extends CIM_ManagedElement<AMT_SystemDefensePolicy> {
   PolicyName?: string
   PolicyPrecedence?: number
-  antiSpoofingSupport?: number
+  AntiSpoofingSupport?: number
   FilterCreationHandles?: number[]
   TxDefaultDrop?: boolean
   TxDefaultMatchEvent?: boolean
