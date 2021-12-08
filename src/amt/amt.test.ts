@@ -30,13 +30,13 @@ describe('AMT Tests', () => {
     PhysicalConnectionType: 0
   }
   const mpsServer: MPServer = {
-    accessInfo: '192.168.0.38',
-    infoFormat: 3,
-    port: 4433,
-    authMethod: 2,
-    username: 'admin',
-    password: 'eD9J*56Bn7ieEsVR',
-    commonName: '192.168.0.38'
+    AccessInfo: '192.168.0.38',
+    InfoFormat: 3,
+    Port: 4433,
+    AuthMethod: 2,
+    Username: 'admin',
+    Password: 'eD9J*56Bn7ieEsVR',
+    CommonName: '192.168.0.38'
   }
   const remoteAccessPolicyRule: RemoteAccessPolicyRule = {
     Trigger: 2,
@@ -214,7 +214,7 @@ describe('AMT Tests', () => {
   })
   describe('amt_RemoteAccessService Tests', () => {
     it('should return a valid amt_RemoteAccessService addMpsServer wsman message', () => {
-      const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RemoteAccessService/AddMpServer</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RemoteAccessService</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body><r:AddMpServer_INPUT xmlns:r="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RemoteAccessService"><r:AccessInfo>${mpsServer.accessInfo}</r:AccessInfo><r:InfoFormat>${mpsServer.infoFormat}</r:InfoFormat><r:Port>${mpsServer.port}</r:Port><r:AuthMethod>${mpsServer.authMethod}</r:AuthMethod><r:Username>${mpsServer.username}</r:Username><r:Password>${mpsServer.password}</r:Password><r:CN>${mpsServer.commonName}</r:CN></r:AddMpServer_INPUT></Body></Envelope>`
+      const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RemoteAccessService/AddMpServer</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RemoteAccessService</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body><r:AddMpServer_INPUT xmlns:r="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RemoteAccessService"><r:AccessInfo>${mpsServer.AccessInfo}</r:AccessInfo><r:InfoFormat>${mpsServer.InfoFormat}</r:InfoFormat><r:Port>${mpsServer.Port}</r:Port><r:AuthMethod>${mpsServer.AuthMethod}</r:AuthMethod><r:Username>${mpsServer.Username}</r:Username><r:Password>${mpsServer.Password}</r:Password><r:CN>${mpsServer.CommonName}</r:CN></r:AddMpServer_INPUT></Body></Envelope>`
       const response = amtClass.amt_RemoteAccessService(AMT_Methods.ADD_MPS, messageId, mpsServer)
       expect(response).toEqual(correctResponse)
     })

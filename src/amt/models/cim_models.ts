@@ -329,14 +329,12 @@ export interface CIM_ServiceAvailableToElement {
   }
 }
 
-export interface CIM_AssociatedPowerManagementService
-  extends CIM_ServiceAvailableToElement {
+export interface CIM_AssociatedPowerManagementService extends CIM_ServiceAvailableToElement {
   CIM_AssociatedPowerManagementService: {
     AvailableRequestedPowerStates: string[]
     PowerState: string
   } & CIM_ServiceAvailableToElement
 }
-
 export interface CIM_SoftwareIdentity
   extends CIM_LogicalElement<CIM_SoftwareIdentity> {
   CIM_SoftwareIdentity: Array<

@@ -6,7 +6,7 @@ import { CIRAChannel, CIRAHandler } from './CIRAHandler'
 import { logger } from '../utils/logger'
 import { AMT } from './AMT'
 import { CIM_AssociatedPowerManagementService, CIM_SoftwareIdentity } from './models/cim_models'
-import { AMT_BootCapabilities, AMT_SetupAndConfigurationService } from './models/amt_models'
+import { AMT_GeneralSettings, AMT_BootCapabilities, AMT_SetupAndConfigurationService } from './models/amt_models'
 import { Pull, Response } from './models/common'
 export class ConnectedDevice {
   isConnected: boolean = false
@@ -80,6 +80,16 @@ export class ConnectedDevice {
       }
     }
     return response
+  }
+
+  async getGeneralSettings (): Promise<any> {
+    const xmlRequestBody = this.amt.amt_GeneralSettings(Methods.GET, (this.messageId++).toString())
+    const getResponse = await this.ciraHandler.Get<AMT_GeneralSettings>(this.ciraSocket, xmlRequestBody)
+    if (getResponse == null) {
+      logger.error('failed to get AMT_GeneralSettings')
+      return null
+    }
+    return getResponse
   }
 
   async getPowerCapabilities (): Promise<Response<AMT_BootCapabilities>> {

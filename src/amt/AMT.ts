@@ -173,7 +173,7 @@ export class AMT {
       case AMT_Methods.ADD_MPS: {
         if (mpServer == null) { throw new Error(WSManErrors.MP_SERVER) }
         const header = this.wsmanMessageCreator.createHeader(AMT_Actions.ADD_MPS, `${this.resourceUriBase}${AMT_Classes.AMT_REMOTE_ACCESS_SERVICE}`, messageId)
-        const body = `<Body><r:AddMpServer_INPUT xmlns:r="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RemoteAccessService"><r:AccessInfo>${mpServer.accessInfo}</r:AccessInfo><r:InfoFormat>${mpServer.infoFormat}</r:InfoFormat><r:Port>${mpServer.port}</r:Port><r:AuthMethod>${mpServer.authMethod}</r:AuthMethod><r:Username>${mpServer.username}</r:Username><r:Password>${mpServer.password}</r:Password><r:CN>${mpServer.commonName}</r:CN></r:AddMpServer_INPUT></Body>`
+        const body = `<Body><r:AddMpServer_INPUT xmlns:r="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RemoteAccessService"><r:AccessInfo>${mpServer.AccessInfo}</r:AccessInfo><r:InfoFormat>${mpServer.InfoFormat}</r:InfoFormat><r:Port>${mpServer.Port}</r:Port><r:AuthMethod>${mpServer.AuthMethod}</r:AuthMethod><r:Username>${mpServer.Username}</r:Username><r:Password>${mpServer.Password}</r:Password><r:CN>${mpServer.CommonName}</r:CN></r:AddMpServer_INPUT></Body>`
         return this.wsmanMessageCreator.createXml(header, body)
       }
       case AMT_Methods.ADD_REMOTE_ACCESS_POLICY_RULE: {

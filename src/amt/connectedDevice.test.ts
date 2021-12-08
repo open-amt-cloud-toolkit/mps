@@ -140,3 +140,55 @@ describe('version', () => {
     expect(result.CIM_SoftwareIdentity.status).toBe(200)
   })
 })
+describe('general settings', () => {
+  const response = {
+    Envelope: {
+      Header: {
+        To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+        RelatesTo: '0',
+        Action: 'http://schemas.xmlsoap.org/ws/2004/09/transfer/GetResponse',
+        MessageID: 'uuid:00000000-8086-8086-8086-000000000001',
+        ResourceURI: 'http://intel.com/wbem/wscim/1/amt-schema/1/AMT_GeneralSettings'
+      },
+      Body: {
+        AMT_GeneralSettings: {
+          AMTNetworkEnabled: '1',
+          DDNSPeriodicUpdateInterval: '1440',
+          DDNSTTL: '900',
+          DDNSUpdateByDHCPServerEnabled: 'true',
+          DDNSUpdateEnabled: 'false',
+          DHCPv6ConfigurationTimeout: '0',
+          DigestRealm: 'Digest:A3829B3827DE4D33D4449B366831FD01',
+          DomainName: '',
+          ElementName: 'Intel(r) AMT: General Settings',
+          HostName: '',
+          HostOSFQDN: 'DESKTOP-9CC12U7',
+          IdleWakeTimeout: '1',
+          InstanceID: 'Intel(r) AMT: General Settings',
+          NetworkInterfaceEnabled: 'true',
+          PingResponseEnabled: 'true',
+          PowerSource: '0',
+          PreferredAddressFamily: '0',
+          PresenceNotificationInterval: '0',
+          PrivacyLevel: '0',
+          RmcpPingResponseEnabled: 'true',
+          SharedFQDN: 'true',
+          ThunderboltDockEnabled: '0',
+          WsmanOnlyMode: 'false'
+        }
+      }
+    }
+  }
+  it('should get general settings ', async () => {
+    const enumerateSpy = jest.spyOn(device.ciraHandler, 'Get')
+    enumerateSpy.mockResolvedValueOnce(response)
+    const result = await device.getGeneralSettings()
+    expect(result).toBe(response)
+  })
+  it('should return null if fails to get general settings ', async () => {
+    const enumerateSpy = jest.spyOn(device.ciraHandler, 'Get')
+    enumerateSpy.mockResolvedValueOnce(null)
+    const result = await device.getGeneralSettings()
+    expect(result).toBe(null)
+  })
+})

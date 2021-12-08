@@ -68,13 +68,13 @@ export interface AMT_EthernetPortSettings extends CIM_SettingData<AMT_EthernetPo
 }
 
 export interface MPServer {
-  accessInfo?: string
-  infoFormat?: number
-  port?: number
-  authMethod?: number
-  username?: string
-  password?: string
-  commonName?: string
+  AccessInfo?: string
+  InfoFormat?: number
+  Port?: number
+  AuthMethod?: number
+  Username?: string
+  Password?: string
+  CommonName?: string
 }
 
 export interface RemoteAccessPolicyRule {
