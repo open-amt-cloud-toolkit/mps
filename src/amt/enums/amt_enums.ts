@@ -32,5 +32,6 @@ export enum AMT_Classes {
   AMT_PUBLIC_KEY_MANAGEMENT_SERVICE = 'AMT_PublicKeyManagementService',
   AMT_REMOTE_ACCESS_SERVICE = 'AMT_RemoteAccessService',
   AMT_USER_INITIATED_CONNECTION_SERVICE = 'AMT_UserInitiatedConnectionService',
-  AMT_BOOT_SETTING_DATA = 'AMT_BootSettingData'
+  AMT_BOOT_SETTING_DATA = 'AMT_BootSettingData',
+  AMT_BOOT_CAPABILITIES = 'AMT_BootCapabilities'
 }

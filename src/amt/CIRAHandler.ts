@@ -105,7 +105,7 @@ export class CIRAHandler {
     return await this.Send(socket, rawXml)
   }
 
-  async Send (socket: CIRASocket, rawXml: string): Promise<any> {
+  private async Send (socket: CIRASocket, rawXml: string): Promise<any> {
     let result
     try {
       result = await this.Go(this.SetupCiraChannel(socket, amtPort), rawXml)
