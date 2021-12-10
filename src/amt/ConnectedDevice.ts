@@ -5,7 +5,20 @@ import { CIRAChannel, CIRAHandler } from './CIRAHandler'
 import { logger } from '../utils/logger'
 import { Methods as AMT_Methods, AMT } from './amt/index'
 import { Methods as IPS_Methods, IPS } from './ips/index'
-import { CIM_AssociatedPowerManagementService, CIM_SoftwareIdentity } from './models/cim_models'
+import {
+  CIM_AssociatedPowerManagementService,
+  CIM_BIOSElement,
+  CIM_Card,
+  CIM_Chassis,
+  CIM_Chip,
+  CIM_ComputerSystemPackage,
+  CIM_MediaAccessDevice,
+  CIM_PhysicalMemory,
+  CIM_PhysicalPackage,
+  CIM_Processor,
+  CIM_SoftwareIdentity,
+  CIM_SystemPackaging
+} from './models/cim_models'
 import { AMT_GeneralSettings, AMT_BootCapabilities, AMT_SetupAndConfigurationService } from './models/amt_models'
 import { Pull, Response } from './models/common'
 import { CancelOptIn_OUTPUT, SendOptInCode_OUTPUT, StartOptIn_OUTPUT } from './models/ips_models'
@@ -112,5 +125,95 @@ export class ConnectedDevice {
     const xmlRequestBody = this.ips.OptInService(IPS_Methods.SEND_OPT_IN_CODE, (this.messageId++).toString(), code)
     const getResponse = await this.ciraHandler.Get<SendOptInCode_OUTPUT>(this.ciraSocket, xmlRequestBody)
     return getResponse
+  }
+
+  async getComputerSystemPackage (): Promise<Response<CIM_ComputerSystemPackage>> {
+    const xmlRequestBody = this.cim.ComputerSystemPackage(CIM_Methods.GET, (this.messageId++).toString())
+    const getResponse = await this.ciraHandler.Get<CIM_ComputerSystemPackage>(this.ciraSocket, xmlRequestBody)
+    return getResponse
+  }
+
+  async getChassis (): Promise<Response<CIM_Chassis>> {
+    const xmlRequestBody = this.cim.Chassis(CIM_Methods.GET, (this.messageId++).toString())
+    const getResponse = await this.ciraHandler.Get<CIM_Chassis>(this.ciraSocket, xmlRequestBody)
+    return getResponse
+  }
+
+  async getCard (): Promise<Response<CIM_Card>> {
+    const xmlRequestBody = this.cim.Card(CIM_Methods.GET, (this.messageId++).toString())
+    const getResponse = await this.ciraHandler.Get<CIM_Card>(this.ciraSocket, xmlRequestBody)
+    return getResponse
+  }
+
+  async getBIOSElement (): Promise<Response<CIM_BIOSElement>> {
+    const xmlRequestBody = this.cim.BIOSElement(CIM_Methods.GET, (this.messageId++).toString())
+    const getResponse = await this.ciraHandler.Get<CIM_BIOSElement>(this.ciraSocket, xmlRequestBody)
+    return getResponse
+  }
+
+  async getProcessor (): Promise<Response<Pull<CIM_Processor>>> {
+    let xmlRequestBody = this.cim.Processor(CIM_Methods.ENUMERATE, (this.messageId++).toString())
+    const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
+    if (enumResponse == null) {
+      logger.error('failed to get CIM Processor')
+    }
+    xmlRequestBody = this.cim.Processor(CIM_Methods.PULL, (this.messageId++).toString(), enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
+    const pullResponse = await this.ciraHandler.Pull<CIM_Processor>(this.ciraSocket, xmlRequestBody)
+    return pullResponse
+  }
+
+  async getPhysicalMemory (): Promise<Response<Pull<CIM_PhysicalMemory>>> {
+    let xmlRequestBody = this.cim.PhysicalMemory(CIM_Methods.ENUMERATE, (this.messageId++).toString())
+    const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
+    if (enumResponse == null) {
+      logger.error('failed to get CIM PhysicalMemory')
+    }
+    xmlRequestBody = this.cim.PhysicalMemory(CIM_Methods.PULL, (this.messageId++).toString(), enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
+    const pullResponse = await this.ciraHandler.Pull<CIM_PhysicalMemory>(this.ciraSocket, xmlRequestBody)
+    return pullResponse
+  }
+
+  async getMediaAccessDevice (): Promise<Response<Pull<CIM_MediaAccessDevice>>> {
+    let xmlRequestBody = this.cim.MediaAccessDevice(CIM_Methods.ENUMERATE, (this.messageId++).toString())
+    const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
+    if (enumResponse == null) {
+      logger.error('failed to get CIM Media Access Device')
+    }
+    xmlRequestBody = this.cim.MediaAccessDevice(CIM_Methods.PULL, (this.messageId++).toString(), enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
+    const pullResponse = await this.ciraHandler.Pull<CIM_MediaAccessDevice>(this.ciraSocket, xmlRequestBody)
+    return pullResponse
+  }
+
+  async getPhysicalPackage (): Promise<Response<Pull<CIM_PhysicalPackage>>> {
+    let xmlRequestBody = this.cim.PhysicalPackage(CIM_Methods.ENUMERATE, (this.messageId++).toString())
+    const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
+    if (enumResponse == null) {
+      logger.error('failed to get CIM Physical Package')
+    }
+    xmlRequestBody = this.cim.PhysicalPackage(CIM_Methods.PULL, (this.messageId++).toString(), enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
+    const pullResponse = await this.ciraHandler.Pull<CIM_PhysicalPackage>(this.ciraSocket, xmlRequestBody)
+    return pullResponse
+  }
+
+  async getSystemPackaging (): Promise<Response<Pull<CIM_SystemPackaging>>> {
+    let xmlRequestBody = this.cim.SystemPackaging(CIM_Methods.ENUMERATE, (this.messageId++).toString())
+    const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
+    if (enumResponse == null) {
+      logger.error('failed to get CIM System Packaging')
+    }
+    xmlRequestBody = this.cim.SystemPackaging(CIM_Methods.PULL, (this.messageId++).toString(), enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
+    const pullResponse = await this.ciraHandler.Pull<CIM_SystemPackaging>(this.ciraSocket, xmlRequestBody)
+    return pullResponse
+  }
+
+  async getChip (): Promise<Response<Pull<CIM_Chip>>> {
+    let xmlRequestBody = this.cim.Chip(CIM_Methods.ENUMERATE, (this.messageId++).toString())
+    const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
+    if (enumResponse == null) {
+      logger.error('failed to get CIM Chip')
+    }
+    xmlRequestBody = this.cim.Chip(CIM_Methods.PULL, (this.messageId++).toString(), enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
+    const pullResponse = await this.ciraHandler.Pull<CIM_Chip>(this.ciraSocket, xmlRequestBody)
+    return pullResponse
   }
 }

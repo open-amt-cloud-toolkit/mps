@@ -35,6 +35,7 @@ export class CIRAHandler {
   httpHandler: HttpHandler
   username: string
   password: string
+  channel: CIRAChannel
   constructor (httpHandler: HttpHandler, username: string, password: string) {
     this.username = username
     this.password = password
@@ -52,8 +53,12 @@ export class CIRAHandler {
 
   // Setup CIRA Channel
   SetupCiraChannel (socket: CIRASocket, targetPort: number): CIRAChannel {
+    console.log('cirachannel state : ', this.channel?.state)
+    if (this.channel?.state === 2) {
+      return this.channel
+    }
     const sourcePort = (socket.tag.nextsourceport++ % 30000) + 1024
-    const channel: CIRAChannel = {
+    this.channel = {
       targetport: targetPort,
       channelid: socket.tag.nextchannelid++,
       socket: socket,
@@ -63,34 +68,34 @@ export class CIRAHandler {
       amtCiraWindow: 0,
       ciraWindow: 32768
     }
-    APFProcessor.SendChannelOpen(channel.socket, false, channel.channelid, channel.ciraWindow, channel.socket.tag.host, channel.targetport, '1.2.3.4', sourcePort)
+    APFProcessor.SendChannelOpen(this.channel.socket, false, this.channel.channelid, this.channel.ciraWindow, this.channel.socket.tag.host, this.channel.targetport, '1.2.3.4', sourcePort)
 
     // This function closes this CIRA channel
-    channel.close = (): void => {
-      if (channel.state === 0 || channel.closing === 1) return
-      if (channel.state === 1) {
-        channel.closing = 1
-        channel.state = 0
-        if (channel.onStateChange) {
-          channel.onStateChange(channel, channel.state)
+    this.channel.close = (): void => {
+      if (this.channel.state === 0 || this.channel.closing === 1) return
+      if (this.channel.state === 1) {
+        this.channel.closing = 1
+        this.channel.state = 0
+        if (this.channel.onStateChange) {
+          this.channel.onStateChange(this.channel, this.channel.state)
         }
         return
       }
-      channel.state = 0
-      channel.closing = 1
-      APFProcessor.SendChannelClose(channel.socket, channel.amtchannelid)
-      if (channel.onStateChange) {
-        channel.onStateChange(channel, channel.state)
+      this.channel.state = 0
+      this.channel.closing = 1
+      APFProcessor.SendChannelClose(this.channel.socket, this.channel.amtchannelid)
+      if (this.channel.onStateChange) {
+        this.channel.onStateChange(this.channel, this.channel.state)
       }
     }
 
-    channel.sendchannelclose = (): void => {
+    this.channel.sendchannelclose = (): void => {
       console.log('Channel closed called')
-      APFProcessor.SendChannelClose(channel.socket, channel.amtchannelid)
+      APFProcessor.SendChannelClose(this.channel.socket, this.channel.amtchannelid)
     }
 
-    socket.tag.channels[channel.channelid] = channel
-    return channel
+    socket.tag.channels[this.channel.channelid] = this.channel
+    return this.channel
   }
 
   async Enumerate (socket: CIRASocket, rawXml: string): Promise<Response<Enumerate>> {
@@ -111,6 +116,7 @@ export class CIRAHandler {
       result = await this.Go(this.SetupCiraChannel(socket, amtPort), rawXml)
     } catch (error) {
       if (error.message === 'Unauthorized') {
+        this.channel.state = 0
         result = await this.Go(this.SetupCiraChannel(socket, amtPort), rawXml)
       } else {
         throw error
