@@ -87,11 +87,11 @@ export interface AMT_EnvironmentDetectionSettingData extends CIM_SettingData<AMT
   DetectionAlgorithm?: number
   DetectionStrings?: string[]
   DetectionIPv6LocalPrefixes?: string[]
-  SetSystemDefensePolicy?: (policy: AMT_SystemDefencePolicy) => number
+  SetSystemDefensePolicy?: (policy: AMT_SystemDefensePolicy) => number
   EnableVpnRouting?: (enable: boolean) => number
 }
 
-export interface AMT_SystemDefencePolicy extends CIM_ManagedElement<AMT_SystemDefencePolicy> {
+export interface AMT_SystemDefensePolicy extends CIM_ManagedElement<AMT_SystemDefensePolicy> {
   PolicyName?: string
   PolicyPrecedence?: number
   AntiSpoofingSupport?: number

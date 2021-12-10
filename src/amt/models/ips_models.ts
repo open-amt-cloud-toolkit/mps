@@ -21,3 +21,14 @@ export interface IPS_OptInService extends CIM_Service<IPS_OptInService> {
   CancelOptIn?: () => number
   SendOptInCode?: (optInCode: number) => number
 }
+
+export interface StartOptIn_OUTPUT {
+  ReturnValue: string
+}
+export interface CancelOptIn_OUTPUT {
+  ReturnValue: string
+}
+
+export interface SendOptInCode_OUTPUT {
+  ReturnValue: string
+}
