@@ -113,4 +113,14 @@ export class ConnectedDevice {
     const getResponse = await this.ciraHandler.Get<SendOptInCode_OUTPUT>(this.ciraSocket, xmlRequestBody)
     return getResponse
   }
+
+  async getAuditLog (startIndex: number): Promise<any> {
+    const xmlRequestBody = this.amt.AuditLog(AMT_Methods.READ_RECORDS, (this.messageId++).toString(), startIndex)
+    const pullResponse = await this.ciraHandler.Pull<CIM_SoftwareIdentity>(this.ciraSocket, xmlRequestBody)
+    if (pullResponse == null) {
+      logger.error('failed to pull CIM_SoftwareIdentity in getAuditLog')
+      return null
+    }
+    return pullResponse
+  }
 }
