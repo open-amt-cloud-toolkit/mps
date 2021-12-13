@@ -53,7 +53,6 @@ export class CIRAHandler {
 
   // Setup CIRA Channel
   SetupCiraChannel (socket: CIRASocket, targetPort: number): CIRAChannel {
-    console.log('cirachannel state : ', this.channel?.state)
     if (this.channel?.state === 2) {
       return this.channel
     }
@@ -90,7 +89,6 @@ export class CIRAHandler {
     }
 
     this.channel.sendchannelclose = (): void => {
-      console.log('Channel closed called')
       APFProcessor.SendChannelClose(this.channel.socket, this.channel.amtchannelid)
     }
 
