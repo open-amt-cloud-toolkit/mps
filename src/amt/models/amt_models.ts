@@ -17,7 +17,7 @@ export interface amtAuthenticateObject {
   certificates?: number[]
 }
 
-export interface AMT_GeneralSettings extends CIM_SettingData<AMT_GeneralSettings> {
+export interface AMT_GeneralSettings extends CIM_SettingData {
   NetworkInterfaceEnabled?: boolean
   DigestRealm?: string
   IdleWakeTimeout?: number
@@ -41,7 +41,7 @@ export interface AMT_GeneralSettings extends CIM_SettingData<AMT_GeneralSettings
   AMTAuthenticate?: (mcNonce: number) => amtAuthenticateObject
 }
 
-export interface AMT_EthernetPortSettings extends CIM_SettingData<AMT_EthernetPortSettings> {
+export interface AMT_EthernetPortSettings extends CIM_SettingData {
   VLANTag?: number
   SharedMAC?: boolean
   MACAddress?: string
@@ -83,7 +83,7 @@ export interface RemoteAccessPolicyRule {
   ExtendedData?: string
 }
 
-export interface AMT_EnvironmentDetectionSettingData extends CIM_SettingData<AMT_EnvironmentDetectionSettingData> {
+export interface AMT_EnvironmentDetectionSettingData extends CIM_SettingData {
   DetectionAlgorithm?: number
   DetectionStrings?: string[]
   DetectionIPv6LocalPrefixes?: string[]
@@ -91,7 +91,7 @@ export interface AMT_EnvironmentDetectionSettingData extends CIM_SettingData<AMT
   EnableVpnRouting?: (enable: boolean) => number
 }
 
-export interface AMT_SystemDefensePolicy extends CIM_ManagedElement<AMT_SystemDefensePolicy> {
+export interface AMT_SystemDefensePolicy extends CIM_ManagedElement {
   PolicyName?: string
   PolicyPrecedence?: number
   AntiSpoofingSupport?: number
@@ -106,7 +106,7 @@ export interface AMT_SystemDefensePolicy extends CIM_ManagedElement<AMT_SystemDe
   SetTimeout?: (number) => number
   UpdateStatistics?: (networkInterface: CIM_EthernetPort, resetOnRead: boolean) => number
 }
-export interface AMT_BootCapabilities extends CIM_ManagedElement<AMT_BootCapabilities>{
+export interface AMT_BootCapabilities extends CIM_ManagedElement{
   AMT_BootCapabilities: {
   // The user friendly name for this instance of Capabilities . . .
     ElementName: string
@@ -170,7 +170,7 @@ export interface AMT_BootCapabilities extends CIM_ManagedElement<AMT_BootCapabil
     PlatformErase: number
   }
 }
-export interface AMT_BootSettingData extends CIM_BootSettingData<AMT_BootSettingData> {
+export interface AMT_BootSettingData extends CIM_BootSettingData {
   UseSOL?: boolean
   UseSafeMode?: boolean
   ReflashBIOS?: boolean

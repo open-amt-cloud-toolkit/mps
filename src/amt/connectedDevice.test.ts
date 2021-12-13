@@ -89,7 +89,7 @@ describe('general settings', () => {
   })
 })
 
-describe('request user conset code', () => {
+describe('user consent code', () => {
   it('should request for user consent code ', async () => {
     const enumerateSpy = jest.spyOn(device.ciraHandler, 'Get')
     enumerateSpy.mockResolvedValueOnce(startOptInResponse)
@@ -102,9 +102,7 @@ describe('request user conset code', () => {
     const result = await device.requestUserConsetCode()
     expect(result).toBe(null)
   })
-})
 
-describe('cancel user conset code', () => {
   it('should cancel for user consent code ', async () => {
     const enumerateSpy = jest.spyOn(device.ciraHandler, 'Get')
     enumerateSpy.mockResolvedValueOnce(cancelOptInResponse)
@@ -117,9 +115,6 @@ describe('cancel user conset code', () => {
     const result = await device.cancelUserConsetCode()
     expect(result).toBe(null)
   })
-})
-
-describe('send user conset code', () => {
   it('should send for user consent code ', async () => {
     const enumerateSpy = jest.spyOn(device.ciraHandler, 'Get')
     enumerateSpy.mockResolvedValueOnce(sendOptInCodeResponse)
