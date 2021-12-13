@@ -62,7 +62,16 @@ const Common = {
     const ha1 = createHash('md5').update(username + ':' + realm + ':' + password).digest('hex')
     const ha2 = createHash('md5').update(method + ':' + path).digest('hex')
     return createHash('md5').update(ha1 + ':' + nonce + ':' + nc + ':' + cnonce + ':' + qop + ':' + ha2).digest('hex')
-  }
+  },
 
+  // Convert a byte array of SID into string
+  GetSidString: (sid: string): string => {
+    let r = 'S-' + sid.charCodeAt(0) + '-' + sid.charCodeAt(7)
+
+    for (let i = 2; i < (sid.length / 4); i++) {
+      r += '-' + Common.ReadIntX(sid, i * 4)
+    }
+    return r
+  }
 }
 export default Common

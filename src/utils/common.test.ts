@@ -119,3 +119,14 @@ describe('Validate decimal to hex conversion', function () {
     expect(Common.Char2hex(ival)).toBe(hval)
   })
 })
+
+// Check converting a byte array of SID into string
+describe('Validate SID byte array to string conversion', function () {
+  it('GetSidString-should convert SID byte array as a string to a SID string', function () {
+    const networkServiceSidByteArrayAsHex = '010100000000000514000000'
+    const myHex = Buffer.from(networkServiceSidByteArrayAsHex, 'hex').toString()
+    const networkServiceSid = 'S-1-5-20'
+    const sidString = Common.GetSidString(myHex)
+    expect(sidString).toBe(networkServiceSid)
+  })
+})
