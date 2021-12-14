@@ -234,3 +234,11 @@ export interface EVENT_DATA {
   EventData?: number[]
   TimeStamp?: Date
 }
+export interface AMT_AuditLog_ReadRecords {
+  ReadRecords_OUTPUT: {
+    TotalRecordCount: string
+    RecordsReturned: string
+    EventRecords: string[]
+    ReturnValue: string
+  }
+}

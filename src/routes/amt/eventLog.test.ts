@@ -19,12 +19,12 @@ describe('event log', () => {
     eventLogSpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'getEventLog')
   })
 
-  it('should get version', async () => {
+  it('should get event logs', async () => {
     eventLogSpy.mockResolvedValueOnce(amtMessageLog)
     await eventLog(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(200)
   })
-  it('should get an error with status code 400, when get version is null', async () => {
+  it('should handle error 400', async () => {
     eventLogSpy.mockResolvedValueOnce(null)
     await eventLog(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(400)
@@ -45,7 +45,7 @@ describe('event details', () => {
     const result = GetEventDetailStr(6, 2, [64, 3, 0, 0, 0, 0, 0, 0])
     expect(result).toEqual('Authentication failed 3 times. The system may be under attack.')
   })
-  it('should return system firware error', () => {
+  it('should return system firmware error', () => {
     const result = GetEventDetailStr(15, 0, [64, 10, 0, 0, 0, 0, 0, 0])
     expect(result).toEqual('No video device detected.')
   })
@@ -73,7 +73,7 @@ describe('event details', () => {
     const result = GetEventDetailStr(37, 0, [64, 10, 0, 0, 0, 0, 0, 0])
     expect(result).toEqual('System firmware started (at least one CPU is properly executing).')
   })
-  it('should get system firmware started', () => {
+  it('should get Unknown Sensor Type', () => {
     const result = GetEventDetailStr(100, 0, [64, 10, 0, 0, 0, 0, 0, 0])
     expect(result).toEqual('Unknown Sensor Type #100')
   })

@@ -21,8 +21,8 @@ export async function auditLog (req: Request, res: Response): Promise<void> {
     const startIndexAsNumber = Number(queryParams.startIndex)
     const startIndex: number = startIndexAsNumber === 0 ? 1 : startIndexAsNumber
     MqttProvider.publishEvent('request', ['AMT_AuditLog'], 'Audit Log Requested', guid)
-    const pullResponse = await devices[guid].getAuditLog(startIndex)
-    const result = convertToAuditLogResult(pullResponse.Envelope.Body.ReadRecords_OUTPUT)
+    const getResponse = await devices[guid].getAuditLog(startIndex)
+    const result = convertToAuditLogResult(getResponse.ReadRecords_OUTPUT)
     res.status(200).json(result).end()
   } catch (error) {
     log.error(`Exception in AMT AuditLog : ${error}`)

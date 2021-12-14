@@ -19,7 +19,7 @@ import {
   CIM_SoftwareIdentity,
   CIM_SystemPackaging
 } from './models/cim_models'
-import { AMT_GeneralSettings, AMT_BootCapabilities, AMT_SetupAndConfigurationService, AMT_MessageLog } from './models/amt_models'
+import { AMT_GeneralSettings, AMT_BootCapabilities, AMT_SetupAndConfigurationService, AMT_AuditLog_ReadRecords, AMT_MessageLog } from './models/amt_models'
 import { Pull, Response } from './models/common'
 import { CancelOptIn_OUTPUT, SendOptInCode_OUTPUT, StartOptIn_OUTPUT } from './models/ips_models'
 export class ConnectedDevice {
@@ -243,13 +243,13 @@ export class ConnectedDevice {
     return eventLogs
   }
 
-  async getAuditLog (startIndex: number): Promise<any> {
+  async getAuditLog (startIndex: number): Promise<AMT_AuditLog_ReadRecords> {
     const xmlRequestBody = this.amt.AuditLog(AMT_Methods.READ_RECORDS, (this.messageId++).toString(), startIndex)
-    const pullResponse = await this.ciraHandler.Pull<CIM_SoftwareIdentity>(this.ciraSocket, xmlRequestBody)
-    if (pullResponse == null) {
-      logger.error('failed to pull CIM_SoftwareIdentity in getAuditLog')
+    const getResponse = await this.ciraHandler.Get<AMT_AuditLog_ReadRecords>(this.ciraSocket, xmlRequestBody)
+    if (getResponse == null) {
+      logger.error('failed to get audit log')
       return null
     }
-    return pullResponse
+    return getResponse.Envelope.Body
   }
 }
