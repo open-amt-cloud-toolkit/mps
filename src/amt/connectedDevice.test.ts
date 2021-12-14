@@ -1,8 +1,10 @@
 import { CIRASocket } from '../models/models'
 import {
+  amtMessageLog,
   cancelOptInResponse,
   enumerateResponse,
   generalSettings,
+  positionToFirstRecord,
   sendOptInCodeResponse,
   serviceAvailableToElement,
   startOptInResponse
@@ -125,6 +127,22 @@ describe('user consent code', () => {
     const enumerateSpy = jest.spyOn(device.ciraHandler, 'Get')
     enumerateSpy.mockResolvedValueOnce(null)
     const result = await device.sendUserConsetCode(985167)
+    expect(result).toBe(null)
+  })
+})
+
+describe('event log', () => {
+  it('should get event log ', async () => {
+    const enumerateSpy = jest.spyOn(device.ciraHandler, 'Get')
+    enumerateSpy.mockResolvedValueOnce(positionToFirstRecord)
+    enumerateSpy.mockResolvedValueOnce(amtMessageLog)
+    const result = await device.getEventLog()
+    expect(result).toBe(amtMessageLog)
+  })
+  it('should return null if fails to get event log', async () => {
+    const enumerateSpy = jest.spyOn(device.ciraHandler, 'Get')
+    enumerateSpy.mockResolvedValueOnce(null)
+    const result = await device.getEventLog()
     expect(result).toBe(null)
   })
 })

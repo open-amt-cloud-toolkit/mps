@@ -16,6 +16,9 @@ const Common = {
   ReadIntX: (v: string, p: number): number => {
     return (v.charCodeAt(p + 3) * 0x1000000) + (v.charCodeAt(p + 2) << 16) + (v.charCodeAt(p + 1) << 8) + v.charCodeAt(p)
   },
+  ReadBufferIntX: (v: Buffer, p: number): number => {
+    return (v[p + 3] * 0x1000000) + (v[p + 2] << 16) + (v[p + 1] << 8) + v[p]
+  },
   ShortToStr: (v: number): string => {
     return String.fromCharCode((v >> 8) & 0xFF, v & 0xFF)
   },

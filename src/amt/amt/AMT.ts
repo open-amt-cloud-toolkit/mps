@@ -86,6 +86,22 @@ export class AMT {
     }
   }
 
+  MessageLog = (method: Methods.GET_RECORDS|Methods.POSITION_TO_FIRSTRECORD, messageId: string, identifier?: number): string => {
+    let header: string, body: string
+    switch (method) {
+      case Methods.POSITION_TO_FIRSTRECORD:
+        header = this.wsmanMessageCreator.createHeader(Actions.POSITION_TO_FIRSTRECORD, `${this.resourceUriBase}${Classes.AMT_MESSAGE_LOG}`, messageId)
+        body = `<Body><r:PositionToFirstRecord_INPUT xmlns:r="${this.resourceUriBase}${Classes.AMT_MESSAGE_LOG}" /></Body>`
+        return this.wsmanMessageCreator.createXml(header, body)
+      case Methods.GET_RECORDS:
+        header = this.wsmanMessageCreator.createHeader(Actions.GET_RECORDS, `${this.resourceUriBase}${Classes.AMT_MESSAGE_LOG}`, messageId)
+        body = `<Body><r:GetRecords_INPUT xmlns:r="${this.resourceUriBase}${Classes.AMT_MESSAGE_LOG}"><r:IterationIdentifier>${identifier}</r:IterationIdentifier><r:MaxReadRecords>390</r:MaxReadRecords></r:GetRecords_INPUT></Body>`
+        return this.wsmanMessageCreator.createXml(header, body)
+      default:
+        throw new Error(WSManErrors.UNSUPPORTED_METHOD)
+    }
+  }
+
   BootCapabilities = (method: Methods.GET, messageId: string): string => {
     return this.amtSwitch({ method: method, messageId: messageId, class: Classes.AMT_BOOT_CAPABILITIES })
   }

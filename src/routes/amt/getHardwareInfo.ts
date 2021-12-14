@@ -19,16 +19,16 @@ export async function hardwareInfo (req: Request, res: Response): Promise<void> 
     if (Object.values(response).some(item => item == null)) {
       log.error(`Request failed during AMTHardware Information BatchEnum Exec for guid : ${guid}.`)
       MqttProvider.publishEvent('fail', ['AMT_HardwareInfo'], 'Failed to Get Hardware Information', guid)
-      return res.status(400).json(ErrorResponse(400, `Request failed during AMTHardware Information BatchEnum Exec for guid : ${guid}.`)).end()
+      res.status(400).json(ErrorResponse(400, `Request failed during AMTHardware Information BatchEnum Exec for guid : ${guid}.`))
     } else {
       MqttProvider.publishEvent('success', ['AMT_HardwareInfo'], 'Sent Hardware Information', guid)
       logger.info(JSON.stringify(response, null, '\t'))
-      res.status(200).json(formatResponse(response)).end()
+      res.status(200).json(formatResponse(response))
     }
   } catch (error) {
     log.error(`Exception in AMT HardwareInformation : ${error}`)
     MqttProvider.publishEvent('fail', ['AMT_HardwareInfo'], 'Interanl Server Error')
-    res.status(500).json(ErrorResponse(500, 'Request failed during AMTHardware Information.')).end()
+    res.status(500).json(ErrorResponse(500, 'Request failed during AMTHardware Information.'))
   }
 }
 

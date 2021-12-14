@@ -3,7 +3,7 @@
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
 
-import { CIM_ManagedElement, CIM_SettingData, CIM_EthernetPort, CIM_BootSettingData, CIM_CredentialManagementService } from './cim_models'
+import { CIM_ManagedElement, CIM_SettingData, CIM_EthernetPort, CIM_BootSettingData, CIM_CredentialManagementService, CIM_MessageLog } from './cim_models'
 
 export interface amtAuthenticateObject {
   nonce?: number[]
@@ -216,4 +216,21 @@ export interface AMT_SetupAndConfigurationService extends CIM_CredentialManageme
     SystemName: string
     ZeroTouchConfigurationEnabled: string
   }
+}
+
+export interface AMT_MessageLog extends CIM_MessageLog {}
+
+// Event Log Records have no header and the record data is combined of 21 binary bytes which could be read as EVENT_DATA
+export interface EVENT_DATA {
+  DeviceAddress?: number
+  EventSensorType?: number
+  EventType?: number
+  EventOffset?: number
+  EventSourceType?: number
+  EventSeverity?: number
+  SensorNumber?: number
+  Entity?: number
+  EntityInstance?: number
+  EventData?: number[]
+  TimeStamp?: Date
 }

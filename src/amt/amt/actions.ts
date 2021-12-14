@@ -15,4 +15,6 @@ export enum Actions {
   ADD_REMOTE_ACCESS_POLICY_RULE = 'http://intel.com/wbem/wscim/1/amt-schema/1/AMT_RemoteAccessService/AddRemoteAccessPolicyRule',
   REQUEST_STATE_CHANGE = 'http://intel.com/wbem/wscim/1/amt-schema/1/AMT_UserInitiatedConnectionService/RequestStateChange',
   SET_BOOT_CONFIG_ROLE = 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootService/SetBootConfigRole',
+  GET_RECORDS = 'http://intel.com/wbem/wscim/1/amt-schema/1/AMT_MessageLog/GetRecords',
+  POSITION_TO_FIRSTRECORD = 'http://intel.com/wbem/wscim/1/amt-schema/1/AMT_MessageLog/PositionToFirstRecord'
 }
