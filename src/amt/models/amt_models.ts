@@ -217,3 +217,12 @@ export interface AMT_SetupAndConfigurationService extends CIM_CredentialManageme
     ZeroTouchConfigurationEnabled: string
   }
 }
+
+export interface AMT_AuditLog_ReadRecords {
+  ReadRecords_OUTPUT: {
+    TotalRecordCount: string
+    RecordsReturned: string
+    EventRecords: string[]
+    ReturnValue: string
+  }
+}

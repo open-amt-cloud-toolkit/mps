@@ -482,3 +482,34 @@ export const chip = {
     }
   }
 }
+
+export const auditLog = {
+  Envelope: {
+    Header: {
+      To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+      RelatesTo: '0',
+      Action: 'http://intel.com/wbem/wscim/1/amt-schema/1/AMT_AuditLog/ReadRecordsResponse',
+      MessageID: 'uuid:00000000-8086-8086-8086-0000000001E8',
+      ResourceURI: 'http://intel.com/wbem/wscim/1/amt-schema/1/AMT_AuditLog'
+    },
+    Body: {
+      ReadRecords_OUTPUT: {
+        TotalRecordCount: '1106',
+        RecordsReturned: '10',
+        EventRecords: [
+          'ABAAEwJe+jS5AgABAg==',
+          'ABAAAAJe+jTQAgAA',
+          'ABAAAAJe+jj6AgAA',
+          'ABAAEgAFYWRtaW5e+daPAAkxMjcuMC4wLjEA',
+          'ABAAEwJe+dbrAgABAg==',
+          'ABAAAAJe+dccAgAA',
+          'ABAAAAJe+dgmAgAA',
+          'ABUAAAAJJCRPc0FkbWluXvnewgAJMTI3LjAuMC4xBF76QRI=',
+          'ABAAEwJe+kTdAgABAg==',
+          'ABAAAAJe+kT/AgAA'
+        ],
+        ReturnValue: '0'
+      }
+    }
+  }
+}

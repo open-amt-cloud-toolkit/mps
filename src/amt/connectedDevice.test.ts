@@ -1,5 +1,6 @@
 import { CIRASocket } from '../models/models'
 import {
+  auditLog,
   cancelOptInResponse,
   enumerateResponse,
   generalSettings,
@@ -125,6 +126,21 @@ describe('user consent code', () => {
     const enumerateSpy = jest.spyOn(device.ciraHandler, 'Get')
     enumerateSpy.mockResolvedValueOnce(null)
     const result = await device.sendUserConsetCode(985167)
+    expect(result).toBe(null)
+  })
+})
+
+describe('auditLog', () => {
+  it('should get audit log', async () => {
+    const getSpy = jest.spyOn(device.ciraHandler, 'Get')
+    getSpy.mockResolvedValueOnce(auditLog)
+    const result = await device.getAuditLog(1)
+    expect(result).toBe(auditLog.Envelope.Body)
+  })
+  it('should return null if fails to get audit log', async () => {
+    const getSpy = jest.spyOn(device.ciraHandler, 'Get')
+    getSpy.mockResolvedValueOnce(null)
+    const result = await device.getAuditLog(1)
     expect(result).toBe(null)
   })
 })
