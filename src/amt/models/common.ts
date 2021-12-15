@@ -39,17 +39,17 @@ export interface AuditLogResult {
 }
 
 export interface AuditLogRecord {
-  auditAppID: number
-  eventID: number
-  initiatorType: number
-  auditApp: string
-  event: string
-  initiator: string
-  time: Date
-  mcLocationType: number
-  netAddress: string
-  ex: string
-  exStr?: string
+  AuditAppID: number
+  EventID: number
+  InitiatorType: number
+  AuditApp: string
+  Event: string
+  Initiator: string
+  Time: Date
+  MCLocationType: number
+  NetAddress: string
+  Ex: string
+  ExStr?: string
 }
 
 export interface AuditLogReadRecordsOutput {
