@@ -3,29 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-export interface CIM_ManagedElement<T> {
+export interface CIM_ManagedElement {
   Caption?: string
   Description?: string
   ElementName?: string
-  Create?: (
-    Instance: T
-  ) => T
-  Put?: (Instance: T) => T
-  Get?: () => T
-  Delete?: () => T
-  Pull?: (
-    EnumerationContext: string,
-    MaxElements: string
-  ) => T[]
-  Enumerate?: () => T
-  Release?: (
-    EnumerationContext: string
-  ) => T
-  Subscribe?: () => T
-  Unsubscribe?: () => T
 }
 
-export interface CIM_ManagedSystemElement<T> extends CIM_ManagedElement<T> {
+export interface CIM_ManagedSystemElement extends CIM_ManagedElement {
   InstallDate?: Date
   Name?: string
   OperationalStatus?: number[]
@@ -34,7 +18,7 @@ export interface CIM_ManagedSystemElement<T> extends CIM_ManagedElement<T> {
   HealthState?: number
 }
 
-export interface CIM_PhysicalElement<T> extends CIM_ManagedSystemElement<T> {
+export interface CIM_PhysicalElement extends CIM_ManagedSystemElement {
   Tag?: string
   CreationClassName?: string
   Manufacturer?: string
@@ -51,14 +35,14 @@ export interface CIM_PhysicalElement<T> extends CIM_ManagedSystemElement<T> {
   CanBeFRUed?: boolean
 }
 
-export interface CIM_PhysicalComponent<T> extends CIM_PhysicalElement<T> {
+export interface CIM_PhysicalComponent extends CIM_PhysicalElement {
   RemovalConditions?: number
   Removable?: boolean
   Replaceable?: boolean
   HotSwappable?: boolean
 }
 
-export interface CIM_Chip<T> extends CIM_PhysicalComponent<T> {
+export interface CIM_Chip extends CIM_PhysicalComponent {
   OperationalStatus?: number[]
   Tag?: string
   CreationClassName?: string
@@ -68,7 +52,7 @@ export interface CIM_Chip<T> extends CIM_PhysicalComponent<T> {
   CanBeFRUed?: boolean
 }
 
-export interface CIM_PhysicalMemory extends CIM_Chip<CIM_PhysicalMemory> {
+export interface CIM_PhysicalMemory extends CIM_Chip {
   FormFactor?: number
   MemoryType?: number
   Speed?: number
@@ -79,13 +63,13 @@ export interface CIM_PhysicalMemory extends CIM_Chip<CIM_PhysicalMemory> {
   MaxMemorySpeed?: number
 }
 
-export interface CIM_PhysicalPackage<T> extends CIM_PhysicalElement<T> {
+export interface CIM_PhysicalPackage extends CIM_PhysicalElement {
   PackageType?: number
 }
 
-export interface CIM_Card extends CIM_PhysicalPackage<CIM_Card> {}
+export interface CIM_Card extends CIM_PhysicalPackage {}
 
-export interface CIM_PhysicalFrame<T> extends CIM_PhysicalPackage<T> {
+export interface CIM_PhysicalFrame extends CIM_PhysicalPackage {
   VendorCompatibilityStrings?: string[]
   OtherPackageType?: string
   Weight?: number
@@ -107,13 +91,13 @@ export interface CIM_PhysicalFrame<T> extends CIM_PhysicalPackage<T> {
   IsLocked?: boolean
 }
 
-export interface CIM_Chassis extends CIM_PhysicalFrame<CIM_Chassis> {
+export interface CIM_Chassis extends CIM_PhysicalFrame {
   ChassisPackageType?: number
 }
 
-export interface CIM_LogicalElement<T> extends CIM_ManagedSystemElement<T> {}
+export interface CIM_LogicalElement extends CIM_ManagedSystemElement {}
 
-export interface CIM_SoftwareElement<T> extends CIM_LogicalElement<T> {
+export interface CIM_SoftwareElement extends CIM_LogicalElement {
   Version?: string
   SoftwareElementState?: number
   SoftwareElementId?: string
@@ -127,12 +111,12 @@ export interface CIM_SoftwareElement<T> extends CIM_LogicalElement<T> {
   LanguageEdition?: string
 }
 
-export interface CIM_BIOSElement extends CIM_SoftwareElement<CIM_BIOSElement> {
+export interface CIM_BIOSElement extends CIM_SoftwareElement {
   PrimaryBIOS?: boolean
   ReleaseDate?: Date
 }
 
-export interface CIM_EnabledLogicalElement<T> extends CIM_LogicalElement<T> {
+export interface CIM_EnabledLogicalElement extends CIM_LogicalElement {
   EnabledState?: number
   OtherEnabledState?: string
   RequestedState?: number
@@ -144,7 +128,7 @@ export interface CIM_EnabledLogicalElement<T> extends CIM_LogicalElement<T> {
   ) => CIM_ConcreteJob
 }
 
-export interface CIM_Job<T> extends CIM_LogicalElement<T> {
+export interface CIM_Job extends CIM_LogicalElement {
   InstanceId?: string
   CommunicationStatus?: number
   DetailedStatus?: number
@@ -172,14 +156,14 @@ export interface CIM_Job<T> extends CIM_LogicalElement<T> {
   OtherRecoveryAction?: string
 }
 
-export interface CIM_ConcreteJob extends CIM_Job<CIM_ConcreteJob> {
+export interface CIM_ConcreteJob extends CIM_Job {
   UntilTime?: Date
   JobState?: number
   TimeOfLastStateChange?: Date
   TimeBeforeRemoval?: Date
 }
 
-export interface CIM_LogicalDevice<T> extends CIM_EnabledLogicalElement<T> {
+export interface CIM_LogicalDevice extends CIM_EnabledLogicalElement {
   SystemCreationClassName?: string
   SystemName?: string
   CreationClassName?: string
@@ -202,7 +186,7 @@ export interface CIM_LogicalDevice<T> extends CIM_EnabledLogicalElement<T> {
   RestoreProperties?: () => number
 }
 
-export interface CIM_Processor extends CIM_LogicalDevice<CIM_Processor> {
+export interface CIM_Processor extends CIM_LogicalDevice {
   Role?: string
   Family?: number
   OtherFamilyDescription?: string
@@ -214,13 +198,13 @@ export interface CIM_Processor extends CIM_LogicalDevice<CIM_Processor> {
   ExternalBusClockSpeed?: number
 }
 
-export interface CIM_MediaAccessDevice extends CIM_LogicalDevice<CIM_MediaAccessDevice> {
+export interface CIM_MediaAccessDevice extends CIM_LogicalDevice {
   Capabilities?: number[]
   MaxMediaSize?: number
   Security?: number
 }
 
-export interface CIM_Service<T> extends CIM_EnabledLogicalElement<T> {
+export interface CIM_Service extends CIM_EnabledLogicalElement {
   SystemCreationClassName?: string
   SystemName?: string
   CreationClassName?: string
@@ -232,40 +216,25 @@ export interface CIM_Service<T> extends CIM_EnabledLogicalElement<T> {
   StopService?: () => number
 }
 
-export interface CIM_SecurityService<T> extends CIM_Service<T> {}
+export interface CIM_SecurityService extends CIM_Service {}
 
-export interface CIM_SettingData<T> extends CIM_ManagedElement<T> {
+export interface CIM_SettingData extends CIM_ManagedElement {
   InstanceId?: string
 }
 
-export interface CIM_Dependency<T> {
-  Create?: (
-    Instance: T
-  ) => T
-  Put?: (
-    Instance: T
-  ) => T
-  Get?: () => T
-  Delete?: () => T
-  Pull?: (
-    EnumerationContext: string,
-    MaxElements: string
-  ) => T[]
-  Enumerate?: () => T
-  Release?: (
-    EnumerationContext: string
-  ) => T
-  Subscribe?: () => T
-  Unsubscribe?: () => T
+// To do: Fix the typing on Dependent and Antecedent
+export interface CIM_Dependency {
+  Antecedent: any
+  Dependent: any
 }
 
-export interface CIM_SystemPackaging<T> extends CIM_Dependency<T> {}
+export interface CIM_SystemPackaging extends CIM_Dependency {}
 
-export interface CIM_ComputerSystemPackage extends CIM_SystemPackaging<CIM_ComputerSystemPackage> {
+export interface CIM_ComputerSystemPackage extends CIM_SystemPackaging {
   PlatformGuid?: string
 }
 
-export interface CIM_LogicalPort<T> extends CIM_LogicalDevice<T> {
+export interface CIM_LogicalPort extends CIM_LogicalDevice {
   Speed?: number
   MaxSpeed?: number
   RequestedSpeed?: number
@@ -274,7 +243,7 @@ export interface CIM_LogicalPort<T> extends CIM_LogicalDevice<T> {
   OtherPortType?: string
 }
 
-export interface CIM_NetworkPort<T> extends CIM_LogicalPort<T> {
+export interface CIM_NetworkPort extends CIM_LogicalPort {
   PortNumber?: number
   LinkTechnology?: number
   OtherLinkTechnology?: string
@@ -286,22 +255,22 @@ export interface CIM_NetworkPort<T> extends CIM_LogicalPort<T> {
   ActiveMaximumTransmissionUnit?: number
 }
 
-export interface CIM_EthernetPort extends CIM_NetworkPort<CIM_EthernetPort> {}
+export interface CIM_EthernetPort extends CIM_NetworkPort {}
 
-export interface CIM_BootSettingData<T> extends CIM_SettingData<T> {
+export interface CIM_BootSettingData extends CIM_SettingData {
   OwningEntity?: string
 }
 
-export interface CIM_Collection<T> extends CIM_ManagedElement<T> {}
+export interface CIM_Collection extends CIM_ManagedElement {}
 
-export interface CIM_Role extends CIM_Collection<CIM_Role> {
+export interface CIM_Role extends CIM_Collection {
   CreationClassName?: string
   Name?: string
   CommonName?: string
   RoleCharacteristics?: number[]
 }
 
-export interface CIM_AuthenticationService extends CIM_SecurityService<CIM_AuthenticationService> {
+export interface CIM_AuthenticationService extends CIM_SecurityService {
 }
 export interface CIM_CredentialManagementService extends CIM_AuthenticationService {
   // InstanceID is an optional property that may be used to opaquely and uniquely identify an instance of this class within the scope of the instantiating Namespace . . .
@@ -336,12 +305,38 @@ export interface CIM_AssociatedPowerManagementService extends CIM_ServiceAvailab
   } & CIM_ServiceAvailableToElement
 }
 export interface CIM_SoftwareIdentity
-  extends CIM_LogicalElement<CIM_SoftwareIdentity> {
+  extends CIM_LogicalElement {
   CIM_SoftwareIdentity: Array<
   {
     InstanceID: string
     VersionString: string
     IsEntity: boolean
-  } & CIM_LogicalElement<CIM_SoftwareIdentity>
+  } & CIM_LogicalElement
   >
+}
+export interface CIM_Log extends CIM_EnabledLogicalElement {
+  MaxNumberOfRecords: number
+  CurrentNumberOfRecords: number
+  OverwritePolicy: number
+  LogState: number
+}
+
+export interface CIM_MessageLog extends CIM_Log {
+  CreationClassName: string
+  Capabilities: number[]
+  CapabilitiesDescriptions: string[]
+  MaxLogSize: number
+  SizeOfHeader: number
+  HeaderFormat: string
+  MaxRecordSize: number
+  SizeOfRecordHeader: number
+  RecordHeaderFormat: string
+  OtherPolicyDescription: string
+  TimeWhenOutdated: Date
+  PercentageNearFull: number
+  LastChange: number
+  TimeOfLastChange: Date
+  RecordLastChanged: number
+  IsFrozen: boolean
+  CharacterSet: number
 }

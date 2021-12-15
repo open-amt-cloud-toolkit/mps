@@ -32,3 +32,29 @@ export interface Pull<T> {
     EndOfSequence: string
   }
 }
+
+export interface AuditLogResult {
+  totalCnt: number
+  records: AuditLogRecord[]
+}
+
+export interface AuditLogRecord {
+  auditAppID: number
+  eventID: number
+  initiatorType: number
+  auditApp: string
+  event: string
+  initiator: string
+  time: Date
+  mcLocationType: number
+  netAddress: string
+  ex: string
+  exStr?: string
+}
+
+export interface AuditLogReadRecordsOutput {
+  TotalRecordCount: string
+  RecordsReturned: string
+  EventRecords: string[]
+  ReturnValue: string
+}

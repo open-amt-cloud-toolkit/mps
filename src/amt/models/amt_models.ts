@@ -3,7 +3,7 @@
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
 
-import { CIM_ManagedElement, CIM_SettingData, CIM_EthernetPort, CIM_BootSettingData, CIM_CredentialManagementService } from './cim_models'
+import { CIM_ManagedElement, CIM_SettingData, CIM_EthernetPort, CIM_BootSettingData, CIM_CredentialManagementService, CIM_MessageLog } from './cim_models'
 
 export interface amtAuthenticateObject {
   nonce?: number[]
@@ -17,7 +17,7 @@ export interface amtAuthenticateObject {
   certificates?: number[]
 }
 
-export interface AMT_GeneralSettings extends CIM_SettingData<AMT_GeneralSettings> {
+export interface AMT_GeneralSettings extends CIM_SettingData {
   NetworkInterfaceEnabled?: boolean
   DigestRealm?: string
   IdleWakeTimeout?: number
@@ -41,7 +41,7 @@ export interface AMT_GeneralSettings extends CIM_SettingData<AMT_GeneralSettings
   AMTAuthenticate?: (mcNonce: number) => amtAuthenticateObject
 }
 
-export interface AMT_EthernetPortSettings extends CIM_SettingData<AMT_EthernetPortSettings> {
+export interface AMT_EthernetPortSettings extends CIM_SettingData {
   VLANTag?: number
   SharedMAC?: boolean
   MACAddress?: string
@@ -83,15 +83,15 @@ export interface RemoteAccessPolicyRule {
   ExtendedData?: string
 }
 
-export interface AMT_EnvironmentDetectionSettingData extends CIM_SettingData<AMT_EnvironmentDetectionSettingData> {
+export interface AMT_EnvironmentDetectionSettingData extends CIM_SettingData {
   DetectionAlgorithm?: number
   DetectionStrings?: string[]
   DetectionIPv6LocalPrefixes?: string[]
-  SetSystemDefensePolicy?: (policy: AMT_SystemDefencePolicy) => number
+  SetSystemDefensePolicy?: (policy: AMT_SystemDefensePolicy) => number
   EnableVpnRouting?: (enable: boolean) => number
 }
 
-export interface AMT_SystemDefencePolicy extends CIM_ManagedElement<AMT_SystemDefencePolicy> {
+export interface AMT_SystemDefensePolicy extends CIM_ManagedElement {
   PolicyName?: string
   PolicyPrecedence?: number
   AntiSpoofingSupport?: number
@@ -106,7 +106,7 @@ export interface AMT_SystemDefencePolicy extends CIM_ManagedElement<AMT_SystemDe
   SetTimeout?: (number) => number
   UpdateStatistics?: (networkInterface: CIM_EthernetPort, resetOnRead: boolean) => number
 }
-export interface AMT_BootCapabilities extends CIM_ManagedElement<AMT_BootCapabilities>{
+export interface AMT_BootCapabilities extends CIM_ManagedElement{
   AMT_BootCapabilities: {
   // The user friendly name for this instance of Capabilities . . .
     ElementName: string
@@ -170,7 +170,7 @@ export interface AMT_BootCapabilities extends CIM_ManagedElement<AMT_BootCapabil
     PlatformErase: number
   }
 }
-export interface AMT_BootSettingData extends CIM_BootSettingData<AMT_BootSettingData> {
+export interface AMT_BootSettingData extends CIM_BootSettingData {
   UseSOL?: boolean
   UseSafeMode?: boolean
   ReflashBIOS?: boolean
@@ -215,5 +215,30 @@ export interface AMT_SetupAndConfigurationService extends CIM_CredentialManageme
     SystemCreationClassName: string
     SystemName: string
     ZeroTouchConfigurationEnabled: string
+  }
+}
+
+export interface AMT_MessageLog extends CIM_MessageLog {}
+
+// Event Log Records have no header and the record data is combined of 21 binary bytes which could be read as EVENT_DATA
+export interface EVENT_DATA {
+  DeviceAddress?: number
+  EventSensorType?: number
+  EventType?: number
+  EventOffset?: number
+  EventSourceType?: number
+  EventSeverity?: number
+  SensorNumber?: number
+  Entity?: number
+  EntityInstance?: number
+  EventData?: number[]
+  TimeStamp?: Date
+}
+export interface AMT_AuditLog_ReadRecords {
+  ReadRecords_OUTPUT: {
+    TotalRecordCount: string
+    RecordsReturned: string
+    EventRecords: string[]
+    ReturnValue: string
   }
 }

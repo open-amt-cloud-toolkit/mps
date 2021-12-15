@@ -6,21 +6,25 @@ import { Response, Request } from 'express'
 import { logger as log } from '../../../utils/logger'
 import { ErrorResponse } from '../../../utils/amtHelper'
 import { MqttProvider } from '../../../utils/MqttProvider'
+import { devices } from '../../../server/mpsserver'
 export async function send (req: Request, res: Response): Promise<void> {
   const userConsentCode = req.body.consentCode
   const guid: string = req.params.guid
   try {
     // Cancel a previous opt-in code request.
-    req.amtStack.IPS_OptInService_SendOptInCode(userConsentCode, (stack, name, response, status) => {
-      if (status === 200) {
-        MqttProvider.publishEvent('success', ['Send_User_Consent_Code'], 'Sent user consent code', guid)
-        res.status(200).json(response).end()
-      } else {
-        log.error(`Fail to send user consent code for guid : ${guid}.`)
-        MqttProvider.publishEvent('fail', ['Send_User_Consent_Code'], 'Fail to send user consent code', guid)
-        res.status(404).json(ErrorResponse(status, `Failed to send user consent code for guid : ${guid}.`)).end()
+    const response = await devices[guid].sendUserConsetCode(userConsentCode)
+    if (response != null) {
+      MqttProvider.publishEvent('success', ['Send_User_Consent_Code'], 'Sent user consent code', guid)
+      const result = {
+        Header: response.Envelope.Header,
+        Body: response.Envelope.Body.SendOptInCode_OUTPUT
       }
-    }, 0, 1)
+      res.status(200).json(result).end()
+    } else {
+      log.error(`Fail to send user consent code for guid : ${guid}.`)
+      MqttProvider.publishEvent('fail', ['Send_User_Consent_Code'], 'Fail to send user consent code', guid)
+      res.status(400).json(ErrorResponse(400, `Failed to send user consent code for guid : ${guid}.`)).end()
+    }
   } catch (error) {
     log.error(`Failed to send user consent code for guid ${guid}: ${error}`)
     MqttProvider.publishEvent('fail', ['Send_User_Consent_Code'], 'Internal Service Error')

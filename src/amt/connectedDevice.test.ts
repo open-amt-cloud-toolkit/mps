@@ -1,4 +1,15 @@
 import { CIRASocket } from '../models/models'
+import {
+  amtMessageLog,
+  auditLog,
+  cancelOptInResponse,
+  enumerateResponse,
+  generalSettings,
+  positionToFirstRecord,
+  sendOptInCodeResponse,
+  serviceAvailableToElement,
+  startOptInResponse
+} from '../test/helper/wsmanResponses'
 import { ConnectedDevice } from './ConnectedDevice'
 
 const socket: CIRASocket = null
@@ -13,22 +24,7 @@ describe('power state', () => {
   })
   it('should return null when pull call to power state is null', async () => {
     const enumerateSpy = jest.spyOn(device.ciraHandler, 'Enumerate')
-    enumerateSpy.mockResolvedValueOnce({
-      Envelope: {
-        Header: {
-          To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
-          RelatesTo: '0',
-          Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/EnumerateResponse',
-          MessageID: 'uuid:00000000-8086-8086-8086-000000000001',
-          ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ServiceAvailableToElement'
-        },
-        Body: {
-          EnumerateResponse: {
-            EnumerationContext: '01000000-0000-0000-0000-000000000000'
-          }
-        }
-      }
-    })
+    enumerateSpy.mockResolvedValueOnce(enumerateResponse)
     const pullSpy = jest.spyOn(device.ciraHandler, 'Pull')
     pullSpy.mockResolvedValue(null)
     const result = await device.getPowerState()
@@ -36,69 +32,9 @@ describe('power state', () => {
   })
   it('should return power state', async () => {
     const enumerateSpy = jest.spyOn(device.ciraHandler, 'Enumerate')
-    enumerateSpy.mockResolvedValueOnce({
-      Envelope: {
-        Header: {
-          To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
-          RelatesTo: '0',
-          Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/EnumerateResponse',
-          MessageID: 'uuid:00000000-8086-8086-8086-000000000001',
-          ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ServiceAvailableToElement'
-        },
-        Body: {
-          EnumerateResponse: {
-            EnumerationContext: '01000000-0000-0000-0000-000000000000'
-          }
-        }
-      }
-    })
+    enumerateSpy.mockResolvedValueOnce(enumerateResponse)
     const pullSpy = jest.spyOn(device.ciraHandler, 'Pull')
-    pullSpy.mockResolvedValue({
-      Envelope: {
-        Header: {
-          To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
-          RelatesTo: '1',
-          Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse',
-          MessageID: 'uuid:00000000-8086-8086-8086-000000000002',
-          ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ServiceAvailableToElement'
-        },
-        Body: {
-          PullResponse: {
-            Items: {
-              CIM_AssociatedPowerManagementService: {
-                AvailableRequestedPowerStates: ['8', '2', '5'],
-                PowerState: '4',
-                ServiceProvided: {
-                  Address: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
-                  ReferenceParameters: {
-                    ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_PowerManagementService',
-                    SelectorSet: {
-                      Selector: [
-                        'CIM_PowerManagementService',
-                        'Intel(r) AMT Power Management Service',
-                        'CIM_ComputerSystem', 'Intel(r) AMT'
-                      ]
-                    }
-                  }
-                },
-                UserOfService: {
-                  Address: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
-                  ReferenceParameters: {
-                    ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ComputerSystem',
-                    SelectorSet: {
-                      Selector: [
-                        'CIM_ComputerSystem',
-                        'ManagedSystem']
-                    }
-                  }
-                }
-              }
-            },
-            EndOfSequence: ''
-          }
-        }
-      }
-    })
+    pullSpy.mockResolvedValue(serviceAvailableToElement)
     const result = await device.getPowerState()
     expect(result.Envelope.Body.PullResponse.Items.CIM_AssociatedPowerManagementService.PowerState).toBe('4')
   })
@@ -140,55 +76,89 @@ describe('version', () => {
     expect(result.CIM_SoftwareIdentity.status).toBe(200)
   })
 })
+
 describe('general settings', () => {
-  const response = {
-    Envelope: {
-      Header: {
-        To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
-        RelatesTo: '0',
-        Action: 'http://schemas.xmlsoap.org/ws/2004/09/transfer/GetResponse',
-        MessageID: 'uuid:00000000-8086-8086-8086-000000000001',
-        ResourceURI: 'http://intel.com/wbem/wscim/1/amt-schema/1/AMT_GeneralSettings'
-      },
-      Body: {
-        AMT_GeneralSettings: {
-          AMTNetworkEnabled: '1',
-          DDNSPeriodicUpdateInterval: '1440',
-          DDNSTTL: '900',
-          DDNSUpdateByDHCPServerEnabled: 'true',
-          DDNSUpdateEnabled: 'false',
-          DHCPv6ConfigurationTimeout: '0',
-          DigestRealm: 'Digest:A3829B3827DE4D33D4449B366831FD01',
-          DomainName: '',
-          ElementName: 'Intel(r) AMT: General Settings',
-          HostName: '',
-          HostOSFQDN: 'DESKTOP-9CC12U7',
-          IdleWakeTimeout: '1',
-          InstanceID: 'Intel(r) AMT: General Settings',
-          NetworkInterfaceEnabled: 'true',
-          PingResponseEnabled: 'true',
-          PowerSource: '0',
-          PreferredAddressFamily: '0',
-          PresenceNotificationInterval: '0',
-          PrivacyLevel: '0',
-          RmcpPingResponseEnabled: 'true',
-          SharedFQDN: 'true',
-          ThunderboltDockEnabled: '0',
-          WsmanOnlyMode: 'false'
-        }
-      }
-    }
-  }
   it('should get general settings ', async () => {
     const enumerateSpy = jest.spyOn(device.ciraHandler, 'Get')
-    enumerateSpy.mockResolvedValueOnce(response)
+    enumerateSpy.mockResolvedValueOnce(generalSettings)
     const result = await device.getGeneralSettings()
-    expect(result).toBe(response)
+    expect(result).toBe(generalSettings)
   })
   it('should return null if fails to get general settings ', async () => {
     const enumerateSpy = jest.spyOn(device.ciraHandler, 'Get')
     enumerateSpy.mockResolvedValueOnce(null)
     const result = await device.getGeneralSettings()
+    expect(result).toBe(null)
+  })
+})
+
+describe('user consent code', () => {
+  it('should request for user consent code ', async () => {
+    const enumerateSpy = jest.spyOn(device.ciraHandler, 'Get')
+    enumerateSpy.mockResolvedValueOnce(startOptInResponse)
+    const result = await device.requestUserConsetCode()
+    expect(result).toBe(startOptInResponse)
+  })
+  it('should return null if fails to request user consent code ', async () => {
+    const enumerateSpy = jest.spyOn(device.ciraHandler, 'Get')
+    enumerateSpy.mockResolvedValueOnce(null)
+    const result = await device.requestUserConsetCode()
+    expect(result).toBe(null)
+  })
+
+  it('should cancel for user consent code ', async () => {
+    const enumerateSpy = jest.spyOn(device.ciraHandler, 'Get')
+    enumerateSpy.mockResolvedValueOnce(cancelOptInResponse)
+    const result = await device.cancelUserConsetCode()
+    expect(result).toBe(cancelOptInResponse)
+  })
+  it('should return null if fails to cancel user consent code ', async () => {
+    const enumerateSpy = jest.spyOn(device.ciraHandler, 'Get')
+    enumerateSpy.mockResolvedValueOnce(null)
+    const result = await device.cancelUserConsetCode()
+    expect(result).toBe(null)
+  })
+  it('should send for user consent code ', async () => {
+    const enumerateSpy = jest.spyOn(device.ciraHandler, 'Get')
+    enumerateSpy.mockResolvedValueOnce(sendOptInCodeResponse)
+    const result = await device.sendUserConsetCode(985167)
+    expect(result).toBe(sendOptInCodeResponse)
+  })
+  it('should return null if fails to send user consent code ', async () => {
+    const enumerateSpy = jest.spyOn(device.ciraHandler, 'Get')
+    enumerateSpy.mockResolvedValueOnce(null)
+    const result = await device.sendUserConsetCode(985167)
+    expect(result).toBe(null)
+  })
+})
+
+describe('event log', () => {
+  it('should get event log ', async () => {
+    const enumerateSpy = jest.spyOn(device.ciraHandler, 'Get')
+    enumerateSpy.mockResolvedValueOnce(positionToFirstRecord)
+    enumerateSpy.mockResolvedValueOnce(amtMessageLog)
+    const result = await device.getEventLog()
+    expect(result).toBe(amtMessageLog)
+  })
+  it('should return null if fails to get event log', async () => {
+    const enumerateSpy = jest.spyOn(device.ciraHandler, 'Get')
+    enumerateSpy.mockResolvedValueOnce(null)
+    const result = await device.getEventLog()
+    expect(result).toBe(null)
+  })
+})
+
+describe('auditLog', () => {
+  it('should get audit log', async () => {
+    const getSpy = jest.spyOn(device.ciraHandler, 'Get')
+    getSpy.mockResolvedValueOnce(auditLog)
+    const result = await device.getAuditLog(1)
+    expect(result).toBe(auditLog.Envelope.Body)
+  })
+  it('should return null if fails to get audit log', async () => {
+    const getSpy = jest.spyOn(device.ciraHandler, 'Get')
+    getSpy.mockResolvedValueOnce(null)
+    const result = await device.getAuditLog(1)
     expect(result).toBe(null)
   })
 })
