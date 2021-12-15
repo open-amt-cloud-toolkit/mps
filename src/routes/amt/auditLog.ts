@@ -48,47 +48,47 @@ export function convertToAuditLogResult (readRecordsOutput: AuditLogReadRecordsO
     let ptr: number
     const decodedEventRecord: string = atob(eventRecord)
     const auditLogRecord: AuditLogRecord = {
-      auditAppID: 0,
-      eventID: 0,
-      initiatorType: 0,
-      auditApp: '',
-      event: '',
-      initiator: '',
-      time: undefined,
-      mcLocationType: 0,
-      netAddress: '',
-      ex: '',
-      exStr: null
+      AuditAppID: 0,
+      EventID: 0,
+      InitiatorType: 0,
+      AuditApp: '',
+      Event: '',
+      Initiator: '',
+      Time: undefined,
+      MCLocationType: 0,
+      NetAddress: '',
+      Ex: '',
+      ExStr: null
     }
 
-    auditLogRecord.auditAppID = Common.ReadShort(decodedEventRecord, 0)
-    auditLogRecord.eventID = Common.ReadShort(decodedEventRecord, 2)
-    auditLogRecord.auditApp = AmtAuditStringTable[auditLogRecord.auditAppID]
-    auditLogRecord.initiatorType = decodedEventRecord.charCodeAt(4)
-    auditLogRecord.event = AmtAuditStringTable[(auditLogRecord.auditAppID * 100) + auditLogRecord.eventID]
+    auditLogRecord.AuditAppID = Common.ReadShort(decodedEventRecord, 0)
+    auditLogRecord.EventID = Common.ReadShort(decodedEventRecord, 2)
+    auditLogRecord.AuditApp = AmtAuditStringTable[auditLogRecord.AuditAppID]
+    auditLogRecord.InitiatorType = decodedEventRecord.charCodeAt(4)
+    auditLogRecord.Event = AmtAuditStringTable[(auditLogRecord.AuditAppID * 100) + auditLogRecord.EventID]
 
-    if (!auditLogRecord.event) auditLogRecord.event = '#' + auditLogRecord.eventID
+    if (!auditLogRecord.Event) auditLogRecord.Event = '#' + auditLogRecord.EventID
 
     const [initiatorType, initiator, pointer] = getInitiatorInfo(decodedEventRecord)
-    auditLogRecord.initiatorType = initiatorType
-    auditLogRecord.initiator = initiator
+    auditLogRecord.InitiatorType = initiatorType
+    auditLogRecord.Initiator = initiator
     ptr = pointer
 
     // Read timestamp
     const timeStamp = Common.ReadInt(decodedEventRecord, ptr)
-    auditLogRecord.time = new Date((timeStamp + (new Date().getTimezoneOffset() * 60)) * 1000)
+    auditLogRecord.Time = new Date((timeStamp + (new Date().getTimezoneOffset() * 60)) * 1000)
     ptr += 4
 
     // Read network access
-    auditLogRecord.mcLocationType = decodedEventRecord.charCodeAt(ptr++)
+    auditLogRecord.MCLocationType = decodedEventRecord.charCodeAt(ptr++)
     const netlen = decodedEventRecord.charCodeAt(ptr++)
-    auditLogRecord.netAddress = decodedEventRecord.substring(ptr, ptr + netlen).replace('0000:0000:0000:0000:0000:0000:0000:0001', '::1')
+    auditLogRecord.NetAddress = decodedEventRecord.substring(ptr, ptr + netlen).replace('0000:0000:0000:0000:0000:0000:0000:0001', '::1')
 
     // Read extended data
     ptr += netlen
     const exlen = decodedEventRecord.charCodeAt(ptr++)
-    auditLogRecord.ex = decodedEventRecord.substring(ptr, ptr + exlen)
-    auditLogRecord.exStr = GetAuditLogExtendedDataString((auditLogRecord.auditAppID * 100) + auditLogRecord.eventID, auditLogRecord.ex)
+    auditLogRecord.Ex = decodedEventRecord.substring(ptr, ptr + exlen)
+    auditLogRecord.ExStr = GetAuditLogExtendedDataString((auditLogRecord.AuditAppID * 100) + auditLogRecord.EventID, auditLogRecord.Ex)
 
     auditLogResult.records.push(auditLogRecord)
   }
