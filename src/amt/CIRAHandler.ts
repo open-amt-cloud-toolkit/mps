@@ -147,6 +147,7 @@ export class CIRAHandler {
   handleAuth (content: string): DigestChallenge {
     logger.debug(content)
     const message = httpZ.parse(content)
+    this.rawChunkedData = ''
     const found = message.headers.find(item => item.name === 'Www-Authenticate')
     if (found != null) {
       return this.httpHandler.parseAuthenticateResponseHeader(found.value)
@@ -157,6 +158,7 @@ export class CIRAHandler {
   parseBody (body: string): any {
     let xmlBody: string = ''
     const message = httpZ.parse(body)
+    this.rawChunkedData = ''
     logger.debug(body)
     // parse the body until its length is greater than 5, because body ends with '0\r\n\r\n'
     while (message.body.text.length > 5) {
