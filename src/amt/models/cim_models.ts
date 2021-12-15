@@ -314,3 +314,29 @@ export interface CIM_SoftwareIdentity
   } & CIM_LogicalElement
   >
 }
+export interface CIM_Log extends CIM_EnabledLogicalElement {
+  MaxNumberOfRecords: number
+  CurrentNumberOfRecords: number
+  OverwritePolicy: number
+  LogState: number
+}
+
+export interface CIM_MessageLog extends CIM_Log {
+  CreationClassName: string
+  Capabilities: number[]
+  CapabilitiesDescriptions: string[]
+  MaxLogSize: number
+  SizeOfHeader: number
+  HeaderFormat: string
+  MaxRecordSize: number
+  SizeOfRecordHeader: number
+  RecordHeaderFormat: string
+  OtherPolicyDescription: string
+  TimeWhenOutdated: Date
+  PercentageNearFull: number
+  LastChange: number
+  TimeOfLastChange: Date
+  RecordLastChanged: number
+  IsFrozen: boolean
+  CharacterSet: number
+}

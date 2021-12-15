@@ -15,4 +15,6 @@ export enum Methods {
   ADD_REMOTE_ACCESS_POLICY_RULE = 'AddRemoteAccessPolicyRule',
   REQUEST_STATE_CHANGE = 'RequestStateChange',
   SET_BOOT_CONFIG_ROLE = 'SetBootConfigRole',
+  GET_RECORDS = 'GetRecords',
+  POSITION_TO_FIRSTRECORD = 'PositionToFirstRecord'
 }

@@ -513,3 +513,70 @@ export const auditLog = {
     }
   }
 }
+
+export const amtMessageLog = {
+  Envelope: {
+    Header: {
+      To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+      RelatesTo: '0',
+      Action: 'http://intel.com/wbem/wscim/1/amt-schema/1/AMT_MessageLog/GetRecordsResponse',
+      MessageID: 'uuid:00000000-8086-8086-8086-000000000001',
+      ResourceURI: 'http://intel.com/wbem/wscim/1/amt-schema/1/AMT_MessageLog'
+    },
+    Body: {
+      GetRecords_OUTPUT: {
+        IterationIdentifier: '28',
+        NoMoreRecords: 'true',
+        RecordArray: [
+          'YiexYf8PbwJoAf8AAEASAAAAAAAA',
+          'eRyxYf8PbwJoAf8AAEASAAAAAAAA',
+          '+sGwYf8PbwJoCP8iAEATAAAAAAAA',
+          '98GwYf8PbwJoAf8EAEACAAAAAAAA',
+          '98GwYf8PbwJoAf8HAEAXAAAAAAAA',
+          '98GwYf8PbwJoAf8HAEAMAAAAAAAA',
+          '98GwYf8PbwJoAf8HAEAXAAAAAAAA',
+          '98GwYf8PbwJoAf8HAEAMAAAAAAAA',
+          '9cGwYf8PbwJoAf8iAEAGAAAAAAAA',
+          '9MGwYf8PbwJoAf8HAEAJAAAAAAAA',
+          '9MGwYf8PbwJoAf8iAEAHAAAAAAAA',
+          '9MGwYf8PbwJoAf8iAEAHAAAAAAAA',
+          'F4CvYf8PbwJoAf8AAEASAAAAAAAA',
+          'iXOvYf8PbwJoAf8AAEASAAAAAAAA',
+          'M2GpYf8PbwJoAf8mAEANAAAAAAAA',
+          'M2GpYf8PbwJoCP8iAEATAAAAAAAA',
+          'MmGpYf8PbwJoAf8HAEAXAAAAAAAA',
+          'MmGpYf8PbwJoAf8HAEAMAAAAAAAA',
+          'MmGpYf8PbwJoAf8HAEAXAAAAAAAA',
+          'MmGpYf8PbwJoAf8HAEAMAAAAAAAA',
+          'MmGpYf8PbwJoAf8EAEACAAAAAAAA',
+          'MWGpYf8PbwJoAf8iAEAGAAAAAAAA',
+          'MGGpYf8PbwJoAf8HAEAJAAAAAAAA',
+          'MGGpYf8PbwJoAf8iAEAHAAAAAAAA',
+          'MGGpYf8PbwJoAf8iAEAHAAAAAAAA',
+          'G2GpYf8PbwJoAf8AAEASAAAAAAAA',
+          '11epYf8PbwJoAf8AAEASAAAAAAAA',
+          'u/moYf8PbwJoAf8AAEASAAAAAAAA'
+        ],
+        ReturnValue: '0'
+      }
+    }
+  }
+}
+
+export const positionToFirstRecord = {
+  Envelope: {
+    Header: {
+      To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+      RelatesTo: '0',
+      Action: 'http://intel.com/wbem/wscim/1/amt-schema/1/AMT_MessageLog/PositionToFirstRecordResponse',
+      MessageID: 'uuid:00000000-8086-8086-8086-000000000001',
+      ResourceURI: 'http://intel.com/wbem/wscim/1/amt-schema/1/AMT_MessageLog'
+    },
+    Body: {
+      PositionToFirstRecord_OUTPUT: {
+        IterationIdentifier: '1',
+        ReturnValue: '0'
+      }
+    }
+  }
+}

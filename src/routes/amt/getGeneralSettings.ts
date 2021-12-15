@@ -22,15 +22,15 @@ export async function generalSettings (req: Request, res: Response): Promise<voi
         Header: response.Envelope.Header,
         Body: response.Envelope.Body.AMT_GeneralSettings
       }
-      res.status(200).json(result).end()
+      res.status(200).json(result)
     } else {
       log.error(`Request failed during GET AMT_GeneralSettings for guid : ${guid}.`)
       MqttProvider.publishEvent('fail', ['AMT_GeneralSettings'], 'Failed to Get General Settings', guid)
-      res.status(400).json(ErrorResponse(400, `Request failed during GET AMT_GeneralSettings for guid : ${guid}.`)).end()
+      res.status(400).json(ErrorResponse(400, `Request failed during GET AMT_GeneralSettings for guid : ${guid}.`))
     }
   } catch (error) {
     log.error(`Exception in AMT GeneralSettings: ${error}`)
     MqttProvider.publishEvent('fail', ['AMT_GeneralSettings'], 'Internal Server Error')
-    res.status(500).json(ErrorResponse(500, 'Request failed during AMT GeneralSettings.')).end()
+    res.status(500).json(ErrorResponse(500, 'Request failed during AMT GeneralSettings.'))
   }
 }

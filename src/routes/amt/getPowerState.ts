@@ -20,11 +20,11 @@ export async function powerState (req: Request, res: Response): Promise<void> {
     } else {
       MqttProvider.publishEvent('fail', ['AMT_PowerState'], 'Failed to Get Power State', guid)
       log.error(`Request failed during powerstate fetch for guid : ${guid}.`)
-      return res.status(400).json(ErrorResponse(400, `Request failed during powerstate fetch for guid : ${guid}.`)).end()
+      res.status(400).json(ErrorResponse(400, `Request failed during powerstate fetch for guid : ${guid}.`))
     }
   } catch (error) {
     log.error(`Exception in Power state : ${error}`)
     MqttProvider.publishEvent('fail', ['AMT_PowerState'], 'Internal Server Error')
-    return res.status(500).json(ErrorResponse(500, 'Request failed during powerstate fetch.')).end()
+    res.status(500).json(ErrorResponse(500, 'Request failed during powerstate fetch.'))
   }
 }

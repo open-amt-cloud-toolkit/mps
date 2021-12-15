@@ -19,7 +19,7 @@ import {
   CIM_SoftwareIdentity,
   CIM_SystemPackaging
 } from './models/cim_models'
-import { AMT_GeneralSettings, AMT_BootCapabilities, AMT_SetupAndConfigurationService, AMT_AuditLog_ReadRecords } from './models/amt_models'
+import { AMT_GeneralSettings, AMT_BootCapabilities, AMT_SetupAndConfigurationService, AMT_AuditLog_ReadRecords, AMT_MessageLog } from './models/amt_models'
 import { Pull, Response } from './models/common'
 import { CancelOptIn_OUTPUT, SendOptInCode_OUTPUT, StartOptIn_OUTPUT } from './models/ips_models'
 export class ConnectedDevice {
@@ -156,6 +156,7 @@ export class ConnectedDevice {
     const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
     if (enumResponse == null) {
       logger.error('failed to get CIM Processor')
+      return null
     }
     xmlRequestBody = this.cim.Processor(CIM_Methods.PULL, (this.messageId++).toString(), enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
     const pullResponse = await this.ciraHandler.Pull<CIM_Processor>(this.ciraSocket, xmlRequestBody)
@@ -167,6 +168,7 @@ export class ConnectedDevice {
     const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
     if (enumResponse == null) {
       logger.error('failed to get CIM PhysicalMemory')
+      return null
     }
     xmlRequestBody = this.cim.PhysicalMemory(CIM_Methods.PULL, (this.messageId++).toString(), enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
     const pullResponse = await this.ciraHandler.Pull<CIM_PhysicalMemory>(this.ciraSocket, xmlRequestBody)
@@ -178,6 +180,7 @@ export class ConnectedDevice {
     const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
     if (enumResponse == null) {
       logger.error('failed to get CIM Media Access Device')
+      return null
     }
     xmlRequestBody = this.cim.MediaAccessDevice(CIM_Methods.PULL, (this.messageId++).toString(), enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
     const pullResponse = await this.ciraHandler.Pull<CIM_MediaAccessDevice>(this.ciraSocket, xmlRequestBody)
@@ -189,6 +192,7 @@ export class ConnectedDevice {
     const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
     if (enumResponse == null) {
       logger.error('failed to get CIM Physical Package')
+      return null
     }
     xmlRequestBody = this.cim.PhysicalPackage(CIM_Methods.PULL, (this.messageId++).toString(), enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
     const pullResponse = await this.ciraHandler.Pull<CIM_PhysicalPackage>(this.ciraSocket, xmlRequestBody)
@@ -200,6 +204,7 @@ export class ConnectedDevice {
     const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
     if (enumResponse == null) {
       logger.error('failed to get CIM System Packaging')
+      return null
     }
     xmlRequestBody = this.cim.SystemPackaging(CIM_Methods.PULL, (this.messageId++).toString(), enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
     const pullResponse = await this.ciraHandler.Pull<CIM_SystemPackaging>(this.ciraSocket, xmlRequestBody)
@@ -211,10 +216,31 @@ export class ConnectedDevice {
     const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
     if (enumResponse == null) {
       logger.error('failed to get CIM Chip')
+      return null
     }
     xmlRequestBody = this.cim.Chip(CIM_Methods.PULL, (this.messageId++).toString(), enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
     const pullResponse = await this.ciraHandler.Pull<CIM_Chip>(this.ciraSocket, xmlRequestBody)
     return pullResponse
+  }
+
+  async getEventLog (): Promise<Response<AMT_MessageLog>> {
+    let xmlRequestBody = this.amt.MessageLog(AMT_Methods.POSITION_TO_FIRSTRECORD, (this.messageId++).toString())
+    console.log('xmlRequestBody :', xmlRequestBody)
+    const response = await this.ciraHandler.Get<{PositionToFirstRecord_OUTPUT: {
+      IterationIdentifier: string
+      ReturnValue: string
+    }}>(this.ciraSocket, xmlRequestBody)
+    if (response == null) {
+      logger.error('failed to get position to first record of AMT_MessageLog')
+      return null
+    }
+    xmlRequestBody = this.amt.MessageLog(AMT_Methods.GET_RECORDS, (this.messageId++).toString(), Number(response.Envelope.Body.PositionToFirstRecord_OUTPUT.IterationIdentifier))
+    console.log('xmlRequestBody :', xmlRequestBody)
+    const eventLogs = await this.ciraHandler.Get<AMT_MessageLog>(this.ciraSocket, xmlRequestBody)
+    if (eventLogs == null) {
+      logger.error('failed to get AMT_MessageLog')
+    }
+    return eventLogs
   }
 
   async getAuditLog (startIndex: number): Promise<AMT_AuditLog_ReadRecords> {
