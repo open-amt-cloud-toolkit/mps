@@ -108,7 +108,7 @@ export class CIRAHandler {
     return await this.Send(socket, rawXml)
   }
 
-  private async Send (socket: CIRASocket, rawXml: string): Promise<any> {
+  async Send (socket: CIRASocket, rawXml: string): Promise<any> {
     let result
     try {
       result = await this.Go(this.SetupCiraChannel(socket, amtPort), rawXml)
@@ -125,6 +125,10 @@ export class CIRAHandler {
 
   private async Go (channel: CIRAChannel, rawXml: string): Promise<Enumerate | any> {
     return await new Promise((resolve, reject) => {
+      // Set up the timeout
+      const timer = setTimeout(() => {
+        reject(new Error('Promise timed out after 5000 ms'))
+      }, 5000)
       channel.onData = (data: string = ''): void => {
         this.rawChunkedData += data
         if (this.rawChunkedData.includes('401 Unauthorized') && (this.rawChunkedData.includes('</html>'))) {
@@ -132,10 +136,12 @@ export class CIRAHandler {
           if (this.digestChallenge != null) {
             // resend original message
             // if (item.name === 'Content-Length' && message.bodySize === parseInt(item.value)) {
+            clearTimeout(timer)
             reject(new Error('Unauthorized')) // could be better
           }
         } else if (this.rawChunkedData.includes('0\r\n\r\n')) {
           const response = this.parseBody(this.rawChunkedData)
+          clearTimeout(timer)
           resolve(response)
         }
       }

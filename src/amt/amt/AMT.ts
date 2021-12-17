@@ -25,32 +25,32 @@ export class AMT {
   readonly resourceUriBase: string = 'http://intel.com/wbem/wscim/1/amt-schema/1/'
 
   private readonly get = (action: AllActions, amtClass: Classes, messageId: string): string => {
-    const header: string = this.wsmanMessageCreator.createHeader(action, `${this.resourceUriBase}${amtClass}`, messageId)
-    const body: string = this.wsmanMessageCreator.createBody(Methods.GET)
+    const header = this.wsmanMessageCreator.createHeader(action, `${this.resourceUriBase}${amtClass}`, messageId)
+    const body = this.wsmanMessageCreator.createBody(Methods.GET)
     return this.wsmanMessageCreator.createXml(header, body)
   }
 
   private readonly enumerate = (action: AllActions, amtClass: Classes, messageId: string): string => {
-    const header: string = this.wsmanMessageCreator.createHeader(action, `${this.resourceUriBase}${amtClass}`, messageId)
-    const body: string = this.wsmanMessageCreator.createBody(Methods.ENUMERATE)
+    const header = this.wsmanMessageCreator.createHeader(action, `${this.resourceUriBase}${amtClass}`, messageId)
+    const body = this.wsmanMessageCreator.createBody(Methods.ENUMERATE)
     return this.wsmanMessageCreator.createXml(header, body)
   }
 
   private readonly pull = (action: AllActions, amtClass: Classes, messageId: string, enumerationContext: string): string => {
-    const header: string = this.wsmanMessageCreator.createHeader(action, `${this.resourceUriBase}${amtClass}`, messageId)
-    const body: string = this.wsmanMessageCreator.createBody(Methods.PULL, enumerationContext)
+    const header = this.wsmanMessageCreator.createHeader(action, `${this.resourceUriBase}${amtClass}`, messageId)
+    const body = this.wsmanMessageCreator.createBody(Methods.PULL, enumerationContext)
     return this.wsmanMessageCreator.createXml(header, body)
   }
 
   private readonly delete = (action: AllActions, amtClass: Classes, messageId: string, selector: Selector): string => {
-    const header: string = this.wsmanMessageCreator.createHeader(action, `${this.resourceUriBase}${amtClass}`, messageId, null, null, selector)
-    const body: string = this.wsmanMessageCreator.createBody(Methods.DELETE)
+    const header = this.wsmanMessageCreator.createHeader(action, `${this.resourceUriBase}${amtClass}`, messageId, null, null, selector)
+    const body = this.wsmanMessageCreator.createBody(Methods.DELETE)
     return this.wsmanMessageCreator.createXml(header, body)
   }
 
   private readonly requestStateChange = (action: AllActions, amtClass: Classes, messageId: string, requestedState: number): string => {
-    const header: string = this.wsmanMessageCreator.createHeader(action, `${this.resourceUriBase}${amtClass}`, messageId)
-    const body: string = this.wsmanMessageCreator.createBody(Methods.REQUEST_STATE_CHANGE, null, `${this.resourceUriBase}${amtClass}`, requestedState)
+    const header = this.wsmanMessageCreator.createHeader(action, `${this.resourceUriBase}${amtClass}`, messageId)
+    const body = this.wsmanMessageCreator.createBody(Methods.REQUEST_STATE_CHANGE, null, `${this.resourceUriBase}${amtClass}`, requestedState)
     return this.wsmanMessageCreator.createXml(header, body)
   }
 
@@ -75,7 +75,8 @@ export class AMT {
   }
 
   AuditLog = (method: Methods.READ_RECORDS, messageId: string, startIndex: number): string => {
-    let header: string, body: string
+    let header: string
+    let body: string
     switch (method) {
       case Methods.READ_RECORDS:
         header = this.wsmanMessageCreator.createHeader(Actions.READ_RECORDS, `${this.resourceUriBase}${Classes.AMT_AUDIT_LOG}`, messageId)
@@ -216,7 +217,7 @@ export class AMT {
         if (bootSettingData == null) { throw new Error(WSManErrors.BOOT_SETTING_DATA) }
         const header = this.wsmanMessageCreator.createHeader(Actions.PUT, `${this.resourceUriBase}${Classes.AMT_BOOT_SETTING_DATA}`, messageId)
         let body = '<Body><r:AMT_BootSettingData xmlns:r="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_BootSettingData">'
-        bootSettingData.BiosLastStatus?.forEach(function (item) {
+        bootSettingData.BIOSLastStatus?.forEach(function (item) {
           body += `<r:BIOSLastStatus>${item}</r:BIOSLastStatus>`
         })
         bootSettingData.UEFIBootNumberOfParams?.forEach(function (item) {
@@ -225,7 +226,7 @@ export class AMT {
         bootSettingData.UEFIBootParametersArray?.forEach(function (item) {
           body += `<r:UEFIBootParametersArray>${item}</r:UEFIBootParametersArray>`
         })
-        body += `<r:BIOSPause>${String(bootSettingData.BiosPause)}</r:BIOSPause><r:BIOSSetup>${String(bootSettingData.BiosSetup)}</r:BIOSSetup><r:BootMediaIndex>${bootSettingData.BootMediaIndex}</r:BootMediaIndex><r:ConfigurationDataReset>${String(bootSettingData.ConfigurationDataReset)}</r:ConfigurationDataReset><r:ElementName>${bootSettingData.ElementName}</r:ElementName><r:EnforceSecureBoot>${String(bootSettingData.EnforceSecureBoot)}</r:EnforceSecureBoot><r:FirmwareVerbosity>${String(bootSettingData.FirmwareVerbosity)}</r:FirmwareVerbosity><r:ForcedProgressEvents>${String(bootSettingData.ForcedProgressEvents)}</r:ForcedProgressEvents><r:IDERBootDevice>${bootSettingData.IDERBootDevice}</r:IDERBootDevice><r:InstanceID>${bootSettingData.InstanceId}</r:InstanceID><r:LockKeyboard>${String(bootSettingData.LockKeyboard)}</r:LockKeyboard><r:LockPowerButton>${String(bootSettingData.LockPowerButton)}</r:LockPowerButton><r:LockResetButton>${String(bootSettingData.LockResetButton)}</r:LockResetButton><r:LockSleepButton>${String(bootSettingData.LockSleepButton)}</r:LockSleepButton><r:OptionsCleared>${String(bootSettingData.OptionsCleared)}</r:OptionsCleared><r:OwningEntity>${bootSettingData.OwningEntity}</r:OwningEntity><r:ReflashBIOS>${String(bootSettingData.ReflashBIOS)}</r:ReflashBIOS><r:SecureErase>${String(bootSettingData.SecureErase)}</r:SecureErase><r:UseIDER>${String(bootSettingData.UseIDER)}</r:UseIDER><r:UseSOL>${String(bootSettingData.UseSOL)}</r:UseSOL><r:UseSafeMode>${String(bootSettingData.UseSafeMode)}</r:UseSafeMode><r:UserPasswordBypass>${String(bootSettingData.UserPasswordBypass)}</r:UserPasswordBypass></r:AMT_BootSettingData></Body>`
+        body += `<r:BIOSPause>${String(bootSettingData.BIOSPause)}</r:BIOSPause><r:BIOSSetup>${String(bootSettingData.BIOSSetup)}</r:BIOSSetup><r:BootMediaIndex>${bootSettingData.BootMediaIndex}</r:BootMediaIndex><r:ConfigurationDataReset>${String(bootSettingData.ConfigurationDataReset)}</r:ConfigurationDataReset><r:ElementName>${bootSettingData.ElementName}</r:ElementName><r:EnforceSecureBoot>${String(bootSettingData.EnforceSecureBoot)}</r:EnforceSecureBoot><r:FirmwareVerbosity>${String(bootSettingData.FirmwareVerbosity)}</r:FirmwareVerbosity><r:ForcedProgressEvents>${String(bootSettingData.ForcedProgressEvents)}</r:ForcedProgressEvents><r:IDERBootDevice>${bootSettingData.IDERBootDevice}</r:IDERBootDevice><r:InstanceID>${bootSettingData.InstanceId}</r:InstanceID><r:LockKeyboard>${String(bootSettingData.LockKeyboard)}</r:LockKeyboard><r:LockPowerButton>${String(bootSettingData.LockPowerButton)}</r:LockPowerButton><r:LockResetButton>${String(bootSettingData.LockResetButton)}</r:LockResetButton><r:LockSleepButton>${String(bootSettingData.LockSleepButton)}</r:LockSleepButton><r:OptionsCleared>${String(bootSettingData.OptionsCleared)}</r:OptionsCleared><r:OwningEntity>${bootSettingData.OwningEntity}</r:OwningEntity><r:ReflashBIOS>${String(bootSettingData.ReflashBIOS)}</r:ReflashBIOS><r:SecureErase>${String(bootSettingData.SecureErase)}</r:SecureErase><r:UseIDER>${String(bootSettingData.UseIDER)}</r:UseIDER><r:UseSOL>${String(bootSettingData.UseSOL)}</r:UseSOL><r:UseSafeMode>${String(bootSettingData.UseSafeMode)}</r:UseSafeMode><r:UserPasswordBypass>${String(bootSettingData.UserPasswordBypass)}</r:UserPasswordBypass></r:AMT_BootSettingData></Body>`
         return this.wsmanMessageCreator.createXml(header, body)
       }
       default:

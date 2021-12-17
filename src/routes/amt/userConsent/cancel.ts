@@ -11,7 +11,7 @@ export async function cancel (req: Request, res: Response): Promise<void> {
   try {
     const guid: string = req.params.guid
     // Cancel a previous opt-in code request.
-    const response = await devices[guid].cancelUserConsetCode()
+    const response = await devices[guid].cancelUserConsentCode()
     if (response != null) {
       MqttProvider.publishEvent('success', ['Cancel_User_Consent_Code'], 'cancelled user consent code', guid)
       const result = {

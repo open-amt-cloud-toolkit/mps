@@ -214,11 +214,9 @@ const APFProcessor = {
     const recipientChannel = Common.ReadInt(data, 1)
     const senderChannel = Common.ReadInt(data, 5)
     const windowSize = Common.ReadInt(data, 9)
-    console.log(`WindowsSize : ${windowSize}, SenderChannel : ${senderChannel}, RecipientChannel: ${recipientChannel}`)
     socket.tag.activetunnels++
     const cirachannel = socket.tag.channels[recipientChannel]
     if (cirachannel == null) {
-      /* console.log("MPS Error in CHANNEL_OPEN_CONFIRMATION: Unable to find channelid " + RecipientChannel); */
       return 17
     }
     cirachannel.amtchannelid = senderChannel
@@ -231,7 +229,6 @@ const APFProcessor = {
       cirachannel.state = 2
       // Send any pending data
       if (cirachannel.sendBuffer != null) {
-        console.log(`Credits : ${cirachannel.sendcredits}`)
         if (cirachannel.sendBuffer.length <= cirachannel.sendcredits) {
           // Send the entire pending buffer
           APFProcessor.SendChannelData(cirachannel.socket, cirachannel.amtchannelid, cirachannel.sendBuffer)

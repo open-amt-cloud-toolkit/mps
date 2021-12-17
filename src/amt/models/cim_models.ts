@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
+import { ReturnValue } from './common'
+
 export interface CIM_ManagedElement {
   Caption?: string
   Description?: string
@@ -339,4 +341,8 @@ export interface CIM_MessageLog extends CIM_Log {
   RecordLastChanged: number
   IsFrozen: boolean
   CharacterSet: number
+}
+
+export interface PowerActionResponse{
+  RequestPowerStateChange_OUTPUT: ReturnValue
 }

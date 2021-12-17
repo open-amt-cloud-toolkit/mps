@@ -12,7 +12,7 @@ export async function request (req: Request, res: Response): Promise<void> {
   try {
     const guid: string = req.params.guid
     // Request an opt-in code. Intel(R) AMT generates code internally.
-    const response = await devices[guid].requestUserConsetCode()
+    const response = await devices[guid].requestUserConsentCode()
     if (response != null) {
       MqttProvider.publishEvent('success', ['Request_User_Consent_Code'], 'Requested user consent code', guid)
       const result = {

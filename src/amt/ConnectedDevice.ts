@@ -17,9 +17,11 @@ import {
   CIM_PhysicalPackage,
   CIM_Processor,
   CIM_SoftwareIdentity,
-  CIM_SystemPackaging
+  CIM_SystemPackaging,
+  PowerActionResponse
 } from './models/cim_models'
-import { AMT_GeneralSettings, AMT_BootCapabilities, AMT_SetupAndConfigurationService, AMT_AuditLog_ReadRecords, AMT_MessageLog } from './models/amt_models'
+import { AMT_GeneralSettings, AMT_BootCapabilities, AMT_SetupAndConfigurationService, AMT_AuditLog_ReadRecords, AMT_MessageLog, AMT_BootSettingData, AMT_BootSettingDataResponse } from './models/amt_models'
+
 import { Pull, Response } from './models/common'
 import { CancelOptIn_OUTPUT, SendOptInCode_OUTPUT, StartOptIn_OUTPUT } from './models/ips_models'
 export class ConnectedDevice {
@@ -57,6 +59,39 @@ export class ConnectedDevice {
       return null
     }
     return pullResponse
+  }
+
+  async forceBootMode (bootSource: string = 'Intel(r) AMT: Boot Configuration 0', role: number = 1): Promise<number> {
+    const xmlRequestBody = this.cim.BootService(CIM_Methods.SET_BOOT_CONFIG_ROLE, (this.messageId++).toString(), bootSource, role)
+    const result = await this.ciraHandler.Send(this.ciraSocket, xmlRequestBody)
+    return result
+  }
+
+  // todo: convert to string enum
+  async changeBootOrder (bootSource: string): Promise<any> {
+    const bootChoice = `<Address xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing">http://schemas.xmlsoap.org/ws/2004/08/addressing</Address><ReferenceParameters xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing"><ResourceURI xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootSourceSetting</ResourceURI><SelectorSet xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"><Selector Name="InstanceID">Intel(r) AMT: ${bootSource}</Selector></SelectorSet></ReferenceParameters>`
+    const xmlRequestBody = this.cim.BootConfigSetting(CIM_Methods.CHANGE_BOOT_ORDER, (this.messageId++).toString(), bootChoice)
+    const result = await this.ciraHandler.Send(this.ciraSocket, xmlRequestBody)
+    return result
+  }
+
+  async setBootConfiguration (data: AMT_BootSettingData): Promise<any> {
+    const xmlRequestBody = this.amt.BootSettingData(AMT_Methods.PUT, (this.messageId++).toString(), data)
+    const result = await this.ciraHandler.Send(this.ciraSocket, xmlRequestBody)
+    return result.Envelope.Body
+  }
+
+  async getBootOptions (): Promise<AMT_BootSettingDataResponse> {
+    const xmlRequestBody = this.amt.BootSettingData(AMT_Methods.GET, (this.messageId++).toString())
+    const result = await this.ciraHandler.Get<AMT_BootSettingDataResponse>(this.ciraSocket, xmlRequestBody)
+    return result.Envelope.Body
+  }
+
+  async sendPowerAction (powerState: number): Promise<PowerActionResponse> {
+    const cim = new CIM()
+    const xmlToSend = cim.PowerManagementService(CIM_Methods.REQUEST_POWER_STATE_CHANGE, (this.messageId++).toString(), powerState)
+    const result = await this.ciraHandler.Get<PowerActionResponse>(this.ciraSocket, xmlToSend)
+    return result.Envelope.Body
   }
 
   async getVersion (): Promise<any> {
@@ -109,19 +144,19 @@ export class ConnectedDevice {
     return result
   }
 
-  async requestUserConsetCode (): Promise<any> {
+  async requestUserConsentCode (): Promise<any> {
     const xmlRequestBody = this.ips.OptInService(IPS_Methods.START_OPT_IN, (this.messageId++).toString())
     const getResponse = await this.ciraHandler.Get<StartOptIn_OUTPUT>(this.ciraSocket, xmlRequestBody)
     return getResponse
   }
 
-  async cancelUserConsetCode (): Promise<any> {
+  async cancelUserConsentCode (): Promise<any> {
     const xmlRequestBody = this.ips.OptInService(IPS_Methods.CANCEL_OPT_IN, (this.messageId++).toString())
     const getResponse = await this.ciraHandler.Get<CancelOptIn_OUTPUT>(this.ciraSocket, xmlRequestBody)
     return getResponse
   }
 
-  async sendUserConsetCode (code: Number): Promise<any> {
+  async sendUserConsentCode (code: Number): Promise<any> {
     const xmlRequestBody = this.ips.OptInService(IPS_Methods.SEND_OPT_IN_CODE, (this.messageId++).toString(), code)
     const getResponse = await this.ciraHandler.Get<SendOptInCode_OUTPUT>(this.ciraSocket, xmlRequestBody)
     return getResponse
@@ -225,7 +260,6 @@ export class ConnectedDevice {
 
   async getEventLog (): Promise<Response<AMT_MessageLog>> {
     let xmlRequestBody = this.amt.MessageLog(AMT_Methods.POSITION_TO_FIRSTRECORD, (this.messageId++).toString())
-    console.log('xmlRequestBody :', xmlRequestBody)
     const response = await this.ciraHandler.Get<{PositionToFirstRecord_OUTPUT: {
       IterationIdentifier: string
       ReturnValue: string
@@ -235,7 +269,6 @@ export class ConnectedDevice {
       return null
     }
     xmlRequestBody = this.amt.MessageLog(AMT_Methods.GET_RECORDS, (this.messageId++).toString(), Number(response.Envelope.Body.PositionToFirstRecord_OUTPUT.IterationIdentifier))
-    console.log('xmlRequestBody :', xmlRequestBody)
     const eventLogs = await this.ciraHandler.Get<AMT_MessageLog>(this.ciraSocket, xmlRequestBody)
     if (eventLogs == null) {
       logger.error('failed to get AMT_MessageLog')
@@ -248,7 +281,7 @@ export class ConnectedDevice {
     const getResponse = await this.ciraHandler.Get<AMT_AuditLog_ReadRecords>(this.ciraSocket, xmlRequestBody)
     if (getResponse == null) {
       logger.error('failed to get audit log')
-      return null
+      throw new Error('unable to retrieve audit log')
     }
     return getResponse.Envelope.Body
   }
