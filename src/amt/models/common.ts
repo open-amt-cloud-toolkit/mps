@@ -58,3 +58,7 @@ export interface AuditLogReadRecordsOutput {
   EventRecords: string[]
   ReturnValue: string
 }
+export interface ReturnValue{
+  ReturnValue: number
+  ReturnValueStr?: string
+}

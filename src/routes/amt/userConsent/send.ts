@@ -12,7 +12,7 @@ export async function send (req: Request, res: Response): Promise<void> {
   const guid: string = req.params.guid
   try {
     // Cancel a previous opt-in code request.
-    const response = await devices[guid].sendUserConsetCode(userConsentCode)
+    const response = await devices[guid].sendUserConsentCode(userConsentCode)
     if (response != null) {
       MqttProvider.publishEvent('success', ['Send_User_Consent_Code'], 'Sent user consent code', guid)
       const result = {

@@ -4,7 +4,7 @@
 **********************************************************************/
 
 import { CIM } from './CIM'
-import { Selector, WSManErrors } from '../WSMan'
+import { WSManErrors } from '../WSMan'
 import { Classes, Methods } from '.'
 
 describe('CIM Tests', () => {
@@ -194,10 +194,10 @@ describe('CIM Tests', () => {
   })
   describe('cim_BootService Tests', () => {
     it('should return a valid cim_BootService SetBootConfigRole wsman message', () => {
-      const selector: Selector = { name: 'InstanceID', value: 'Intel(r) AMT: Boot Configuration 0' }
+      const bootSource: string = 'Intel(r) AMT: Boot Configuration 0'
       const role: number = 1
-      const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootService/SetBootConfigRole</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootService</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body><r:SetBootConfigRole_INPUT xmlns:r="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootService"><r:BootConfigSetting><Address xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing">http://schemas.xmlsoap.org/ws/2004/08/addressing</Address><ReferenceParameters xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing"><ResourceURI xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootConfigSetting</ResourceURI><SelectorSet xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"><Selector Name="${selector.name}">${selector.value}</Selector></SelectorSet></ReferenceParameters></r:BootConfigSetting><r:Role>${role}</r:Role></r:SetBootConfigRole_INPUT></Body></Envelope>`
-      const response = cimClass.BootService(Methods.SET_BOOT_CONFIG_ROLE, messageId, selector, role)
+      const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootService/SetBootConfigRole</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootService</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body><r:SetBootConfigRole_INPUT xmlns:r="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootService"><r:BootConfigSetting><Address xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing">http://schemas.xmlsoap.org/ws/2004/08/addressing</Address><ReferenceParameters xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing"><ResourceURI xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootConfigSetting</ResourceURI><SelectorSet xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"><Selector Name="InstanceID">${bootSource}</Selector></SelectorSet></ReferenceParameters></r:BootConfigSetting><r:Role>${role}</r:Role></r:SetBootConfigRole_INPUT></Body></Envelope>`
+      const response = cimClass.BootService(Methods.SET_BOOT_CONFIG_ROLE, messageId, bootSource, role)
       expect(response).toEqual(correctResponse)
     })
     it('should throw error if selector is missing from cim_BootService SetBootConfigRole method', () => {
@@ -205,8 +205,8 @@ describe('CIM Tests', () => {
       expect(() => { cimClass.BootService(Methods.SET_BOOT_CONFIG_ROLE, messageId, null, role) }).toThrow(WSManErrors.SELECTOR)
     })
     it('should throw error if role is missing from cim_BootService SetBootConfigRole method', () => {
-      const selector: Selector = { name: 'InstanceID', value: 'Intel(r) AMT: Boot Configuration 0' }
-      expect(() => { cimClass.BootService(Methods.SET_BOOT_CONFIG_ROLE, messageId, selector) }).toThrow(WSManErrors.ROLE)
+      const selector: string = 'Intel(r) AMT: Boot Configuration 0'
+      expect(() => { cimClass.BootService(Methods.SET_BOOT_CONFIG_ROLE, messageId, selector, null) }).toThrow(WSManErrors.ROLE)
     })
     it('should throw error if an unsupported method is called', () => {
       expect(() => { (cimClass as any).BootService(Methods.CHANGE_BOOT_ORDER, messageId) }).toThrow(WSManErrors.UNSUPPORTED_METHOD)
@@ -214,8 +214,8 @@ describe('CIM Tests', () => {
   })
   describe('cim_BootConfigSetting Tests', () => {
     it('should return a valid cim_BootConfigSetting ChangeBootOrder wsman message', () => {
-      const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootConfigSetting/ChangeBootOrder</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootConfigSetting</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body><r:ChangeBootOrder_INPUT xmlns:r="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootConfigSetting"></r:ChangeBootOrder_INPUT></Body></Envelope>`
-      const response = cimClass.BootConfigSetting(Methods.CHANGE_BOOT_ORDER, messageId)
+      const correctResponse = `<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootConfigSetting/ChangeBootOrder</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootConfigSetting</w:ResourceURI><a:MessageID>${messageId}</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>${operationTimeout}</w:OperationTimeout></Header><Body><r:ChangeBootOrder_INPUT xmlns:r="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootConfigSetting"><r:Source>source</r:Source></r:ChangeBootOrder_INPUT></Body></Envelope>`
+      const response = cimClass.BootConfigSetting(Methods.CHANGE_BOOT_ORDER, messageId, 'source')
       expect(response).toEqual(correctResponse)
     })
     it('should throw error if an unsupported method is called', () => {

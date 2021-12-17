@@ -16,7 +16,7 @@ describe('cancel user consent code', () => {
     resSpy.send.mockReturnThis()
 
     devices['4c4c4544-004b-4210-8033-b6c04f504633'] = new ConnectedDevice(null, 'admin', 'P@ssw0rd')
-    cancelUserConsetCodeSpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'cancelUserConsetCode')
+    cancelUserConsetCodeSpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'cancelUserConsentCode')
   })
 
   it('should cancel user conset code', async () => {

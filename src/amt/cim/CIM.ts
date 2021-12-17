@@ -4,7 +4,7 @@
 **********************************************************************/
 
 import { Actions, Classes, Methods } from '.'
-import { Selector, WSManMessageCreator, WSManErrors } from '../WSMan'
+import { WSManMessageCreator, WSManErrors } from '../WSMan'
 
 interface CIMCall {
   method: Methods
@@ -103,13 +103,13 @@ export class CIM {
     return this.switch({ method: method, messageId: messageId, enumerationContext: enumerationContext, class: Classes.CIM_WIFI_ENDPOINT_SETTINGS })
   }
 
-  BootService = (method: Methods.SET_BOOT_CONFIG_ROLE, messageId: string, selector?: Selector, role?: number): string => {
+  BootService = (method: Methods.SET_BOOT_CONFIG_ROLE, messageId: string, bootSource: string, role: number): string => {
     switch (method) {
       case 'SetBootConfigRole': {
-        if (selector == null) { throw new Error(WSManErrors.SELECTOR) }
+        if (bootSource == null) { throw new Error(WSManErrors.SELECTOR) }
         if (role == null) { throw new Error(WSManErrors.ROLE) }
         const header = this.wsmanMessageCreator.createHeader(Actions.SET_BOOT_CONFIG_ROLE, `${this.resourceUriBase}${Classes.CIM_BOOT_SERVICE}`, messageId)
-        const body = `<Body><r:SetBootConfigRole_INPUT xmlns:r="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootService"><r:BootConfigSetting><Address xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing">http://schemas.xmlsoap.org/ws/2004/08/addressing</Address><ReferenceParameters xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing"><ResourceURI xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootConfigSetting</ResourceURI><SelectorSet xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"><Selector Name="InstanceID">${selector.value}</Selector></SelectorSet></ReferenceParameters></r:BootConfigSetting><r:Role>${role}</r:Role></r:SetBootConfigRole_INPUT></Body>`
+        const body = `<Body><r:SetBootConfigRole_INPUT xmlns:r="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootService"><r:BootConfigSetting><Address xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing">http://schemas.xmlsoap.org/ws/2004/08/addressing</Address><ReferenceParameters xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing"><ResourceURI xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootConfigSetting</ResourceURI><SelectorSet xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"><Selector Name="InstanceID">${bootSource}</Selector></SelectorSet></ReferenceParameters></r:BootConfigSetting><r:Role>${role}</r:Role></r:SetBootConfigRole_INPUT></Body>`
         return this.wsmanMessageCreator.createXml(header, body)
       }
       default:
@@ -117,11 +117,11 @@ export class CIM {
     }
   }
 
-  BootConfigSetting = (method: Methods.CHANGE_BOOT_ORDER, messageId: string): string => {
+  BootConfigSetting = (method: Methods.CHANGE_BOOT_ORDER, messageId: string, source: string): string => {
     switch (method) {
       case 'ChangeBootOrder': { // TODO: Example used was incomplete, per AMT SDK there is more work on body required for robust support
         const header = this.wsmanMessageCreator.createHeader(Actions.CHANGE_BOOT_ORDER, `${this.resourceUriBase}${Classes.CIM_BOOT_CONFIG_SETTING}`, messageId)
-        const body = '<Body><r:ChangeBootOrder_INPUT xmlns:r="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootConfigSetting"></r:ChangeBootOrder_INPUT></Body>'
+        const body = `<Body><r:ChangeBootOrder_INPUT xmlns:r="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootConfigSetting"><r:Source>${source}</r:Source></r:ChangeBootOrder_INPUT></Body>`
         return this.wsmanMessageCreator.createXml(header, body)
       }
       default:

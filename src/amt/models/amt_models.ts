@@ -170,12 +170,15 @@ export interface AMT_BootCapabilities extends CIM_ManagedElement{
     PlatformErase: number
   }
 }
+export interface AMT_BootSettingDataResponse {
+  AMT_BootSettingData: AMT_BootSettingData
+}
 export interface AMT_BootSettingData extends CIM_BootSettingData {
   UseSOL?: boolean
   UseSafeMode?: boolean
   ReflashBIOS?: boolean
-  BiosSetup?: boolean
-  BiosPause?: boolean
+  BIOSSetup?: boolean
+  BIOSPause?: boolean
   LockPowerButton?: boolean
   LockResetButton?: boolean
   LockKeyboard?: boolean
@@ -196,7 +199,7 @@ export interface AMT_BootSettingData extends CIM_BootSettingData {
   UEFIHTTPSBootEnabled?: boolean
   SecureBootControlEnabled?: boolean
   BootguardStatus?: boolean
-  BiosLastStatus?: number[]
+  BIOSLastStatus?: number[]
   UEFIBootParametersArray?: number[]
   UEFIBootNumberOfParams?: number[]
 }
