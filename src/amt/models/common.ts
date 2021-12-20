@@ -58,6 +58,52 @@ export interface AuditLogReadRecordsOutput {
   EventRecords: string[]
   ReturnValue: string
 }
+
+export const enum CIM_KVM_REDIRECTION_SAP_REQUESTED_STATE {
+  Unknown = 0,
+  Enabled = 2,
+  Disabled = 3,
+  Shutdown = 4,
+  NoChange = 5,
+  Offline = 6,
+  Test = 7,
+  Deferred = 8,
+  Quiesce = 9,
+  Reboot = 10,
+  Reset = 11,
+  NotApplicable = 12
+}
+
+export const enum CIM_KVM_REDIRECTION_SAP_ENABLED_STATE {
+  Unknown = 0,
+  Other = 1,
+  Enabled = 2,
+  Disabled = 3,
+  ShuttingDown = 4,
+  NotApplicable = 5,
+  EnabledButOffline = 6,
+  InTest = 7,
+  Deferred = 8,
+  Quiesce = 9,
+  Starting = 10,
+  DmftReserved = 11
+}
+
+export const enum AMT_REDIRECTION_SERVICE_ENABLE_STATE {
+  Unknown = 0,
+  Other = 1,
+  Enabled = 2,
+  Disabled = 3,
+  ShuttingDown = 4,
+  NotApplicable = 5,
+  EnabledButOffline = 6,
+  InTest = 7,
+  Deferred = 8,
+  Quiesce = 9,
+  Starting = 10,
+  DmftReserved = 11
+}
+
 export interface ReturnValue{
   ReturnValue: number
   ReturnValueStr?: string

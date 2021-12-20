@@ -245,3 +245,25 @@ export interface AMT_AuditLog_ReadRecords {
     ReturnValue: string
   }
 }
+
+export interface AMT_RedirectionResponse{
+  AMT_RedirectionService: AMT_RedirectionService
+}
+export interface AMT_RedirectionService{
+  // The Name property uniquely identifies the Service and provides an indication of the functionality that is managed . . .
+  Name: string
+  // CreationClassName indicates the name of the class or the subclass that is used in the creation of an instance . . .
+  CreationClassName: string
+  // The Name of the scoping System.
+  SystemName: string
+  // The CreationClassName of the scoping System.
+  SystemCreationClassName: string
+  // A user-friendly name for the object . . .
+  ElementName: string
+  // Describes the listener state of this service . . .
+  ListenerEnabled: boolean
+  // A list of string elements, describing recent IDE redirection operations . . .
+  AccessLog: string
+  // EnabledState is an integer enumeration that indicates the enabled and disabled states of an element . . .
+  EnabledState: number
+}

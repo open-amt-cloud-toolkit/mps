@@ -178,4 +178,27 @@ describe('Connected Device', () => {
       await expect(device.getAuditLog(1)).rejects.toThrow('unable to retrieve audit log')
     })
   })
+
+  describe('amt features', () => {
+    it('should get IPS Opt In Service', async () => {
+      getSpy.mockResolvedValueOnce({ Envelope: { Body: {} } })
+      const result = await device.getIpsOptInService()
+      expect(result).toEqual({})
+    })
+    it('should get kvm', async () => {
+      getSpy.mockResolvedValueOnce({ Envelope: { Body: {} } })
+      const result = await device.getKvmRedirectionSap()
+      expect(result).toEqual({})
+    })
+    it('should get redirection service', async () => {
+      getSpy.mockResolvedValueOnce({ Envelope: { Body: {} } })
+      const result = await device.getRedirectionService()
+      expect(result).toEqual({})
+    })
+    it('should get KVM redirection SAP', async () => {
+      getSpy.mockResolvedValueOnce({ Envelope: { Body: {} } })
+      const result = await device.getKvmRedirectionSap()
+      expect(result).toEqual({})
+    })
+  })
 })
