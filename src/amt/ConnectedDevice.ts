@@ -12,6 +12,7 @@ import {
   CIM_Chassis,
   CIM_Chip,
   CIM_ComputerSystemPackage,
+  CIM_KVMRedirectionSAPResponse,
   CIM_MediaAccessDevice,
   CIM_PhysicalMemory,
   CIM_PhysicalPackage,
@@ -20,10 +21,11 @@ import {
   CIM_SystemPackaging,
   PowerActionResponse
 } from './models/cim_models'
-import { AMT_GeneralSettings, AMT_BootCapabilities, AMT_SetupAndConfigurationService, AMT_AuditLog_ReadRecords, AMT_MessageLog, AMT_BootSettingData, AMT_BootSettingDataResponse } from './models/amt_models'
+
+import { AMT_GeneralSettings, AMT_BootCapabilities, AMT_SetupAndConfigurationService, AMT_AuditLog_ReadRecords, AMT_MessageLog, AMT_BootSettingData, AMT_BootSettingDataResponse, AMT_RedirectionResponse } from './models/amt_models'
 
 import { Pull, Response } from './models/common'
-import { CancelOptIn_OUTPUT, SendOptInCode_OUTPUT, StartOptIn_OUTPUT } from './models/ips_models'
+import { CancelOptIn_OUTPUT, IPS_OptInServiceResponse, SendOptInCode_OUTPUT, StartOptIn_OUTPUT } from './models/ips_models'
 export class ConnectedDevice {
   isConnected: boolean = false
   httpHandler: HttpHandler
@@ -59,6 +61,24 @@ export class ConnectedDevice {
       return null
     }
     return pullResponse
+  }
+
+  async getIpsOptInService (): Promise<IPS_OptInServiceResponse> {
+    const xmlRequestBody = this.ips.OptInService(IPS_Methods.GET, (this.messageId++).toString())
+    const result = await this.ciraHandler.Get<IPS_OptInServiceResponse>(this.ciraSocket, xmlRequestBody)
+    return result.Envelope.Body
+  }
+
+  async getRedirectionService (): Promise<AMT_RedirectionResponse> {
+    const xmlRequestBody = this.amt.RedirectionService(AMT_Methods.GET, (this.messageId++).toString())
+    const result = await this.ciraHandler.Get<AMT_RedirectionResponse>(this.ciraSocket, xmlRequestBody)
+    return result.Envelope.Body
+  }
+
+  async getKvmRedirectionSap (): Promise<CIM_KVMRedirectionSAPResponse> {
+    const xmlRequestBody = this.cim.KVMRedirectionSAP(CIM_Methods.GET, (this.messageId++).toString())
+    const result = await this.ciraHandler.Get<CIM_KVMRedirectionSAPResponse>(this.ciraSocket, xmlRequestBody)
+    return result.Envelope.Body
   }
 
   async forceBootMode (bootSource: string = 'Intel(r) AMT: Boot Configuration 0', role: number = 1): Promise<number> {

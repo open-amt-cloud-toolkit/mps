@@ -11,6 +11,9 @@ export interface IPS_HostBasedSetupService extends CIM_SecurityService {
   ConfigurationNonce?: number[]
   CertChainStatus?: number
 }
+export interface IPS_OptInServiceResponse{
+  IPS_OptInService: IPS_OptInService
+}
 export interface IPS_OptInService extends CIM_Service {
   OptInCodeTimeout?: number
   OptInRequired?: number

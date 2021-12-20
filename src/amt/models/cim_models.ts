@@ -342,7 +342,19 @@ export interface CIM_MessageLog extends CIM_Log {
   IsFrozen: boolean
   CharacterSet: number
 }
-
+export interface CIM_KVMRedirectionSAPResponse {
+  CIM_KVMRedirectionSAP: CIM_KVMRedirectionSAP
+}
+export interface CIM_KVMRedirectionSAP {
+  Name: string
+  CreationClassName: string
+  SystemName: string
+  SystemCreationClassName: string
+  ElementName: string
+  EnabledState: number
+  RequestedState: number
+  KVMProtocol: number
+}
 export interface PowerActionResponse{
   RequestPowerStateChange_OUTPUT: ReturnValue
 }
