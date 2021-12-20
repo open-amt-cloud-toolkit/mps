@@ -29,6 +29,30 @@ describe('cancel user consent code', () => {
     expect(resSpy.status).toHaveBeenCalledWith(200)
     expect(resSpy.json).toHaveBeenCalledWith(result)
   })
+  it('Should give an error when return value is not 0', async () => {
+    const result = {
+      Envelope: {
+        Header: {
+          To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+          RelatesTo: '0',
+          Action: 'http://intel.com/wbem/wscim/1/ips-schema/1/IPS_OptInService/CancelOptInResponse',
+          MessageID: 'uuid:00000000-8086-8086-8086-000000000786',
+          ResourceURI: 'http://intel.com/wbem/wscim/1/ips-schema/1/IPS_OptInService'
+        },
+        Body: {
+          CancelOptIn_OUTPUT: {
+            ReturnValue: '2',
+            ReturnValueStr: 'NOT_READY'
+          }
+        }
+      }
+    }
+    const response = { Header: result.Envelope.Header, Body: result.Envelope.Body.CancelOptIn_OUTPUT }
+    cancelUserConsetCodeSpy.mockResolvedValueOnce(result)
+    await cancel(req, resSpy)
+    expect(resSpy.status).toHaveBeenCalledWith(400)
+    expect(resSpy.json).toHaveBeenCalledWith(response)
+  })
   it('should get an error with status code 400, when failed to cancel user consent code', async () => {
     cancelUserConsetCodeSpy.mockResolvedValueOnce(null)
     await cancel(req, resSpy)
