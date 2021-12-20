@@ -63,6 +63,23 @@ export class ConnectedDevice {
     return pullResponse
   }
 
+  async getSoftwareIdentity (): Promise<any> {
+    let xmlRequestBody = this.cim.SoftwareIdentity(CIM_Methods.ENUMERATE, (this.messageId++).toString())
+    const result = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
+    const enumContext: string = result?.Envelope.Body?.EnumerateResponse?.EnumerationContext
+    if (enumContext == null) {
+      logger.error('failed to pull CIM_SoftwareIdentity in get version')
+      return null
+    }
+    xmlRequestBody = this.cim.SoftwareIdentity(CIM_Methods.PULL, (this.messageId++).toString(), enumContext)
+    const pullResponse = await this.ciraHandler.Pull<CIM_SoftwareIdentity>(this.ciraSocket, xmlRequestBody)
+    if (pullResponse == null) {
+      logger.error('failed to pull CIM_SoftwareIdentity in get version')
+      return null
+    }
+    return pullResponse
+  }
+
   async getIpsOptInService (): Promise<IPS_OptInServiceResponse> {
     const xmlRequestBody = this.ips.OptInService(IPS_Methods.GET, (this.messageId++).toString())
     const result = await this.ciraHandler.Get<IPS_OptInServiceResponse>(this.ciraSocket, xmlRequestBody)
@@ -114,42 +131,10 @@ export class ConnectedDevice {
     return result.Envelope.Body
   }
 
-  async getVersion (): Promise<any> {
-    let xmlRequestBody = this.cim.SoftwareIdentity(CIM_Methods.ENUMERATE, (this.messageId++).toString())
-    const result = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
-    const enumContext: string = result?.Envelope.Body?.EnumerateResponse?.EnumerationContext
-    if (enumContext == null) {
-      logger.error('failed to pull CIM_SoftwareIdentity in get version')
-      return null
-    }
-    xmlRequestBody = this.cim.SoftwareIdentity(CIM_Methods.PULL, (this.messageId++).toString(), enumContext)
-    const pullResponse = await this.ciraHandler.Pull<CIM_SoftwareIdentity>(this.ciraSocket, xmlRequestBody)
-    if (pullResponse == null) {
-      logger.error('failed to pull CIM_SoftwareIdentity in get version')
-      return null
-    }
-    xmlRequestBody = this.amt.SetupAndConfigurationService(AMT_Methods.GET, (this.messageId++).toString())
+  async getSetupAndConfigurationService (): Promise<any> {
+    const xmlRequestBody = this.amt.SetupAndConfigurationService(AMT_Methods.GET, (this.messageId++).toString())
     const getResponse = await this.ciraHandler.Get<AMT_SetupAndConfigurationService>(this.ciraSocket, xmlRequestBody)
-    if (getResponse == null) {
-      logger.error('failed to get AMT_SetupAndConfigurationService in get version')
-      return null
-    }
-    // matches version 2.x API for Open AMT
-    const response = {
-      CIM_SoftwareIdentity: {
-        responses: pullResponse.Envelope.Body.PullResponse.Items.CIM_SoftwareIdentity,
-        status: 200
-      },
-      AMT_SetupAndConfigurationService: {
-        response: getResponse.Envelope.Body.AMT_SetupAndConfigurationService,
-        responses: {
-          Header: getResponse.Envelope.Header,
-          Body: getResponse.Envelope.Body.AMT_SetupAndConfigurationService
-        },
-        status: 200
-      }
-    }
-    return response
+    return getResponse
   }
 
   async getGeneralSettings (): Promise<any> {

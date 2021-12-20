@@ -8,6 +8,7 @@ import {
   positionToFirstRecord,
   sendOptInCodeResponse,
   serviceAvailableToElement,
+  setupAndConfigurationServiceResponse,
   startOptInResponse
 } from '../test/helper/wsmanResponses'
 import { ConnectedDevice } from './ConnectedDevice'
@@ -26,6 +27,11 @@ describe('Connected Device', () => {
     getSpy = jest.spyOn(device.ciraHandler, 'Get')
     sendSpy = jest.spyOn(device.ciraHandler, 'Send')
   })
+
+  afterEach(() => {
+    getSpy.mockReset()
+  })
+
   describe('power', () => {
     it('should return null when enumerate call to power state is null', async () => {
       enumerateSpy.mockResolvedValueOnce(null)
@@ -73,36 +79,32 @@ describe('Connected Device', () => {
     it('should getBootOptions', async () => {
       getSpy.mockResolvedValue({ Envelope: { Body: {} } })
       const result = await device.getBootOptions()
-      expect(sendSpy).toHaveBeenCalled()
+      expect(getSpy).toHaveBeenCalled()
       expect(result).toEqual({})
     })
   })
+
   describe('version', () => {
     it('should return null when enumerate call to software identity is null', async () => {
       enumerateSpy.mockResolvedValueOnce(null)
-      const result = await device.getVersion()
+      const result = await device.getSoftwareIdentity()
       expect(result).toBe(null)
     })
     it('should return null when pull call to software identity is null', async () => {
       enumerateSpy.mockResolvedValueOnce({ Envelope: { Header: { To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous', RelatesTo: '0', Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/EnumerateResponse', MessageID: 'uuid:00000000-8086-8086-8086-000000000001', ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_SoftwareIdentity' }, Body: { EnumerateResponse: { EnumerationContext: '01000000-0000-0000-0000-000000000000' } } } })
       pullSpy.mockResolvedValue(null)
-      const result = await device.getVersion()
+      const result = await device.getSoftwareIdentity()
       expect(result).toBe(null)
     })
     it('should return null when get call to AMT SetupAndConfigurationService is null ', async () => {
-      enumerateSpy.mockResolvedValueOnce({ Envelope: { Header: { To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous', RelatesTo: '0', Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/EnumerateResponse', MessageID: 'uuid:00000000-8086-8086-8086-000000000001', ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_SoftwareIdentity' }, Body: { EnumerateResponse: { EnumerationContext: '01000000-0000-0000-0000-000000000000' } } } })
-      pullSpy.mockResolvedValueOnce({ Envelope: { Header: { To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous', RelatesTo: '1', Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse', MessageID: 'uuid:00000000-8086-8086-8086-000000000002', ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_SoftwareIdentity' }, Body: { PullResponse: { Items: { CIM_SoftwareIdentity: [{ InstanceID: 'Flash', IsEntity: 'true', VersionString: '15.0.23' }, { InstanceID: 'Netstack', IsEntity: 'true', VersionString: '15.0.23' }, { InstanceID: 'AMTApps', IsEntity: 'true', VersionString: '15.0.23' }, { InstanceID: 'AMT', IsEntity: 'true', VersionString: '15.0.23' }, { InstanceID: 'Sku', IsEntity: 'true', VersionString: '16392' }, { InstanceID: 'VendorID', IsEntity: 'true', VersionString: '8086' }, { InstanceID: 'Build Number', IsEntity: 'true', VersionString: '1706' }, { InstanceID: 'Recovery Version', IsEntity: 'true', VersionString: '15.0.23' }, { InstanceID: 'Recovery Build Num', IsEntity: 'true', VersionString: '1706' }, { InstanceID: 'Legacy Mode', IsEntity: 'true', VersionString: 'False' }, { InstanceID: 'AMT FW Core Version', IsEntity: 'true', VersionString: '15.0.23' }] }, EndOfSequence: '' } } } })
-      getSpy.mockResolvedValue(null)
-      const result = await device.getVersion()
+      getSpy.mockResolvedValueOnce(null)
+      const result = await device.getSoftwareIdentity()
       expect(result).toBe(null)
     })
-    it('should get version ', async () => {
-      enumerateSpy.mockResolvedValueOnce({ Envelope: { Header: { To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous', RelatesTo: '0', Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/EnumerateResponse', MessageID: 'uuid:00000000-8086-8086-8086-000000000001', ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_SoftwareIdentity' }, Body: { EnumerateResponse: { EnumerationContext: '01000000-0000-0000-0000-000000000000' } } } })
-      pullSpy.mockResolvedValueOnce({ Envelope: { Header: { To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous', RelatesTo: '1', Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse', MessageID: 'uuid:00000000-8086-8086-8086-000000000002', ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_SoftwareIdentity' }, Body: { PullResponse: { Items: { CIM_SoftwareIdentity: [{ InstanceID: 'Flash', IsEntity: 'true', VersionString: '15.0.23' }, { InstanceID: 'Netstack', IsEntity: 'true', VersionString: '15.0.23' }, { InstanceID: 'AMTApps', IsEntity: 'true', VersionString: '15.0.23' }, { InstanceID: 'AMT', IsEntity: 'true', VersionString: '15.0.23' }, { InstanceID: 'Sku', IsEntity: 'true', VersionString: '16392' }, { InstanceID: 'VendorID', IsEntity: 'true', VersionString: '8086' }, { InstanceID: 'Build Number', IsEntity: 'true', VersionString: '1706' }, { InstanceID: 'Recovery Version', IsEntity: 'true', VersionString: '15.0.23' }, { InstanceID: 'Recovery Build Num', IsEntity: 'true', VersionString: '1706' }, { InstanceID: 'Legacy Mode', IsEntity: 'true', VersionString: 'False' }, { InstanceID: 'AMT FW Core Version', IsEntity: 'true', VersionString: '15.0.23' }] }, EndOfSequence: '' } } } })
-      const getSpy = jest.spyOn(device.ciraHandler, 'Get')
-      getSpy.mockResolvedValue({ Envelope: { Header: { To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous', RelatesTo: '2', Action: 'http://schemas.xmlsoap.org/ws/2004/09/transfer/GetResponse', MessageID: 'uuid:00000000-8086-8086-8086-000000000003', ResourceURI: 'http://intel.com/wbem/wscim/1/amt-schema/1/AMT_SetupAndConfigurationService' }, Body: { AMT_SetupAndConfigurationService: { CreationClassName: 'AMT_SetupAndConfigurationService', ElementName: 'Intel(r) AMT Setup and Configuration Service', EnabledState: '5', Name: 'Intel(r) AMT Setup and Configuration Service', PasswordModel: '1', ProvisioningMode: '1', ProvisioningServerOTP: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=', ProvisioningState: '2', RequestedState: '12', SystemCreationClassName: 'CIM_ComputerSystem', SystemName: 'Intel(r) AMT', ZeroTouchConfigurationEnabled: 'true' } } } })
-      const result = await device.getVersion()
-      expect(result.CIM_SoftwareIdentity.status).toBe(200)
+    it('should get AMT SetupAndConfigurationService ', async () => {
+      getSpy.mockResolvedValueOnce(setupAndConfigurationServiceResponse)
+      const result = await device.getSetupAndConfigurationService()
+      expect(result).toBe(setupAndConfigurationServiceResponse)
     })
   })
 
@@ -181,7 +183,7 @@ describe('Connected Device', () => {
 
   describe('amt features', () => {
     it('should get IPS Opt In Service', async () => {
-      getSpy.mockResolvedValueOnce({ Envelope: { Body: {} } })
+      getSpy.mockResolvedValue({ Envelope: { Body: {} } })
       const result = await device.getIpsOptInService()
       expect(result).toEqual({})
     })

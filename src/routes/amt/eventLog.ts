@@ -72,6 +72,9 @@ export function GetEventDetailStr (eventSensorType: number, eventOffset: number,
 
 function parseEventLogs (response: any): EventLog[] {
   const recordArray: EventLog[] = []
+  if (typeof response.Envelope.Body.GetRecords_OUTPUT.RecordArray === 'string') {
+    response.Envelope.Body.GetRecords_OUTPUT.RecordArray = [response.Envelope.Body.GetRecords_OUTPUT.RecordArray]
+  }
   response.Envelope.Body.GetRecords_OUTPUT.RecordArray.forEach((record) => {
     const eventRecord = Buffer.from(record, 'base64')
     if (eventRecord != null) {

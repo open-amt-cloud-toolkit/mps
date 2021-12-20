@@ -9,13 +9,14 @@ import { logger as log } from '../../utils/logger'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { devices } from '../../server/mpsserver'
+import { getVersion } from './getVersion'
 
 export async function powerCapabilities (req: Request, res: Response): Promise<void> {
   try {
     const guid: string = req.params.guid
 
     MqttProvider.publishEvent('request', ['AMT_BootCapabilities'], 'Power Capabilities Requested', guid)
-    const version = await devices[guid].getVersion()
+    const version = await getVersion(guid)
     const powerCapabilities = await devices[guid].getPowerCapabilities()
     const bootCaps = bootCapabilities(version, powerCapabilities.Envelope.Body.AMT_BootCapabilities)
     MqttProvider.publishEvent('success', ['AMT_BootCapabilities'], 'Sent Power Capabilities', guid)
@@ -59,7 +60,7 @@ function bootCapabilities (amtVersionData, response): any {
 
 // Parse Version Data
 function parseVersionData (amtVersionData): number {
-  const verList = amtVersionData.CIM_SoftwareIdentity
+  const verList = amtVersionData.CIM_SoftwareIdentity.responses
   for (const i in verList) {
     if (verList[i].InstanceID === 'AMT') {
       return parseInt(verList[i].VersionString.split('.')[0])

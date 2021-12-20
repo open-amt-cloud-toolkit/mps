@@ -580,3 +580,186 @@ export const positionToFirstRecord = {
     }
   }
 }
+
+export const softwareIdentityResponse = {
+  Envelope: {
+    Header: {
+      To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+      RelatesTo: '1',
+      Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse',
+      MessageID: 'uuid:00000000-8086-8086-8086-000000000002',
+      ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_SoftwareIdentity'
+    },
+    Body: {
+      PullResponse: {
+        Items: {
+          CIM_SoftwareIdentity: [{
+            InstanceID: 'Flash',
+            IsEntity: 'true',
+            VersionString: '15.0.23'
+          }, {
+            InstanceID: 'Netstack',
+            IsEntity: 'true',
+            VersionString: '15.0.23'
+          }, {
+            InstanceID: 'AMTApps',
+            IsEntity: 'true',
+            VersionString: '15.0.23'
+          }, {
+            InstanceID: 'AMT',
+            IsEntity: 'true',
+            VersionString: '15.0.23'
+          }, {
+            InstanceID: 'Sku',
+            IsEntity: 'true',
+            VersionString: '16392'
+          }, {
+            InstanceID: 'VendorID',
+            IsEntity: 'true',
+            VersionString: '8086'
+          }, {
+            InstanceID: 'Build Number',
+            IsEntity: 'true',
+            VersionString: '1706'
+          }, {
+            InstanceID: 'Recovery Version',
+            IsEntity: 'true',
+            VersionString: '15.0.23'
+          }, {
+            InstanceID: 'Recovery Build Num',
+            IsEntity: 'true',
+            VersionString: '1706'
+          }, {
+            InstanceID: 'Legacy Mode',
+            IsEntity: 'true',
+            VersionString: 'False'
+          }, {
+            InstanceID: 'AMT FW Core Version',
+            IsEntity: 'true',
+            VersionString: '15.0.23'
+          }]
+        },
+        EndOfSequence: ''
+      }
+    }
+  }
+}
+
+export const setupAndConfigurationServiceResponse = {
+  Envelope: {
+    Header: {
+      To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+      RelatesTo: '2',
+      Action: 'http://schemas.xmlsoap.org/ws/2004/09/transfer/GetResponse',
+      MessageID: 'uuid:00000000-8086-8086-8086-000000000003',
+      ResourceURI: 'http://intel.com/wbem/wscim/1/amt-schema/1/AMT_SetupAndConfigurationService'
+    },
+    Body: {
+      AMT_SetupAndConfigurationService: {
+        CreationClassName: 'AMT_SetupAndConfigurationService',
+        ElementName: 'Intel(r) AMT Setup and Configuration Service',
+        EnabledState: '5',
+        Name: 'Intel(r) AMT Setup and Configuration Service',
+        PasswordModel: '1',
+        ProvisioningMode: '1',
+        ProvisioningServerOTP: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
+        ProvisioningState: '2',
+        RequestedState: '12',
+        SystemCreationClassName: 'CIM_ComputerSystem',
+        SystemName: 'Intel(r) AMT',
+        ZeroTouchConfigurationEnabled: 'true'
+      }
+    }
+  }
+}
+
+export const versionResponse = {
+  CIM_SoftwareIdentity: {
+    responses: [{
+      InstanceID: 'Flash',
+      IsEntity: 'true',
+      VersionString: '15.0.23'
+    }, {
+      InstanceID: 'Netstack',
+      IsEntity: 'true',
+      VersionString: '15.0.23'
+    }, {
+      InstanceID: 'AMTApps',
+      IsEntity: 'true',
+      VersionString: '15.0.23'
+    }, {
+      InstanceID: 'AMT',
+      IsEntity: 'true',
+      VersionString: '15.0.23'
+    }, {
+      InstanceID: 'Sku',
+      IsEntity: 'true',
+      VersionString: '16392'
+    }, {
+      InstanceID: 'VendorID',
+      IsEntity: 'true',
+      VersionString: '8086'
+    }, {
+      InstanceID: 'Build Number',
+      IsEntity: 'true',
+      VersionString: '1706'
+    }, {
+      InstanceID: 'Recovery Version',
+      IsEntity: 'true',
+      VersionString: '15.0.23'
+    }, {
+      InstanceID: 'Recovery Build Num',
+      IsEntity: 'true',
+      VersionString: '1706'
+    }, {
+      InstanceID: 'Legacy Mode',
+      IsEntity: 'true',
+      VersionString: 'False'
+    }, {
+      InstanceID: 'AMT FW Core Version',
+      IsEntity: 'true',
+      VersionString: '15.0.23'
+    }],
+    status: 200
+  },
+  AMT_SetupAndConfigurationService: {
+    response: {
+      CreationClassName: 'AMT_SetupAndConfigurationService',
+      ElementName: 'Intel(r) AMT Setup and Configuration Service',
+      EnabledState: '5',
+      Name: 'Intel(r) AMT Setup and Configuration Service',
+      PasswordModel: '1',
+      ProvisioningMode: '1',
+      ProvisioningServerOTP: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
+      ProvisioningState: '2',
+      RequestedState: '12',
+      SystemCreationClassName: 'CIM_ComputerSystem',
+      SystemName: 'Intel(r) AMT',
+      ZeroTouchConfigurationEnabled: 'true'
+    },
+    responses: {
+      Header: {
+        To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+        RelatesTo: '2',
+        Action: 'http://schemas.xmlsoap.org/ws/2004/09/transfer/GetResponse',
+        MessageID: 'uuid:00000000-8086-8086-8086-000000000003',
+        ResourceURI: 'http://intel.com/wbem/wscim/1/amt-schema/1/AMT_SetupAndConfigurationService'
+      },
+      Body: {
+        CreationClassName: 'AMT_SetupAndConfigurationService',
+        ElementName: 'Intel(r) AMT Setup and Configuration Service',
+        EnabledState: '5',
+        Name: 'Intel(r) AMT Setup and Configuration Service',
+        PasswordModel: '1',
+        ProvisioningMode: '1',
+        ProvisioningServerOTP: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
+        ProvisioningState: '2',
+        RequestedState: '12',
+        SystemCreationClassName: 'CIM_ComputerSystem',
+        SystemName: 'Intel(r) AMT',
+        ZeroTouchConfigurationEnabled: 'true'
+      }
+    },
+    status: 200
+  }
+}
