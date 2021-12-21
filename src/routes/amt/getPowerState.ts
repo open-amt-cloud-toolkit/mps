@@ -15,8 +15,8 @@ export async function powerState (req: Request, res: Response): Promise<void> {
     const guid: string = req.params.guid
     MqttProvider.publishEvent('request', ['AMT_PowerState'], 'Power State Requested', guid)
     const response = await devices[guid].getPowerState()
-    if (response?.Envelope?.Body?.PullResponse?.Items?.CIM_AssociatedPowerManagementService?.PowerState) {
-      res.status(200).send({ powerstate: response.Envelope.Body.PullResponse.Items.CIM_AssociatedPowerManagementService.PowerState })
+    if (response?.PullResponse?.Items?.CIM_AssociatedPowerManagementService?.PowerState) {
+      res.status(200).send({ powerstate: response.PullResponse.Items.CIM_AssociatedPowerManagementService.PowerState })
     } else {
       MqttProvider.publishEvent('fail', ['AMT_PowerState'], 'Failed to Get Power State', guid)
       log.error(`Request failed during powerstate fetch for guid : ${guid}.`)

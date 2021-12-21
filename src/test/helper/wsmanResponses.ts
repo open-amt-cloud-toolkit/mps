@@ -763,3 +763,48 @@ export const versionResponse = {
     status: 200
   }
 }
+
+export const bootCapabilities = {
+  Envelope: {
+    Header: {
+      To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+      RelatesTo: '3',
+      Action: 'http://schemas.xmlsoap.org/ws/2004/09/transfer/GetResponse',
+      MessageID: 'uuid:00000000-8086-8086-8086-00000000000C',
+      ResourceURI: 'http://intel.com/wbem/wscim/1/amt-schema/1/AMT_BootCapabilities'
+    },
+    Body: {
+      AMT_BootCapabilities: {
+        AMTSecureBootControl: 'false',
+        BIOSPause: 'false',
+        BIOSReflash: 'true',
+        BIOSSecureBoot: 'true',
+        BIOSSetup: 'true',
+        ConfigurationDataReset: 'false',
+        ElementName: 'Intel(r) AMT: Boot Capabilities',
+        ForceCDorDVDBoot: 'true',
+        ForceDiagnosticBoot: 'true',
+        ForceHardDriveBoot: 'true',
+        ForceHardDriveSafeModeBoot: 'false',
+        ForcePXEBoot: 'true',
+        ForceUEFIHTTPSBoot: 'false',
+        ForceUEFIPBABoot: 'false',
+        ForceWinREBoot: 'false',
+        ForcedProgressEvents: 'true',
+        IDER: 'true',
+        InstanceID: 'Intel(r) AMT:BootCapabilities 0',
+        KeyboardLock: 'true',
+        PowerButtonLock: 'true',
+        ResetButtonLock: 'false',
+        SOL: 'true',
+        SecureErase: 'true',
+        SleepButtonLock: 'false',
+        UEFIWiFiCoExistenceAndProfileShare: 'false',
+        UserPasswordBypass: 'true',
+        VerbosityQuiet: 'false',
+        VerbosityScreenBlank: 'false',
+        VerbosityVerbose: 'false'
+      }
+    }
+  }
+}

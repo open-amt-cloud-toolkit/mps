@@ -20,7 +20,7 @@ describe('event log', () => {
   })
 
   it('should get event logs', async () => {
-    eventLogSpy.mockResolvedValueOnce(amtMessageLog)
+    eventLogSpy.mockResolvedValueOnce(amtMessageLog.Envelope)
     await eventLog(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(200)
   })

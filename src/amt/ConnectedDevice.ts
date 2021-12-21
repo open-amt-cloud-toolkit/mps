@@ -22,9 +22,9 @@ import {
   PowerActionResponse
 } from './models/cim_models'
 
-import { AMT_GeneralSettings, AMT_BootCapabilities, AMT_SetupAndConfigurationService, AMT_AuditLog_ReadRecords, AMT_MessageLog, AMT_BootSettingData, AMT_BootSettingDataResponse, AMT_RedirectionResponse } from './models/amt_models'
+import { AMT_BootCapabilities, AMT_SetupAndConfigurationService, AMT_AuditLog_ReadRecords, AMT_MessageLog, AMT_BootSettingData, AMT_BootSettingDataResponse, AMT_RedirectionResponse, AMT_GeneralSettingsResponse } from './models/amt_models'
 
-import { Pull, Response } from './models/common'
+import { Envelope, Pull } from './models/common'
 import { CancelOptIn_OUTPUT, IPS_OptInServiceResponse, SendOptInCode_OUTPUT, StartOptIn_OUTPUT } from './models/ips_models'
 export class ConnectedDevice {
   isConnected: boolean = false
@@ -46,7 +46,7 @@ export class ConnectedDevice {
     this.ciraHandler = new CIRAHandler(this.httpHandler, username, password)
   }
 
-  async getPowerState (): Promise<Response<Pull<CIM_AssociatedPowerManagementService>>> {
+  async getPowerState (): Promise<Pull<CIM_AssociatedPowerManagementService>> {
     let xmlRequestBody = this.cim.ServiceAvailableToElement(CIM_Methods.ENUMERATE, (this.messageId++).toString())
     const result = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
     const enumContext: string = result?.Envelope?.Body?.EnumerateResponse?.EnumerationContext
@@ -56,14 +56,10 @@ export class ConnectedDevice {
     }
     xmlRequestBody = this.cim.ServiceAvailableToElement(CIM_Methods.PULL, (this.messageId++).toString(), enumContext)
     const pullResponse = await this.ciraHandler.Pull<CIM_AssociatedPowerManagementService>(this.ciraSocket, xmlRequestBody)
-    if (pullResponse == null) {
-      logger.error('failed to pull CIM_ServiceAvailableToElement in get power state')
-      return null
-    }
-    return pullResponse
+    return pullResponse.Envelope.Body
   }
 
-  async getSoftwareIdentity (): Promise<any> {
+  async getSoftwareIdentity (): Promise<Pull<CIM_SoftwareIdentity>> {
     let xmlRequestBody = this.cim.SoftwareIdentity(CIM_Methods.ENUMERATE, (this.messageId++).toString())
     const result = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
     const enumContext: string = result?.Envelope.Body?.EnumerateResponse?.EnumerationContext
@@ -73,11 +69,7 @@ export class ConnectedDevice {
     }
     xmlRequestBody = this.cim.SoftwareIdentity(CIM_Methods.PULL, (this.messageId++).toString(), enumContext)
     const pullResponse = await this.ciraHandler.Pull<CIM_SoftwareIdentity>(this.ciraSocket, xmlRequestBody)
-    if (pullResponse == null) {
-      logger.error('failed to pull CIM_SoftwareIdentity in get version')
-      return null
-    }
-    return pullResponse
+    return pullResponse.Envelope.Body
   }
 
   async getIpsOptInService (): Promise<IPS_OptInServiceResponse> {
@@ -131,67 +123,68 @@ export class ConnectedDevice {
     return result.Envelope.Body
   }
 
-  async getSetupAndConfigurationService (): Promise<any> {
+  async getSetupAndConfigurationService (): Promise<Envelope<AMT_SetupAndConfigurationService>> {
     const xmlRequestBody = this.amt.SetupAndConfigurationService(AMT_Methods.GET, (this.messageId++).toString())
     const getResponse = await this.ciraHandler.Get<AMT_SetupAndConfigurationService>(this.ciraSocket, xmlRequestBody)
-    return getResponse
+    return getResponse.Envelope
   }
 
-  async getGeneralSettings (): Promise<any> {
+  async getGeneralSettings (): Promise<Envelope<AMT_GeneralSettingsResponse>> {
     const xmlRequestBody = this.amt.GeneralSettings(AMT_Methods.GET, (this.messageId++).toString())
-    const getResponse = await this.ciraHandler.Get<AMT_GeneralSettings>(this.ciraSocket, xmlRequestBody)
-    return getResponse
+    const getResponse = await this.ciraHandler.Get<AMT_GeneralSettingsResponse>(this.ciraSocket, xmlRequestBody)
+    return getResponse.Envelope
   }
 
-  async getPowerCapabilities (): Promise<Response<AMT_BootCapabilities>> {
+  async getPowerCapabilities (): Promise<Envelope<AMT_BootCapabilities>> {
     const xmlRequestBody = this.amt.BootCapabilities(AMT_Methods.GET, (this.messageId++).toString())
     const result = await this.ciraHandler.Get<AMT_BootCapabilities>(this.ciraSocket, xmlRequestBody)
-    return result
+    console.log(JSON.stringify(result))
+    return result.Envelope
   }
 
-  async requestUserConsentCode (): Promise<any> {
+  async requestUserConsentCode (): Promise<Envelope<StartOptIn_OUTPUT>> {
     const xmlRequestBody = this.ips.OptInService(IPS_Methods.START_OPT_IN, (this.messageId++).toString())
     const getResponse = await this.ciraHandler.Get<StartOptIn_OUTPUT>(this.ciraSocket, xmlRequestBody)
-    return getResponse
+    return getResponse.Envelope
   }
 
-  async cancelUserConsentCode (): Promise<any> {
+  async cancelUserConsentCode (): Promise<Envelope<CancelOptIn_OUTPUT>> {
     const xmlRequestBody = this.ips.OptInService(IPS_Methods.CANCEL_OPT_IN, (this.messageId++).toString())
     const getResponse = await this.ciraHandler.Get<CancelOptIn_OUTPUT>(this.ciraSocket, xmlRequestBody)
-    return getResponse
+    return getResponse.Envelope
   }
 
-  async sendUserConsentCode (code: Number): Promise<any> {
+  async sendUserConsentCode (code: Number): Promise<Envelope<SendOptInCode_OUTPUT>> {
     const xmlRequestBody = this.ips.OptInService(IPS_Methods.SEND_OPT_IN_CODE, (this.messageId++).toString(), code)
     const getResponse = await this.ciraHandler.Get<SendOptInCode_OUTPUT>(this.ciraSocket, xmlRequestBody)
-    return getResponse
+    return getResponse.Envelope
   }
 
-  async getComputerSystemPackage (): Promise<Response<CIM_ComputerSystemPackage>> {
+  async getComputerSystemPackage (): Promise<Envelope<CIM_ComputerSystemPackage>> {
     const xmlRequestBody = this.cim.ComputerSystemPackage(CIM_Methods.GET, (this.messageId++).toString())
     const getResponse = await this.ciraHandler.Get<CIM_ComputerSystemPackage>(this.ciraSocket, xmlRequestBody)
-    return getResponse
+    return getResponse.Envelope
   }
 
-  async getChassis (): Promise<Response<CIM_Chassis>> {
+  async getChassis (): Promise<Envelope<CIM_Chassis>> {
     const xmlRequestBody = this.cim.Chassis(CIM_Methods.GET, (this.messageId++).toString())
     const getResponse = await this.ciraHandler.Get<CIM_Chassis>(this.ciraSocket, xmlRequestBody)
-    return getResponse
+    return getResponse.Envelope
   }
 
-  async getCard (): Promise<Response<CIM_Card>> {
+  async getCard (): Promise<Envelope<CIM_Card>> {
     const xmlRequestBody = this.cim.Card(CIM_Methods.GET, (this.messageId++).toString())
     const getResponse = await this.ciraHandler.Get<CIM_Card>(this.ciraSocket, xmlRequestBody)
-    return getResponse
+    return getResponse.Envelope
   }
 
-  async getBIOSElement (): Promise<Response<CIM_BIOSElement>> {
+  async getBIOSElement (): Promise<Envelope<CIM_BIOSElement>> {
     const xmlRequestBody = this.cim.BIOSElement(CIM_Methods.GET, (this.messageId++).toString())
     const getResponse = await this.ciraHandler.Get<CIM_BIOSElement>(this.ciraSocket, xmlRequestBody)
-    return getResponse
+    return getResponse.Envelope
   }
 
-  async getProcessor (): Promise<Response<Pull<CIM_Processor>>> {
+  async getProcessor (): Promise<Envelope<Pull<CIM_Processor>>> {
     let xmlRequestBody = this.cim.Processor(CIM_Methods.ENUMERATE, (this.messageId++).toString())
     const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
     if (enumResponse == null) {
@@ -200,10 +193,10 @@ export class ConnectedDevice {
     }
     xmlRequestBody = this.cim.Processor(CIM_Methods.PULL, (this.messageId++).toString(), enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
     const pullResponse = await this.ciraHandler.Pull<CIM_Processor>(this.ciraSocket, xmlRequestBody)
-    return pullResponse
+    return pullResponse.Envelope
   }
 
-  async getPhysicalMemory (): Promise<Response<Pull<CIM_PhysicalMemory>>> {
+  async getPhysicalMemory (): Promise<Envelope<Pull<CIM_PhysicalMemory>>> {
     let xmlRequestBody = this.cim.PhysicalMemory(CIM_Methods.ENUMERATE, (this.messageId++).toString())
     const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
     if (enumResponse == null) {
@@ -212,10 +205,10 @@ export class ConnectedDevice {
     }
     xmlRequestBody = this.cim.PhysicalMemory(CIM_Methods.PULL, (this.messageId++).toString(), enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
     const pullResponse = await this.ciraHandler.Pull<CIM_PhysicalMemory>(this.ciraSocket, xmlRequestBody)
-    return pullResponse
+    return pullResponse.Envelope
   }
 
-  async getMediaAccessDevice (): Promise<Response<Pull<CIM_MediaAccessDevice>>> {
+  async getMediaAccessDevice (): Promise<Envelope<Pull<CIM_MediaAccessDevice>>> {
     let xmlRequestBody = this.cim.MediaAccessDevice(CIM_Methods.ENUMERATE, (this.messageId++).toString())
     const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
     if (enumResponse == null) {
@@ -224,10 +217,10 @@ export class ConnectedDevice {
     }
     xmlRequestBody = this.cim.MediaAccessDevice(CIM_Methods.PULL, (this.messageId++).toString(), enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
     const pullResponse = await this.ciraHandler.Pull<CIM_MediaAccessDevice>(this.ciraSocket, xmlRequestBody)
-    return pullResponse
+    return pullResponse.Envelope
   }
 
-  async getPhysicalPackage (): Promise<Response<Pull<CIM_PhysicalPackage>>> {
+  async getPhysicalPackage (): Promise<Envelope<Pull<CIM_PhysicalPackage>>> {
     let xmlRequestBody = this.cim.PhysicalPackage(CIM_Methods.ENUMERATE, (this.messageId++).toString())
     const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
     if (enumResponse == null) {
@@ -236,10 +229,10 @@ export class ConnectedDevice {
     }
     xmlRequestBody = this.cim.PhysicalPackage(CIM_Methods.PULL, (this.messageId++).toString(), enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
     const pullResponse = await this.ciraHandler.Pull<CIM_PhysicalPackage>(this.ciraSocket, xmlRequestBody)
-    return pullResponse
+    return pullResponse.Envelope
   }
 
-  async getSystemPackaging (): Promise<Response<Pull<CIM_SystemPackaging>>> {
+  async getSystemPackaging (): Promise<Envelope<Pull<CIM_SystemPackaging>>> {
     let xmlRequestBody = this.cim.SystemPackaging(CIM_Methods.ENUMERATE, (this.messageId++).toString())
     const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
     if (enumResponse == null) {
@@ -248,10 +241,10 @@ export class ConnectedDevice {
     }
     xmlRequestBody = this.cim.SystemPackaging(CIM_Methods.PULL, (this.messageId++).toString(), enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
     const pullResponse = await this.ciraHandler.Pull<CIM_SystemPackaging>(this.ciraSocket, xmlRequestBody)
-    return pullResponse
+    return pullResponse.Envelope
   }
 
-  async getChip (): Promise<Response<Pull<CIM_Chip>>> {
+  async getChip (): Promise<Envelope<Pull<CIM_Chip>>> {
     let xmlRequestBody = this.cim.Chip(CIM_Methods.ENUMERATE, (this.messageId++).toString())
     const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
     if (enumResponse == null) {
@@ -260,10 +253,10 @@ export class ConnectedDevice {
     }
     xmlRequestBody = this.cim.Chip(CIM_Methods.PULL, (this.messageId++).toString(), enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
     const pullResponse = await this.ciraHandler.Pull<CIM_Chip>(this.ciraSocket, xmlRequestBody)
-    return pullResponse
+    return pullResponse.Envelope
   }
 
-  async getEventLog (): Promise<Response<AMT_MessageLog>> {
+  async getEventLog (): Promise<Envelope<AMT_MessageLog>> {
     let xmlRequestBody = this.amt.MessageLog(AMT_Methods.POSITION_TO_FIRSTRECORD, (this.messageId++).toString())
     const response = await this.ciraHandler.Get<{PositionToFirstRecord_OUTPUT: {
       IterationIdentifier: string
@@ -275,10 +268,7 @@ export class ConnectedDevice {
     }
     xmlRequestBody = this.amt.MessageLog(AMT_Methods.GET_RECORDS, (this.messageId++).toString(), Number(response.Envelope.Body.PositionToFirstRecord_OUTPUT.IterationIdentifier))
     const eventLogs = await this.ciraHandler.Get<AMT_MessageLog>(this.ciraSocket, xmlRequestBody)
-    if (eventLogs == null) {
-      logger.error('failed to get AMT_MessageLog')
-    }
-    return eventLogs
+    return eventLogs.Envelope
   }
 
   async getAuditLog (startIndex: number): Promise<AMT_AuditLog_ReadRecords> {
