@@ -15,14 +15,14 @@ export async function cancel (req: Request, res: Response): Promise<void> {
     const response = await devices[guid].cancelUserConsentCode()
     if (response != null) {
       const result = {
-        Header: response.Envelope.Header,
-        Body: response.Envelope.Body.CancelOptIn_OUTPUT
+        Header: response.Header,
+        Body: response.Body.CancelOptIn_OUTPUT
       }
       result.Body.ReturnValueStr = AMTStatusCodes[result.Body.ReturnValue]
-      if (result.Body?.ReturnValue === '0') {
+      if (result.Body?.ReturnValue.toString() === '0') {
         MqttProvider.publishEvent('success', ['Cancel_User_Consent_Code'], 'cancelled user consent code', guid)
         res.status(200).json(result)
-      } else if (response.Envelope.Body?.ReturnValue !== '0') {
+      } else if (result.Body?.ReturnValue.toString() !== '0') {
         log.error(`Fail to cancel user consent code for guid : ${guid}.`)
         MqttProvider.publishEvent('fail', ['Cancel_User_Consent_Code'], 'Fail to cancel user consent code', guid)
         res.status(400).json(result)

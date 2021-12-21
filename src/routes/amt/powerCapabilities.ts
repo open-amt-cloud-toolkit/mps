@@ -18,7 +18,7 @@ export async function powerCapabilities (req: Request, res: Response): Promise<v
     MqttProvider.publishEvent('request', ['AMT_BootCapabilities'], 'Power Capabilities Requested', guid)
     const version = await getVersion(guid)
     const powerCapabilities = await devices[guid].getPowerCapabilities()
-    const bootCaps = bootCapabilities(version, powerCapabilities.Envelope.Body.AMT_BootCapabilities)
+    const bootCaps = bootCapabilities(version, powerCapabilities.Body.AMT_BootCapabilities)
     MqttProvider.publishEvent('success', ['AMT_BootCapabilities'], 'Sent Power Capabilities', guid)
     return res.status(200).json(bootCaps).end()
   } catch (error) {

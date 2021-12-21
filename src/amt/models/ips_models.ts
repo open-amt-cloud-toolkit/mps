@@ -4,6 +4,7 @@
 **********************************************************************/
 
 import { CIM_SecurityService, CIM_Service } from './cim_models'
+import { ReturnValue } from './common'
 
 export interface IPS_HostBasedSetupService extends CIM_SecurityService {
   CurrentControlMode?: number
@@ -26,12 +27,12 @@ export interface IPS_OptInService extends CIM_Service {
 }
 
 export interface StartOptIn_OUTPUT {
-  ReturnValue: string
+  StartOptIn_OUTPUT: ReturnValue
 }
 export interface CancelOptIn_OUTPUT {
-  ReturnValue: string
+  CancelOptIn_OUTPUT: ReturnValue
 }
 
 export interface SendOptInCode_OUTPUT {
-  ReturnValue: string
+  SendOptInCode_OUTPUT: ReturnValue
 }

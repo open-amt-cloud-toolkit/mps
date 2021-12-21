@@ -62,7 +62,7 @@ describe('general settings', () => {
       Header: response.Envelope.Header,
       Body: response.Envelope.Body.AMT_GeneralSettings
     }
-    generalSettingsSpy.mockResolvedValueOnce(response)
+    generalSettingsSpy.mockResolvedValueOnce(response.Envelope)
     await generalSettings(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(200)
     expect(resSpy.json).toHaveBeenCalledWith(expectedResult)

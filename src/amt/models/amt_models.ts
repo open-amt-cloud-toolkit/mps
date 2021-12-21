@@ -41,6 +41,10 @@ export interface AMT_GeneralSettings extends CIM_SettingData {
   AMTAuthenticate?: (mcNonce: number) => amtAuthenticateObject
 }
 
+export interface AMT_GeneralSettingsResponse {
+  AMT_GeneralSettings: AMT_GeneralSettings
+}
+
 export interface AMT_EthernetPortSettings extends CIM_SettingData {
   VLANTag?: number
   SharedMAC?: boolean

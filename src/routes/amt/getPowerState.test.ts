@@ -2,6 +2,7 @@ import { powerState } from './getPowerState'
 import { createSpyObj } from '../../test/helper/jest'
 import { devices } from '../../server/mpsserver'
 import { ConnectedDevice } from '../../amt/ConnectedDevice'
+import { serviceAvailableToElement } from '../../test/helper/wsmanResponses'
 
 describe('power state', () => {
   let resSpy
@@ -19,7 +20,7 @@ describe('power state', () => {
   })
 
   it('should get power state', async () => {
-    powerStateSpy.mockResolvedValueOnce({ Envelope: { Header: { To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous', RelatesTo: '1', Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse', MessageID: 'uuid:00000000-8086-8086-8086-000000000002', ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ServiceAvailableToElement' }, Body: { PullResponse: { Items: { CIM_AssociatedPowerManagementService: { AvailableRequestedPowerStates: ['8', '2', '5'], PowerState: '4', ServiceProvided: { Address: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous', ReferenceParameters: { ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_PowerManagementService', SelectorSet: { Selector: ['CIM_PowerManagementService', 'Intel(r) AMT Power Management Service', 'CIM_ComputerSystem', 'Intel(r) AMT'] } } }, UserOfService: { Address: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous', ReferenceParameters: { ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ComputerSystem', SelectorSet: { Selector: ['CIM_ComputerSystem', 'ManagedSystem'] } } } } }, EndOfSequence: '' } } } })
+    powerStateSpy.mockResolvedValueOnce(serviceAvailableToElement.Envelope.Body)
     await powerState(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(200)
     expect(resSpy.send).toHaveBeenCalledWith({ powerstate: '4' })

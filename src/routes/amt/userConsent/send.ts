@@ -16,11 +16,11 @@ export async function send (req: Request, res: Response): Promise<void> {
     const response = await devices[guid].sendUserConsentCode(userConsentCode)
     if (response != null) {
       const result = {
-        Header: response.Envelope.Header,
-        Body: response.Envelope.Body.SendOptInCode_OUTPUT
+        Header: response.Header,
+        Body: response.Body.SendOptInCode_OUTPUT
       }
       result.Body.ReturnValueStr = AMTStatusCodes[result.Body.ReturnValue]
-      if (result.Body?.ReturnValue === '0') {
+      if (result.Body?.ReturnValue.toString() === '0') {
         MqttProvider.publishEvent('success', ['Send_User_Consent_Code'], 'Sent user consent code', guid)
         result.Body.ReturnValueStr = AMTStatusCodes[result.Body.ReturnValue]
         res.status(200).json(result)
