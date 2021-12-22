@@ -19,8 +19,8 @@ export async function generalSettings (req: Request, res: Response): Promise<voi
       MqttProvider.publishEvent('success', ['AMT_GeneralSettings'], 'Sent General Settings', guid)
       // matches version 2.x API for Open AMT
       const result = {
-        Header: response.Envelope.Header,
-        Body: response.Envelope.Body.AMT_GeneralSettings
+        Header: response.Header,
+        Body: response.Body.AMT_GeneralSettings
       }
       res.status(200).json(result)
     } else {

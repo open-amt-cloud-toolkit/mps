@@ -22,15 +22,15 @@ describe('version', () => {
   })
 
   it('should get version', async () => {
-    softwareIdentitySpy.mockResolvedValueOnce(softwareIdentityResponse)
-    setupAndConfigurationServiceSpy.mockResolvedValueOnce(setupAndConfigurationServiceResponse)
+    softwareIdentitySpy.mockResolvedValueOnce(softwareIdentityResponse.Envelope.Body)
+    setupAndConfigurationServiceSpy.mockResolvedValueOnce(setupAndConfigurationServiceResponse.Envelope)
     await version(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(200)
     expect(resSpy.json).toHaveBeenCalledWith(versionResponse)
   })
   it('should get an error with status code 400, when get version is null', async () => {
     softwareIdentitySpy.mockResolvedValueOnce(null)
-    setupAndConfigurationServiceSpy.mockResolvedValueOnce(setupAndConfigurationServiceResponse)
+    setupAndConfigurationServiceSpy.mockResolvedValueOnce(setupAndConfigurationServiceResponse.Envelope)
     await version(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(400)
     expect(resSpy.json).toHaveBeenCalledWith({ error: 'Incorrect URI or Bad Request', errorDescription: 'Request failed during AMTVersion BatchEnum Exec for guid : 4c4c4544-004b-4210-8033-b6c04f504633.' })

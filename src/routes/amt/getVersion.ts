@@ -37,14 +37,14 @@ export async function getVersion (guid: string): Promise<any> {
   } else {
     return {
       CIM_SoftwareIdentity: {
-        responses: response.CIM_SoftwareIdentity?.Envelope?.Body?.PullResponse?.Items?.CIM_SoftwareIdentity,
+        responses: response.CIM_SoftwareIdentity?.PullResponse?.Items?.CIM_SoftwareIdentity,
         status: 200
       },
       AMT_SetupAndConfigurationService: {
-        response: response.AMT_SetupAndConfigurationService?.Envelope?.Body?.AMT_SetupAndConfigurationService,
+        response: response.AMT_SetupAndConfigurationService?.Body?.AMT_SetupAndConfigurationService,
         responses: {
-          Header: response.AMT_SetupAndConfigurationService.Envelope?.Header,
-          Body: response.AMT_SetupAndConfigurationService.Envelope?.Body?.AMT_SetupAndConfigurationService
+          Header: response.AMT_SetupAndConfigurationService?.Header,
+          Body: response.AMT_SetupAndConfigurationService.Body?.AMT_SetupAndConfigurationService
         },
         status: 200
       }

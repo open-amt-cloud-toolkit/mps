@@ -13,6 +13,8 @@ describe('Power Capabilities', () => {
   let endSpy: jest.SpyInstance
   let mqttSpy: jest.SpyInstance
   let powerCaps
+  let swIdentitySpy: jest.SpyInstance
+  let setupAndConfigSpy: jest.SpyInstance
   beforeEach(() => {
     req = {
       params: {
@@ -35,8 +37,10 @@ describe('Power Capabilities', () => {
     endSpy = jest.spyOn(res as any, 'end')
     mqttSpy = jest.spyOn(MqttProvider, 'publishEvent')
 
-    powerCaps = { Envelope: { Body: { AMT_BootCapabilities: {} } } }
+    powerCaps = { Body: { AMT_BootCapabilities: {} } }
     devices['123456'] = new ConnectedDevice(null, 'admin', 'P@ssw0rd')
+    swIdentitySpy = jest.spyOn(devices['123456'], 'getSoftwareIdentity')
+    setupAndConfigSpy = jest.spyOn(devices['123456'], 'getSetupAndConfigurationService')
   })
   it('Should get power capabilities', async () => {
     const expectedResponse = {
@@ -56,8 +60,8 @@ describe('Power Capabilities', () => {
       'Power on to PXE': 401
     }
     jest.spyOn(devices['123456'], 'getPowerCapabilities').mockResolvedValue(powerCaps)
-    jest.spyOn(devices['123456'], 'getSoftwareIdentity').mockResolvedValue(softwareIdentityResponse)
-    jest.spyOn(devices['123456'], 'getSetupAndConfigurationService').mockResolvedValue(setupAndConfigurationServiceResponse)
+    swIdentitySpy.mockResolvedValue(softwareIdentityResponse.Envelope.Body)
+    setupAndConfigSpy.mockResolvedValue(setupAndConfigurationServiceResponse.Envelope)
     await powerCapabilities(req as any, res as any)
     expect(statusSpy).toHaveBeenCalledWith(200)
     expect(jsonSpy).toHaveBeenCalledWith(expectedResponse)
@@ -85,8 +89,8 @@ describe('Power Capabilities', () => {
       { InstanceID: 'AMT', IsEntity: 'true', VersionString: '9.0.0' }
     ]
     jest.spyOn(devices['123456'], 'getPowerCapabilities').mockResolvedValue(powerCaps)
-    jest.spyOn(devices['123456'], 'getSoftwareIdentity').mockResolvedValue(softwareIdentityResponse)
-    jest.spyOn(devices['123456'], 'getSetupAndConfigurationService').mockResolvedValue(setupAndConfigurationServiceResponse)
+    swIdentitySpy.mockResolvedValue(softwareIdentityResponse.Envelope.Body)
+    setupAndConfigSpy.mockResolvedValue(setupAndConfigurationServiceResponse.Envelope)
     await powerCapabilities(req as any, res as any)
     expect(statusSpy).toHaveBeenCalledWith(200)
     expect(jsonSpy).toHaveBeenCalledWith(expectedResponse)
@@ -115,12 +119,12 @@ describe('Power Capabilities', () => {
       'Reset to PXE': 400,
       'Power on to PXE': 401
     }
-    powerCaps.Envelope.Body.AMT_BootCapabilities.BIOSSetup = true
-    powerCaps.Envelope.Body.AMT_BootCapabilities.SecureErase = true
-    powerCaps.Envelope.Body.AMT_BootCapabilities.ForceDiagnosticBoot = true
+    powerCaps.Body.AMT_BootCapabilities.BIOSSetup = true
+    powerCaps.Body.AMT_BootCapabilities.SecureErase = true
+    powerCaps.Body.AMT_BootCapabilities.ForceDiagnosticBoot = true
     jest.spyOn(devices['123456'], 'getPowerCapabilities').mockResolvedValue(powerCaps)
-    jest.spyOn(devices['123456'], 'getSoftwareIdentity').mockResolvedValue(softwareIdentityResponse)
-    jest.spyOn(devices['123456'], 'getSetupAndConfigurationService').mockResolvedValue(setupAndConfigurationServiceResponse)
+    swIdentitySpy.mockResolvedValue(softwareIdentityResponse.Envelope.Body)
+    setupAndConfigSpy.mockResolvedValue(setupAndConfigurationServiceResponse.Envelope)
     await powerCapabilities(req as any, res as any)
     expect(statusSpy).toHaveBeenCalledWith(200)
     expect(jsonSpy).toHaveBeenCalledWith(expectedResponse)
@@ -129,8 +133,8 @@ describe('Power Capabilities', () => {
   })
   it('Should handle error', async () => {
     jest.spyOn(devices['123456'], 'getPowerCapabilities').mockResolvedValue(null)
-    jest.spyOn(devices['123456'], 'getSoftwareIdentity').mockResolvedValue(softwareIdentityResponse)
-    jest.spyOn(devices['123456'], 'getSetupAndConfigurationService').mockResolvedValue(setupAndConfigurationServiceResponse)
+    swIdentitySpy.mockResolvedValue(softwareIdentityResponse.Envelope.Body)
+    setupAndConfigSpy.mockResolvedValue(setupAndConfigurationServiceResponse.Envelope)
     await powerCapabilities(req as any, res as any)
     expect(statusSpy).toHaveBeenCalledWith(500)
     expect(jsonSpy).toHaveBeenCalledWith(ErrorResponse(500, 'Request failed during AMT PowerCapabilities.'))

@@ -13,11 +13,13 @@ export interface DigestChallenge {
   qop?: string // quality of protection
 }
 
+export interface Envelope<T> {
+  Header: Header
+  Body: T
+}
+
 export interface Response<T> {
-  Envelope: {
-    Header: Header
-    Body: T
-  }
+  Envelope: Envelope<T>
 }
 
 export interface Enumerate {
