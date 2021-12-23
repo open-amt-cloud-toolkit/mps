@@ -9,8 +9,8 @@ import { logger } from '../../utils/logger'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { devices } from '../../server/mpsserver'
-import { AMT_BootSettingData } from '../../amt/models/amt_models'
 import { AMTStatusCodes } from '../../utils/constants'
+import { AMT } from '@open-amt-cloud-toolkit/wsman-messages/dist'
 
 export async function bootOptions (req: Request, res: Response): Promise<void> {
   try {
@@ -39,7 +39,7 @@ export async function bootOptions (req: Request, res: Response): Promise<void> {
   }
 }
 
-export function setBootData (action: number, useSOL: boolean, r: AMT_BootSettingData): AMT_BootSettingData {
+export function setBootData (action: number, useSOL: boolean, r: AMT.Models.BootSettingData): AMT.Models.BootSettingData {
   r.BIOSPause = false
   r.BIOSSetup = action < 104
   r.BootMediaIndex = 0

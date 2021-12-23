@@ -6,10 +6,11 @@
 import { CIRASocket } from '../models/models'
 import APFProcessor from './APFProcessor'
 import { connectionParams, HttpHandler } from './HttpHandler'
-import { DigestChallenge, Enumerate, Pull, Response } from './models/common'
 import { logger } from '../utils/logger'
 import httpZ from 'http-z'
 import { amtPort } from '../utils/constants'
+import { DigestChallenge, Enumerate, Pull } from '@open-amt-cloud-toolkit/wsman-messages/dist/models/common'
+import { Common } from '@open-amt-cloud-toolkit/wsman-messages/dist'
 export interface CIRAChannel {
   targetport: number
   channelid: number
@@ -96,15 +97,15 @@ export class CIRAHandler {
     return this.channel
   }
 
-  async Enumerate (socket: CIRASocket, rawXml: string): Promise<Response<Enumerate>> {
+  async Enumerate (socket: CIRASocket, rawXml: string): Promise<Common.Models.Response<Enumerate>> {
     return await this.Send(socket, rawXml)
   }
 
-  async Pull<T>(socket: CIRASocket, rawXml: string): Promise<Response<Pull<T>>> {
+  async Pull<T>(socket: CIRASocket, rawXml: string): Promise<Common.Models.Response<Pull<T>>> {
     return await this.Send(socket, rawXml)
   }
 
-  async Get<T>(socket: CIRASocket, rawXml: string): Promise<Response<T>> {
+  async Get<T>(socket: CIRASocket, rawXml: string): Promise<Common.Models.Response<T>> {
     return await this.Send(socket, rawXml)
   }
 

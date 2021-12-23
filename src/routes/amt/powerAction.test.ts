@@ -1,5 +1,6 @@
+import { CIM } from '@open-amt-cloud-toolkit/wsman-messages/dist'
 import { ConnectedDevice } from '../../amt/ConnectedDevice'
-import { PowerActionResponse } from '../../amt/models/cim_models'
+
 import { devices } from '../../server/mpsserver'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
@@ -12,7 +13,7 @@ describe('Power Capabilities', () => {
   let jsonSpy: jest.SpyInstance
   let endSpy: jest.SpyInstance
   let mqttSpy: jest.SpyInstance
-  let powerActionFromDevice: PowerActionResponse
+  let powerActionFromDevice: CIM.Models.PowerActionResponse
   let getBootOptionsSpy: jest.SpyInstance
   let setBootConfigurationSpy: jest.SpyInstance
   beforeEach(() => {
@@ -64,7 +65,7 @@ describe('Power Capabilities', () => {
       ReturnValue: -1,
       ReturnValueStr: 'UNKNOWN_ERROR'
     }
-    const powerActionErrorFromDevice: PowerActionResponse = { RequestPowerStateChange_OUTPUT: { ReturnValue: -1 } }
+    const powerActionErrorFromDevice: CIM.Models.PowerActionResponse = { RequestPowerStateChange_OUTPUT: { ReturnValue: -1 } }
     jest.spyOn(devices['123456'], 'sendPowerAction').mockResolvedValue(powerActionErrorFromDevice)
 
     await powerAction(req as any, res as any)

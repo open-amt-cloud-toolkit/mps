@@ -10,7 +10,7 @@ import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { devices } from '../../server/mpsserver'
 import { AMTStatusCodes } from '../../utils/constants'
-import { AMT_BootSettingData } from '../../amt/models/amt_models'
+import { AMT } from '@open-amt-cloud-toolkit/wsman-messages/dist'
 
 export async function powerAction (req: Request, res: Response): Promise<void> {
   try {
@@ -37,7 +37,7 @@ function AMTStatusToString (code: number): string {
   } else return 'UNKNOWN_ERROR'
 }
 
-export function setBootData (action: number, useSOL: boolean, r: AMT_BootSettingData): AMT_BootSettingData {
+export function setBootData (action: number, useSOL: boolean, r: AMT.Models.BootSettingData): AMT.Models.BootSettingData {
   r.BIOSPause = false
   r.BIOSSetup = false
   r.BootMediaIndex = 0

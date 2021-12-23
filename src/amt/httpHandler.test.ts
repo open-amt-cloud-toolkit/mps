@@ -1,6 +1,6 @@
-import { CIM, Methods } from './cim'
+import { CIM } from '@open-amt-cloud-toolkit/wsman-messages/dist'
+import { DigestChallenge } from '@open-amt-cloud-toolkit/wsman-messages/dist/models/common'
 import { connectionParams, HttpHandler } from './HttpHandler'
-import { DigestChallenge } from './models/common'
 
 const httpHandler = new HttpHandler()
 
@@ -26,8 +26,8 @@ it('should parse authentication response header', async () => {
   expect(JSON.stringify(result)).toBe(JSON.stringify(digestChallenge))
 })
 it('should return a WSMan request', async () => {
-  const cim = new CIM()
-  const xmlRequestBody = cim.ServiceAvailableToElement(Methods.ENUMERATE, '1')
+  const cim = new CIM.CIM()
+  const xmlRequestBody = cim.ServiceAvailableToElement(CIM.Methods.ENUMERATE, '1')
   const digestChallenge = {
     realm: 'Digest:56ABC7BE224EF620C69EB88F01071DC8',
     nonce: 'fVNueyEAAAAAAAAAcO8WqJ8s+WdyFUIY',
@@ -62,8 +62,8 @@ it('should return a null when no xml is passed to wrap a WSMan request', async (
   expect(result).toBe(null)
 })
 it('should throw and expection and return a null when connection params are not passed to wrap a WSMan request', async () => {
-  const cim = new CIM()
-  const xmlRequestBody = cim.ServiceAvailableToElement(Methods.ENUMERATE, '1')
+  const cim = new CIM.CIM()
+  const xmlRequestBody = cim.ServiceAvailableToElement(CIM.Methods.ENUMERATE, '1')
   const result = httpHandler.wrapIt(null, xmlRequestBody)
   expect(result).toBe(null)
 })
@@ -78,7 +78,7 @@ Transfer-Encoding: chunked
 
 `
     const cim = new CIM()
-    const rawXML = cim.ServiceAvailableToElement(Methods.ENUMERATE, '1')
+    const rawXML = cim.ServiceAvailableToElement(CIM.Methods.ENUMERATE, '1')
     const params: connectionParams = {
       guid: '4c4c4544-004b-4210-8033-b6c04f504633',
       port: 16992,

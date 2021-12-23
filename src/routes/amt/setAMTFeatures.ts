@@ -11,7 +11,7 @@ import { devices } from '../../server/mpsserver'
 import { MPSValidationError } from '../../utils/MPSValidationError'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { AMTFeaturesConst, UserConsentOptions } from '../../utils/constants'
-import { AMT_REDIRECTION_SERVICE_ENABLE_STATE as amtEnabledState } from '../../amt/models/common'
+import { AMT_REDIRECTION_SERVICE_ENABLE_STATE } from '@open-amt-cloud-toolkit/wsman-messages/dist/models/common'
 
 export async function setAMTFeatures (req: Request, res: Response): Promise<void> {
   try {
@@ -32,8 +32,8 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
       let redir, sol, ider, kvm
 
       redir = (amtRedirectionResponse[AMTFeaturesConst.AMT_REDIR_LISTENER] === 'true')
-      sol = ((amtRedirectionResponse[AMTFeaturesConst.AMT_REDIR_STATE] & amtEnabledState.Enabled) !== 0)
-      ider = ((amtRedirectionResponse[AMTFeaturesConst.AMT_REDIR_STATE] & amtEnabledState.Other) !== 0)
+      sol = ((amtRedirectionResponse[AMTFeaturesConst.AMT_REDIR_STATE] & AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled) !== 0)
+      ider = ((amtRedirectionResponse[AMTFeaturesConst.AMT_REDIR_STATE] & AMT_REDIRECTION_SERVICE_ENABLE_STATE.Other) !== 0)
 
       if (payload.enableSOL !== undefined && payload.enableSOL !== sol) {
         sol = payload.enableSOL
