@@ -12,10 +12,8 @@ import { ErrorResponse } from '../../utils/amtHelper'
 import { MPSValidationError } from '../../utils/MPSValidationError'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { devices } from '../../server/mpsserver'
-import { CIM_KVM_REDIRECTION_SAP_REQUESTED_STATE as cimRequestedState, CIM_KVM_REDIRECTION_SAP_ENABLED_STATE as cimEnabledState, AMT_REDIRECTION_SERVICE_ENABLE_STATE as amtEnabledState } from '../../amt/models/common'
-import { AMT_RedirectionService } from '../../amt/models/amt_models'
-import { IPS_OptInService } from '../../amt/models/ips_models'
-import { CIM_KVMRedirectionSAP } from '../../amt/models/cim_models'
+import { AMT, CIM, IPS } from '@open-amt-cloud-toolkit/wsman-messages/dist'
+import { AMT_REDIRECTION_SERVICE_ENABLE_STATE, CIM_KVM_REDIRECTION_SAP_ENABLED_STATE, CIM_KVM_REDIRECTION_SAP_REQUESTED_STATE } from '@open-amt-cloud-toolkit/wsman-messages/dist/models/common'
 
 export async function getAMTFeatures (req: Request, res: Response): Promise<void> {
   try {
@@ -43,22 +41,22 @@ export async function getAMTFeatures (req: Request, res: Response): Promise<void
   }
 }
 
-export function processAmtRedirectionResponse (amtRedirection: AMT_RedirectionService): {redir: boolean, sol: boolean, ider: boolean} {
+export function processAmtRedirectionResponse (amtRedirection: AMT.Models.RedirectionService): {redir: boolean, sol: boolean, ider: boolean} {
   const redir = (amtRedirection.ListenerEnabled as any) === 'true' // not sure the best way to handle this at the moment...ok. Ready for a debug?yes, ok.. need to fix all the problems in tests
-  const sol = amtRedirection.EnabledState === amtEnabledState.Enabled
-  const ider = amtRedirection.EnabledState === amtEnabledState.Other
+  const sol = amtRedirection.EnabledState === AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled
+  const ider = amtRedirection.EnabledState === AMT_REDIRECTION_SERVICE_ENABLE_STATE.Other
   return { redir, sol, ider }
 }
 
-export function processKvmRedirectionResponse (kvmRedirection: CIM_KVMRedirectionSAP): boolean {
-  const kvm = ((kvmRedirection.EnabledState === cimEnabledState.EnabledButOffline &&
-                kvmRedirection.RequestedState === cimRequestedState.Enabled) ||
-                kvmRedirection.EnabledState === cimEnabledState.Enabled ||
-                kvmRedirection.EnabledState === cimEnabledState.EnabledButOffline)
+export function processKvmRedirectionResponse (kvmRedirection: CIM.Models.KVMRedirectionSAP): boolean {
+  const kvm = ((kvmRedirection.EnabledState === CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.EnabledButOffline &&
+                kvmRedirection.RequestedState === CIM_KVM_REDIRECTION_SAP_REQUESTED_STATE.Enabled) ||
+                kvmRedirection.EnabledState === CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.Enabled ||
+                kvmRedirection.EnabledState === CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.EnabledButOffline)
   return kvm
 }
 
-export function processOptServiceResponse (optService: IPS_OptInService): {value: number, optInState: number} {
+export function processOptServiceResponse (optService: IPS.Models.OptInService): {value: number, optInState: number} {
   const value = optService.OptInRequired
   const optInState = optService.OptInState
   return { value, optInState }

@@ -1,5 +1,5 @@
+import { AMT } from '@open-amt-cloud-toolkit/wsman-messages/dist'
 import { ConnectedDevice } from '../../amt/ConnectedDevice'
-import { AMT_BootSettingData } from '../../amt/models/amt_models'
 import { devices } from '../../server/mpsserver'
 import { createSpyObj } from '../../test/helper/jest'
 import { bootOptions, determinePowerAction, setBootData, setBootSource } from './bootOptions'
@@ -12,7 +12,7 @@ describe('Boot Options', () => {
   let forceBootModeSpy: jest.SpyInstance
   let changeBootOrderSpy: jest.SpyInstance
   let sendPowerActionSpy: jest.SpyInstance
-  let bootSettingData: AMT_BootSettingData|any
+  let bootSettingData: AMT.Models.BootSettingData|any
   beforeEach(() => {
     resSpy = createSpyObj('Response', ['status', 'json', 'send'])
     req = { params: { guid: '4c4c4544-004b-4210-8033-b6c04f504633' }, body: { action: 400, useSOL: false } }
