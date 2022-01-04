@@ -42,9 +42,9 @@ export async function getAMTFeatures (req: Request, res: Response): Promise<void
 }
 
 export function processAmtRedirectionResponse (amtRedirection: AMT.Models.RedirectionService): {redir: boolean, sol: boolean, ider: boolean} {
-  const redir = (amtRedirection.ListenerEnabled as any) === 'true' // not sure the best way to handle this at the moment...ok. Ready for a debug?yes, ok.. need to fix all the problems in tests
-  const sol = amtRedirection.EnabledState === AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled
-  const ider = amtRedirection.EnabledState === AMT_REDIRECTION_SERVICE_ENABLE_STATE.Other
+  const redir = amtRedirection.ListenerEnabled
+  const sol = (amtRedirection.EnabledState & AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled) !== 0
+  const ider = (amtRedirection.EnabledState & AMT_REDIRECTION_SERVICE_ENABLE_STATE.Other) !== 0
   return { redir, sol, ider }
 }
 
