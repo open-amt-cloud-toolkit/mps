@@ -41,11 +41,12 @@
     "test": "jest --detectOpenHandles --forceExit --coverage"
   },
   "dependencies": {
+    "@open-amt-cloud-toolkit/wsman-messages": "github:open-amt-cloud-toolkit/wsman-messages",
     "atob": "^2.1.2",
     "consul": "^0.40.0",
     "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "express-validator": "^6.13.0",
+    "express": "^4.17.2",
+    "express-validator": "^6.14.0",
     "http-z": "^6.1.2",
     "jws": "^4.0.0",
     "mqtt": "^4.2.8",
@@ -54,7 +55,7 @@
     "pg": "^8.7.1",
     "rc": "^1.2.8",
     "winston": "^3.0.0",
-    "ws": "^8.3.0",
+    "ws": "^8.4.0",
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
@@ -63,8 +64,8 @@
     "@types/jest": "^27.0.3",
     "@types/node": "^14.17.4",
     "@types/node-forge": "^0.10.10",
-    "@types/pg": "^8.6.1",
-    "@types/ws": "^8.2.1",
+    "@types/pg": "^8.6.3",
+    "@types/ws": "^8.2.2",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "eslint": "^7.32.0",
@@ -72,13 +73,12 @@
     "eslint-config-standard-with-typescript": "^21.0.1",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.2.0",
-    "eslint-plugin-standard": "^5.0.0",
-    "jest": "27.4.3",
+    "eslint-plugin-promise": "^6.0.0",
+    "jest": "27.4.5",
     "jest-junit": "^13.0.0",
     "jest-transform-stub": "^2.0.0",
-    "ts-jest": "^27.0.7",
+    "ts-jest": "^27.1.2",
     "ts-node": "^10.4.0",
-    "typescript": "^4.5.2"
+    "typescript": "^4.5.4"
   }
 }

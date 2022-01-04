@@ -9,6 +9,7 @@ export const auditLogValidator = (): any => {
   return [
     check('startIndex')
       .isNumeric()
+      .isFloat({ min: 0 }) // At time of writing, isNumberic does not have a min, isFloat can be used instead
       .optional()
       .default(0)
   ]

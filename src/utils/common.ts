@@ -16,6 +16,9 @@ const Common = {
   ReadIntX: (v: string, p: number): number => {
     return (v.charCodeAt(p + 3) * 0x1000000) + (v.charCodeAt(p + 2) << 16) + (v.charCodeAt(p + 1) << 8) + v.charCodeAt(p)
   },
+  ReadBufferIntX: (v: Buffer, p: number): number => {
+    return (v[p + 3] * 0x1000000) + (v[p + 2] << 16) + (v[p + 1] << 8) + v[p]
+  },
   ShortToStr: (v: number): string => {
     return String.fromCharCode((v >> 8) & 0xFF, v & 0xFF)
   },
@@ -62,7 +65,16 @@ const Common = {
     const ha1 = createHash('md5').update(username + ':' + realm + ':' + password).digest('hex')
     const ha2 = createHash('md5').update(method + ':' + path).digest('hex')
     return createHash('md5').update(ha1 + ':' + nonce + ':' + nc + ':' + cnonce + ':' + qop + ':' + ha2).digest('hex')
-  }
+  },
 
+  // Convert a byte array of SID into string
+  GetSidString: (sid: string): string => {
+    let r = 'S-' + sid.charCodeAt(0) + '-' + sid.charCodeAt(7)
+
+    for (let i = 2; i < (sid.length / 4); i++) {
+      r += '-' + Common.ReadIntX(sid, i * 4)
+    }
+    return r
+  }
 }
 export default Common
