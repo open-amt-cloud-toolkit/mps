@@ -56,15 +56,39 @@ export class ConnectedDevice {
     return result.Envelope.Body
   }
 
+  async putIpsOptInService (data: IPS.Models.OptInServiceResponse): Promise<IPS.Models.OptInServiceResponse> {
+    const xmlRequestBody = this.ips.OptInService(IPS.Methods.PUT, (this.messageId++).toString(), null, data)
+    const result = await this.ciraHandler.Get<IPS.Models.OptInServiceResponse>(this.ciraSocket, xmlRequestBody)
+    return result.Envelope.Body
+  }
+
   async getRedirectionService (): Promise<AMT.Models.RedirectionResponse> {
     const xmlRequestBody = this.amt.RedirectionService(AMT.Methods.GET, (this.messageId++).toString())
     const result = await this.ciraHandler.Get<AMT.Models.RedirectionResponse>(this.ciraSocket, xmlRequestBody)
     return result.Envelope.Body
   }
 
+  async setRedirectionService (requestState: number): Promise<any> {
+    const xmlRequestBody = this.amt.RedirectionService(AMT.Methods.REQUEST_STATE_CHANGE, (this.messageId++).toString(), requestState)
+    const result = await this.ciraHandler.Send(this.ciraSocket, xmlRequestBody)
+    return result.Envelope.Body
+  }
+
+  async putRedirectionService (data: AMT.Models.RedirectionResponse): Promise<any> {
+    const xmlRequestBody = this.amt.RedirectionService(AMT.Methods.PUT, (this.messageId++).toString(), null, data)
+    const result = await this.ciraHandler.Send(this.ciraSocket, xmlRequestBody)
+    return result.Envelope.Body
+  }
+
   async getKvmRedirectionSap (): Promise<CIM.Models.KVMRedirectionSAPResponse> {
     const xmlRequestBody = this.cim.KVMRedirectionSAP(CIM.Methods.GET, (this.messageId++).toString())
     const result = await this.ciraHandler.Get<CIM.Models.KVMRedirectionSAPResponse>(this.ciraSocket, xmlRequestBody)
+    return result.Envelope.Body
+  }
+
+  async setKvmRedirectionSap (requestedState: number): Promise<any> {
+    const xmlRequestBody = this.cim.KVMRedirectionSAP(CIM.Methods.REQUEST_STATE_CHANGE, (this.messageId++).toString(), requestedState)
+    const result = await this.ciraHandler.Send(this.ciraSocket, xmlRequestBody)
     return result.Envelope.Body
   }
 

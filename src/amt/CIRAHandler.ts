@@ -188,6 +188,7 @@ export class CIRAHandler {
   }
 
   writeData (channel: CIRAChannel, rawXML: string): boolean {
+    logger.silly(rawXML)
     this.rawChunkedData = ''
     const params: connectionParams = {
       guid: channel.socket.tag.nodeid,

@@ -43,18 +43,6 @@ export const UserConsentOptions = {
   all: '4294967295'
 }
 
-export const AMTFeaturesConst = {
-  AMT_REDIR_SERVICE: 'AMT_RedirectionService',
-  AMT_REDIR_LISTENER: 'ListenerEnabled',
-  AMT_REDIR_STATE: 'EnabledState',
-  AMT_KVM_REDIR: 'CIM_KVMRedirectionSAP',
-  AMT_KVM_ENABLED_STATE: 'EnabledState',
-  AMT_KVM_REQUESTED_STATE: 'RequestedState',
-  AMT_OPTIN_SERVICE: 'IPS_OptInService',
-  AMT_USER_CONSENT: 'OptInRequired',
-  AMT_OPT_IN_STATE: 'OptInState'
-}
-
 export const AMTStatusCodes = {
   0x0000: 'SUCCESS',
   0x0001: 'INTERNAL_ERROR',
