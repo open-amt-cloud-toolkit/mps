@@ -30,6 +30,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     - run: npm run lint
+      if: ${{ matrix.node-version == '16.x' }}
     - run: npm run compile --if-present
     - run: npm test
     - name: Test Report
@@ -43,3 +44,4 @@ jobs:
         fail-on-error: 'false'
     - uses: codecov/codecov-action@v1.0.14
       name: Upload Coverage Results
+      if: ${{ matrix.node-version == '16.x' }}
