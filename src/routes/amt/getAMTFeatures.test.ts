@@ -1,3 +1,7 @@
+/*********************************************************************
+ * Copyright (c) Intel Corporation 2021
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
 import { ConnectedDevice } from '../../amt/ConnectedDevice'
 import { devices } from '../../server/mpsserver'
 import { createSpyObj } from '../../test/helper/jest'
