@@ -15,6 +15,9 @@ module.exports = {
     '**/*.test.ts',
     '**/*.spec.ts'
   ],
+  collectCoverageFrom: [
+    "src/**/*.{js,ts}",
+  ],
   reporters: ["default", "jest-junit"],
   testEnvironment: 'node'
 }
