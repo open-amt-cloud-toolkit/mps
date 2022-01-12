@@ -50,7 +50,7 @@ describe('set amt features', () => {
     mqttSpy = jest.spyOn(MqttProvider, 'publishEvent')
 
     redirectionSpy.mockResolvedValue({ AMT_RedirectionService: { EnabledState: AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled, ListenerEnabled: 'true' } })
-    optInServiceSpy.mockResolvedValue({ IPS_OptInService: { OptInRequired: '4294967295' } })
+    optInServiceSpy.mockResolvedValue({ IPS_OptInService: { OptInRequired: 4294967295 } })
     kvmRedirectionSpy.mockResolvedValue({
       CIM_KVMRedirectionSAP: {
         RequestedState: 2,
