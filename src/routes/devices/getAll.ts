@@ -17,7 +17,7 @@ export async function getAllDevices (req, res): Promise<void> {
     } else {
       list = await req.db.devices.get(req.query.$top, req.query.$skip)
     }
-    if (req.query.$status != null) {
+    if (req.query.status != null) {
       list = list.filter(x => x.connectionStatus === req.query.status)
     }
     if (count != null && (count === true || count === 1)) {
