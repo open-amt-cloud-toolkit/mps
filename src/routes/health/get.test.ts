@@ -1,8 +1,8 @@
-import { getHealthCheck } from './routes/health/get'
-import { Environment } from './utils/Environment'
-import { createSpyObj } from './test/helper/jest'
+import { getHealthCheck } from './get'
+import { Environment } from '../../utils/Environment'
+import { createSpyObj } from '../../test/helper/jest'
 
-describe('Healthcheck', () => {
+describe('Checks health of dependent services', () => {
   let resSpy
   let req
   beforeEach(() => {
@@ -18,7 +18,7 @@ describe('Healthcheck', () => {
     resSpy.status.mockReturnThis()
     resSpy.json.mockReturnThis()
   })
-  it('should be healthy', async () => {
+  it('should be healthy when database is ready and vault is unsealed', async () => {
     Environment.Config = { db_provider: 'POSTGRES' } as any
 
     req.mpsService.secrets.health.mockReturnValue({ initialized: true, sealed: false })
@@ -76,7 +76,7 @@ describe('Healthcheck', () => {
     // })
     expect(resSpy.status).toHaveBeenCalledWith(503)
   })
-  it('should not be healthy when vault sealed', async () => {
+  it('should not be healthy when vault is not ready', async () => {
     req.mpsService.secrets.health.mockRejectedValue({ error: { code: 'ECONNREFUSED' } })
     await getHealthCheck(req, resSpy)
     // expect(resSpy.json).toHaveBeenCalledWith({
