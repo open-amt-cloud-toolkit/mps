@@ -44,8 +44,8 @@ describe('get amt features', () => {
       AMT_RedirectionService: {
         CreationClassName: 'AMT_RedirectionService',
         ElementName: 'Intel(r) AMT Redirection Service',
-        EnabledState: '32771',
-        ListenerEnabled: 'false',
+        EnabledState: 32771,
+        ListenerEnabled: false,
         Name: 'Intel(r) AMT Redirection Service',
         SystemCreationClassName: 'CIM_ComputerSystem',
         SystemName: 'Intel(r) AMT'
@@ -54,14 +54,14 @@ describe('get amt features', () => {
 
     optInServiceSpy.mockResolvedValue({
       IPS_OptInService: {
-        CanModifyOptInPolicy: '0',
+        CanModifyOptInPolicy: 0,
         CreationClassName: 'IPS_OptInService',
         ElementName: 'Intel(r) AMT OptIn Service',
         Name: 'Intel(r) AMT OptIn Service',
-        OptInCodeTimeout: '120',
-        OptInDisplayTimeout: '300',
-        OptInRequired: '4294967295',
-        OptInState: '0',
+        OptInCodeTimeout: 120,
+        OptInDisplayTimeout: 300,
+        OptInRequired: 4294967295,
+        OptInState: 0,
         SystemCreationClassName: 'CIM_ComputerSystem',
         SystemName: 'Intel(r) AMT'
       }
@@ -71,10 +71,10 @@ describe('get amt features', () => {
       CIM_KVMRedirectionSAP: {
         CreationClassName: 'CIM_KVMRedirectionSAP',
         ElementName: 'KVM Redirection Service Access Point',
-        EnabledState: '3',
-        KVMProtocol: '4',
+        EnabledState: 3,
+        KVMProtocol: 4,
         Name: 'KVM Redirection Service Access Point',
-        RequestedState: '5',
+        RequestedState: 5,
         SystemCreationClassName: 'CIM_ComputerSystem'
       }
     })

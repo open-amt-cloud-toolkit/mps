@@ -38,9 +38,9 @@ export const DMTFPowerStates = [2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16,
 export const DMTFPowerExtendedStates = [100, 101, 104, 200, 201, 202, 203, 300, 301, 400, 401]
 
 export const UserConsentOptions = {
-  none: '0',
-  kvm: '1',
-  all: '4294967295'
+  none: 0,
+  kvm: 1,
+  all: 4294967295
 }
 
 export const AMTStatusCodes = {
