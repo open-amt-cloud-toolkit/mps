@@ -64,7 +64,7 @@
     "@types/jest": "^27.4.0",
     "@types/node": "^16.11.15",
     "@types/node-forge": "^1.0.0",
-    "@types/pg": "^8.6.3",
+    "@types/pg": "^8.6.4",
     "@types/ws": "^8.2.2",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
