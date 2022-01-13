@@ -1,14 +1,15 @@
 import { getHealthCheck } from './get'
 import { Environment } from '../../utils/Environment'
 import { createSpyObj } from '../../test/helper/jest'
+import { MqttProvider } from '../../utils/MqttProvider'
+import { ErrorResponse } from '../../utils/amtHelper'
 
 describe('Checks health of dependent services', () => {
   let resSpy
   let req
+  let mqttSpy: jest.SpyInstance
   beforeEach(() => {
-    Environment.Config = { db_provider: 'POSTGRES' } as any
-
-    resSpy = createSpyObj('Response', ['status', 'json', 'end'])
+    resSpy = createSpyObj('Response', ['status', 'json', 'end', 'send'])
     req = {
       mpsService: {
         secrets: createSpyObj('SecretProvider', ['health'])
@@ -17,6 +18,14 @@ describe('Checks health of dependent services', () => {
     }
     resSpy.status.mockReturnThis()
     resSpy.json.mockReturnThis()
+    resSpy.send.mockReturnThis()
+    mqttSpy = jest.spyOn(MqttProvider, 'publishEvent')
+  })
+  it('should handle health check failed', async () => {
+    await getHealthCheck(null, resSpy)
+    expect(resSpy.status).toHaveBeenCalledWith(500)
+    expect(resSpy.json).toHaveBeenCalledWith(ErrorResponse(500, 'Health Check failed'))
+    expect(mqttSpy).toHaveBeenCalled()
   })
   it('should be healthy when database is ready and vault is unsealed', async () => {
     Environment.Config = { db_provider: 'POSTGRES' } as any
