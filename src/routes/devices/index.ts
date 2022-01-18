@@ -15,6 +15,7 @@ import { updateDevice } from './update'
 import { deleteDevice } from './delete'
 import { param } from 'express-validator'
 import validateMiddleware from '../../middleware/validate'
+import ciraMiddleware from '../../middleware/cira'
 
 const deviceRouter: Router = Router()
 
@@ -25,6 +26,5 @@ deviceRouter.get('/:guid', param('guid').isUUID(), validateMiddleware, getDevice
 deviceRouter.post('/', validator(), validateMiddleware, insertDevice)
 deviceRouter.patch('/', validator(), validateMiddleware, updateDevice)
 deviceRouter.delete('/:guid', param('guid').isUUID(), validateMiddleware, deleteDevice)
-deviceRouter.delete('/disconnect/:guid', param('guid').isUUID(), validateMiddleware, disconnect)
-
+deviceRouter.delete('/disconnect/:guid', param('guid').isUUID(), validateMiddleware, ciraMiddleware, disconnect)
 export default deviceRouter
