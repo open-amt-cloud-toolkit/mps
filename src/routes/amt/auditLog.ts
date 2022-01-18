@@ -8,7 +8,6 @@ import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
-import { devices } from '../../server/mpsserver'
 import { atob } from 'atob'
 import Common from '../../utils/common'
 import { AmtAuditStringTable, RealmNames } from '../../utils/constants'
@@ -21,7 +20,8 @@ export async function auditLog (req: Request, res: Response): Promise<void> {
     const startIndexAsNumber = Number(queryParams.startIndex)
     const startIndex: number = startIndexAsNumber === 0 ? 1 : startIndexAsNumber
     MqttProvider.publishEvent('request', ['AMT_AuditLog'], 'Audit Log Requested', guid)
-    const getResponse = await devices[guid].getAuditLog(startIndex)
+    const getResponse = await req.deviceAction.getAuditLog(startIndex)
+
     const result = convertToAuditLogResult(getResponse.ReadRecords_OUTPUT)
     res.status(200).json(result).end()
   } catch (error) {

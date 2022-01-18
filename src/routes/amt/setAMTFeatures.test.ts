@@ -2,12 +2,13 @@
  * Copyright (c) Intel Corporation 2021
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
-import { devices } from '../../server/mpsserver'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { createSpyObj } from '../../test/helper/jest'
 import { setAMTFeatures } from './setAMTFeatures'
-import { ConnectedDevice } from '../../amt/ConnectedDevice'
 import { AMT_REDIRECTION_SERVICE_ENABLE_STATE } from '@open-amt-cloud-toolkit/wsman-messages/dist/models/common'
+import { DeviceAction } from '../../amt/DeviceAction'
+import { CIRAHandler } from '../../amt/CIRAHandler'
+import { HttpHandler } from '../../amt/HttpHandler'
 
 describe('set amt features', () => {
   let resSpy
@@ -22,6 +23,8 @@ describe('set amt features', () => {
   let mqttSpy: jest.SpyInstance
 
   beforeEach(() => {
+    const handler = new CIRAHandler(new HttpHandler(), 'admin', 'P@ssw0rd')
+    const device = new DeviceAction(handler, null)
     resSpy = createSpyObj('Response', ['status', 'json', 'end', 'send'])
     req = {
       params: {
@@ -32,20 +35,20 @@ describe('set amt features', () => {
         enableSOL: true,
         enableIDER: false,
         enableKVM: true
-      }
+      },
+      deviceAction: device
     }
     resSpy.status.mockReturnThis()
     resSpy.json.mockReturnThis()
     resSpy.send.mockReturnThis()
 
-    devices['4c4c4544-004b-4210-8033-b6c04f504633'] = new ConnectedDevice(null, 'admin', 'P@ssw0rd')
-    redirectionSpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'getRedirectionService')
-    optInServiceSpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'getIpsOptInService')
-    kvmRedirectionSpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'getKvmRedirectionSap')
-    setRedirectionServiceSpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'setRedirectionService')
-    setKvmRedirectionSapSpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'setKvmRedirectionSap')
-    putRedirectionServiceSpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'putRedirectionService')
-    putIpsOptInServiceSpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'putIpsOptInService')
+    redirectionSpy = jest.spyOn(device, 'getRedirectionService')
+    optInServiceSpy = jest.spyOn(device, 'getIpsOptInService')
+    kvmRedirectionSpy = jest.spyOn(device, 'getKvmRedirectionSap')
+    setRedirectionServiceSpy = jest.spyOn(device, 'setRedirectionService')
+    setKvmRedirectionSapSpy = jest.spyOn(device, 'setKvmRedirectionSap')
+    putRedirectionServiceSpy = jest.spyOn(device, 'putRedirectionService')
+    putIpsOptInServiceSpy = jest.spyOn(device, 'putIpsOptInService')
 
     mqttSpy = jest.spyOn(MqttProvider, 'publishEvent')
 

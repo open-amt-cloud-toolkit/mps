@@ -11,16 +11,16 @@ import { UserConsentOptions } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MPSValidationError } from '../../utils/MPSValidationError'
 import { MqttProvider } from '../../utils/MqttProvider'
-import { devices } from '../../server/mpsserver'
 import { AMT, CIM, IPS } from '@open-amt-cloud-toolkit/wsman-messages/dist'
 import { AMT_REDIRECTION_SERVICE_ENABLE_STATE, CIM_KVM_REDIRECTION_SAP_ENABLED_STATE, CIM_KVM_REDIRECTION_SAP_REQUESTED_STATE } from '@open-amt-cloud-toolkit/wsman-messages/dist/models/common'
 
 export async function getAMTFeatures (req: Request, res: Response): Promise<void> {
   try {
     const guid: string = req.params.guid
-    const amtRedirectionResponse = await devices[guid].getRedirectionService()
-    const optServiceResponse = await devices[guid].getIpsOptInService()
-    const kvmRedirectionResponse = await devices[guid].getKvmRedirectionSap()
+    const amtRedirectionResponse = await req.deviceAction.getRedirectionService()
+    const optServiceResponse = await req.deviceAction.getIpsOptInService()
+    const kvmRedirectionResponse = await req.deviceAction.getKvmRedirectionSap()
+
     MqttProvider.publishEvent('request', ['AMT_GetFeatures'], 'Get AMT Features Requested', guid)
 
     const { redir, sol, ider } = processAmtRedirectionResponse(amtRedirectionResponse.AMT_RedirectionService)

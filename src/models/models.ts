@@ -5,7 +5,7 @@
 
 import { Socket } from 'net'
 import { DetailedPeerCertificate, TLSSocket } from 'tls'
-import { CIRAChannel } from '../amt/CIRAHandler'
+import { CIRAChannel } from '../amt/CIRAChannel'
 
 export interface Device {
   connectionStatus: boolean

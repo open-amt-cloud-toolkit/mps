@@ -6,14 +6,13 @@ import { Response, Request } from 'express'
 import { logger as log } from '../../../utils/logger'
 import { ErrorResponse } from '../../../utils/amtHelper'
 import { MqttProvider } from '../../../utils/MqttProvider'
-import { devices } from '../../../server/mpsserver'
 import { AMTStatusCodes } from '../../../utils/constants'
 export async function send (req: Request, res: Response): Promise<void> {
   const userConsentCode = req.body.consentCode
   const guid: string = req.params.guid
   try {
     // Cancel a previous opt-in code request.
-    const response = await devices[guid].sendUserConsentCode(userConsentCode)
+    const response = await req.deviceAction.sendUserConsentCode(userConsentCode)
     if (response != null) {
       const result = {
         Header: response.Header,

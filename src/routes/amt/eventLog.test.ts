@@ -1,22 +1,27 @@
 import { eventLog, GetEventDetailStr } from './eventLog'
 import { createSpyObj } from '../../test/helper/jest'
-import { devices } from '../../server/mpsserver'
-import { ConnectedDevice } from '../../amt/ConnectedDevice'
 import { amtMessageLog } from '../../test/helper/wsmanResponses'
+import { CIRAHandler } from '../../amt/CIRAHandler'
+import { HttpHandler } from '../../amt/HttpHandler'
+import { DeviceAction } from '../../amt/DeviceAction'
 
 describe('event log', () => {
   let resSpy
   let req
   let eventLogSpy
   beforeEach(() => {
+    const handler = new CIRAHandler(new HttpHandler(), 'admin', 'P@ssw0rd')
+    const device = new DeviceAction(handler, null)
     resSpy = createSpyObj('Response', ['status', 'json', 'end', 'send'])
-    req = { params: { guid: '4c4c4544-004b-4210-8033-b6c04f504633' } }
+    req = {
+      params: { guid: '4c4c4544-004b-4210-8033-b6c04f504633' },
+      deviceAction: device
+    }
     resSpy.status.mockReturnThis()
     resSpy.json.mockReturnThis()
     resSpy.send.mockReturnThis()
 
-    devices['4c4c4544-004b-4210-8033-b6c04f504633'] = new ConnectedDevice(null, 'admin', 'P@ssw0rd')
-    eventLogSpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'getEventLog')
+    eventLogSpy = jest.spyOn(device, 'getEventLog')
   })
 
   it('should get event logs', async () => {

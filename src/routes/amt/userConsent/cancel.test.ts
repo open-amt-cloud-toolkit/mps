@@ -1,22 +1,27 @@
 import { createSpyObj } from '../../../test/helper/jest'
-import { devices } from '../../../server/mpsserver'
-import { ConnectedDevice } from '../../../amt/ConnectedDevice'
 import { cancel } from './cancel'
 import { cancelOptInResponse } from '../../../test/helper/wsmanResponses'
+import { DeviceAction } from '../../../amt/DeviceAction'
+import { HttpHandler } from '../../../amt/HttpHandler'
+import { CIRAHandler } from '../../../amt/CIRAHandler'
 
 describe('cancel user consent code', () => {
   let resSpy
   let req
   let cancelUserConsetCodeSpy
   beforeEach(() => {
+    const handler = new CIRAHandler(new HttpHandler(), 'admin', 'P@ssw0rd')
+    const device = new DeviceAction(handler, null)
     resSpy = createSpyObj('Response', ['status', 'json', 'end', 'send'])
-    req = { params: { guid: '4c4c4544-004b-4210-8033-b6c04f504633' } }
+    req = {
+      params: { guid: '4c4c4544-004b-4210-8033-b6c04f504633' },
+      deviceAction: device
+    }
     resSpy.status.mockReturnThis()
     resSpy.json.mockReturnThis()
     resSpy.send.mockReturnThis()
 
-    devices['4c4c4544-004b-4210-8033-b6c04f504633'] = new ConnectedDevice(null, 'admin', 'P@ssw0rd')
-    cancelUserConsetCodeSpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'cancelUserConsentCode')
+    cancelUserConsetCodeSpy = jest.spyOn(device, 'cancelUserConsentCode')
   })
 
   it('should cancel user conset code', async () => {
