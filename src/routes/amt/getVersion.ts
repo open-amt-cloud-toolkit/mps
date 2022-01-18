@@ -8,13 +8,12 @@ import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
-import { devices } from '../../server/mpsserver'
 
 export async function version (req: Request, res: Response): Promise<void> {
   try {
     const guid: string = req.params.guid
     MqttProvider.publishEvent('request', ['AMT_Version'], 'Power State Requested', guid)
-    const response = await getVersion(guid)
+    const response = await getVersion(guid, req)
     if (response == null) {
       log.error(`Request failed during AMTVersion BatchEnum Exec for guid : ${guid}.`)
       res.status(400).json(ErrorResponse(400, `Request failed during AMTVersion BatchEnum Exec for guid : ${guid}.`))
@@ -28,10 +27,10 @@ export async function version (req: Request, res: Response): Promise<void> {
 }
 
 // matches version 2.x API for Open AMT
-export async function getVersion (guid: string): Promise<any> {
+export async function getVersion (guid: string, req: Request): Promise<any> {
   const response: {[key: string]: any} = {}
-  response.CIM_SoftwareIdentity = await devices[guid].getSoftwareIdentity()
-  response.AMT_SetupAndConfigurationService = await devices[guid].getSetupAndConfigurationService()
+  response.CIM_SoftwareIdentity = await req.deviceAction.getSoftwareIdentity()
+  response.AMT_SetupAndConfigurationService = await req.deviceAction.getSetupAndConfigurationService()
   if (Object.values(response).some(item => item == null)) {
     return null
   } else {

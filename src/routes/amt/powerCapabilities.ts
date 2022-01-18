@@ -8,7 +8,6 @@ import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
-import { devices } from '../../server/mpsserver'
 import { getVersion } from './getVersion'
 
 export async function powerCapabilities (req: Request, res: Response): Promise<void> {
@@ -16,8 +15,8 @@ export async function powerCapabilities (req: Request, res: Response): Promise<v
     const guid: string = req.params.guid
 
     MqttProvider.publishEvent('request', ['AMT_BootCapabilities'], 'Power Capabilities Requested', guid)
-    const version = await getVersion(guid)
-    const powerCapabilities = await devices[guid].getPowerCapabilities()
+    const version = await getVersion(guid, req)
+    const powerCapabilities = await req.deviceAction.getPowerCapabilities()
     const bootCaps = bootCapabilities(version, powerCapabilities.Body.AMT_BootCapabilities)
     MqttProvider.publishEvent('success', ['AMT_BootCapabilities'], 'Sent Power Capabilities', guid)
     return res.status(200).json(bootCaps).end()

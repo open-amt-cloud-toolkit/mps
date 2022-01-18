@@ -14,6 +14,23 @@ export const enumerateResponse = {
     }
   }
 }
+export const enumerateResponseCIMSoftwareIdentity = {
+  Envelope: {
+    Header: {
+      To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+      RelatesTo: 0,
+      Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/EnumerateResponse',
+      MessageID: 'uuid:00000000-8086-8086-8086-000000000030',
+      ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_SoftwareIdentity'
+    },
+    Body: {
+      EnumerateResponse: {
+        EnumerationContext: '17000000-0000-0000-0000-000000000000'
+      }
+    }
+  },
+  statusCode: 200
+}
 export const serviceAvailableToElement = {
   Envelope: {
     Header: {
@@ -65,39 +82,40 @@ export const generalSettings = {
   Envelope: {
     Header: {
       To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
-      RelatesTo: '0',
+      RelatesTo: 0,
       Action: 'http://schemas.xmlsoap.org/ws/2004/09/transfer/GetResponse',
       MessageID: 'uuid:00000000-8086-8086-8086-000000000001',
       ResourceURI: 'http://intel.com/wbem/wscim/1/amt-schema/1/AMT_GeneralSettings'
     },
     Body: {
       AMT_GeneralSettings: {
-        AMTNetworkEnabled: '1',
-        DDNSPeriodicUpdateInterval: '1440',
-        DDNSTTL: '900',
-        DDNSUpdateByDHCPServerEnabled: 'true',
-        DDNSUpdateEnabled: 'false',
-        DHCPv6ConfigurationTimeout: '0',
+        AMTNetworkEnabled: 1,
+        DDNSPeriodicUpdateInterval: 1440,
+        DDNSTTL: 900,
+        DDNSUpdateByDHCPServerEnabled: true,
+        DDNSUpdateEnabled: false,
+        DHCPv6ConfigurationTimeout: 0,
         DigestRealm: 'Digest:A3829B3827DE4D33D4449B366831FD01',
         DomainName: '',
         ElementName: 'Intel(r) AMT: General Settings',
         HostName: '',
         HostOSFQDN: 'DESKTOP-9CC12U7',
-        IdleWakeTimeout: '1',
+        IdleWakeTimeout: 1,
         InstanceID: 'Intel(r) AMT: General Settings',
-        NetworkInterfaceEnabled: 'true',
-        PingResponseEnabled: 'true',
-        PowerSource: '0',
-        PreferredAddressFamily: '0',
-        PresenceNotificationInterval: '0',
-        PrivacyLevel: '0',
-        RmcpPingResponseEnabled: 'true',
-        SharedFQDN: 'true',
-        ThunderboltDockEnabled: '0',
-        WsmanOnlyMode: 'false'
+        NetworkInterfaceEnabled: true,
+        PingResponseEnabled: true,
+        PowerSource: 0,
+        PreferredAddressFamily: 0,
+        PresenceNotificationInterval: 0,
+        PrivacyLevel: 0,
+        RmcpPingResponseEnabled: true,
+        SharedFQDN: true,
+        ThunderboltDockEnabled: 0,
+        WsmanOnlyMode: false
       }
     }
-  }
+  },
+  statusCode: 200
 }
 
 export const startOptInResponse = {
@@ -155,7 +173,7 @@ export const computerSystemPackage = {
   Envelope: {
     Header: {
       To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
-      RelatesTo: '0',
+      RelatesTo: 1,
       Action: 'http://schemas.xmlsoap.org/ws/2004/09/transfer/GetResponse',
       MessageID: 'uuid:00000000-8086-8086-8086-000000000001',
       ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ComputerSystemPackage'
@@ -189,14 +207,15 @@ export const computerSystemPackage = {
         PlatformGUID: '44454C4C4B0010428033B6C04F504633'
       }
     }
-  }
+  },
+  statusCode: 200
 }
 
 export const chassis = {
   Envelope: {
     Header: {
       To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
-      RelatesTo: '1',
+      RelatesTo: 1,
       Action: 'http://schemas.xmlsoap.org/ws/2004/09/transfer/GetResponse',
       MessageID: 'uuid:00000000-8086-8086-8086-000000000002',
       ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_Chassis'
@@ -215,32 +234,34 @@ export const chassis = {
         Version: ''
       }
     }
-  }
+  },
+  statusCode: 200
 }
 export const card = {
   Envelope: {
     Header: {
       To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
-      RelatesTo: '2',
+      RelatesTo: 2,
       Action: 'http://schemas.xmlsoap.org/ws/2004/09/transfer/GetResponse',
       MessageID: 'uuid:00000000-8086-8086-8086-000000000003',
       ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_Card'
     },
     Body: {
       CIM_Card: {
-        CanBeFRUed: 'true',
+        CanBeFRUed: true,
         CreationClassName: 'CIM_Card',
         ElementName: 'Managed System Base Board',
         Manufacturer: 'Dell Inc.',
         Model: '0MVDNX',
-        OperationalStatus: '0',
-        PackageType: '9',
+        OperationalStatus: 0,
+        PackageType: 9,
         SerialNumber: '/6KB3PF3/CNPEC0017500BC/',
         Tag: 'CIM_Card',
         Version: 'A00'
       }
     }
-  }
+  },
+  statusCode: 200
 }
 export const biosElement = {
   Envelope: {
@@ -392,13 +413,13 @@ export const physicalPackage = {
         EnumerationContext: '04000000-0000-0000-0000-000000000000',
         Items: {
           CIM_Card: {
-            CanBeFRUed: 'true',
+            CanBeFRUed: true,
             CreationClassName: 'CIM_Card',
             ElementName: 'Managed System Base Board',
             Manufacturer: 'Dell Inc.',
             Model: '0MVDNX',
-            OperationalStatus: '0',
-            PackageType: '9',
+            OperationalStatus: 0,
+            PackageType: 9,
             SerialNumber: '/6KB3PF3/CNPEC0017500BC/',
             Tag: 'CIM_Card',
             Version: 'A00'

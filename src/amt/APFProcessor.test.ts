@@ -1,8 +1,9 @@
 import Common from '../utils/common'
 import { logger } from '../utils/logger'
 import APFProcessor, { APFProtocol } from './APFProcessor'
-import { CIRAChannel } from './CIRAHandler'
 import { CIRASocket } from '../models/models'
+import { CIRAChannel } from './CIRAChannel'
+import { EventEmitter } from 'stream'
 
 afterEach(() => {
   jest.clearAllMocks()
@@ -321,7 +322,7 @@ describe('channelData() tests', () => {
           write: jest.fn()
         },
         state: 1,
-        onStateChange: jest.fn()
+        onStateChange: new EventEmitter()
       } as any
       const fakeCiraSocket: CIRASocket = {
         tag: {
@@ -364,7 +365,7 @@ describe('channelData() tests', () => {
     it('should return 17 on happy path', () => {
       const fakeCiraChannel: CIRAChannel = {
         state: 1,
-        onStateChange: jest.fn()
+        onStateChange: new EventEmitter()
       } as any
       const fakeCiraSocket: CIRASocket = {
         tag: {
@@ -441,7 +442,7 @@ describe('channelData() tests', () => {
       const data = ''
       fakeCiraChannel.closing = 0
       fakeCiraChannel.sendBuffer = 'fake buffer'
-      fakeCiraChannel.onStateChange = jest.fn()
+      fakeCiraChannel.onStateChange = new EventEmitter()
       const result = APFProcessor.channelOpenConfirmation(fakeCiraSocket, length, data)
       expect(result).toEqual(17)
       expect(sendChannelDataSpy).toHaveBeenCalled()
@@ -455,7 +456,7 @@ describe('channelData() tests', () => {
       const readIntSpy = jest.spyOn(Common, 'ReadInt').mockReturnValue(1)
       fakeCiraChannel.closing = 0
       fakeCiraChannel.sendBuffer = 'fake buffer'
-      fakeCiraChannel.onStateChange = jest.fn()
+      fakeCiraChannel.onStateChange = new EventEmitter()
       const result = APFProcessor.channelOpenConfirmation(fakeCiraSocket, length, data)
       expect(result).toEqual(17)
       expect(sendChannelDataSpy).toHaveBeenCalled()

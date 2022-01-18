@@ -17,7 +17,7 @@ import * as parser from 'body-parser'
 import jws from 'jws'
 import { certificatesType, queryParams } from '../models/Config'
 import { ErrorResponse } from '../utils/amtHelper'
-import { logger as log } from '../utils/logger'
+import { logger as log, logger } from '../utils/logger'
 import { constants } from 'crypto'
 // import AMTStackFactory from '../amt_libraries/amt-connection-factory'
 import routes from '../routes'
@@ -71,7 +71,20 @@ export class WebServer {
         }
         next()
       })
-
+      this.app.use(function (req: Request, res, next) {
+        const afterResponse = (): void => {
+          if (req.deviceAction?.ciraHandler?.channel) {
+            logger.debug('end of request, closing channel')
+            req.deviceAction.ciraHandler.channel.CloseChannel()
+          }
+          res.removeListener('finish', afterResponse)
+          res.removeListener('close', afterResponse)
+          // actions after response
+        }
+        res.on('finish', afterResponse)
+        res.on('close', afterResponse)
+        next()
+      })
       // Relay websocket. KVM & SOL use this websocket.
       this.relaywss.on('connection', async (ws, req) => {
         try {
@@ -148,7 +161,7 @@ export class WebServer {
             const uuid = params.host
             const ciraConn = devices[uuid]
             if (uuid && ciraConn) {
-              ws.forwardclient = ciraConn.ciraHandler.SetupCiraChannel(ciraConn.ciraSocket, params.port)
+              // ws.forwardclient = ciraConn.ciraHandler.SetupCiraChannel(ciraConn.ciraSocket, params.port)
 
               ws.forwardclient.xtls = 0
               ws.forwardclient.onData = (data): void => {
@@ -262,7 +275,6 @@ export class WebServer {
         req.db = await newDB.getDb()
         req.secrets = this.secrets
         req.certs = this.certs
-        req.amtFactory = {} // new AMTStackFactory(this.mpsService)
         next()
       }, routes)
 

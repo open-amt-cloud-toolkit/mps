@@ -7,11 +7,11 @@
 import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
 import { ErrorResponse } from '../../utils/amtHelper'
-import { devices } from '../../server/mpsserver'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { UserConsentOptions } from '../../utils/constants'
 import { AMT_REDIRECTION_SERVICE_ENABLE_STATE } from '@open-amt-cloud-toolkit/wsman-messages/dist/models/common'
 import { AMT, IPS } from '@open-amt-cloud-toolkit/wsman-messages/dist'
+import { DeviceAction } from '../../amt/DeviceAction'
 
 export async function setAMTFeatures (req: Request, res: Response): Promise<void> {
   try {
@@ -21,9 +21,9 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
 
     MqttProvider.publishEvent('request', ['AMT_SetFeatures'], 'Set AMT Features Requested', guid)
 
-    const amtRedirectionResponse = await devices[guid].getRedirectionService()
-    const optServiceResponse = await devices[guid].getIpsOptInService()
-    const kvmRedirectionResponse = await devices[guid].getKvmRedirectionSap()
+    const amtRedirectionResponse = await req.deviceAction.getRedirectionService()
+    const optServiceResponse = await req.deviceAction.getIpsOptInService()
+    const kvmRedirectionResponse = await req.deviceAction.getKvmRedirectionSap()
 
     let isRedirectionChanged = false
     let redir = amtRedirectionResponse.AMT_RedirectionService.ListenerEnabled
@@ -62,7 +62,7 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
     if (isRedirectionChanged) {
       amtRedirectionResponse.AMT_RedirectionService.EnabledState = 32768 + ((ider ? 1 : 0) + (sol ? 2 : 0))
       amtRedirectionResponse.AMT_RedirectionService.ListenerEnabled = redir
-      await setRedirectionService(amtRedirectionResponse, kvm, payload.guid)
+      await setRedirectionService(req.deviceAction, amtRedirectionResponse, kvm, payload.guid)
     }
 
     const optResponse = optServiceResponse.IPS_OptInService
@@ -70,7 +70,7 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
     const optInRequiredValue = UserConsentOptions[key]
     if (optResponse.OptInRequired !== optInRequiredValue) {
       optResponse.OptInRequired = optInRequiredValue
-      await setUserConsent(optServiceResponse, payload.guid)
+      await setUserConsent(req.deviceAction, optServiceResponse, payload.guid)
     }
 
     MqttProvider.publishEvent('success', ['AMT_SetFeatures'], 'Set AMT Features', guid)
@@ -81,17 +81,17 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
     res.status(500).json(ErrorResponse(500, 'Request failed during set AMT Features.')).end()
   }
 }
-export async function setRedirectionService (amtRedirResponse: AMT.Models.RedirectionResponse, kvm: boolean, guid: string): Promise<void> {
+export async function setRedirectionService (device: DeviceAction, amtRedirResponse: AMT.Models.RedirectionResponse, kvm: boolean, guid: string): Promise<void> {
   // TODO: check statuses
   // for SOL and IDER
-  await devices[guid].setRedirectionService(amtRedirResponse.AMT_RedirectionService.EnabledState)
+  await device.setRedirectionService(amtRedirResponse.AMT_RedirectionService.EnabledState)
   // for kvm
-  await devices[guid].setKvmRedirectionSap(kvm ? AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled : AMT_REDIRECTION_SERVICE_ENABLE_STATE.Disabled)
+  await device.setKvmRedirectionSap(kvm ? AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled : AMT_REDIRECTION_SERVICE_ENABLE_STATE.Disabled)
 
-  await devices[guid].putRedirectionService(amtRedirResponse)
+  await device.putRedirectionService(amtRedirResponse)
 }
 
-export async function setUserConsent (optServiceRes: IPS.Models.OptInServiceResponse, guid: string): Promise<void> {
-  const result = await devices[guid].putIpsOptInService(optServiceRes)
+export async function setUserConsent (device: DeviceAction, optServiceRes: IPS.Models.OptInServiceResponse, guid: string): Promise<void> {
+  const result = await device.putIpsOptInService(optServiceRes)
   console.log(result)
 }

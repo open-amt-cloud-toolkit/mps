@@ -7,13 +7,12 @@ import { Response, Request } from 'express'
 import { logger as log } from '../../../utils/logger'
 import { ErrorResponse } from '../../../utils/amtHelper'
 import { MqttProvider } from '../../../utils/MqttProvider'
-import { devices } from '../../../server/mpsserver'
 import { AMTStatusCodes } from '../../../utils/constants'
 export async function request (req: Request, res: Response): Promise<void> {
   try {
     const guid: string = req.params.guid
     // Request an opt-in code. Intel(R) AMT generates code internally.
-    const response = await devices[guid].requestUserConsentCode()
+    const response = await req.deviceAction.requestUserConsentCode()
     if (response != null) {
       const result = {
         Header: response.Header,

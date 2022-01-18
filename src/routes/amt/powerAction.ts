@@ -8,19 +8,17 @@ import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
-import { devices } from '../../server/mpsserver'
 import { AMTStatusCodes } from '../../utils/constants'
 import { AMT } from '@open-amt-cloud-toolkit/wsman-messages/dist'
 
 export async function powerAction (req: Request, res: Response): Promise<void> {
   try {
     const payload = req.body
-    const guid: string = req.params.guid
-    const results = await devices[guid].getBootOptions()
+    const results = await req.deviceAction.getBootOptions()
     const bootData = setBootData(payload.action, false, results.AMT_BootSettingData)
-    await devices[guid].setBootConfiguration(bootData)
+    await req.deviceAction.setBootConfiguration(bootData)
 
-    const powerAction = await devices[guid].sendPowerAction(payload.action)
+    const powerAction = await req.deviceAction.sendPowerAction(payload.action)
     powerAction.RequestPowerStateChange_OUTPUT.ReturnValueStr = AMTStatusToString(powerAction.RequestPowerStateChange_OUTPUT.ReturnValue)
     MqttProvider.publishEvent('success', ['AMT_PowerAction'], 'Internal Server Error')
     return res.status(200).json(powerAction.RequestPowerStateChange_OUTPUT).end()

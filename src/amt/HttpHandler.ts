@@ -20,6 +20,9 @@ export class connectionParams {
 }
 
 export class HttpHandler {
+  digestChallenge: any
+  authResolve: any
+  isAuthInProgress: any
   // The purpose of this directive is to allow the server to detect request replays by maintaining its own copy of this count.
   // if the same nonceCounter-value is seen twice, then the request is a replay
   nonceCounter: number = 1
@@ -29,6 +32,18 @@ export class HttpHandler {
     this.stripPrefix = xml2js.processors.stripPrefix
     this.parser = new xml2js.Parser({ ignoreAttrs: true, mergeAttrs: false, explicitArray: false, tagNameProcessors: [this.stripPrefix], valueProcessors: [xml2js.processors.parseNumbers, xml2js.processors.parseBooleans] })
   }
+
+  // async isAuthenticated (): Promise<boolean> {
+  //   console.log('IS AUTHENTICATED?????')
+  //   while (this.digestChallenge == null && this.isAuthInProgress) {
+  //     console.log("we don't have digest challenge")
+  //     if (this.isAuthInProgress) {
+  //       console.log('authentication in progress')
+  //     }
+  //     // we don't have auth yet, and we are waiting for auth
+  //   }
+  //   return true
+  // }
 
   wrapIt (connectionParams: connectionParams, data: string): string {
     try {

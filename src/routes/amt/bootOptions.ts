@@ -8,15 +8,13 @@ import { Response, Request } from 'express'
 import { logger } from '../../utils/logger'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
-import { devices } from '../../server/mpsserver'
 import { AMTStatusCodes } from '../../utils/constants'
 import { AMT } from '@open-amt-cloud-toolkit/wsman-messages/dist'
 
 export async function bootOptions (req: Request, res: Response): Promise<void> {
   try {
     const payload = req.body // payload.action
-    const guid: string = req.params.guid
-    const device = devices[guid]
+    const device = req.deviceAction
     const results = await device.getBootOptions()
     const bootData = setBootData(payload.action, payload.useSOL, results.AMT_BootSettingData)
     await device.setBootConfiguration(bootData)
