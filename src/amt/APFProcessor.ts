@@ -182,7 +182,7 @@ const APFProcessor = {
     if (cirachannel.state > 0) {
       cirachannel.state = 0
       if (cirachannel.onStateChange) {
-        cirachannel.onStateChange(cirachannel, cirachannel.state)
+        cirachannel.onStateChange.emit('stateChange', cirachannel.state)
       }
       delete socket.tag.channels[RecipientChannel]
     }
@@ -202,7 +202,7 @@ const APFProcessor = {
     if (cirachannel.state > 0) {
       cirachannel.state = 0
       if (cirachannel.onStateChange) {
-        cirachannel.onStateChange(cirachannel, cirachannel.state)
+        cirachannel.onStateChange.emit('stateChange', cirachannel.state)
       }
       delete socket.tag.channels[recipientChannel]
     }
@@ -243,7 +243,7 @@ const APFProcessor = {
       }
       // Indicate the channel is open
       if (cirachannel.onStateChange) {
-        cirachannel.onStateChange(cirachannel, cirachannel.state)
+        cirachannel.onStateChange.emit('stateChange', cirachannel.state)
       }
     }
     return 17
@@ -502,7 +502,6 @@ const APFProcessor = {
   },
 
   SendChannelData: (socket: CIRASocket, channelid, data): void => {
-    logger.silly('Data in Send Channel Data :', data)
     logger.silly(`MPS: SendChannelData, ${channelid}`)
     APFProcessor.Write(
       socket,

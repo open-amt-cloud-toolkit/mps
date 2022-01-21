@@ -1,8 +1,9 @@
 import * as hw from './getHardwareInfo'
 import { createSpyObj } from '../../test/helper/jest'
-import { devices } from '../../server/mpsserver'
-import { ConnectedDevice } from '../../amt/ConnectedDevice'
 import { biosElement, card, chassis, chip, computerSystemPackage, mediaAccessDevice, physicalMemory, physicalPackage, processor, systemPackaging } from '../../test/helper/wsmanResponses'
+import { DeviceAction } from '../../amt/DeviceAction'
+import { CIRAHandler } from '../../amt/CIRAHandler'
+import { HttpHandler } from '../../amt/HttpHandler'
 
 describe('Hardware information', () => {
   let resSpy
@@ -12,22 +13,23 @@ describe('Hardware information', () => {
   let PhysicalMemorySpy, MediaAccessDeviceSpy, PhysicalPackageSpy, SystemPackagingSpy, ChipSpy
 
   beforeEach(() => {
+    const handler = new CIRAHandler(new HttpHandler(), 'admin', 'P@ssw0rd')
+    const device = new DeviceAction(handler, null)
     resSpy = createSpyObj('Response', ['status', 'json', 'end', 'send'])
-    req = { params: { guid: '4c4c4544-004b-4210-8033-b6c04f504633' } }
+    req = { params: { guid: '4c4c4544-004b-4210-8033-b6c04f504633' }, deviceAction: device }
     resSpy.status.mockReturnThis()
     resSpy.json.mockReturnThis()
     resSpy.send.mockReturnThis()
-    devices['4c4c4544-004b-4210-8033-b6c04f504633'] = new ConnectedDevice(null, 'admin', 'P@ssw0rd')
-    ComputerSystemPackageSpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'getComputerSystemPackage')
-    ChassisSpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'getChassis')
-    CardSpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'getCard')
-    BIOSElementSpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'getBIOSElement')
-    ProcessorSpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'getProcessor')
-    PhysicalMemorySpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'getPhysicalMemory')
-    MediaAccessDeviceSpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'getMediaAccessDevice')
-    PhysicalPackageSpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'getPhysicalPackage')
-    SystemPackagingSpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'getSystemPackaging')
-    ChipSpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'getChip')
+    ComputerSystemPackageSpy = jest.spyOn(device, 'getComputerSystemPackage')
+    ChassisSpy = jest.spyOn(device, 'getChassis')
+    CardSpy = jest.spyOn(device, 'getCard')
+    BIOSElementSpy = jest.spyOn(device, 'getBIOSElement')
+    ProcessorSpy = jest.spyOn(device, 'getProcessor')
+    PhysicalMemorySpy = jest.spyOn(device, 'getPhysicalMemory')
+    MediaAccessDeviceSpy = jest.spyOn(device, 'getMediaAccessDevice')
+    PhysicalPackageSpy = jest.spyOn(device, 'getPhysicalPackage')
+    SystemPackagingSpy = jest.spyOn(device, 'getSystemPackaging')
+    ChipSpy = jest.spyOn(device, 'getChip')
   })
 
   afterEach(() => {

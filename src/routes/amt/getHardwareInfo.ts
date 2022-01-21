@@ -8,14 +8,14 @@ import { Response, Request } from 'express'
 import { logger as log, logger } from '../../utils/logger'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
-import { devices } from '../../server/mpsserver'
+import { DeviceAction } from '../../amt/DeviceAction'
 
 export async function hardwareInfo (req: Request, res: Response): Promise<void> {
   try {
     const guid: string = req.params.guid
 
     MqttProvider.publishEvent('request', ['AMT_HardwareInfo'], 'Hardware Information Requested', guid)
-    const response = await get(guid)
+    const response = await get(req.deviceAction, guid)
     if (Object.values(response).some(item => item == null)) {
       log.error(`Request failed during AMTHardware Information BatchEnum Exec for guid : ${guid}.`)
       MqttProvider.publishEvent('fail', ['AMT_HardwareInfo'], 'Failed to Get Hardware Information', guid)
@@ -32,18 +32,19 @@ export async function hardwareInfo (req: Request, res: Response): Promise<void> 
   }
 }
 
-export async function get (guid: string): Promise<any> {
+export async function get (device: DeviceAction, guid: string): Promise<any> {
   const response: {[key: string]: any} = {}
-  response.CIM_ComputerSystemPackage = await devices[guid].getComputerSystemPackage()
-  response.CIM_Chassis = await devices[guid].getChassis()
-  response.CIM_Card = await devices[guid].getCard()
-  response.CIM_BIOSElement = await devices[guid].getBIOSElement()
-  response.CIM_Processor = await devices[guid].getProcessor()
-  response.CIM_PhysicalMemory = await devices[guid].getPhysicalMemory()
-  response.CIM_MediaAccessDevice = await devices[guid].getMediaAccessDevice()
-  response.CIM_PhysicalPackage = await devices[guid].getPhysicalPackage()
-  response.CIM_SystemPackaging = await devices[guid].getSystemPackaging()
-  response.CIM_Chip = await devices[guid].getChip()
+  response.CIM_ComputerSystemPackage = await device.getComputerSystemPackage()
+  response.CIM_Chassis = await device.getChassis()
+  response.CIM_Card = await device.getCard()
+  response.CIM_BIOSElement = await device.getBIOSElement()
+  response.CIM_Processor = await device.getProcessor()
+  response.CIM_PhysicalMemory = await device.getPhysicalMemory()
+  response.CIM_MediaAccessDevice = await device.getMediaAccessDevice()
+  response.CIM_PhysicalPackage = await device.getPhysicalPackage()
+  response.CIM_SystemPackaging = await device.getSystemPackaging()
+  response.CIM_Chip = await device.getChip()
+
   return response
 }
 
@@ -53,54 +54,34 @@ export function formatResponse (response: any): any {
   return {
     CIM_ComputerSystemPackage: {
       response: response.CIM_ComputerSystemPackage?.Body?.CIM_ComputerSystemPackage,
-      responses: {
-        Header: response.CIM_ComputerSystemPackage?.Header,
-        Body: response.CIM_ComputerSystemPackage?.Body?.CIM_ComputerSystemPackage
-      },
       status: response.CIM_ComputerSystemPackage?.Body?.CIM_ComputerSystemPackage ? '200' : '400'
     },
     CIM_SystemPackaging: {
-      responses: response.CIM_SystemPackaging?.Body?.PullResponse?.Items.CIM_ComputerSystemPackage,
+      responses: [response.CIM_SystemPackaging?.Body?.PullResponse?.Items.CIM_ComputerSystemPackage],
       status: response.CIM_SystemPackaging?.Body?.PullResponse?.Items.CIM_ComputerSystemPackage ? '200' : '400'
     },
     CIM_Chassis: {
       response: response.CIM_Chassis?.Body?.CIM_Chassis,
-      responses: {
-        Header: response.CIM_Chassis?.Header,
-        Body: response.CIM_Chassis?.Body
-      },
       status: response.CIM_Chassis?.Body?.CIM_Chassis ? '200' : '400'
     },
     CIM_Chip: {
-      responses: response.CIM_Chip?.Body?.PullResponse?.Items?.CIM_Chip,
+      responses: [response.CIM_Chip?.Body?.PullResponse?.Items?.CIM_Chip],
       status: response.CIM_Chip?.Body ? '200' : '400'
     },
     CIM_Card: {
       response: response.CIM_Card?.Body?.CIM_Card,
-      responses: {
-        Header: response.CIM_Card?.Header,
-        Body: response.CIM_Card?.Body?.CIM_Card
-      },
       status: response.CIM_Card?.Body ? '200' : '400'
     },
     CIM_BIOSElement: {
       response: response.CIM_BIOSElement?.Body?.CIM_BIOSElement,
-      responses: {
-        Header: response.CIM_BIOSElement?.Header,
-        Body: response.CIM_BIOSElement?.Body?.CIM_BIOSElement
-      },
       status: response.CIM_BIOSElement?.Body ? '200' : '400'
     },
     CIM_Processor: {
-      response: response.CIM_Processor?.Body?.PullResponse?.Items?.CIM_Processor,
-      responses: {
-        Header: response.CIM_Processor?.Header,
-        Body: response.CIM_Processor?.Body?.PullResponse?.Items?.CIM_Processor
-      },
+      responses: [response.CIM_Processor?.Body?.PullResponse?.Items?.CIM_Processor],
       status: response.CIM_Processor?.Body?.PullResponse?.Items?.CIM_Processor ? '200' : '400'
     },
     CIM_PhysicalMemory: {
-      responses: [response.CIM_PhysicalMemory?.Body?.PullResponse?.Items?.CIM_PhysicalMemory],
+      responses: response.CIM_PhysicalMemory?.Body?.PullResponse?.Items?.CIM_PhysicalMemory,
       status: response.CIM_Processor?.Body?.PullResponse?.Items?.CIM_Processor ? '200' : '400'
     },
     CIM_MediaAccessDevice: {

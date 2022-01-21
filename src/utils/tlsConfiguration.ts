@@ -4,8 +4,8 @@
 * Description: MPS and Web Server TLS Configuration Interface
 **********************************************************************/
 
-import * as path from 'path'
-import * as fs from 'fs'
+import path from 'path'
+import fs from 'fs'
 
 import { logger as log } from './logger'
 import { mpsConfigType, webConfigType, directConfigType } from '../models/Config'
@@ -28,7 +28,7 @@ export default {
         }
       } catch (ex) {
         log.error('Failed to parse json file. Exception:', ex.message)
-        process.exit()
+        return process.exit()
       }
 
       for (const i in webConfig) {
@@ -50,7 +50,7 @@ export default {
           !fs.existsSync(path.join(__dirname, webConfig.cert))
         ) {
           log.error('Error: TLS certificate or private key does not exist.')
-          process.exit()
+          return process.exit()
         } else {
           webConfig.key = fs.readFileSync(
             path.join(__dirname, webConfig.key),
@@ -65,7 +65,7 @@ export default {
         log.error(
           'Error: WebServer Configuration missing either TLS Cert or Private Key.'
         )
-        process.exit()
+        return process.exit()
       }
 
       // Load CA certificates
@@ -85,7 +85,7 @@ export default {
         webConfig.ca = caCertArr
       } else {
         log.error('Error: WebServer Configuration missing CA Certificate')
-        process.exit()
+        return process.exit()
       }
 
       // Perform 'OR' operation between SecureOptions
@@ -106,7 +106,7 @@ export default {
       return webConfig
     } catch (ex) {
       log.error('Web TLS webConfiguration exception:', ex)
-      process.exit()
+      return process.exit()
     }
   },
 
@@ -118,12 +118,12 @@ export default {
         if (fs.existsSync(mpsTlsConfigPath)) {
           mpsConfig = JSON.parse(fs.readFileSync(mpsTlsConfigPath, 'utf8'))
         } else {
-          log.error(`webtls config file does not exists ${mpsTlsConfigPath}`)
+          log.error(`mpstls config file does not exists ${mpsTlsConfigPath}`)
           return
         }
       } catch (ex) {
         log.error('Failed to parse json file. Exception:', ex.message)
-        process.exit()
+        return process.exit()
       }
 
       // Delete elements that are null
@@ -147,7 +147,7 @@ export default {
           !fs.existsSync(path.join(__dirname, mpsConfig.cert))
         ) {
           log.error('Error: TLS cerficate or private key does not exist.')
-          process.exit()
+          return process.exit()
         } else {
           mpsConfig.key = fs.readFileSync(
             path.join(__dirname, mpsConfig.key),
@@ -162,7 +162,7 @@ export default {
         log.error(
           'Error: MPS Configuration missing either TLS Cert or Private Key.'
         )
-        process.exit()
+        return process.exit()
       }
 
       // Perform 'OR' operation between SecureOptions
@@ -184,7 +184,7 @@ export default {
       return mpsConfig
     } catch (ex) {
       log.error('Exception mpsTLSConfiguration:', ex.message)
-      process.exit()
+      return process.exit()
     }
   },
 
@@ -196,19 +196,19 @@ export default {
         if (fs.existsSync(directConnTlsConfigPath)) {
           directConnConfig = JSON.parse(fs.readFileSync(directConnTlsConfigPath, 'utf8'))
         } else {
-          log.error(`directtls config file does not exists ${directConnTlsConfigPath}`)
+          log.error(`directtls config file does not exist ${directConnTlsConfigPath}`)
           return
         }
       } catch (ex) {
         log.error('Failed to parse json file. Exception:', ex.message)
-        process.exit()
+        return process.exit()
       }
 
       // Load SSL Cert and key
       if (directConnConfig.key && directConnConfig.cert && directConnConfig.ca) {
         if (!fs.existsSync(path.join(__dirname, directConnConfig.key)) || !fs.existsSync(path.join(__dirname, directConnConfig.cert))) {
           log.error('Error: TLS cerficate or private key does not exist.')
-          process.exit()
+          return process.exit()
         } else {
           directConnConfig.key = fs.readFileSync(path.join(__dirname, directConnConfig.key), 'utf8')
           directConnConfig.cert = fs.readFileSync(path.join(__dirname, directConnConfig.cert), 'utf8')
@@ -216,7 +216,7 @@ export default {
         }
       } else {
         log.error('Error: Direct Connection Configuration missing either TLS Cert or Private Key.')
-        process.exit()
+        return process.exit()
       }
       if (directConnConfig.secureOptions) {
         const optionArr = directConnConfig.secureOptions
@@ -229,7 +229,7 @@ export default {
       return directConnConfig
     } catch (ex) {
       log.error('Exception directTLSConfiguration:', ex.message)
-      process.exit()
+      return process.exit()
     }
   }
 }

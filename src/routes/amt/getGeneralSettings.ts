@@ -8,13 +8,13 @@ import { Response, Request } from 'express'
 import { logger as log } from '../../utils/logger'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
-import { devices } from '../../server/mpsserver'
 
 export async function generalSettings (req: Request, res: Response): Promise<void> {
   try {
     const guid: string = req.params.guid
     MqttProvider.publishEvent('request', ['AMT_GeneralSettings'], 'General Settings Requested', guid)
-    const response = await devices[guid].getGeneralSettings()
+    const response = await req.deviceAction.getGeneralSettings()
+
     if (response != null) {
       MqttProvider.publishEvent('success', ['AMT_GeneralSettings'], 'Sent General Settings', guid)
       // matches version 2.x API for Open AMT

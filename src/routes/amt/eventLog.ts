@@ -10,7 +10,6 @@ import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { SystemEntityTypes, SystemFirmwareError, SystemFirmwareProgress, WatchdogCurrentStates } from '../../utils/constants'
 import Common from '../../utils/common'
-import { devices } from '../../server/mpsserver'
 import { AMT } from '@open-amt-cloud-toolkit/wsman-messages/dist'
 
 export async function eventLog (req: Request, res: Response): Promise<void> {
@@ -18,7 +17,8 @@ export async function eventLog (req: Request, res: Response): Promise<void> {
     const guid: string = req.params.guid
 
     MqttProvider.publishEvent('request', ['AMT_EventLog'], 'Event Log Requested', guid)
-    const response = await devices[guid].getEventLog()
+    const response = await req.deviceAction.getEventLog()
+
     if (response != null) {
       MqttProvider.publishEvent('success', ['AMT_EventLog'], 'Sent Event Log', guid)
       const result = parseEventLogs(response)
@@ -75,7 +75,7 @@ function parseEventLogs (response: any): EventLog[] {
   if (typeof response.Body.GetRecords_OUTPUT.RecordArray === 'string') {
     response.Body.GetRecords_OUTPUT.RecordArray = [response.Body.GetRecords_OUTPUT.RecordArray]
   }
-  response.Body.GetRecords_OUTPUT.RecordArray.forEach((record) => {
+  response.Body.GetRecords_OUTPUT?.RecordArray?.forEach((record) => {
     const eventRecord = Buffer.from(record, 'base64')
     if (eventRecord != null) {
       const log: EventLog = {}

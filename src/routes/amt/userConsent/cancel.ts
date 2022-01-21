@@ -6,13 +6,12 @@ import { Response, Request } from 'express'
 import { logger as log } from '../../../utils/logger'
 import { ErrorResponse } from '../../../utils/amtHelper'
 import { MqttProvider } from '../../../utils/MqttProvider'
-import { devices } from '../../../server/mpsserver'
 import { AMTStatusCodes } from '../../../utils/constants'
 export async function cancel (req: Request, res: Response): Promise<void> {
   try {
     const guid: string = req.params.guid
     // Cancel a previous opt-in code request.
-    const response = await devices[guid].cancelUserConsentCode()
+    const response = await req.deviceAction.cancelUserConsentCode()
     if (response != null) {
       const result = {
         Header: response.Header,

@@ -1,7 +1,8 @@
 import { generalSettings } from './getGeneralSettings'
 import { createSpyObj } from '../../test/helper/jest'
-import { devices } from '../../server/mpsserver'
-import { ConnectedDevice } from '../../amt/ConnectedDevice'
+import { CIRAHandler } from '../../amt/CIRAHandler'
+import { DeviceAction } from '../../amt/DeviceAction'
+import { HttpHandler } from '../../amt/HttpHandler'
 
 const response = {
   Envelope: {
@@ -47,14 +48,18 @@ describe('general settings', () => {
   let req
   let generalSettingsSpy
   beforeEach(() => {
+    const handler = new CIRAHandler(new HttpHandler(), 'admin', 'P@ssw0rd')
+    const device = new DeviceAction(handler, null)
     resSpy = createSpyObj('Response', ['status', 'json', 'end', 'send'])
-    req = { params: { guid: '4c4c4544-004b-4210-8033-b6c04f504633' } }
+    req = {
+      params: { guid: '4c4c4544-004b-4210-8033-b6c04f504633' },
+      deviceAction: device
+    }
     resSpy.status.mockReturnThis()
     resSpy.json.mockReturnThis()
     resSpy.send.mockReturnThis()
 
-    devices['4c4c4544-004b-4210-8033-b6c04f504633'] = new ConnectedDevice(null, 'admin', 'P@ssw0rd')
-    generalSettingsSpy = jest.spyOn(devices['4c4c4544-004b-4210-8033-b6c04f504633'], 'getGeneralSettings')
+    generalSettingsSpy = jest.spyOn(device, 'getGeneralSettings')
   })
 
   it('should get version', async () => {
