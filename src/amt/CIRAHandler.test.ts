@@ -1,6 +1,10 @@
 // import { CIRASocket } from '../models/models'
 // import { card, computerSystemPackage, enumerateResponseCIMSoftwareIdentity } from '../test/helper/wsmanResponses'
 import { HttpZResponseModel } from 'http-z'
+import { CIRASocket } from '../models/models'
+import { computerSystemPackage } from '../test/helper/wsmanResponses'
+import { parseBody } from '../utils/parseWSManResponseBody'
+import APFProcessor from './APFProcessor'
 import { CIRAHandler } from './CIRAHandler'
 import { HttpHandler } from './HttpHandler'
 
@@ -105,33 +109,59 @@ describe('CIRA Handler', () => {
         text: cimCardResponse
       } as any
     } as any
-    const response = ciraHandler.parseBody(message)
+    const response = parseBody(message)
     expect(response).toBeDefined()
-    expect(response.statusCode).toBe(200)
   })
   it('should throw error when empty data', () => {
     expect(() => { ciraHandler.handleResult('') }).toThrowError('rawMessage has incorrect format')
   })
   it('should throw Unauthorized Error when 401 from ATM - digest challenge', () => {
-    const parseBodySpy = jest.spyOn(ciraHandler, 'parseBody')
     const handleAuthSpy = jest.spyOn(ciraHandler, 'handleAuth')
-
     ciraHandler.httpHandler.authResolve = () => {}
     const authSpy = jest.spyOn(ciraHandler.httpHandler, 'authResolve')
     expect(() => { ciraHandler.handleResult(unauthorizedResponse) }).toThrowError('Unauthorized')
     expect(authSpy).toHaveBeenCalled()
     expect(handleAuthSpy).toHaveBeenCalled()
-    expect(parseBodySpy).not.toHaveBeenCalled()
   })
   it('should parse when status is 200 and parse body', () => {
-    const parseBodySpy = jest.spyOn(ciraHandler, 'parseBody')
-    ciraHandler.handleResult(httpHeader200 + cimComputerPackageResponse)
-    expect(parseBodySpy).toHaveBeenCalled()
+    const response = ciraHandler.handleResult(httpHeader200 + cimComputerPackageResponse)
+    expect(response).toEqual(computerSystemPackage)
   })
   it('should parse when status is something else and parse body', () => {
-    const parseBodySpy = jest.spyOn(ciraHandler, 'parseBody')
     const tempHeader = httpHeader200.replace('200', '201')
-    ciraHandler.handleResult(tempHeader + cimComputerPackageResponse)
-    expect(parseBodySpy).toHaveBeenCalled()
+    const response = ciraHandler.handleResult(tempHeader + cimComputerPackageResponse)
+    computerSystemPackage.statusCode = 201
+    expect(response).toEqual(computerSystemPackage)
+  })
+  it('should return null when header does not contain www-Auntenticate', () => {
+    const response = ciraHandler.handleAuth({
+      protocolVersion: 'HTTP/1.1',
+      statusCode: 200,
+      statusMessage: 'OK',
+      headersSize: 218,
+      bodySize: 2165,
+      headers: [
+        { name: 'X-Frame-Options', value: 'DENY' },
+        {
+          name: 'Content-Type',
+          value: 'application/soap+xml; charset=UTF-8'
+        },
+        { name: 'Transfer-Encoding', value: 'chunked' }
+      ],
+      body: {
+        boundary: '',
+        params: [],
+        contentType: 'application/soap+xml',
+        text: ''
+      }
+    })
+    expect(response).toEqual(null)
+  })
+  it('should set up a new CIRA channel', () => {
+    const sendChannelSpy = jest.spyOn(APFProcessor, 'SendChannelOpen').mockImplementation(() => {})
+    const socket: CIRASocket = { tag: { first: true, activetunnels: 0, boundPorts: [], host: null, nextchannelid: 4, channels: {}, nextsourceport: 0, nodeid: null } } as any
+    const channel = ciraHandler.SetupCiraChannel(socket, 16692)
+    expect(sendChannelSpy).toBeCalledTimes(1)
+    expect(channel.state).toEqual(1)
   })
 })
