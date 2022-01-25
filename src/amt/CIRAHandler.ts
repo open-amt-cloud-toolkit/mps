@@ -15,6 +15,7 @@ import {
 } from '@open-amt-cloud-toolkit/wsman-messages/dist/models/common'
 import { Common } from '@open-amt-cloud-toolkit/wsman-messages/dist'
 import { CIRAChannel } from './CIRAChannel'
+import { parseBody } from '../utils/parseWSManResponseBody'
 export interface PendingRequests {
   xml?: string
   response?: HttpZResponseModel | string
@@ -118,30 +119,6 @@ export class CIRAHandler {
     return null
   }
 
-  parseBody (message: HttpZResponseModel): any {
-    let xmlBody: string = ''
-    // parse the body until its length is greater than 5, because body ends with '0\r\n\r\n'
-    while (message.body.text.length > 5) {
-      const chunkLength = message.body.text.indexOf('\r\n')
-      if (chunkLength < 0) {
-        return
-      }
-      // converts hexadecimal chunk size to integer
-      const chunkSize = parseInt(message.body.text.substring(0, chunkLength), 16)
-      if (message.body.text.length < chunkLength + 2 + chunkSize + 2) {
-        return
-      }
-      const data = message.body.text.substring(chunkLength + 2, chunkLength + 2 + chunkSize)
-      message.body.text = message.body.text.substring(chunkLength + 2 + chunkSize + 2)
-      xmlBody += data
-    }
-
-    // pares WSMan xml response to json
-    const response = this.httpHandler.parseXML(xmlBody)
-    response.statusCode = message.statusCode
-    return response
-  }
-
   handleResult (data: string): any {
     const message = httpZ.parse(data) as HttpZResponseModel
     if (message.statusCode === 401) {
@@ -152,9 +129,17 @@ export class CIRAHandler {
         throw new Error('Unauthorized') // could be better
       }
     } else if (message.statusCode === 200) {
-      return this.parseBody(message)
+      const xmlBody = parseBody(message)
+      // pares WSMan xml response to json
+      const response = this.httpHandler.parseXML(xmlBody)
+      response.statusCode = message.statusCode
+      return response
     } else {
-      return this.parseBody(message)
+      const xmlBody = parseBody(message)
+      // pares WSMan xml response to json
+      const response = this.httpHandler.parseXML(xmlBody)
+      response.statusCode = message.statusCode
+      return response
     }
   }
 }

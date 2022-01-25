@@ -9,6 +9,7 @@ import APFProcessor from './APFProcessor'
 import { connectionParams, HttpHandler } from './HttpHandler'
 import { EventEmitter } from 'stream'
 import httpZ, { HttpZResponseModel } from 'http-z'
+import { parseBody } from '../utils/parseWSManResponseBody'
 
 export class CIRAChannel {
   targetport: number
@@ -49,7 +50,9 @@ export class CIRAChannel {
           const message = httpZ.parse(this.rawChunkedData) as HttpZResponseModel
 
           if (message.statusCode === 200) {
-            const response = this.parseBody(message)
+            const xmlBody = parseBody(message)
+            // pares WSMan xml response to json
+            const response = httpHandler.parseXML(xmlBody)
             this.messages[response.Envelope.Header.RelatesTo.toString()](this.rawChunkedData)
           } else {
             this.resolve(this.rawChunkedData)
@@ -89,29 +92,6 @@ export class CIRAChannel {
       APFProcessor.SendChannelData(this.socket, this.amtchannelid, wsmanRequest.substring(0, this.sendcredits))
       this.sendcredits = 0
     })
-  }
-
-  parseBody (message: HttpZResponseModel): any {
-    let xmlBody: string = ''
-    // parse the body until its length is greater than 5, because body ends with '0\r\n\r\n'
-    while (message.body.text.length > 5) {
-      const chunkLength = message.body.text.indexOf('\r\n')
-      if (chunkLength < 0) {
-        return
-      }
-      // converts hexadecimal chunk size to integer
-      const chunkSize = parseInt(message.body.text.substring(0, chunkLength), 16)
-      if (message.body.text.length < chunkLength + 2 + chunkSize + 2) {
-        return
-      }
-      const data = message.body.text.substring(chunkLength + 2, chunkLength + 2 + chunkSize)
-      message.body.text = message.body.text.substring(chunkLength + 2 + chunkSize + 2)
-      xmlBody += data
-    }
-    // pares WSMan xml response to json
-    const response = this.httpHandler.parseXML(xmlBody)
-    response.statusCode = message.statusCode
-    return response
   }
 
   CloseChannel (): number {
