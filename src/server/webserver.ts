@@ -10,284 +10,106 @@
 */
 
 import { Socket } from 'net'
-import { connect } from 'tls'
-import express, { Request } from 'express'
-import { createServer, Server } from 'http'
+
+import express, { NextFunction, Request, Response } from 'express'
+import { createServer, IncomingMessage, Server } from 'http'
 import * as parser from 'body-parser'
 import jws from 'jws'
-import { certificatesType, queryParams } from '../models/Config'
+import { certificatesType } from '../models/Config'
 import { ErrorResponse } from '../utils/amtHelper'
 import { logger as log, logger } from '../utils/logger'
-import { constants } from 'crypto'
-// import AMTStackFactory from '../amt_libraries/amt-connection-factory'
 import routes from '../routes'
-
-import { CreateHttpInterceptor, CreateRedirInterceptor } from '../utils/interceptor'
 import WebSocket from 'ws'
 import { URL } from 'url'
 import cors from 'cors'
 import { DbCreatorFactory } from '../factories/DbCreatorFactory'
 import { Environment } from '../utils/Environment'
 import { ISecretManagerService } from '../interfaces/ISecretManagerService'
-import { devices } from './mpsserver'
+import { WsRedirect } from '../utils/wsRedirect'
 
 export class WebServer {
   app: express.Express
   server: Server = null
-  relaywss: any = null
+  relayWSS: WebSocket.Server = null
   secrets: ISecretManagerService
   certs: certificatesType
+  // to unit test code
+  jws: jws = jws
 
   constructor (secrets: ISecretManagerService, certs: certificatesType) {
     try {
       this.secrets = secrets
       this.certs = certs
       this.app = express()
+
       const options: WebSocket.ServerOptions = {
         noServer: true,
-        verifyClient: (info) => {
-          // verify JWT
-          try {
-            const valid = jws.verify(info.req.headers['sec-websocket-protocol'], 'HS256', Environment.Config.jwt_secret)
-            if (!valid) {
-              return false
-            }
-          } catch (err) { // reject connection if problem with verify
-            return false
-          }
-          return true
-        }
+        verifyClient: (info) => this.verifyClientToken(info)
       }
-      this.relaywss = new WebSocket.Server(options)
+      this.relayWSS = new WebSocket.Server(options)
 
       // Create Server
       this.server = createServer(this.app)
       this.app.use(cors())
 
       // Handles the Bad JSON exceptions
-      this.app.use(parser.json(), (err, req, res, next) => {
-        if (err instanceof SyntaxError) {
-          return res.status(400).send(ErrorResponse(400))
-        }
-        next()
-      })
-      this.app.use(function (req: Request, res, next) {
-        const afterResponse = (): void => {
-          if (req.deviceAction?.ciraHandler?.channel) {
-            logger.debug('end of request, closing channel')
-            req.deviceAction.ciraHandler.channel.CloseChannel()
-          }
-          res.removeListener('finish', afterResponse)
-          res.removeListener('close', afterResponse)
-          // actions after response
-        }
-        res.on('finish', afterResponse)
-        res.on('close', afterResponse)
-        next()
-      })
+      this.app.use(parser.json(), this.appUseJsonParser.bind(this))
+      this.app.use(this.appUseCall.bind(this))
       // Relay websocket. KVM & SOL use this websocket.
-      this.relaywss.on('connection', async (ws, req) => {
-        try {
-          const reqQueryURL = new URL(req.url, 'http://dummy.com')
-          const params: queryParams = {
-            host: reqQueryURL.searchParams.get('host'),
-            port: Number(reqQueryURL.searchParams.get('port')),
-            p: Number(reqQueryURL.searchParams.get('p')),
-            tls: Number(reqQueryURL.searchParams.get('tls')),
-            tls1only: Number(reqQueryURL.searchParams.get('tls1only'))
-          }
-          ws._socket.pause()
-          // console.log('Socket paused', ws._socket);
+      this.relayWSS.on('connection', this.relayConnection.bind(this))
 
-          // When data is received from the web socket, forward the data into the associated TCP connection.
-          // If the TCP connection is pending, buffer up the data until it connects.
-          ws.on('message', msg => {
-            // Convert a buffer into a string, "msg = msg.toString('ascii');" does not work
-            // var msg2 = "";
-            // for (var i = 0; i < msg.length; i++) { msg2 += String.fromCharCode(msg[i]); }
-            // msg = msg2;
-            msg = msg.toString('binary')
-
-            if (ws.interceptor) {
-              msg = ws.interceptor.processBrowserData(msg)
-            } // Run data thru interceptor
-            ws.forwardclient.write(msg) // Forward data to the associated TCP connection.
-          })
-
-          // If the web socket is closed, close the associated TCP connection.
-          ws.on('close', () => {
-            log.debug(
-              `Closing web socket connection to  ${params.host}: ${params.port}.`
-            )
-            if (ws.forwardclient) {
-              if (ws.forwardclient.close) {
-                ws.forwardclient.close()
-              }
-              try {
-                if (ws.forwardclient.destroy) {
-                  ws.forwardclient.destroy()
-                }
-              } catch (e) {
-                log.error(`Exception while destroying AMT CIRA channel: ${e}`)
-              }
-            }
-          })
-
-          // We got a new web socket connection, initiate a TCP connection to the target Intel AMT host/port.
-          log.debug(`Opening web socket connection to ${params.host}: ${params.port}.`)
-
-          // Fetch Intel AMT credentials & Setup interceptor
-          const credentials = await this.secrets.getAMTCredentials(params.host)
-          if (credentials != null) {
-            log.debug('Creating credential')
-            if (params.p === 1) {
-              ws.interceptor = CreateHttpInterceptor({
-                host: params.host,
-                port: params.port,
-                user: credentials[0],
-                pass: credentials[1]
-              })
-            } else if (params.p === 2) {
-              ws.interceptor = CreateRedirInterceptor({
-                user: credentials[0],
-                pass: credentials[1]
-              })
-            }
-          }
-
-          if (params.tls === 0) {
-            // If this is TCP (without TLS) set a normal TCP socket
-            // check if this is MPS connection
-            const uuid = params.host
-            const ciraConn = devices[uuid]
-            if (uuid && ciraConn) {
-              // ws.forwardclient = ciraConn.ciraHandler.SetupCiraChannel(ciraConn.ciraSocket, params.port)
-
-              ws.forwardclient.xtls = 0
-              ws.forwardclient.onData = (data): void => {
-                // Run data thru interceptor
-                if (ws.interceptor) {
-                  data = ws.interceptor.processAmtData(data)
-                }
-                try {
-                  ws.send(data)
-                } catch (e) {
-                  log.error(`Exception while forwarding data to client: ${e}`)
-                }
-              }
-
-              ws.forwardclient.onStateChange = (ciraconn, state): void => {
-                // console.log('Relay CIRA state change:'+state);
-                if (state === 0) {
-                  try {
-                    // console.log("Closing websocket.");
-                    ws.close()
-                  } catch (e) {
-                    log.error(`Exception while closing client websocket connection: ${e}`)
-                  }
-                }
-              }
-              ws._socket.resume()
-            } else {
-              ws.forwardclient = new Socket()
-              ws.forwardclient.setEncoding('binary')
-              ws.forwardclient.forwardwsocket = ws
-            }
-          } else {
-            // If TLS is going to be used, setup a TLS socket
-            log.info('TLS Enabled!')
-            const tlsoptions = {
-              secureProtocol:
-                params.tls1only === 1 ? 'TLSv1_method' : 'SSLv23_method',
-              ciphers: 'RSA+AES:!aNULL:!MD5:!DSS',
-              secureOptions:
-                constants.SSL_OP_NO_SSLv2 |
-                constants.SSL_OP_NO_SSLv3 |
-                constants.SSL_OP_NO_COMPRESSION |
-                constants.SSL_OP_CIPHER_SERVER_PREFERENCE,
-              rejectUnauthorized: false
-            }
-            ws.forwardclient = connect(
-              params.port,
-              params.host,
-              tlsoptions,
-              () => {
-                // The TLS connection method is the same as TCP, but located a bit differently.
-                log.debug(`TLS connected to ${params.host}: ${params.port}.`)
-                ws._socket.resume()
-              }
-            )
-            ws.forwardclient.setEncoding('binary')
-            ws.forwardclient.forwardwsocket = ws
-          }
-
-          // Add handlers to socket.
-          if (ws.forwardclient instanceof Socket) {
-            // When we receive data on the TCP connection, forward it back into the web socket connection.
-            ws.forwardclient.on('data', data => {
-              if (ws.interceptor) {
-                data = ws.interceptor.processAmtData(data)
-              } // Run data thru interceptor
-              try {
-                ws.send(data)
-              } catch (e) {
-                log.error(`Exception while forwarding data to client: ${e}`)
-              }
-            })
-
-            // If the TCP connection closes, disconnect the associated web socket.
-            ws.forwardclient.on('close', () => {
-              log.debug(
-                `TCP disconnected from ${params.host} : ${params.port}.`
-              )
-              try {
-                ws.close()
-              } catch (e) { }
-            })
-
-            // If the TCP connection causes an error, disconnect the associated web socket.
-            ws.forwardclient.on('error', err => {
-              log.debug(`TCP disconnected with error from ${params.host}:${params.port}:${err.code},${req.url}`)
-              try {
-                ws.close()
-              } catch (e) { }
-            })
-          }
-
-          if (params.tls === 0) {
-            // TODO: hmm could be important
-            // if (!this.mpsService.mpsComputerList[params.host]) {
-            //   // A TCP connection to Intel AMT just connected, send any pending data and start forwarding.
-            //   ws.forwardclient.connect(params.port, params.host, () => {
-            //     log.debug(`TCP connected to ${params.host}:${params.port}.`)
-            //     ws._socket.resume()
-            //   })
-            // }
-          }
-        } catch (err) {
-          log.error('Exception Caught: ', err)
-        }
-      })
-
-      this.app.use('/api/v1', async (req: Request, res, next) => {
-        // req.mpsService = this.mpsService
-        const newDB = new DbCreatorFactory()
-        req.db = await newDB.getDb()
-        req.secrets = this.secrets
-        req.certs = this.certs
-        next()
-      }, routes)
+      this.app.use('/api/v1', this.useAPIv1.bind(this), routes)
 
       // Handle upgrade on websocket
-      this.server.on('upgrade', (request, socket, head) => {
-        this.handleUpgrade(request, socket, head)
-      })
-
-      // Start the ExpressJS web server
+      this.server.on('upgrade', this.handleUpgrade.bind(this))
     } catch (error) {
       log.error(`Exception in webserver: ${error}`)
       process.exit(0)
     }
+  }
+
+  appUseJsonParser (err: any, req: Request, res: Response, next: () => void): any {
+    if (err instanceof SyntaxError) {
+      return res.status(400).send(ErrorResponse(400))
+    } else {
+      log.debug('appUseJsonParser received err other than SyntaxError')
+    }
+    next()
+  }
+
+  appUseCall (req: Request, res: Response, next: NextFunction): void {
+    res.on('finish', this.afterResponse)
+    res.on('close', this.afterResponse)
+    next()
+  }
+
+  afterResponse (req: Request, res: Response, next: NextFunction): void {
+    if (req?.deviceAction?.ciraHandler?.channel) {
+      logger.debug('end of request, closing channel')
+      req.deviceAction.ciraHandler.channel.CloseChannel()
+    } else {
+      log.debug('ciraHandler channel null')
+    }
+    res?.removeListener('finish', this.afterResponse)
+    res?.removeListener('close', this.afterResponse)
+    // actions after response
+  }
+
+  async relayConnection (ws: WebSocket, req: IncomingMessage): Promise<void> {
+    try {
+      const wsRedirect = new WsRedirect(ws, this.secrets)
+      await wsRedirect.handleConnection(req)
+    } catch (err) {
+      log.error('Exception Caught: ', err)
+    }
+  }
+
+  async useAPIv1 (req: Request, res: Response, next: NextFunction): Promise<void> {
+    const newDB = new DbCreatorFactory()
+    req.db = await newDB.getDb()
+    req.secrets = this.secrets
+    req.certs = this.certs
+    next()
   }
 
   listen (): void {
@@ -295,6 +117,8 @@ export class WebServer {
     let port = 3000
     if (Environment.Config.web_port != null) {
       port = Environment.Config.web_port
+    } else {
+      log.debug('web_port config variable is null')
     }
 
     this.server.listen(port, () => {
@@ -310,16 +134,29 @@ export class WebServer {
   }
 
   // Handle Upgrade - WebSocket
-  handleUpgrade (request, socket, head): void {
+  handleUpgrade (request: IncomingMessage, socket: Socket, head: Buffer): void {
     const pathname = (new URL(request.url, 'http://dummy.com')).pathname
     if (pathname === '/relay/webrelay.ashx') {
-      this.relaywss.handleUpgrade(request, socket, head, (ws) => {
-        this.relaywss.emit('connection', ws, request)
+      this.relayWSS.handleUpgrade(request, socket, head, (ws) => {
+        this.relayWSS.emit('connection', ws, request)
       })
     } else { // Invalid endpoint
       log.debug('Route does not exist. Closing connection...')
       socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
       socket.destroy()
     }
+  }
+
+  verifyClientToken (info): boolean {
+    // verify JWT
+    try {
+      const valid = this.jws.verify(info.req.headers['sec-websocket-protocol'], 'HS256', Environment.Config.jwt_secret)
+      if (!valid) {
+        return false
+      }
+    } catch (err) { // reject connection if problem with verify
+      return false
+    }
+    return true
   }
 }
