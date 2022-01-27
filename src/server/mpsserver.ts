@@ -21,6 +21,7 @@
 
 import * as net from 'net'
 import * as tls from 'tls'
+import * as crypto from 'crypto'
 
 import { configType, certificatesType } from '../models/Config'
 import { APFProtocol, APFChannelOpenFailureReasonCode } from '../models/Mps'
@@ -29,8 +30,9 @@ import { MPSMicroservice } from '../mpsMicroservice'
 
 import * as common from '../utils/common.js'
 import { IDB } from '../interfaces/IDb'
-// 90 seconds max idle time, higher than the typical KEEP-ALIVE period of 60 seconds
-const MAX_IDLE = 90000
+
+const MAX_IDLE = 90000 // 90 seconds max idle time, higher than the typical KEEP-ALIVE period of 60 seconds
+const KEEPALIVE_INTERVAL = 30;   // 30 seconds is typical keepalive interval for AMT CIRA connection
 
 export class MPSServer {
   db: IDB
@@ -74,9 +76,9 @@ export class MPSServer {
 
   onConnection = (socket): void => {
     if (this.config.tls_offload) {
-      socket.tag = { first: true, clientCert: null, accumulator: '', activetunnels: 0, boundPorts: [], socket: socket, host: null, nextchannelid: 4, channels: {}, nextsourceport: 0 }
+      socket.tag = { id : crypto.randomBytes(16).toString('hex'), first: true, clientCert: null, accumulator: '', activetunnels: 0, boundPorts: [], socket: socket, host: null, nextchannelid: 4, channels: {}, nextsourceport: 0 }
     } else {
-      socket.tag = { first: true, clientCert: socket.getPeerCertificate(true), accumulator: '', activetunnels: 0, boundPorts: [], socket: socket, host: null, nextchannelid: 4, channels: {}, nextsourceport: 0 }
+      socket.tag = { id : crypto.randomBytes(16).toString('hex'), first: true, clientCert: socket.getPeerCertificate(true), accumulator: '', activetunnels: 0, boundPorts: [], socket: socket, host: null, nextchannelid: 4, channels: {}, nextsourceport: 0 }
     }
     socket.setEncoding('binary')
     log.debug('MPS:New CIRA connection')
@@ -87,7 +89,7 @@ export class MPSServer {
       log.debug('MPS:CIRA timeout, disconnecting.')
       try {
         socket.end()
-        if (this.ciraConnections[socket.tag.nodeid]) {
+        if (this.ciraConnections[socket.tag.nodeid]?.tag.id === socket?.tag.id) {
           delete this.ciraConnections[socket.tag.nodeid]
           if (typeof this.mpsService.CIRADisconnected === 'function') {
             await this.mpsService.CIRADisconnected(socket.tag.nodeid)
@@ -141,7 +143,7 @@ export class MPSServer {
     socket.addListener('close', async (): Promise<void> => {
       log.debug('MPS:CIRA connection closed')
       try {
-        if (this.ciraConnections[socket.tag.nodeid]) {
+        if (this.ciraConnections[socket.tag.nodeid]?.tag.id === socket?.tag.id) {
           delete this.ciraConnections[socket.tag.nodeid]
           if (typeof this.mpsService.CIRADisconnected === 'function') {
             await this.mpsService.CIRADisconnected(socket.tag.nodeid)
@@ -183,6 +185,13 @@ export class MPSServer {
         if (len < 5) return 0
         log.silly('MPS:KEEPALIVE_REPLY')
         return 5
+      }
+      case APFProtocol.KEEPALIVE_OPTIONS_REPLY: {
+        if (len < 9) return 0
+        const keepaliveInterval = common.ReadInt(data, 1)
+        const timeout = common.ReadInt(data, 5)
+        log.silly(`KEEPALIVE_OPTIONS_REPLY, Keepalive Interval=${keepaliveInterval} Timeout=${timeout}`)
+        return 9
       }
       case APFProtocol.PROTOCOLVERSION: {
         if (len < 93) return 0
@@ -227,6 +236,10 @@ export class MPSServer {
           const pwd = await this.mpsService.secrets.getSecretFromKey(`devices/${socket.tag.SystemId}`, 'MPS_PASSWORD')
           if (username === device?.mpsusername && password === pwd) {
             log.debug(`MPS:CIRA Authentication successful for: ${username}`)
+            if (this.ciraConnections[socket.tag.SystemId]) {
+              log.silly(`Delete the old connection for ${socket.tag.SystemId}`)
+              await this.close(this.ciraConnections[socket.tag.SystemId])
+            }
             this.ciraConnections[socket.tag.SystemId] = socket
             await this.mpsService.CIRAConnected(socket.tag.SystemId) // Notify that a connection is successful to console
             this.SendUserAuthSuccess(socket) // Notify the auth success on the CIRA connection
@@ -273,6 +286,9 @@ export class MPSServer {
             socket.tag.boundPorts.push(port)
           }
           this.SendTcpForwardSuccessReply(socket, port)
+          //5900 port is the last TCP port on which connections for forwarding are to be cancelled. Ports order: 16993, 16992, 664, 623, 16995, 16994, 5900
+          //Request keepalive interval time
+          if (port === 5900) { this.SendKeepaliveOptionsRequest(socket, KEEPALIVE_INTERVAL, 0); }
           return 14 + requestLen + addrLen
         }
 
@@ -491,15 +507,18 @@ export class MPSServer {
   }
 
   // Disconnect CIRA tunnel
-  async close (socket): Promise<void> {
+  async close(socket): Promise<void> {
     try {
       socket.end()
-    } catch (e) { }
-    try {
-      delete this.ciraConnections[socket.tag.nodeid]
-    } catch (e) { }
-    if (this.mpsService) {
-      await this.mpsService.CIRADisconnected(socket.tag.nodeid)
+      if (this.ciraConnections[socket.tag.nodeid]?.tag.id === socket?.tag.id) {
+        delete this.ciraConnections[socket.tag.nodeid]
+        if (this.mpsService) {
+          await this.mpsService.CIRADisconnected(socket.tag.nodeid)
+        }
+      }
+    }
+    catch (e) {
+      log.error(`Error from socket disconnect: ${e}`)
     }
   }
 
@@ -535,6 +554,15 @@ export class MPSServer {
     this.Write(
       socket,
       String.fromCharCode(APFProtocol.KEEPALIVE_REPLY) + common.IntToStr(cookie)
+    )
+  }
+
+  SendKeepaliveOptionsRequest(socket, keepaliveTime: number, timeout: number): void {
+    this.Write(
+      socket,
+      String.fromCharCode(APFProtocol.KEEPALIVE_OPTIONS_REQUEST) +
+      common.IntToStr(keepaliveTime) +
+      common.IntToStr(timeout)
     )
   }
 
