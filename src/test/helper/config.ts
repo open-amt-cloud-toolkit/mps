@@ -16,7 +16,7 @@ export const config: configType = {
   mqtt_address: '',
   secrets_path: 'secret/data/',
   cert_format: 'file',
-  jwt_secret: '',
+  jwt_secret: 'supersecret',
   jwt_issuer: '9EmRJTbIiIb4bIeSsmgcWIjrR6HyETqc',
   jwt_expiration: 1440,
   db_provider: 'postgres',

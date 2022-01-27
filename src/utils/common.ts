@@ -2,7 +2,7 @@
 * Copyright (c) Intel Corporation 2021
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
-import { createHash } from 'crypto'
+import { createHash, randomBytes } from 'crypto'
 const Common = {
   ReadShort: (v: string, p: number): number => {
     return (v.charCodeAt(p) << 8) + v.charCodeAt(p + 1)
@@ -67,14 +67,17 @@ const Common = {
     return createHash('md5').update(ha1 + ':' + nonce + ':' + nc + ':' + cnonce + ':' + qop + ':' + ha2).digest('hex')
   },
 
-  // Convert a byte array of SID into string
-  GetSidString: (sid: string): string => {
-    let r = 'S-' + sid.charCodeAt(0) + '-' + sid.charCodeAt(7)
+  RandomValueHex (len: number): string {
+    return randomBytes(Math.ceil(len / 2)).toString('hex').slice(0, len)
+  },
 
+  // Convert a byte array of SID into string
+  GetSidString (sid: string): string {
+    let value: string = `S-${sid.charCodeAt(0)}-${sid.charCodeAt(7)}`
     for (let i = 2; i < (sid.length / 4); i++) {
-      r += '-' + Common.ReadIntX(sid, i * 4)
+      value += `-${Common.ReadIntX(sid, i * 4)}`
     }
-    return r
+    return value
   }
 }
 export default Common

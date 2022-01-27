@@ -60,7 +60,7 @@ describe('CIRA Channel', () => {
     const params: connectionParams = {
       guid: '4c4c4544-004b-4210-8033-b6c04f504633',
       port: 16992,
-      digestChallenge: undefined,
+      digestChallenge: null,
       username: 'admin',
       password: 'P@ssw0rd'
     }
@@ -71,6 +71,7 @@ describe('CIRA Channel', () => {
     const responseData = await writePromise
 
     expect(responseData).toEqual(httpHeader200 + enumCimSoftwareIdentityResponse)
+    // await expect(ciraChannel.writeData(data, params, '1')).rejects.toEqual(1)
     expect(sendChannelSpy).toHaveBeenCalledTimes(1)
     expect(ciraChannel.sendcredits).toBe(0)
   })

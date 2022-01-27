@@ -66,11 +66,17 @@ export class CIRAChannel {
     }
   }
 
-  async writeData (data: string, params: connectionParams, messageId: string): Promise<string> {
+  async writeData (data: string, params?: connectionParams, messageId?: string): Promise<string> {
     return await new Promise((resolve, reject) => {
-      this.resolve = this.messages[messageId] = resolve
-
-      const wsmanRequest = this.httpHandler.wrapIt(params, data)
+      if (messageId != null) {
+        this.resolve = this.messages[messageId] = resolve
+      } else {
+        this.resolve = resolve
+      }
+      let wsmanRequest: any = data
+      if (params != null) { // this is an API Call
+        wsmanRequest = this.httpHandler.wrapIt(params, data)
+      }
       if (this.state === 0) return reject(new Error('Closed'))// return false
       if (this.state === 1 || this.sendcredits === 0 || this.sendBuffer != null) {
         if (this.sendBuffer == null) {
@@ -78,19 +84,26 @@ export class CIRAChannel {
         } else {
           this.sendBuffer += wsmanRequest
         }
-        // return true
+        if (messageId == null) {
+          return resolve(null)
+        } else { return }
       }
       // Compute how much data we can send
       if (wsmanRequest?.length <= this.sendcredits) {
       // Send the entire message
         APFProcessor.SendChannelData(this.socket, this.amtchannelid, wsmanRequest)
         this.sendcredits -= wsmanRequest.length
-        // return true
+        if (messageId == null) {
+          return resolve(null)
+        } else { return }
       }
       // Send a part of the message
       this.sendBuffer = wsmanRequest.substring(this.sendcredits)
       APFProcessor.SendChannelData(this.socket, this.amtchannelid, wsmanRequest.substring(0, this.sendcredits))
       this.sendcredits = 0
+      if (messageId == null) {
+        resolve(null)
+      }
     })
   }
 
