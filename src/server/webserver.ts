@@ -78,20 +78,20 @@ export class WebServer {
   }
 
   appUseCall (req: Request, res: Response, next: NextFunction): void {
-    res.on('finish', this.afterResponse)
-    res.on('close', this.afterResponse)
+    res.on('finish', this.afterResponse.bind(this, req, res))
+    res.on('close', this.afterResponse.bind(this, req, res))
     next()
   }
 
-  afterResponse (req: Request, res: Response, next: NextFunction): void {
-    if (req?.deviceAction?.ciraHandler?.channel) {
+  afterResponse (req: Request, res: Response): void {
+    if (req.deviceAction?.ciraHandler?.channel) {
       logger.debug('end of request, closing channel')
       req.deviceAction.ciraHandler.channel.CloseChannel()
     } else {
       log.debug('ciraHandler channel null')
     }
-    res?.removeListener('finish', this.afterResponse)
-    res?.removeListener('close', this.afterResponse)
+    res.removeListener('finish', this.afterResponse)
+    res.removeListener('close', this.afterResponse)
     // actions after response
   }
 
