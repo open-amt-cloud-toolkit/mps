@@ -180,9 +180,8 @@ describe('afterResponse', () => {
     const res: Express.Response = {
       removeListener: jest.fn()
     }
-    const next = jest.fn()
     const afterResponseSpy = jest.spyOn(web, 'afterResponse')
-    web.afterResponse(req as any, res as any, next)
+    web.afterResponse(req as any, res as any)
     expect(afterResponseSpy).toHaveBeenCalledTimes(1)
   })
   it('test afterResponse with undefined channel', () => {
@@ -196,9 +195,8 @@ describe('afterResponse', () => {
     const res: Express.Response = {
       removeListener: jest.fn()
     }
-    const next = jest.fn()
     const afterResponseSpy = jest.spyOn(web, 'afterResponse')
-    web.afterResponse(req as any, res as any, next)
+    web.afterResponse(req as any, res as any)
     expect(afterResponseSpy).toHaveBeenCalledTimes(2)
   })
 })
