@@ -38,6 +38,7 @@ export interface OpenAMTEvent {
 
 export interface CIRASocket extends TLSSocket{
   tag?: {
+    id: string
     first: boolean
     clientCert?: DetailedPeerCertificate
     accumulator: string

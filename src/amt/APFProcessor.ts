@@ -7,6 +7,7 @@ import { logger } from '../utils/logger'
 import Common from '../utils/common'
 import { CIRASocket } from '../models/models'
 import { EventEmitter } from 'stream'
+const KEEPALIVE_INTERVAL = 30 // 30 seconds is typical keepalive interval for AMT CIRA connection
 
 export enum APFProtocol {
   UNKNOWN = 0,
@@ -83,6 +84,8 @@ const APFProcessor = {
         return APFProcessor.keepAliveRequest(socket, len, data)
       case APFProtocol.KEEPALIVE_REPLY:
         return APFProcessor.keepAliveReply(len)
+      case APFProtocol.KEEPALIVE_OPTIONS_REPLY:
+        return APFProcessor.keepAliveOptionsReply(len, data)
       case APFProtocol.PROTOCOLVERSION:
         return APFProcessor.protocolVersion(socket, len, data)
       case APFProtocol.USERAUTH_REQUEST:
@@ -307,6 +310,9 @@ const APFProcessor = {
         socket.tag.boundPorts.push(port)
       }
       APFProcessor.SendTcpForwardSuccessReply(socket, port)
+      // 5900 port is the last TCP port on which connections for forwarding are to be cancelled. Ports order: 16993, 16992, 664, 623, 16995, 16994, 5900
+      // Request keepalive interval time
+      if (port === 5900) { APFProcessor.SendKeepaliveOptionsRequest(socket, KEEPALIVE_INTERVAL, 0) }
       return 14 + requestLen + addrLen
     }
 
@@ -415,6 +421,14 @@ const APFProcessor = {
     return 5
   },
 
+  keepAliveOptionsReply: (length: number, data: string): number => {
+    if (length < 9) return 0
+    const keepaliveInterval = Common.ReadInt(data, 1)
+    const timeout = Common.ReadInt(data, 5)
+    logger.silly(`KEEPALIVE_OPTIONS_REPLY, Keepalive Interval=${keepaliveInterval} Timeout=${timeout}`)
+    return 9
+  },
+
   keepAliveRequest: (socket: CIRASocket, length: number, data: string): number => {
     if (length < 5) {
       return 0
@@ -422,6 +436,16 @@ const APFProcessor = {
     logger.verbose(`MPS: KEEPALIVE_REQUEST: ${socket.tag.nodeid}`)
     APFProcessor.SendKeepAliveReply(socket, Common.ReadInt(data, 1))
     return 5
+  },
+
+  SendKeepaliveOptionsRequest: (socket: CIRASocket, keepaliveTime: number, timeout: number): void => {
+    logger.silly('MPS: SendKeepaliveOptionsRequest')
+    APFProcessor.Write(
+      socket,
+      String.fromCharCode(APFProtocol.KEEPALIVE_OPTIONS_REQUEST) +
+      Common.IntToStr(keepaliveTime) +
+      Common.IntToStr(timeout)
+    )
   },
 
   SendKeepAliveReply: (socket: CIRASocket, cookie): void => {

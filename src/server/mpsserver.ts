@@ -23,6 +23,7 @@ import { logger } from '../utils/logger'
 import { Environment } from '../utils/Environment'
 import { Server } from 'net'
 import { createServer as tlsCreateServer, TLSSocket } from 'tls'
+import { randomBytes } from 'crypto'
 import APFProcessor from '../amt/APFProcessor'
 import { CIRASocket, Device } from '../models/models'
 import { certificatesType } from '../models/Config'
@@ -70,7 +71,6 @@ export class MPSServer {
 
   onAPFDisconnected = async (nodeId: string): Promise<void> => {
     try {
-      delete devices[nodeId]
       await this.handleDeviceDisconnect(nodeId)
     } catch (e) { }
     this.events.emit('disconnected', nodeId)
@@ -98,6 +98,11 @@ export class MPSServer {
       const device = await this.db.devices.getByName(socket.tag.SystemId)
       const pwd = await this.secrets.getSecretFromKey(`devices/${socket.tag.SystemId}`, 'MPS_PASSWORD')
       if (username === device?.mpsusername && password === pwd) {
+        if (devices[socket.tag.SystemId]) {
+          logger.silly(`MPS: Close and delete the old connection for ${socket.tag.SystemId}`)
+          devices[socket.tag.SystemId].ciraSocket.end() // close old connection
+          await this.handleDeviceDisconnect(socket.tag.SystemId) // delete and disconnect
+        }
         logger.debug(`MPS: CIRA Authentication successful for: ${username}`)
         const cred = await this.secrets.getAMTCredentials(socket.tag.SystemId)
 
@@ -117,7 +122,7 @@ export class MPSServer {
 
   onTLSConnection = (socket: TLSSocket): void => {
     logger.debug('MPS: New TLS CIRA connection');
-    (socket as CIRASocket).tag = { first: true, clientCert: socket.getPeerCertificate(true), accumulator: '', activetunnels: 0, boundPorts: [], socket: socket, host: null, nextchannelid: 4, channels: {}, nextsourceport: 0, nodeid: null }
+    (socket as CIRASocket).tag = { id: randomBytes(16).toString('hex'), first: true, clientCert: socket.getPeerCertificate(true), accumulator: '', activetunnels: 0, boundPorts: [], socket: socket, host: null, nextchannelid: 4, channels: {}, nextsourceport: 0, nodeid: null }
     this.addHandlers(socket as CIRASocket)
   }
 
@@ -134,7 +139,9 @@ export class MPSServer {
     logger.debug('MPS: CIRA timeout, disconnecting.')
     try {
       socket.end()
-      await this.handleDeviceDisconnect(socket.tag.nodeid)
+      if (devices[socket.tag.nodeid]?.ciraSocket?.tag.id === socket?.tag.id) {
+        await this.handleDeviceDisconnect(socket.tag.nodeid)
+      }
     } catch (err) {
       logger.error(`Error from socket timeout: ${err}`)
     }
@@ -177,7 +184,9 @@ export class MPSServer {
   onClose = async (socket: CIRASocket): Promise<void> => {
     logger.debug('MPS:CIRA connection closed')
     try {
-      await this.handleDeviceDisconnect(socket.tag.nodeid)
+      if (devices[socket.tag.nodeid]?.ciraSocket?.tag.id === socket?.tag.id) {
+        await this.handleDeviceDisconnect(socket.tag.nodeid)
+      }
     } catch (e) {
       logger.error(`Error from socket close: ${e}`)
     }
