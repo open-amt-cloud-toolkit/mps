@@ -35,6 +35,13 @@ describe('processCommand', () => {
     expect(cmdSpy).toHaveBeenCalled()
   })
 
+  it('should call keepAliveOptionsReply', async () => {
+    fakeCiraSocket.tag.accumulator = String.fromCharCode(APFProtocol.KEEPALIVE_OPTIONS_REPLY)
+    const cmdSpy = jest.spyOn(APFProcessor, 'keepAliveOptionsReply')
+    await APFProcessor.processCommand(fakeCiraSocket)
+    expect(cmdSpy).toHaveBeenCalled()
+  })
+
   it('should call protocolVersion', async () => {
     fakeCiraSocket.tag.accumulator = String.fromCharCode(APFProtocol.PROTOCOLVERSION)
     const cmdSpy = jest.spyOn(APFProcessor, 'protocolVersion')
@@ -724,6 +731,29 @@ describe('channelData() tests', () => {
     })
   })
 
+  describe('keepAliveOptionsReply', () => {
+    it('should return 0 if length < 9', () => {
+      const length = 8
+      const data = ''
+      const result = APFProcessor.keepAliveOptionsReply(length, data)
+      expect(result).toEqual(0)
+    })
+
+    it('should return 9 if length >= 9', () => {
+      const length = 9
+      const data = ''
+      const result = APFProcessor.keepAliveOptionsReply(length, data)
+      expect(result).toEqual(9)
+    })
+
+    it('should return 9 if length >= 9', () => {
+      const length = 15
+      const data = ''
+      const result = APFProcessor.keepAliveOptionsReply(length, data)
+      expect(result).toEqual(9)
+    })
+  })
+
   describe('keepAliveRequest', () => {
     it('should return 0 if length < 5', () => {
       const fakeCiraSocket = null
@@ -768,10 +798,18 @@ describe('channelData() tests', () => {
     const initialWindowSize = 0
     const data = ''
     const bytestoadd = 0
+    const keepaliveTime = 30
+    const timeout = 0
 
     it('should SendKeepAliveReply', () => {
       APFProcessor.SendKeepAliveReply(fakeCiraSocket, cookie)
       const dataExpected = String.fromCharCode(APFProtocol.KEEPALIVE_REPLY) + Common.IntToStr(cookie)
+      expect(writeSpy).toHaveBeenCalledWith(fakeCiraSocket, dataExpected)
+    })
+
+    it('should SendKeepaliveOptionsRequest', () => {
+      APFProcessor.SendKeepaliveOptionsRequest(fakeCiraSocket, keepaliveTime, timeout)
+      const dataExpected = String.fromCharCode(APFProtocol.KEEPALIVE_OPTIONS_REQUEST) + Common.IntToStr(keepaliveTime) + Common.IntToStr(timeout)
       expect(writeSpy).toHaveBeenCalledWith(fakeCiraSocket, dataExpected)
     })
 
