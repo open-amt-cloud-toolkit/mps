@@ -411,7 +411,7 @@ const APFProcessor = {
 
     APFProcessor.APFEvents.emit('protocolVersion', socket)
 
-    logger.silly(`device uuid: ${socket.tag.SystemId}`)
+    logger.silly(`device uuid: ${socket.tag.SystemId} and socketid : ${socket.tag.id}`)
     return 93
   },
 
