@@ -63,9 +63,11 @@ export class MPSServer {
   }
 
   listen (): void {
-    this.server.listen(Environment.Config.port, () => {
-      logger.info(`Intel(R) AMT server running on ${Environment.Config.common_name}:${Environment.Config.port}.`)
-    })
+    this.server.listen(Environment.Config.port, this.listeningListener)
+  }
+
+  listeningListener (): void {
+    logger.info(`Intel(R) AMT server running on ${Environment.Config.common_name}:${Environment.Config.port}.`)
   }
 
   onAPFDisconnected = async (nodeId: string): Promise<void> => {
@@ -76,9 +78,9 @@ export class MPSServer {
     this.events.emit('disconnected', nodeId)
   }
 
-  onAPFProtocolVersion = (socket: CIRASocket): void => {
+  onAPFProtocolVersion = async (socket: CIRASocket): Promise<void> => {
     // Check if the device exits in db
-    if (this.db.devices.getByName(socket.tag.SystemId)) {
+    if (await this.db.devices.getByName(socket.tag.SystemId) != null) {
       socket.tag.nodeid = socket.tag.SystemId
       // if (socket.tag.certauth) { // is this even used?
       //   devices[socket.tag.nodeid] = socket
@@ -134,7 +136,7 @@ export class MPSServer {
     logger.debug('MPS: CIRA timeout, disconnecting.')
     try {
       socket.end()
-      await this.handleDeviceDisconnect(socket.tag.nodeid)
+      await this.handleDeviceDisconnect(socket.tag.SystemId)
     } catch (err) {
       logger.error(`Error from socket timeout: ${err}`)
     }
@@ -177,7 +179,7 @@ export class MPSServer {
   onClose = async (socket: CIRASocket): Promise<void> => {
     logger.debug('MPS:CIRA connection closed')
     try {
-      await this.handleDeviceDisconnect(socket.tag.nodeid)
+      await this.handleDeviceDisconnect(socket.tag.SystemId)
     } catch (e) {
       logger.error(`Error from socket close: ${e}`)
     }
@@ -186,7 +188,7 @@ export class MPSServer {
   onError = (socket: CIRASocket, error: NodeJS.ErrnoException): void => {
     // error "ECONNRESET" means the other side of the TCP conversation abruptly closed its end of the connection.
     if (error.code !== 'ECONNRESET') {
-      logger.error(`MPS socket error ${socket.tag.nodeid},  ${socket.remoteAddress}: ${JSON.stringify(error)}`)
+      logger.error(`MPS socket error ${socket.tag.SystemId},  ${socket.remoteAddress}: ${JSON.stringify(error)}`)
     }
   }
 

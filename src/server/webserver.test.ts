@@ -1,5 +1,3 @@
-import * as fs from 'fs'
-import { Certificates } from '../utils/certificates'
 import { certificatesType } from '../models/Config'
 import { ISecretManagerService } from '../interfaces/ISecretManagerService'
 import { config } from '../test/helper/config'
@@ -11,24 +9,20 @@ import { Socket } from 'net'
 Environment.Config = config
 
 let certs: certificatesType
-const certPath = config.cert_path
 let secrets: ISecretManagerService
 let web: WebServer
 
 beforeAll(async function () {
   jest.setTimeout(60000)
-  try {
-    if (!fs.existsSync(certPath)) { fs.mkdirSync(certPath, { recursive: true }) }
-  } catch (e) {
-    console.log(`Failed to create Cert path ${certPath}. Create if it doesn't exist`)
-  }
-  const certificates = new Certificates(config, secrets)
-  certs = certificates.generateCertificates()
   secrets = {
     getSecretFromKey: async (path: string, key: string) => { return 'P@ssw0rd' },
     getSecretAtPath: async (path: string) => { return {} as any },
     getAMTCredentials: async (path: string) => { return ['admin', 'P@ssw0rd'] },
     health: async () => { return {} }
+  }
+  certs = {
+    mps_tls_config: {} as any,
+    web_tls_config: {} as any
   }
   web = new WebServer(secrets, certs)
 })
