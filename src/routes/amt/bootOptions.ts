@@ -5,7 +5,7 @@
 **********************************************************************/
 
 import { Response, Request } from 'express'
-import { logger } from '../../utils/logger'
+import { logger, messages } from '../../logging'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { AMTStatusCodes } from '../../utils/constants'
@@ -31,9 +31,9 @@ export async function bootOptions (req: Request, res: Response): Promise<void> {
 
     res.status(200).json(powerActionResult.RequestPowerStateChange_OUTPUT)
   } catch (error) {
-    logger.error(`Exception in Power action : ${error}`)
-    MqttProvider.publishEvent('fail', ['AMT_BootSettingData'], 'Internal Server Error')
-    res.status(500).json(ErrorResponse(500, 'Request failed during AMT Power action execution.'))
+    logger.error(`${messages.BOOT_SETTING_EXCEPTION} : ${error}`)
+    MqttProvider.publishEvent('fail', ['AMT_BootSettingData'], messages.INTERNAL_SERVICE_ERROR)
+    res.status(500).json(ErrorResponse(500, messages.BOOT_SETTING_EXCEPTION))
   }
 }
 

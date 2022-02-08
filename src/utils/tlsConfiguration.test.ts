@@ -1,7 +1,7 @@
 import tlsConfiguration from './tlsConfiguration'
 import path from 'path'
 import fs from 'fs'
-import { logger as log } from './logger'
+import { logger } from '../logging'
 import { mpsConfigType, webConfigType, directConfigType } from '../models/Config'
 import { constants } from 'crypto'
 
@@ -15,7 +15,7 @@ let errorSpy: jest.SpyInstance
 let exitSpy: jest.SpyInstance
 
 beforeEach(() => {
-  errorSpy = jest.spyOn(log, 'error')
+  errorSpy = jest.spyOn(logger, 'error')
   exitSpy = jest.spyOn(process, 'exit').mockImplementation((code: number) => { return null as never })
   existsSyncSpy = jest.spyOn(fs, 'existsSync')
   readFileSyncSpy = jest.spyOn(fs, 'readFileSync')

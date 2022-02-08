@@ -5,24 +5,24 @@
 **********************************************************************/
 
 import { Response, Request } from 'express'
-import { logger as log } from '../../utils/logger'
+import { logger, messages } from '../../logging'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
 
 export async function version (req: Request, res: Response): Promise<void> {
   try {
     const guid: string = req.params.guid
-    MqttProvider.publishEvent('request', ['AMT_Version'], 'Power State Requested', guid)
+    MqttProvider.publishEvent('request', ['AMT_Version'], messages.POWER_STATE_GET_REQUESTED, guid)
     const response = await getVersion(guid, req)
     if (response == null) {
-      log.error(`Request failed during AMTVersion BatchEnum Exec for guid : ${guid}.`)
-      res.status(400).json(ErrorResponse(400, `Request failed during AMTVersion BatchEnum Exec for guid : ${guid}.`))
+      logger.error(`${messages.VERSION_REQUEST_FAILED} for guid : ${guid}.`)
+      res.status(400).json(ErrorResponse(400, `${messages.VERSION_REQUEST_FAILED} for guid : ${guid}.`))
     } else {
       res.status(200).json(response)
     }
   } catch (error) {
-    log.error(`Exception in AMT Version : ${error}`)
-    res.status(500).json(ErrorResponse(500, 'Request failed during AMTVersion BatchEnum Exec.'))
+    logger.error(`${messages.VERSION_EXCEPTION} : ${error}`)
+    res.status(500).json(ErrorResponse(500, messages.VERSION_EXCEPTION))
   }
 }
 

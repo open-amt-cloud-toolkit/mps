@@ -1,4 +1,4 @@
-import { logger as log } from '../../utils/logger'
+import { logger } from '../../logging'
 import { getAllDevices } from './getAll'
 
 let res: Express.Response
@@ -98,7 +98,7 @@ describe('getAll', () => {
         }
       }
     }
-    const logSpy = jest.spyOn(log, 'error')
+    const logSpy = jest.spyOn(logger, 'error')
     await getAllDevices(req, res)
     expect(statusSpy).toHaveBeenCalledWith(500)
     expect(logSpy).toHaveBeenCalled()
