@@ -5,7 +5,7 @@
 **********************************************************************/
 
 import { Response, Request } from 'express'
-import { logger as log } from '../../utils/logger'
+import { logger, messages } from '../../logging'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { getVersion } from './getVersion'
@@ -14,16 +14,16 @@ export async function powerCapabilities (req: Request, res: Response): Promise<v
   try {
     const guid: string = req.params.guid
 
-    MqttProvider.publishEvent('request', ['AMT_BootCapabilities'], 'Power Capabilities Requested', guid)
+    MqttProvider.publishEvent('request', ['AMT_BootCapabilities'], messages.POWER_CAPABILITIES_REQUESTED, guid)
     const version = await getVersion(guid, req)
     const powerCapabilities = await req.deviceAction.getPowerCapabilities()
     const bootCaps = bootCapabilities(version, powerCapabilities.Body.AMT_BootCapabilities)
-    MqttProvider.publishEvent('success', ['AMT_BootCapabilities'], 'Sent Power Capabilities', guid)
+    MqttProvider.publishEvent('success', ['AMT_BootCapabilities'], messages.POWER_CAPABILITIES_SUCCESS, guid)
     return res.status(200).json(bootCaps).end()
   } catch (error) {
-    log.error(`Exception in AMT PowerCapabilities : ${error}`)
-    MqttProvider.publishEvent('fail', ['AMT_BootCapabilities'], 'Internal Server Error')
-    res.status(500).json(ErrorResponse(500, 'Request failed during AMT PowerCapabilities.')).end()
+    logger.error(`${messages.POWER_CAPABILITIES_EXCEPTION} : ${error}`)
+    MqttProvider.publishEvent('fail', ['AMT_BootCapabilities'], messages.INTERNAL_SERVICE_ERROR)
+    res.status(500).json(ErrorResponse(500, messages.POWER_CAPABILITIES_EXCEPTION)).end()
   }
 }
 

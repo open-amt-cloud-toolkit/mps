@@ -1,6 +1,6 @@
 import { MPSValidationError } from '../../utils/MPSValidationError'
 import { updateDevice } from './update'
-import { logger as log } from '../../utils/logger'
+import { logger } from '../../logging'
 
 let res: Express.Response
 let statusSpy: jest.SpyInstance
@@ -31,7 +31,7 @@ afterEach(() => {
 
 describe('update', () => {
   const guid = '00000000-0000-0000-0000-000000000000'
-  const errorSpy = jest.spyOn(log, 'error')
+  const errorSpy = jest.spyOn(logger, 'error')
 
   it('should set status to 404 if getByName gets no result', async () => {
     const req = {

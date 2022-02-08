@@ -6,6 +6,7 @@ import { createSpyObj } from '../../test/helper/jest'
 import { DeviceAction } from '../../amt/DeviceAction'
 import { CIRAHandler } from '../../amt/CIRAHandler'
 import { HttpHandler } from '../../amt/HttpHandler'
+import { messages } from '../../logging'
 
 describe('Power Capabilities', () => {
   let req: Express.Request
@@ -130,7 +131,7 @@ describe('Power Capabilities', () => {
     setupAndConfigSpy.mockResolvedValue(setupAndConfigurationServiceResponse.Envelope)
     await powerCapabilities(req as any, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(500)
-    expect(resSpy.json).toHaveBeenCalledWith(ErrorResponse(500, 'Request failed during AMT PowerCapabilities.'))
+    expect(resSpy.json).toHaveBeenCalledWith(ErrorResponse(500, messages.POWER_CAPABILITIES_EXCEPTION))
     expect(resSpy.end).toHaveBeenCalled()
     expect(mqttSpy).toHaveBeenCalled()
   })

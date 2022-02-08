@@ -3,14 +3,12 @@
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
 
-import { logger as log } from './utils/logger'
+import { logger } from './logging'
 import { configType, certificatesType } from './models/Config'
-
 import { Certificates } from './utils/certificates'
 import tlsConfig from './utils/tlsConfiguration'
 import { SecretManagerService } from './utils/SecretManagerService'
 import { parseValue } from './utils/parseEnvValue'
-
 import rc from 'rc'
 import { Environment } from './utils/Environment'
 import { MqttProvider } from './utils/MqttProvider'
@@ -30,7 +28,7 @@ async function main (): Promise<void> {
 
     await setupSignalHandling(db)
     // Secret store initialization
-    const secrets: ISecretManagerService = new SecretManagerService(log)
+    const secrets: ISecretManagerService = new SecretManagerService(logger)
     const certs = await loadCertificates(secrets)
     // MQTT Connection - Creates a static connection to be access across MPS
     const mqtt: MqttProvider = new MqttProvider()
@@ -42,8 +40,8 @@ async function main (): Promise<void> {
     mpsServer.listen()
     webServer.listen()
   } catch (error) {
-    log.error('Error starting MPS microservice. Check server logs.')
-    log.error(error)
+    logger.error('Error starting MPS microservice. Check server logs.')
+    logger.error(error)
   }
 }
 
@@ -59,12 +57,12 @@ function loadConfig (): configType {
   const config: configType = rc('mps')
 
   if (!config.web_admin_password || !config.web_admin_user || !config.jwt_secret) {
-    log.error('Web admin username, password and jwt secret are mandatory. Make sure to set values for these variables.')
+    logger.error('Web admin username, password and jwt secret are mandatory. Make sure to set values for these variables.')
     process.exit(1)
   }
 
   config.instance_name = config.instance_name === '{{.Task.Name}}' ? 'mps' : config.instance_name
-  log.silly(`Updated config... ${JSON.stringify(config, null, 2)}`)
+  logger.silly(`Updated config... ${JSON.stringify(config, null, 2)}`)
   return config
 }
 async function setupSignalHandling (db: IDB): Promise<void> {
@@ -72,7 +70,7 @@ async function setupSignalHandling (db: IDB): Promise<void> {
   const signals = ['SIGINT', 'exit', 'uncaughtException', 'SIGTERM', 'SIGHUP']
   signals.forEach((signal) => {
     process.on(signal, async () => {
-      log.debug('signal received :', signal)
+      logger.debug('signal received :', signal)
       await db.devices.clearInstanceStatus(Environment.Config.instance_name)
       MqttProvider.endBroker()
       if (signal !== 'exit') {
@@ -89,7 +87,7 @@ async function loadCertificates (secrets: ISecretManagerService): Promise<certif
   const certificates = new Certificates(Environment.Config, secrets)
   if (!Environment.Config.generate_certificates) {
     if (Environment.Config.cert_format === 'raw') { // if you want to read the cert raw from variable.
-      log.debug('using cert format raw')
+      logger.debug('using cert format raw')
 
       if (Environment.Config.mps_tls_config) {
         Environment.Config.mps_tls_config.key = Environment.Config.tls_cert_key
@@ -108,17 +106,17 @@ async function loadCertificates (secrets: ISecretManagerService): Promise<certif
 
       certs = { mps_tls_config: Environment.Config.mps_tls_config, web_tls_config: Environment.Config.web_tls_config }
     } else { // else read the certs from files
-      log.debug('using cert from file')
+      logger.debug('using cert from file')
       certs = { mps_tls_config: tlsConfig.mps(), web_tls_config: tlsConfig.web() }
     }
-    log.debug('Loaded existing certificates')
+    logger.debug('Loaded existing certificates')
   } else {
     certs = await certificates.getCertificates()
   }
-  log.debug('certs loaded..')
+  logger.debug('certs loaded..')
   return certs
 }
 
 main().then().catch(err => {
-  log.error(err)
+  logger.error(err)
 })

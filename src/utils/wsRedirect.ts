@@ -1,4 +1,9 @@
-import { logger as log } from '../utils/logger'
+/*********************************************************************
+ * Copyright (c) Intel Corporation 2021
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
+
+import { logger, messages } from '../logging'
 import { IncomingMessage } from 'http'
 import { queryParams } from '../models/Config'
 import { devices } from '../server/mpsserver'
@@ -40,7 +45,7 @@ export class WsRedirect {
     this.websocketFromWeb.onclose = this.handleClose.bind(this, params)
 
     // We got a new web socket connection, initiate a TCP connection to the target Intel AMT host/port.
-    log.debug(`Opening web socket connection to ${params.host}: ${params.port}.`)
+    logger.debug(`${messages.REDIRECT_OPENING_WEB_SOCKET} to ${params.host}: ${params.port}.`)
 
     // Fetch Intel AMT credentials & Setup interceptor
     const credentials = await this.secrets.getAMTCredentials(params.host)
@@ -68,7 +73,7 @@ export class WsRedirect {
   }
 
   handleClose (params: queryParams, CloseEvent: WebSocket.CloseEvent): void {
-    log.debug(`Closing web socket connection to  ${params.host}: ${params.port}.`)
+    logger.debug(`${messages.REDIRECT_CLOSING_WEB_SOCKET} to ${params.host}: ${params.port}.`)
     if (this.websocketFromDevice) {
       this.websocketFromDevice.CloseChannel()
     }
@@ -76,7 +81,7 @@ export class WsRedirect {
 
   createCredential (params: queryParams, credentials: string[]): void {
     if (credentials != null) {
-      log.debug('Creating credential')
+      logger.debug(messages.REDIRECT_CREATING_CREDENTIAL)
       if (params.p === 2) {
         this.interceptor = new RedirectInterceptor({
           user: credentials[0],
@@ -101,18 +106,18 @@ export class WsRedirect {
       try {
         this.websocketFromWeb.send(data)
       } catch (e) {
-        log.error(`Exception while forwarding data to client: ${e}`)
+        logger.error(`${messages.REDIRECT_FORWARD_DATA_EXCEPTION}: ${e}`)
       }
     }
 
     this.websocketFromDevice.onStateChange.on('stateChange', (state: number) => {
-      log.debug('Relay CIRA state change:' + state)
+      logger.debug(`${messages.REDIRECT_CIRA_STATE_CHANGE}:` + state)
       if (state === 0) {
         try {
-          log.debug('Closing websocket')
+          logger.debug(messages.REDIRECT_CLOSING_WEB_SOCKET)
           this.websocketFromWeb.close()
         } catch (e) {
-          log.error(`Exception while closing client websocket connection: ${e}`)
+          logger.error(`${messages.REDIRECT_CLOSING_WEBSOCKET_EXCEPTION}: ${e}`)
         }
       }
     });
