@@ -5,7 +5,7 @@
 **********************************************************************/
 
 import { Response, Request } from 'express'
-import { logger as log, logger } from '../../utils/logger'
+import { logger, messages } from '../../logging'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { DeviceAction } from '../../amt/DeviceAction'
@@ -14,21 +14,21 @@ export async function hardwareInfo (req: Request, res: Response): Promise<void> 
   try {
     const guid: string = req.params.guid
 
-    MqttProvider.publishEvent('request', ['AMT_HardwareInfo'], 'Hardware Information Requested', guid)
+    MqttProvider.publishEvent('request', ['AMT_HardwareInfo'], messages.HARDWARE_INFORMATION_GET_REQUESTED, guid)
     const response = await get(req.deviceAction, guid)
     if (Object.values(response).some(item => item == null)) {
-      log.error(`Request failed during AMTHardware Information BatchEnum Exec for guid : ${guid}.`)
-      MqttProvider.publishEvent('fail', ['AMT_HardwareInfo'], 'Failed to Get Hardware Information', guid)
-      res.status(400).json(ErrorResponse(400, `Request failed during AMTHardware Information BatchEnum Exec for guid : ${guid}.`))
+      logger.error(`${messages.HARDWARE_INFORMATION_REQUEST_FAILED} for guid : ${guid}.`)
+      MqttProvider.publishEvent('fail', ['AMT_HardwareInfo'], messages.HARDWARE_INFORMATION_REQUEST_FAILED, guid)
+      res.status(400).json(ErrorResponse(400, `${messages.HARDWARE_INFORMATION_REQUEST_FAILED} for guid : ${guid}.`))
     } else {
-      MqttProvider.publishEvent('success', ['AMT_HardwareInfo'], 'Sent Hardware Information', guid)
+      MqttProvider.publishEvent('success', ['AMT_HardwareInfo'], messages.HARDWARE_INFORMATION_GET_SUCCESS, guid)
       logger.info(JSON.stringify(response, null, '\t'))
       res.status(200).json(formatResponse(response))
     }
   } catch (error) {
-    log.error(`Exception in AMT HardwareInformation : ${error}`)
-    MqttProvider.publishEvent('fail', ['AMT_HardwareInfo'], 'Interanl Server Error')
-    res.status(500).json(ErrorResponse(500, 'Request failed during AMTHardware Information.'))
+    logger.error(`${messages.HARDWARE_INFORMATION_EXCEPTION} : ${error}`)
+    MqttProvider.publishEvent('fail', ['AMT_HardwareInfo'], messages.INTERNAL_SERVICE_ERROR)
+    res.status(500).json(ErrorResponse(500, messages.HARDWARE_INFORMATION_EXCEPTION))
   }
 }
 

@@ -5,7 +5,7 @@
 **********************************************************************/
 
 import { Response, Request } from 'express'
-import { logger as log } from '../../utils/logger'
+import { logger, messages } from '../../logging'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { SystemEntityTypes, SystemFirmwareError, SystemFirmwareProgress, WatchdogCurrentStates } from '../../utils/constants'
@@ -16,22 +16,22 @@ export async function eventLog (req: Request, res: Response): Promise<void> {
   try {
     const guid: string = req.params.guid
 
-    MqttProvider.publishEvent('request', ['AMT_EventLog'], 'Event Log Requested', guid)
+    MqttProvider.publishEvent('request', ['AMT_EventLog'], messages.EVENT_LOG_REQUESTED, guid)
     const response = await req.deviceAction.getEventLog()
 
     if (response != null) {
-      MqttProvider.publishEvent('success', ['AMT_EventLog'], 'Sent Event Log', guid)
+      MqttProvider.publishEvent('success', ['AMT_EventLog'], messages.EVENT_LOG_SENT, guid)
       const result = parseEventLogs(response)
       res.status(200).json(result)
     } else {
-      log.error(`Failed during GET MessageLog guid : ${guid}.`)
-      MqttProvider.publishEvent('fail', ['AMT_EventLog'], 'Failed to Get Event Log', guid)
-      res.status(400).json(ErrorResponse(400, `Failed during GET MessageLog guid : ${guid}.`))
+      logger.error(`${messages.EVENT_LOG_REQUEST_FAILED} for guid : ${guid}.`)
+      MqttProvider.publishEvent('fail', ['AMT_EventLog'], messages.EVENT_LOG_REQUEST_FAILED, guid)
+      res.status(400).json(ErrorResponse(400, `${messages.EVENT_LOG_REQUEST_FAILED} for guid : ${guid}.`))
     }
   } catch (error) {
-    log.error(`Exception in AMT EventLog: ${error}`)
-    MqttProvider.publishEvent('fail', ['AMT_EventLog'], 'Internal Server Error')
-    res.status(500).json(ErrorResponse(500, 'Request failed during AMT EventLog.'))
+    logger.error(`${messages.EVENT_LOG_EXCEPTION}: ${error}`)
+    MqttProvider.publishEvent('fail', ['AMT_EventLog'], messages.INTERNAL_SERVICE_ERROR)
+    res.status(500).json(ErrorResponse(500, messages.EVENT_LOG_EXCEPTION))
   }
 }
 

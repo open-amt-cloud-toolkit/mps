@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 import { Device } from '../../models/models'
-import { logger as log } from '../../utils/logger'
+import { logger, messages } from '../../logging'
 import { MPSValidationError } from '../../utils/MPSValidationError'
 import { Request, Response } from 'express'
 
@@ -33,7 +33,7 @@ export async function insertDevice (req: Request, res: Response): Promise<void> 
       res.status(201).json(results)
     }
   } catch (err) {
-    log.error(`Failed to update/insert device : ${req.body.guid}`, err)
+    logger.error(`${messages.DEVICE_CREATE_FAILED} : ${req.body.guid}`, err)
     if (err instanceof MPSValidationError) {
       res.status(err.status).json({ error: err.name, message: err.message }).end()
     } else {

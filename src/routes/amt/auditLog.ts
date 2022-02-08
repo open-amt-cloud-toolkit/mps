@@ -5,7 +5,7 @@
 **********************************************************************/
 
 import { Response, Request } from 'express'
-import { logger as log } from '../../utils/logger'
+import { logger, messages } from '../../logging'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { atob } from 'atob'
@@ -25,9 +25,9 @@ export async function auditLog (req: Request, res: Response): Promise<void> {
     const result = convertToAuditLogResult(getResponse.ReadRecords_OUTPUT)
     res.status(200).json(result).end()
   } catch (error) {
-    log.error(`Exception in AMT AuditLog : ${error}`)
-    MqttProvider.publishEvent('fail', ['AMT_AuditLog'], 'Internal Service Error')
-    res.status(500).json(ErrorResponse(500, 'Request failed during AMT AuditLog.')).end()
+    logger.error(`${messages.AUDIT_LOG_EXCEPTION} : ${error}`)
+    MqttProvider.publishEvent('fail', ['AMT_AuditLog'], messages.INTERNAL_SERVICE_ERROR)
+    res.status(500).json(ErrorResponse(500, messages.AUDIT_LOG_EXCEPTION)).end()
   }
 }
 

@@ -9,7 +9,7 @@
 import { Pool, QueryResult } from 'pg'
 import { IDB } from '../../interfaces/IDb'
 import { IDeviceTable } from '../../interfaces/IDeviceTable'
-import { logger as log } from '../../utils/logger'
+import { logger, messages } from '../../logging'
 import { DeviceTable } from './tables/device'
 
 export class PostgresDb implements IDB {
@@ -26,7 +26,7 @@ export class PostgresDb implements IDB {
     const start = Date.now()
     const res = await this.pool.query(text, params)
     const duration = Date.now() - start
-    log.verbose(`executed query: ${JSON.stringify({ text, duration, rows: res.rowCount })}`)
+    logger.verbose(`${messages.EXECUTED_QUERY}: ${JSON.stringify({ text, duration, rows: res.rowCount })}`)
     return res
   }
 }

@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 import { Response, Request } from 'express'
-import { logger as log } from '../../../utils/logger'
+import { logger, messages } from '../../../logging'
 import { ErrorResponse } from '../../../utils/amtHelper'
 import { MqttProvider } from '../../../utils/MqttProvider'
 import { AMTStatusCodes } from '../../../utils/constants'
+
 export async function send (req: Request, res: Response): Promise<void> {
   const userConsentCode = req.body.consentCode
   const guid: string = req.params.guid
@@ -20,22 +21,22 @@ export async function send (req: Request, res: Response): Promise<void> {
       }
       result.Body.ReturnValueStr = AMTStatusCodes[result.Body.ReturnValue]
       if (result.Body?.ReturnValue.toString() === '0') {
-        MqttProvider.publishEvent('success', ['Send_User_Consent_Code'], 'Sent user consent code', guid)
+        MqttProvider.publishEvent('success', ['Send_User_Consent_Code'], messages.USER_CONSENT_SENT_SUCCESS, guid)
         result.Body.ReturnValueStr = AMTStatusCodes[result.Body.ReturnValue]
         res.status(200).json(result)
       } else {
-        log.error(`Fail to send user consent code for guid : ${guid}.`)
-        MqttProvider.publishEvent('fail', ['Send_User_Consent_Code'], 'Fail to send user consent code', guid)
+        logger.error(`${messages.USER_CONSENT_SENT_FAILED} for guid : ${guid}.`)
+        MqttProvider.publishEvent('fail', ['Send_User_Consent_Code'], messages.USER_CONSENT_SENT_FAILED, guid)
         res.status(400).json(result)
       }
     } else {
-      log.error(`Fail to send user consent code for guid : ${guid}.`)
-      MqttProvider.publishEvent('fail', ['Send_User_Consent_Code'], 'Fail to send user consent code', guid)
-      res.status(400).json(ErrorResponse(400, `Failed to send user consent code for guid : ${guid}.`))
+      logger.error(`${messages.USER_CONSENT_SENT_FAILED} for guid : ${guid}.`)
+      MqttProvider.publishEvent('fail', ['Send_User_Consent_Code'], messages.USER_CONSENT_SENT_FAILED, guid)
+      res.status(400).json(ErrorResponse(400, `${messages.USER_CONSENT_SENT_FAILED} for guid : ${guid}.`))
     }
   } catch (error) {
-    log.error(`Failed to send user consent code for guid ${guid}: ${error}`)
-    MqttProvider.publishEvent('fail', ['Send_User_Consent_Code'], 'Internal Service Error')
-    res.status(500).json(ErrorResponse(500, 'Failed to send user consent code.'))
+    logger.error(`${messages.USER_CONSENT_SENT_EXCEPTION} for guid ${guid}: ${error}`)
+    MqttProvider.publishEvent('fail', ['Send_User_Consent_Code'], messages.INTERNAL_SERVICE_ERROR)
+    res.status(500).json(ErrorResponse(500, messages.USER_CONSENT_SENT_EXCEPTION))
   }
 }

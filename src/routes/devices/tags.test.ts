@@ -1,5 +1,5 @@
 import { getDistinctTags } from './tags'
-import { logger as log } from '../../utils/logger'
+import { logger } from '../../logging'
 
 let req: any
 let res: any
@@ -54,7 +54,7 @@ describe('tags', () => {
     req.db.devices.getDistinctTags = jest.fn().mockImplementation(() => {
       throw new TypeError('fake error')
     })
-    const logSpy = jest.spyOn(log, 'error')
+    const logSpy = jest.spyOn(logger, 'error')
     await getDistinctTags(req, res)
     expect(statusSpy).toBeCalledWith(500)
     expect(jsonSpy).not.toHaveBeenCalled()

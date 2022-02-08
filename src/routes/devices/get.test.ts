@@ -1,5 +1,5 @@
 import { getDevice } from './get'
-import { logger as log } from '../../utils/logger'
+import { logger } from '../../logging'
 
 let res: Express.Response
 let statusSpy: jest.SpyInstance
@@ -34,7 +34,7 @@ describe('get', () => {
       }
     }
   } as any
-  const logSpy = jest.spyOn(log, 'error')
+  const logSpy = jest.spyOn(logger, 'error')
 
   it('should set status to 200 and get result if device exists in DB', async () => {
     req.db.devices.getByName = jest.fn().mockReturnValue({})

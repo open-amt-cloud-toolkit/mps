@@ -8,7 +8,7 @@ import { POSTGRES_RESPONSE_CODES } from '../../data/postgres'
 import { HealthCheck } from '../../models/models'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { Environment } from '../../utils/Environment'
-import { logger } from '../../utils/logger'
+import { logger, messages } from '../../logging'
 import { MqttProvider } from '../../utils/MqttProvider'
 
 export async function getHealthCheck (req: Request, res: Response): Promise<void> {
@@ -46,9 +46,9 @@ export async function getHealthCheck (req: Request, res: Response): Promise<void
 
     res.json(status).end()
   } catch (error) {
-    MqttProvider.publishEvent('fail', ['getHealthCheck'], 'Failed to get health')
-    logger.error('Failed to get health', JSON.stringify(error))
+    MqttProvider.publishEvent('fail', ['getHealthCheck'], messages.HEALTH_CHECK_FAILED)
+    logger.error(messages.HEALTH_CHECK_FAILED, JSON.stringify(error))
     res.status(500)
-    res.json(ErrorResponse(500, 'Health Check failed')).end()
+    res.json(ErrorResponse(500, messages.HEALTH_CHECK_FAILED)).end()
   }
 }

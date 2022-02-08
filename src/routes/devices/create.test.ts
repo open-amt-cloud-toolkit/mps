@@ -1,5 +1,5 @@
 import { insertDevice } from './create'
-import { logger as log } from '../../utils/logger'
+import { logger } from '../../logging'
 import { MPSValidationError } from '../../utils/MPSValidationError'
 
 let res: Express.Response
@@ -196,7 +196,7 @@ describe('create', () => {
         }
       }
     } as any
-    const errorSpy = jest.spyOn(log, 'error')
+    const errorSpy = jest.spyOn(logger, 'error')
     await insertDevice(req, res as any)
     expect(statusSpy).toHaveBeenLastCalledWith(errorStatus)
     expect(jsonSpy).toHaveBeenCalledWith({
@@ -220,7 +220,7 @@ describe('create', () => {
         }
       }
     } as any
-    const errorSpy = jest.spyOn(log, 'error')
+    const errorSpy = jest.spyOn(logger, 'error')
     await insertDevice(req, res as any)
     expect(statusSpy).toHaveBeenLastCalledWith(500)
     expect(endSpy).toHaveBeenCalled()

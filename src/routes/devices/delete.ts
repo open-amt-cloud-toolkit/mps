@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 import { Request, Response } from 'express'
-import { logger as log } from '../../utils/logger'
+import { logger, messages } from '../../logging'
 
 export async function deleteDevice (req: Request, res: Response): Promise<void> {
   try {
@@ -17,7 +17,7 @@ export async function deleteDevice (req: Request, res: Response): Promise<void> 
       }
     }
   } catch (err) {
-    log.error(`Failed to delete device: ${req.params.guid}`, err)
+    logger.error(`${messages.DEVICE_DELETE_FAILED}: ${req.params.guid}`, err)
     res.status(500).end()
   }
 }

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 import { Device } from '../../models/models'
-import { logger as log } from '../../utils/logger'
+import { logger, messages } from '../../logging'
 import { DataWithCount } from '../../models/Config'
 
 export async function getAllDevices (req, res): Promise<void> {
@@ -31,7 +31,7 @@ export async function getAllDevices (req, res): Promise<void> {
       res.status(200).json(list).end()
     }
   } catch (err) {
-    log.error(`getAllDevices exception: ${err}`)
+    logger.error(`${messages.DEVICE_GETALL_EXCEPTION}: ${err}`)
     res.status(500).end()
   }
 }

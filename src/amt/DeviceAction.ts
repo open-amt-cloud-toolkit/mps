@@ -2,7 +2,7 @@
 * Copyright (c) Intel Corporation 2022
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
-import { logger } from '../utils/logger'
+import { logger, messages } from '../logging'
 import { CIRAHandler } from './CIRAHandler'
 import { AMT, CIM, IPS, Common } from '@open-amt-cloud-toolkit/wsman-messages/dist/index'
 import { CIRASocket } from '../models/models'
@@ -23,347 +23,344 @@ export class DeviceAction {
   }
 
   async getPowerState (): Promise<Common.Models.Pull<CIM.Models.AssociatedPowerManagementService>> {
-    logger.silly('requesting getPowerState')
+    logger.silly(`getPowerState ${messages.REQUEST}`)
     let messageId = (this.messageId++).toString()
     let xmlRequestBody = this.cim.ServiceAvailableToElement(CIM.Methods.ENUMERATE, messageId)
     const result = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody, messageId)
     const enumContext: string = result?.Envelope?.Body?.EnumerateResponse?.EnumerationContext
     if (enumContext == null) {
-      logger.error('failed to pull CIM_ServiceAvailableToElement in get power state')
+      logger.error(`getPowerState failed. Reason: ${messages.ENUMERATION_RESPONSE_NULL}`)
       return null
     }
     messageId = (this.messageId++).toString()
     xmlRequestBody = this.cim.ServiceAvailableToElement(CIM.Methods.PULL, messageId, enumContext)
     const pullResponse = await this.ciraHandler.Pull<CIM.Models.AssociatedPowerManagementService>(this.ciraSocket, xmlRequestBody, messageId)
-    logger.silly('completed getPowerState')
+    logger.silly(`getPowerState ${messages.COMPLETE}`)
     return pullResponse.Envelope.Body
   }
 
   async getSoftwareIdentity (): Promise<Common.Models.Pull<CIM.Models.SoftwareIdentity>> {
-    logger.silly('requesting getSoftwareIdentity enumeration')
+    logger.silly(`getSoftwareIdentity enumeration ${messages.REQUEST}`)
     let messageId = (this.messageId++).toString()
     const result = await this.ciraHandler.Enumerate(this.ciraSocket, this.cim.SoftwareIdentity(CIM.Methods.ENUMERATE, messageId), messageId)
-    console.log('getSoftwareIdentity enumeration result :', JSON.stringify(result, null, '\t'))
+    logger.info('getSoftwareIdentity enumeration result :', JSON.stringify(result, null, '\t'))
     const enumContext: string = result?.Envelope.Body?.EnumerateResponse?.EnumerationContext
     if (enumContext == null) {
-      logger.error('failed to pull CIM_SoftwareIdentity in get version')
+      logger.error(`getSoftwareIdentity failed. Reason: ${messages.ENUMERATION_RESPONSE_NULL}`)
       return null
     }
     messageId = (this.messageId++).toString()
-    logger.silly('requesting getSoftwareIdentity pull')
+    logger.silly(`getSoftwareIdentity pull ${messages.REQUEST}`)
     const pullResponse = await this.ciraHandler.Pull<CIM.Models.SoftwareIdentity>(this.ciraSocket, this.cim.SoftwareIdentity(CIM.Methods.PULL, messageId, enumContext), messageId)
-    console.log('getSoftwareIdentity pullResponse :', JSON.stringify(pullResponse, null, '\t'))
-    logger.silly('completed getSoftwareIdentity')
+    logger.info('getSoftwareIdentity pullResponse :', JSON.stringify(pullResponse, null, '\t'))
+    logger.silly(`getSoftwareIdentity ${messages.COMPLETE}`)
     return pullResponse.Envelope.Body
   }
 
   async getIpsOptInService (): Promise<IPS.Models.OptInServiceResponse> {
-    logger.silly('requesting getIpsOptInService')
+    logger.silly(`getIpsOptInService ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
     const xmlRequestBody = this.ips.OptInService(IPS.Methods.GET, messageId)
     const result = await this.ciraHandler.Get<IPS.Models.OptInServiceResponse>(this.ciraSocket, xmlRequestBody, messageId)
-    logger.silly('completed getIpsOptInService')
+    logger.silly(`getIpsOptInService ${messages.COMPLETE}`)
     return result.Envelope.Body
   }
 
   async putIpsOptInService (data: IPS.Models.OptInServiceResponse): Promise<IPS.Models.OptInServiceResponse> {
-    logger.silly('requesting putIpsOptInService')
+    logger.silly(`putIpsOptInService ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
     const xmlRequestBody = this.ips.OptInService(IPS.Methods.PUT, messageId, null, data)
     const result = await this.ciraHandler.Get<IPS.Models.OptInServiceResponse>(this.ciraSocket, xmlRequestBody, messageId)
-    logger.silly('completed putIpsOptInService')
+    logger.silly(`putIpsOptInService ${messages.COMPLETE}`)
     return result.Envelope.Body
   }
 
   async getRedirectionService (): Promise<AMT.Models.RedirectionResponse> {
-    logger.silly('requesting getRedirectionService')
+    logger.silly(`getRedirectionService ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
     const xmlRequestBody = this.amt.RedirectionService(AMT.Methods.GET, messageId)
     const result = await this.ciraHandler.Get<AMT.Models.RedirectionResponse>(this.ciraSocket, xmlRequestBody, messageId)
-    logger.silly('completed getRedirectionService')
+    logger.silly(`getRedirectionService ${messages.COMPLETE}`)
     return result.Envelope.Body
   }
 
   async setRedirectionService (requestState: number): Promise<any> {
-    logger.silly('requesting setRedirectionService')
+    logger.silly(`setRedirectionService ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
     const xmlRequestBody = this.amt.RedirectionService(AMT.Methods.REQUEST_STATE_CHANGE, messageId, requestState)
     const result = await this.ciraHandler.Send(this.ciraSocket, xmlRequestBody, messageId)
-    logger.silly('completed setRedirectionService')
+    logger.silly(`setRedirectionService ${messages.COMPLETE}`)
     return result.Envelope.Body
   }
 
   async putRedirectionService (data: AMT.Models.RedirectionResponse): Promise<any> {
-    logger.silly('requesting putRedirectionService')
+    logger.silly(`putRedirectionService ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
     const xmlRequestBody = this.amt.RedirectionService(AMT.Methods.PUT, messageId, null, data)
     const result = await this.ciraHandler.Send(this.ciraSocket, xmlRequestBody, messageId)
-    logger.silly('completed putRedirectionService')
+    logger.silly(`putRedirectionService ${messages.COMPLETE}`)
     return result.Envelope.Body
   }
 
   async getKvmRedirectionSap (): Promise<CIM.Models.KVMRedirectionSAPResponse> {
-    logger.silly('requesting getKvmRedirectionSap')
+    logger.silly(`getKvmRedirectionSap ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
-
     const xmlRequestBody = this.cim.KVMRedirectionSAP(CIM.Methods.GET, messageId)
     const result = await this.ciraHandler.Get<CIM.Models.KVMRedirectionSAPResponse>(this.ciraSocket, xmlRequestBody, messageId)
-    logger.silly('completed getKvmRedirectionSap')
+    logger.silly(`getKvmRedirectionSap ${messages.COMPLETE}`)
     return result.Envelope.Body
   }
 
   async setKvmRedirectionSap (requestedState: number): Promise<any> {
-    logger.silly('requesting setKvmRedirectionSap')
+    logger.silly(`setKvmRedirectionSap ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
     const xmlRequestBody = this.cim.KVMRedirectionSAP(CIM.Methods.REQUEST_STATE_CHANGE, messageId, requestedState)
     const result = await this.ciraHandler.Send(this.ciraSocket, xmlRequestBody, messageId)
-    logger.silly('completed setKvmRedirectionSap')
+    logger.silly(`setKvmRedirectionSap ${messages.COMPLETE}`)
     return result.Envelope.Body
   }
 
   async forceBootMode (bootSource: string = 'Intel(r) AMT: Boot Configuration 0', role: number = 1): Promise<number> {
-    logger.silly('requesting forceBootMode')
+    logger.silly(`forceBootMode ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
     const xmlRequestBody = this.cim.BootService(CIM.Methods.SET_BOOT_CONFIG_ROLE, messageId, bootSource, role)
     const result = await this.ciraHandler.Send(this.ciraSocket, xmlRequestBody, messageId)
-    logger.silly('completed forceBootMode')
+    logger.silly(`forceBootMode ${messages.COMPLETE}`)
     return result
   }
 
-  // todo: convert to string enum
   async changeBootOrder (bootSource: string): Promise<any> {
-    logger.silly('requesting changeBootOrder')
+    logger.silly(`changeBootOrder ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
-
+    // TODO: convert to string enum
     const bootChoice = `<Address xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing">http://schemas.xmlsoap.org/ws/2004/08/addressing</Address><ReferenceParameters xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing"><ResourceURI xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootSourceSetting</ResourceURI><SelectorSet xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"><Selector Name="InstanceID">Intel(r) AMT: ${bootSource}</Selector></SelectorSet></ReferenceParameters>`
     const xmlRequestBody = this.cim.BootConfigSetting(CIM.Methods.CHANGE_BOOT_ORDER, messageId, bootChoice)
     const result = await this.ciraHandler.Send(this.ciraSocket, xmlRequestBody, messageId)
-    logger.silly('completed changeBootOrder')
+    logger.silly(`changeBootOrder ${messages.COMPLETE}`)
     return result
   }
 
   async setBootConfiguration (data: AMT.Models.BootSettingData): Promise<any> {
-    logger.silly('requesting setBootConfiguration')
+    logger.silly(`setBootConfiguration ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
-
     const xmlRequestBody = this.amt.BootSettingData(AMT.Methods.PUT, messageId, data)
     const result = await this.ciraHandler.Send(this.ciraSocket, xmlRequestBody, messageId)
-    logger.silly('completed setBootConfiguration')
+    logger.silly(`setBootConfiguration ${messages.COMPLETE}`)
     return result.Envelope.Body
   }
 
   async getBootOptions (): Promise<AMT.Models.BootSettingDataResponse> {
-    logger.silly('requesting getBootOptions')
+    logger.silly(`getBootOptions ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
     const xmlRequestBody = this.amt.BootSettingData(AMT.Methods.GET, messageId)
     const result = await this.ciraHandler.Get<AMT.Models.BootSettingDataResponse>(this.ciraSocket, xmlRequestBody, messageId)
-    logger.silly('completed getBootOptions')
+    logger.silly(`getBootOptions ${messages.COMPLETE}`)
     return result.Envelope.Body
   }
 
   async sendPowerAction (powerState: number): Promise<CIM.Models.PowerActionResponse> {
-    logger.silly('requesting sendPowerAction')
+    logger.silly(`sendPowerAction ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
     const xmlToSend = this.cim.PowerManagementService(CIM.Methods.REQUEST_POWER_STATE_CHANGE, messageId, powerState)
     const result = await this.ciraHandler.Get<CIM.Models.PowerActionResponse>(this.ciraSocket, xmlToSend, messageId)
-    logger.silly('completed sendPowerAction')
+    logger.silly(`sendPowerAction ${messages.COMPLETE}`)
     return result.Envelope.Body
   }
 
   async getSetupAndConfigurationService (): Promise<Common.Models.Envelope<AMT.Models.SetupAndConfigurationService>> {
-    logger.silly('requesting getSetupAndConfigurationService')
+    logger.silly(`getSetupAndConfigurationService ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
     const xmlRequestBody = this.amt.SetupAndConfigurationService(AMT.Methods.GET, messageId)
     const getResponse = await this.ciraHandler.Get<AMT.Models.SetupAndConfigurationService>(this.ciraSocket, xmlRequestBody, messageId)
-    console.log('getSetupAndConfigurationService result :', JSON.stringify(getResponse, null, '\t'))
-    logger.silly('completed getSetupAndConfigurationService')
+    logger.info('getSetupAndConfigurationService result :', JSON.stringify(getResponse, null, '\t'))
+    logger.silly(`getSetupAndConfigurationService ${messages.COMPLETE}`)
     return getResponse.Envelope
   }
 
   async getGeneralSettings (): Promise<Common.Models.Envelope<AMT.Models.GeneralSettingsResponse>> {
-    logger.silly('requesting getGeneralSettings')
+    logger.silly(`getGeneralSettings ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
     const xmlRequestBody = this.amt.GeneralSettings(AMT.Methods.GET, messageId)
     const getResponse = await this.ciraHandler.Get<AMT.Models.GeneralSettingsResponse>(this.ciraSocket, xmlRequestBody, messageId)
-    logger.silly('completed getGeneralSettings')
+    logger.silly(`getGeneralSettings ${messages.COMPLETE}`)
     return getResponse.Envelope
   }
 
   async getPowerCapabilities (): Promise<Common.Models.Envelope<AMT.Models.BootCapabilities>> {
-    logger.silly('requesting getPowerCapabilities')
+    logger.silly(`getPowerCapabilities ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
     const xmlRequestBody = this.amt.BootCapabilities(AMT.Methods.GET, messageId)
     const result = await this.ciraHandler.Get<AMT.Models.BootCapabilities>(this.ciraSocket, xmlRequestBody, messageId)
-    console.log(JSON.stringify(result))
-    logger.silly('completed getPowerCapabilities')
+    logger.info(JSON.stringify(result))
+    logger.silly(`getPowerCapabilities ${messages.COMPLETE}`)
     return result.Envelope
   }
 
   async requestUserConsentCode (): Promise<Common.Models.Envelope<IPS.Models.StartOptIn_OUTPUT>> {
-    logger.silly('requesting requestUserConsentCode')
+    logger.silly(`requestUserConsentCode ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
     const xmlRequestBody = this.ips.OptInService(IPS.Methods.START_OPT_IN, messageId)
     const getResponse = await this.ciraHandler.Get<IPS.Models.StartOptIn_OUTPUT>(this.ciraSocket, xmlRequestBody, messageId)
-    logger.silly('completed requestUserConsentCode')
+    logger.silly(`requestUserConsentCode ${messages.COMPLETE}`)
     return getResponse.Envelope
   }
 
   async cancelUserConsentCode (): Promise<Common.Models.Envelope<IPS.Models.CancelOptIn_OUTPUT>> {
-    logger.silly('requesting cancelUserConsentCode')
+    logger.silly(`cancelUserConsentCode ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
     const xmlRequestBody = this.ips.OptInService(IPS.Methods.CANCEL_OPT_IN, messageId)
     const getResponse = await this.ciraHandler.Get<IPS.Models.CancelOptIn_OUTPUT>(this.ciraSocket, xmlRequestBody, messageId)
-    logger.silly('completed cancelUserConsentCode')
+    logger.silly(`cancelUserConsentCode ${messages.COMPLETE}`)
     return getResponse.Envelope
   }
 
   async sendUserConsentCode (code: Number): Promise<Common.Models.Envelope<IPS.Models.SendOptInCode_OUTPUT>> {
-    logger.silly('requesting sendUserConsentCode')
+    logger.silly(`sendUserConsentCode ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
     const xmlRequestBody = this.ips.OptInService(IPS.Methods.SEND_OPT_IN_CODE, messageId, code)
     const getResponse = await this.ciraHandler.Get<IPS.Models.SendOptInCode_OUTPUT>(this.ciraSocket, xmlRequestBody, messageId)
-    logger.silly('completed sendUserConsentCode')
+    logger.silly(`sendUserConsentCode ${messages.COMPLETE}`)
     return getResponse.Envelope
   }
 
   async getComputerSystemPackage (): Promise<Common.Models.Envelope<CIM.Models.ComputerSystemPackage>> {
-    logger.silly('requesting getComputerSystemPackage')
+    logger.silly(`getComputerSystemPackage ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
     const xmlRequestBody = this.cim.ComputerSystemPackage(CIM.Methods.GET, messageId)
     const getResponse = await this.ciraHandler.Get<CIM.Models.ComputerSystemPackage>(this.ciraSocket, xmlRequestBody, messageId)
-    console.log('getComputerSystemPackage getResponse :', JSON.stringify(getResponse, null, '\t'))
-    logger.silly('completed getComputerSystemPackage')
+    logger.info('getComputerSystemPackage getResponse :', JSON.stringify(getResponse, null, '\t'))
+    logger.silly(`getComputerSystemPackage ${messages.COMPLETE}`)
     return getResponse.Envelope
   }
 
   async getChassis (): Promise<Common.Models.Envelope<CIM.Models.Chassis>> {
-    logger.silly('requesting getChassis')
+    logger.silly(`getChassis ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
     const xmlRequestBody = this.cim.Chassis(CIM.Methods.GET, messageId)
     const getResponse = await this.ciraHandler.Get<CIM.Models.Chassis>(this.ciraSocket, xmlRequestBody, messageId)
-    console.log('getChassis getChassis :', JSON.stringify(getResponse, null, '\t'))
-    logger.silly('completed getChassis')
+    logger.info('getChassis getChassis :', JSON.stringify(getResponse, null, '\t'))
+    logger.silly(`getChassis ${messages.COMPLETE}`)
     return getResponse.Envelope
   }
 
   async getCard (): Promise<Common.Models.Envelope<CIM.Models.Card>> {
-    logger.silly('requesting getCard')
+    logger.silly(`getCard ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
     const xmlRequestBody = this.cim.Card(CIM.Methods.GET, messageId)
     const getResponse = await this.ciraHandler.Get<CIM.Models.Card>(this.ciraSocket, xmlRequestBody, messageId)
-    console.log('getCard getResponse :', JSON.stringify(getResponse, null, '\t'))
-    logger.silly('completed getCard')
+    logger.info('getCard getResponse :', JSON.stringify(getResponse, null, '\t'))
+    logger.silly(`getCard ${messages.COMPLETE}`)
     return getResponse.Envelope
   }
 
   async getBIOSElement (): Promise<Common.Models.Envelope<CIM.Models.BIOSElement>> {
-    logger.silly('requesting getBIOSElement')
+    logger.silly(`getBIOSElement ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
     const xmlRequestBody = this.cim.BIOSElement(CIM.Methods.GET, messageId)
     const getResponse = await this.ciraHandler.Get<CIM.Models.BIOSElement>(this.ciraSocket, xmlRequestBody, messageId)
-    console.log('getBIOSElement getResponse :', JSON.stringify(getResponse, null, '\t'))
-    logger.silly('completed getBIOSElement')
+    logger.info('getBIOSElement getResponse :', JSON.stringify(getResponse, null, '\t'))
+    logger.silly(`getBIOSElement ${messages.COMPLETE}`)
     return getResponse.Envelope
   }
 
   async getProcessor (): Promise<Common.Models.Envelope<Common.Models.Pull<CIM.Models.Processor>>> {
-    logger.silly('requesting getProcessor')
+    logger.silly(`getProcessor ${messages.REQUEST}`)
     let messageId = (this.messageId++).toString()
     let xmlRequestBody = this.cim.Processor(CIM.Methods.ENUMERATE, messageId)
     const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody, messageId)
     if (enumResponse == null) {
-      logger.error('failed to get CIM Processor')
+      logger.error(`getProcessor failed. Reason: ${messages.ENUMERATION_RESPONSE_NULL}`)
       return null
     }
     messageId = (this.messageId++).toString()
     xmlRequestBody = this.cim.Processor(CIM.Methods.PULL, messageId, enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
     const pullResponse = await this.ciraHandler.Pull<CIM.Models.Processor>(this.ciraSocket, xmlRequestBody, messageId)
-    logger.silly('completed getProcessor')
+    logger.silly(`getProcessor ${messages.COMPLETE}`)
     return pullResponse.Envelope
   }
 
   async getPhysicalMemory (): Promise<Common.Models.Envelope<Common.Models.Pull<CIM.Models.PhysicalMemory>>> {
-    logger.silly('requesting getPhysicalMemory')
+    logger.silly(`getPhysicalMemory ${messages.REQUEST}`)
     let messageId = (this.messageId++).toString()
     let xmlRequestBody = this.cim.PhysicalMemory(CIM.Methods.ENUMERATE, messageId)
     const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody, messageId)
     if (enumResponse == null) {
-      logger.error('failed to get CIM PhysicalMemory')
+      logger.error(`getPhysicalMemory failed. Reason: ${messages.ENUMERATION_RESPONSE_NULL}`)
       return null
     }
     messageId = (this.messageId++).toString()
     xmlRequestBody = this.cim.PhysicalMemory(CIM.Methods.PULL, messageId, enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
     const pullResponse = await this.ciraHandler.Pull<CIM.Models.PhysicalMemory>(this.ciraSocket, xmlRequestBody, messageId)
-    logger.silly('completed getPhysicalMemory')
+    logger.silly(`getPhysicalMemory ${messages.COMPLETE}`)
     return pullResponse.Envelope
   }
 
   async getMediaAccessDevice (): Promise<Common.Models.Envelope<Common.Models.Pull<CIM.Models.MediaAccessDevice>>> {
-    logger.silly('requesting getMediaAccessDevice')
+    logger.silly(`getMediaAccessDevice ${messages.REQUEST}`)
     let messageId = (this.messageId++).toString()
     let xmlRequestBody = this.cim.MediaAccessDevice(CIM.Methods.ENUMERATE, messageId)
     const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody, messageId)
     if (enumResponse == null) {
-      logger.error('failed to get CIM Media Access Device')
+      logger.error(`getMediaAccessDevice failed. Reason: ${messages.ENUMERATION_RESPONSE_NULL}`)
       return null
     }
     messageId = (this.messageId++).toString()
     xmlRequestBody = this.cim.MediaAccessDevice(CIM.Methods.PULL, messageId, enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
     const pullResponse = await this.ciraHandler.Pull<CIM.Models.MediaAccessDevice>(this.ciraSocket, xmlRequestBody, messageId)
-    logger.silly('completed getMediaAccessDevice')
+    logger.silly(`getMediaAccessDevice ${messages.COMPLETE}`)
     return pullResponse.Envelope
   }
 
   async getPhysicalPackage (): Promise<Common.Models.Envelope<Common.Models.Pull<CIM.Models.PhysicalPackage>>> {
-    logger.silly('requesting getPhysicalPackage')
+    logger.silly(`getPhysicalPackage ${messages.REQUEST}`)
     let messageId = (this.messageId++).toString()
     let xmlRequestBody = this.cim.PhysicalPackage(CIM.Methods.ENUMERATE, messageId)
     const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody, messageId)
     if (enumResponse == null) {
-      logger.error('failed to get CIM Physical Package')
+      logger.error(`getPhysicalPackage failed. Reason: ${messages.ENUMERATION_RESPONSE_NULL}`)
       return null
     }
     messageId = (this.messageId++).toString()
     xmlRequestBody = this.cim.PhysicalPackage(CIM.Methods.PULL, messageId, enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
     const pullResponse = await this.ciraHandler.Pull<CIM.Models.PhysicalPackage>(this.ciraSocket, xmlRequestBody, messageId)
-    logger.silly('completed getPhysicalPackage')
+    logger.silly(`getPhysicalPackage ${messages.COMPLETE}`)
     return pullResponse.Envelope
   }
 
   async getSystemPackaging (): Promise<Common.Models.Envelope<Common.Models.Pull<CIM.Models.SystemPackaging>>> {
-    logger.silly('requesting getSystemPackaging')
+    logger.silly(`getSystemPackaging ${messages.REQUEST}`)
     let messageId = (this.messageId++).toString()
     let xmlRequestBody = this.cim.SystemPackaging(CIM.Methods.ENUMERATE, messageId)
     const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody, messageId)
     if (enumResponse == null) {
-      logger.error('failed to get CIM System Packaging')
+      logger.error(`getSystemPackaging failed. Reason: ${messages.ENUMERATION_RESPONSE_NULL}`)
       return null
     }
     messageId = (this.messageId++).toString()
     xmlRequestBody = this.cim.SystemPackaging(CIM.Methods.PULL, messageId, enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
     const pullResponse = await this.ciraHandler.Pull<CIM.Models.SystemPackaging>(this.ciraSocket, xmlRequestBody, messageId)
-    logger.silly('completed getSystemPackaging')
+    logger.silly(`getSystemPackaging ${messages.COMPLETE}`)
     return pullResponse.Envelope
   }
 
   async getChip (): Promise<Common.Models.Envelope<Common.Models.Pull<CIM.Models.Chip>>> {
-    logger.silly('requesting getChip')
+    logger.silly(`getChip ${messages.REQUEST}`)
     let messageId = (this.messageId++).toString()
     let xmlRequestBody = this.cim.Chip(CIM.Methods.ENUMERATE, messageId)
     const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody, messageId)
     if (enumResponse == null) {
-      logger.error('failed to get CIM Chip')
+      logger.error(`getChip failed. Reason: ${messages.ENUMERATION_RESPONSE_NULL}`)
       return null
     }
     messageId = (this.messageId++).toString()
     xmlRequestBody = this.cim.Chip(CIM.Methods.PULL, messageId, enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
     const pullResponse = await this.ciraHandler.Pull<CIM.Models.Chip>(this.ciraSocket, xmlRequestBody, messageId)
-    logger.silly('completed getChip')
+    logger.silly(`getChip ${messages.COMPLETE}`)
     return pullResponse.Envelope
   }
 
   async getEventLog (): Promise<Common.Models.Envelope<AMT.Models.MessageLog>> {
-    logger.silly('requesting getEventLog')
+    logger.silly(`getEventLog ${messages.REQUEST}`)
     let messageId = (this.messageId++).toString()
     let xmlRequestBody = this.amt.MessageLog(AMT.Methods.POSITION_TO_FIRSTRECORD, messageId)
     const response = await this.ciraHandler.Get<{PositionToFirstRecord_OUTPUT: {
@@ -371,30 +368,29 @@ export class DeviceAction {
       ReturnValue: string
     }}>(this.ciraSocket, xmlRequestBody, messageId)
     if (response == null) {
-      logger.error('failed to get position to first record of AMT_MessageLog')
+      logger.error(`failed to get position to first record of AMT_MessageLog. Reason: ${messages.RESPONSE_NULL}`)
       return null
     }
     messageId = (this.messageId++).toString()
     xmlRequestBody = this.amt.MessageLog(AMT.Methods.GET_RECORDS, messageId, Number(response.Envelope.Body.PositionToFirstRecord_OUTPUT.IterationIdentifier))
     const eventLogs = await this.ciraHandler.Get<AMT.Models.MessageLog>(this.ciraSocket, xmlRequestBody, messageId)
-    console.log('getEventLog response :', JSON.stringify(eventLogs, null, '\t'))
-
-    logger.silly('completed getEventLog')
+    logger.info('getEventLog response :', JSON.stringify(eventLogs, null, '\t'))
+    logger.silly(`getEventLog ${messages.COMPLETE}`)
     return eventLogs.Envelope
   }
 
   async getAuditLog (startIndex: number): Promise<AMT.Models.AuditLog_ReadRecords> {
-    logger.silly('requesting getAuditLog')
+    logger.silly(`getAuditLog ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
     const xmlRequestBody = this.amt.AuditLog(AMT.Methods.READ_RECORDS, messageId, startIndex)
     const getResponse = await this.ciraHandler.Get<AMT.Models.AuditLog_ReadRecords>(this.ciraSocket, xmlRequestBody, messageId)
-    console.log('getAuditLog response :', JSON.stringify(getResponse, null, '\t'))
+    logger.info('getAuditLog response :', JSON.stringify(getResponse, null, '\t'))
 
     if (getResponse == null) {
-      logger.error('failed to get audit log')
+      logger.error(`failed to get audit log. Reason: ${messages.RESPONSE_NULL}`)
       throw new Error('unable to retrieve audit log')
     }
-    logger.silly('completed getAuditLog')
+    logger.silly(`getAuditLog ${messages.COMPLETE}`)
     return getResponse.Envelope.Body
   }
 }
