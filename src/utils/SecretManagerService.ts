@@ -66,7 +66,7 @@ export class SecretManagerService implements ISecretManagerService {
     try {
       this.logger.verbose(messages.SECRET_MANAGER_WRITING_DATA_TO_SECRET_STORE)
       await this.vaultClient.write(`${this.secretsPath}${path}`, data)
-      this.logger.debug(`${messages.SECRET_MANAGER_DATA_WRITEN_TO_SECRET_STORE_SUCCESS}: ${path}`)
+      this.logger.debug(`${messages.SECRET_MANAGER_DATA_WRITTEN_TO_SECRET_STORE_SUCCESS}: ${path}`)
       return true
     } catch (error) {
       this.logger.error(`${messages.SECRET_MANAGER_WRITING_SECRETS_ERROR} :`, error)
