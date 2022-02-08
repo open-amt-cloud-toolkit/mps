@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { logger } from '../utils/logger'
+import { logger, messages } from '../logging'
 import Common from '../utils/common'
 import { CIRASocket } from '../models/models'
 import { EventEmitter } from 'stream'
@@ -106,7 +106,7 @@ const APFProcessor = {
       case APFProtocol.DISCONNECT:
         return APFProcessor.disconnect(socket, len, data)
       default: {
-        logger.warn(`MPS:Unknown CIRA command: ${cmd}`)
+        logger.warn(`${messages.MPS_UNKNOWN_CIRA_COMMAND}: ${cmd}`)
         return -1
       }
     }
@@ -115,7 +115,7 @@ const APFProcessor = {
   disconnect: (socket: CIRASocket, len: number, data: string): number => {
     if (len < 7) return 0
     const ReasonCode: number = Common.ReadInt(data, 1)
-    logger.silly(`MPS:DISCONNECT, ${ReasonCode.toString()}`)
+    logger.silly(`${messages.MPS_DISCONNECT}, ${ReasonCode.toString()}`)
     APFProcessor.APFEvents.emit('disconnected', socket.tag.nodeid)
     return 7
   },
@@ -125,10 +125,10 @@ const APFProcessor = {
     const RecipientChannel: number = Common.ReadInt(data, 1)
     const LengthOfData: number = Common.ReadInt(data, 5)
     if (len < 9 + LengthOfData) return 0
-    logger.silly(`MPS: CHANNEL_DATA, ${RecipientChannel.toString()}, ${LengthOfData.toString()}`)
+    logger.silly(`${messages.MPS_CHANNEL_DATA}, ${RecipientChannel.toString()}, ${LengthOfData.toString()}`)
     const cirachannel = socket.tag.channels[RecipientChannel]
     if (cirachannel == null) {
-      logger.error(`MPS Error in CHANNEL_DATA: Unable to find channelid ${RecipientChannel}`)
+      logger.error(`${messages.DATA_NO_CHANNEL_ID} ${RecipientChannel}`)
       return 9 + LengthOfData
     }
     cirachannel.amtpendingcredits += LengthOfData
@@ -146,11 +146,11 @@ const APFProcessor = {
     const ByteToAdd = Common.ReadInt(data, 5)
     const cirachannel = socket.tag.channels[RecipientChannel]
     if (cirachannel == null) {
-      logger.error(`MPS Error in CHANNEL_WINDOW_ADJUST: Unable to find channelid ${RecipientChannel}`)
+      logger.error(`${messages.WINDOW_ADJUST_NO_CHANNEL_ID} ${RecipientChannel}`)
       return 9
     }
     cirachannel.sendcredits += ByteToAdd
-    logger.silly(`MPS: CHANNEL_WINDOW_ADJUST, ${RecipientChannel.toString()}, ${ByteToAdd.toString()}, ${cirachannel.sendcredits}`)
+    logger.silly(`${messages.MPS_WINDOW_ADJUST}, ${RecipientChannel.toString()}, ${ByteToAdd.toString()}, ${cirachannel.sendcredits}`)
     if (cirachannel.state === 2 && cirachannel.sendBuffer != null) {
       // Compute how much data we can send
       if (cirachannel.sendBuffer.length <= cirachannel.sendcredits) {
@@ -171,10 +171,10 @@ const APFProcessor = {
   channelClose: (socket: CIRASocket, len: number, data: string): number => {
     if (len < 5) return 0
     const RecipientChannel: number = Common.ReadInt(data, 1)
-    logger.silly(`MPS: CHANNEL_CLOSE ${RecipientChannel.toString()}`)
+    logger.silly(`${messages.MPS_CHANNEL_CLOSE} ${RecipientChannel.toString()}`)
     const cirachannel = socket.tag.channels[RecipientChannel]
     if (cirachannel == null) {
-      logger.error(`MPS Error in CHANNEL_CLOSE: Unable to find channelid ${RecipientChannel}`)
+      logger.error(`${messages.CHANNEL_CLOSE_NO_CHANNEL_ID} ${RecipientChannel}`)
       return 5
     }
     APFProcessor.SendChannelClose(cirachannel.socket, cirachannel.amtchannelid)
@@ -193,10 +193,10 @@ const APFProcessor = {
     if (length < 17) return 0
     const recipientChannel = Common.ReadInt(data, 1)
     const reasonCode = Common.ReadInt(data, 5)
-    logger.silly(`MPS: CHANNEL_OPEN_FAILURE, ${recipientChannel.toString()}, ${reasonCode.toString()}`)
+    logger.silly(`${messages.MPS_CHANNEL_OPEN_FAILURE}, ${recipientChannel.toString()}, ${reasonCode.toString()}`)
     const cirachannel = socket.tag.channels[recipientChannel]
     if (cirachannel == null) {
-      logger.error(`MPS Error in CHANNEL_OPEN_FAILURE: Unable to find channelid ${recipientChannel}`)
+      logger.error(`${messages.CHANNEL_OPEN_FAILURE_NO_CHANNEL_ID} ${recipientChannel}`)
       return 17
     }
     if (cirachannel.state > 0) {
@@ -221,7 +221,7 @@ const APFProcessor = {
     }
     cirachannel.amtchannelid = senderChannel
     cirachannel.sendcredits = cirachannel.amtCiraWindow = windowSize
-    logger.silly(`MPS: CHANNEL_OPEN_CONFIRMATION, ${recipientChannel.toString()}, ${senderChannel.toString()}, ${windowSize.toString()}`)
+    logger.silly(`${messages.MPS_CHANNEL_OPEN_CONFIRMATION}, ${recipientChannel.toString()}, ${senderChannel.toString()}, ${windowSize.toString()}`)
     if (cirachannel.closing === 1) {
       // Close this channel
       APFProcessor.SendChannelClose(cirachannel.socket, cirachannel.amtchannelid)
@@ -271,7 +271,7 @@ const APFProcessor = {
     const Source: string = data.substring(29 + ChannelTypeLength + TargetLen, 29 + ChannelTypeLength + TargetLen + SourceLen)
     const SourcePort: number = Common.ReadInt(data, 29 + ChannelTypeLength + TargetLen + SourceLen)
 
-    logger.silly(`MPS: CHANNEL_OPEN, ${ChannelType}, ${SenderChannel.toString()}, ${WindowSize.toString()}, ${Target}:${TargetPort}, ${Source}:${SourcePort}`)
+    logger.silly(`${messages.MPS_CHANNEL_OPEN}, ${ChannelType}, ${SenderChannel.toString()}, ${WindowSize.toString()}, ${Target}:${TargetPort}, ${Source}:${SourcePort}`)
 
     // Check if we understand this channel type
     // if (ChannelType.toLowerCase() == "direct-tcpip")
@@ -301,7 +301,7 @@ const APFProcessor = {
       let addr = data.substring(10 + requestLen, 10 + requestLen + addrLen)
       const port = Common.ReadInt(data, 10 + requestLen + addrLen)
       if (addr === '') addr = undefined
-      logger.silly(`MPS: GLOBAL_REQUEST ${socket.tag.nodeid} ${request} ${addr}: ${port}`)
+      logger.silly(`${messages.MPS_GLOBAL_REQUEST} ${socket.tag.nodeid} ${request} ${addr}: ${port}`)
       // this.ChangeHostname(socket, addr)
       if (!socket.tag.boundPorts.includes(port)) {
         socket.tag.boundPorts.push(port)
@@ -315,7 +315,7 @@ const APFProcessor = {
       if (length < 14 + requestLen + addrLen) return 0
       const addr = data.substring(10 + requestLen, 10 + requestLen + addrLen)
       const port = Common.ReadInt(data, 10 + requestLen + addrLen)
-      logger.silly(`MPS: GLOBAL_REQUEST, ${request}, ${addr}:${port}`)
+      logger.silly(`${messages.MPS_GLOBAL_REQUEST}, ${request}, ${addr}:${port}`)
       const portindex = socket.tag.boundPorts.indexOf(port)
       if (portindex >= 0) {
         socket.tag.boundPorts.splice(portindex, 1)
@@ -335,7 +335,7 @@ const APFProcessor = {
       const oport = Common.ReadInt(data, 18 + requestLen + addrLen + oaddrLen)
       const datalen = Common.ReadInt(data, 22 + requestLen + addrLen + oaddrLen)
       if (length < 26 + requestLen + addrLen + oaddrLen + datalen) return 0
-      logger.silly(`MPS: GLOBAL_REQUEST, ${request}, ${addr}:${port}, ${oaddr}:${oport}, ${datalen.toString()}`)
+      logger.silly(`${messages.MPS_GLOBAL_REQUEST}, ${request}, ${addr}:${port}, ${oaddr}:${oport}, ${datalen.toString()}`)
       // TODO
       return 26 + requestLen + addrLen + oaddrLen + datalen
     }
@@ -348,7 +348,7 @@ const APFProcessor = {
     const serviceNameLen: number = Common.ReadInt(data, 1)
     if (length < 5 + serviceNameLen) return 0
     const serviceName = data.substring(5, 5 + serviceNameLen)
-    logger.silly(`MPS: SERVICE_REQUEST: ${serviceName}`)
+    logger.silly(`${messages.MPS_SERVICE_REQUEST}: ${serviceName}`)
     if (serviceName === 'pfwd@amt.intel.com') {
       APFProcessor.SendServiceAccept(socket, 'pfwd@amt.intel.com')
     }
@@ -381,8 +381,8 @@ const APFProcessor = {
       passwordLen = Common.ReadInt(data, 14 + usernameLen + serviceNameLen + methodNameLen)
       password = data.substring(18 + usernameLen + serviceNameLen + methodNameLen, 18 + usernameLen + serviceNameLen + methodNameLen + passwordLen)
     }
-    logger.silly(`MPS: USERAUTH_REQUEST usernameLen=${usernameLen} serviceNameLen=${serviceNameLen} methodNameLen=${methodNameLen}`)
-    logger.silly(`MPS: USERAUTH_REQUEST user=${username} service=${serviceName} method=${methodName}`)
+    logger.silly(`${messages.MPS_USERAUTH_REQUEST} usernameLen=${usernameLen} serviceNameLen=${serviceNameLen} methodNameLen=${methodNameLen}`)
+    logger.silly(`${messages.MPS_USERAUTH_REQUEST} user=${username} service=${serviceName} method=${methodName}`)
 
     // Emit event to determine if user is authorized
     // TODO: verify this works correctly
@@ -399,7 +399,7 @@ const APFProcessor = {
       Common.Rstr2hex(data.substring(13, 29))
     ).toLowerCase()
     logger.silly(
-      `MPS: PROTOCOLVERSION, ${socket.tag.MajorVersion}, ${socket.tag.MinorVersion}, ${socket.tag.SystemId}`
+      `${messages.MPS_PROTOCOLVERSION}, ${socket.tag.MajorVersion}, ${socket.tag.MinorVersion}, ${socket.tag.SystemId}`
     )
     // TODO: verify this works correctly
 
@@ -411,7 +411,7 @@ const APFProcessor = {
 
   keepAliveReply: (length: Number): number => {
     if (length < 5) return 0
-    logger.silly('MPS: KEEPALIVE_REPLY')
+    logger.silly(messages.MPS_KEEPALIVE_REPLY)
     return 5
   },
 
@@ -419,38 +419,38 @@ const APFProcessor = {
     if (length < 5) {
       return 0
     }
-    logger.verbose(`MPS: KEEPALIVE_REQUEST: ${socket.tag.nodeid}`)
+    logger.verbose(`${messages.MPS_KEEPALIVE_REQUEST}: ${socket.tag.nodeid}`)
     APFProcessor.SendKeepAliveReply(socket, Common.ReadInt(data, 1))
     return 5
   },
 
   SendKeepAliveReply: (socket: CIRASocket, cookie): void => {
-    logger.silly('MPS: SendKeepAliveReply')
+    logger.silly(messages.MPS_SEND_KEEPALIVE_REPLY)
     APFProcessor.Write(socket, String.fromCharCode(APFProtocol.KEEPALIVE_REPLY) + Common.IntToStr(cookie))
   },
 
   SendServiceAccept: (socket: CIRASocket, service: string): void => {
-    logger.silly('MPS: SendServiceAccept')
+    logger.silly(messages.MPS_SEND_SERIVCE_ACCEPT)
     APFProcessor.Write(socket, String.fromCharCode(APFProtocol.SERVICE_ACCEPT) + Common.IntToStr(service.length) + service)
   },
 
   SendTcpForwardSuccessReply: (socket: CIRASocket, port): void => {
-    logger.silly('MPS: SendTcpForwardSuccessReply')
+    logger.silly(messages.MPS_SEND_TCP_FORWARD_SUCCESS_REPLY)
     APFProcessor.Write(socket, String.fromCharCode(APFProtocol.REQUEST_SUCCESS) + Common.IntToStr(port))
   },
 
   SendTcpForwardCancelReply: (socket: CIRASocket): void => {
-    logger.silly('MPS: SendTcpForwardCancelReply')
+    logger.silly(messages.MPS_SEND_TCP_FORWARD_CANCEL_REPLY)
     APFProcessor.Write(socket, String.fromCharCode(APFProtocol.REQUEST_SUCCESS))
   },
 
   SendKeepAliveRequest: (socket: CIRASocket, cookie): void => {
-    logger.silly('MPS: SendKeepAliveRequest')
+    logger.silly(messages.MPS_SEND_KEEP_ALIVE_REQUEST)
     APFProcessor.Write(socket, String.fromCharCode(APFProtocol.KEEPALIVE_REQUEST) + Common.IntToStr(cookie))
   },
 
   SendChannelOpenFailure: (socket: CIRASocket, senderChannel, reasonCode): void => {
-    logger.silly('MPS: SendChannelOpenFailure')
+    logger.silly(messages.MPS_SEND_CHANNEL_OPEN_FAILURE)
     APFProcessor.Write(
       socket,
       String.fromCharCode(APFProtocol.CHANNEL_OPEN_FAILURE) +
@@ -462,7 +462,7 @@ const APFProcessor = {
   },
 
   SendChannelOpenConfirmation: (socket: CIRASocket, recipientChannelId, senderChannelId, initialWindowSize): void => {
-    logger.silly('MPS: SendChannelOpenConfirmation')
+    logger.silly(messages.MPS_SEND_CHANNEL_OPEN_CONFIRMATION)
     APFProcessor.Write(
       socket,
       String.fromCharCode(APFProtocol.CHANNEL_OPEN_CONFIRMATION) +
@@ -475,7 +475,7 @@ const APFProcessor = {
 
   SendChannelOpen: (socket: CIRASocket, direct: boolean, channelid: number, windowSize: number, target: string, targetPort: number, source: string, sourcePort: number
   ): void => {
-    logger.silly('MPS: SendChannelOpen')
+    logger.silly(messages.MPS_SEND_CHANNEL_OPEN)
     const connectionType = direct ? 'direct-tcpip' : 'forwarded-tcpip'
     // TODO: Reports of target being undefined that causes target.length to fail. This is a hack.
     if (target == null || typeof target === 'undefined') target = ''
@@ -497,12 +497,12 @@ const APFProcessor = {
   },
 
   SendChannelClose: (socket: CIRASocket, channelid): void => {
-    logger.silly(`MPS: SendChannelClose, ${channelid}`)
+    logger.silly(`${messages.MPS_SEND_CHANNEL_CLOSE}, ${channelid}`)
     APFProcessor.Write(socket, String.fromCharCode(APFProtocol.CHANNEL_CLOSE) + Common.IntToStr(channelid))
   },
 
   SendChannelData: (socket: CIRASocket, channelid, data): void => {
-    logger.silly(`MPS: SendChannelData, ${channelid}`)
+    logger.silly(`${messages.MPS_SEND_CHANNEL_DATA}, ${channelid}`)
     APFProcessor.Write(
       socket,
       String.fromCharCode(APFProtocol.CHANNEL_DATA) +
@@ -513,7 +513,7 @@ const APFProcessor = {
   },
 
   SendChannelWindowAdjust: (socket: CIRASocket, channelid, bytestoadd): void => {
-    logger.silly(`MPS: SendChannelWindowAdjust, ${channelid}, ${bytestoadd}`)
+    logger.silly(`${messages.MPS_SEND_CHANNEL_WINDOW_ADJUST}, ${channelid}, ${bytestoadd}`)
     APFProcessor.Write(
       socket,
       String.fromCharCode(APFProtocol.CHANNEL_WINDOW_ADJUST) +
@@ -523,7 +523,7 @@ const APFProcessor = {
   },
 
   SendDisconnect: (socket: CIRASocket, reasonCode): void => {
-    logger.silly(`MPS: SendDisconnect, ${reasonCode}`)
+    logger.silly(`${messages.MPS_SEND_CHANNEL_DISCONNECT}, ${reasonCode}`)
     APFProcessor.Write(
       socket,
       String.fromCharCode(APFProtocol.DISCONNECT) +
@@ -533,7 +533,7 @@ const APFProcessor = {
   },
 
   SendUserAuthFail: (socket: CIRASocket): void => {
-    logger.silly('MPS: SendUserAuthFail')
+    logger.silly(messages.MPS_SEND_USER_AUTH_FAIL)
     APFProcessor.Write(
       socket,
       String.fromCharCode(APFProtocol.USERAUTH_FAILURE) +
@@ -544,7 +544,7 @@ const APFProcessor = {
   },
 
   SendUserAuthSuccess: (socket: CIRASocket): void => {
-    logger.silly('MPS: SendUserAuthSuccess')
+    logger.silly(messages.MPS_SEND_USER_AUTH_SUCCESS)
     APFProcessor.Write(socket, String.fromCharCode(APFProtocol.USERAUTH_SUCCESS))
   },
 

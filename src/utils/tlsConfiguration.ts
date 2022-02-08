@@ -7,7 +7,7 @@
 import path from 'path'
 import fs from 'fs'
 
-import { logger as log } from './logger'
+import { logger, messages } from '../logging'
 import { mpsConfigType, webConfigType, directConfigType } from '../models/Config'
 import { constants } from 'crypto'
 
@@ -23,11 +23,11 @@ export default {
         if (fs.existsSync(webTlsConfigPath)) {
           webConfig = JSON.parse(fs.readFileSync(webTlsConfigPath, 'utf8'))
         } else {
-          log.error(`webtls config file does not exists ${webTlsConfigPath}`)
+          logger.error(`${messages.TLS_CONFIGURATION_WEBTLS_CONFIG_DOES_NOT_EXIST} ${webTlsConfigPath}`)
           return
         }
       } catch (ex) {
-        log.error('Failed to parse json file. Exception:', ex.message)
+        logger.error(messages.TLS_CONFIGURATION_JSON_PARSE_EXCEPTION, ex.message)
         return process.exit()
       }
 
@@ -49,7 +49,7 @@ export default {
           !fs.existsSync(path.join(__dirname, webConfig.key)) &&
           !fs.existsSync(path.join(__dirname, webConfig.cert))
         ) {
-          log.error('Error: TLS certificate or private key does not exist.')
+          logger.error(messages.TLS_CONFIGURATION_TLS_CERTIFICATE_OR_KEY_DOES_NOT_EXIST)
           return process.exit()
         } else {
           webConfig.key = fs.readFileSync(
@@ -62,9 +62,7 @@ export default {
           )
         }
       } else {
-        log.error(
-          'Error: WebServer Configuration missing either TLS Cert or Private Key.'
-        )
+        logger.error(messages.TLS_CONFIGURATION_CERTIFICATE_OR_KEY_DOES_NOT_EXIST)
         return process.exit()
       }
 
@@ -84,7 +82,7 @@ export default {
         }
         webConfig.ca = caCertArr
       } else {
-        log.error('Error: WebServer Configuration missing CA Certificate')
+        logger.error(messages.TLS_CONFIGURATION_WEBSERVER_CA_CERTIFICATE_DOES_NOT_EXIST)
         return process.exit()
       }
 
@@ -105,7 +103,7 @@ export default {
       }
       return webConfig
     } catch (ex) {
-      log.error('Web TLS webConfiguration exception:', ex)
+      logger.error(messages.TLS_CONFIGURATION_WEB_TLS_EXCEPTION, ex)
       return process.exit()
     }
   },
@@ -118,11 +116,11 @@ export default {
         if (fs.existsSync(mpsTlsConfigPath)) {
           mpsConfig = JSON.parse(fs.readFileSync(mpsTlsConfigPath, 'utf8'))
         } else {
-          log.error(`mpstls config file does not exists ${mpsTlsConfigPath}`)
+          logger.error(`${messages.TLS_CONFIGURATION_MPS_TLS_CONFIG_DOES_NOT_EXIST} ${mpsTlsConfigPath}`)
           return
         }
       } catch (ex) {
-        log.error('Failed to parse json file. Exception:', ex.message)
+        logger.error(messages.TLS_CONFIGURATION_JSON_PARSE_EXCEPTION, ex.message)
         return process.exit()
       }
 
@@ -146,7 +144,7 @@ export default {
           !fs.existsSync(path.join(__dirname, mpsConfig.key)) ||
           !fs.existsSync(path.join(__dirname, mpsConfig.cert))
         ) {
-          log.error('Error: TLS cerficate or private key does not exist.')
+          logger.error(messages.TLS_CONFIGURATION_TLS_CERTIFICATE_OR_KEY_DOES_NOT_EXIST)
           return process.exit()
         } else {
           mpsConfig.key = fs.readFileSync(
@@ -159,9 +157,7 @@ export default {
           )
         }
       } else {
-        log.error(
-          'Error: MPS Configuration missing either TLS Cert or Private Key.'
-        )
+        logger.error(messages.TLS_CONFIGURATION_CERTIFICATE_OR_KEY_DOES_NOT_EXIST)
         return process.exit()
       }
 
@@ -183,7 +179,7 @@ export default {
       }
       return mpsConfig
     } catch (ex) {
-      log.error('Exception mpsTLSConfiguration:', ex.message)
+      logger.error(messages.TLS_CONFIGURATION_MPS_TLS_CONFIGURATION_EXCEPTION, ex.message)
       return process.exit()
     }
   },
@@ -196,18 +192,18 @@ export default {
         if (fs.existsSync(directConnTlsConfigPath)) {
           directConnConfig = JSON.parse(fs.readFileSync(directConnTlsConfigPath, 'utf8'))
         } else {
-          log.error(`directtls config file does not exist ${directConnTlsConfigPath}`)
+          logger.error(`${messages.TLS_CONFIGURATION_DIRECTTLS_CONFIG_DOES_NOT_EXIST} ${directConnTlsConfigPath}`)
           return
         }
       } catch (ex) {
-        log.error('Failed to parse json file. Exception:', ex.message)
+        logger.error(messages.TLS_CONFIGURATION_JSON_PARSE_EXCEPTION, ex.message)
         return process.exit()
       }
 
       // Load SSL Cert and key
       if (directConnConfig.key && directConnConfig.cert && directConnConfig.ca) {
         if (!fs.existsSync(path.join(__dirname, directConnConfig.key)) || !fs.existsSync(path.join(__dirname, directConnConfig.cert))) {
-          log.error('Error: TLS cerficate or private key does not exist.')
+          logger.error(messages.TLS_CONFIGURATION_TLS_CERTIFICATE_OR_KEY_DOES_NOT_EXIST)
           return process.exit()
         } else {
           directConnConfig.key = fs.readFileSync(path.join(__dirname, directConnConfig.key), 'utf8')
@@ -215,7 +211,7 @@ export default {
           directConnConfig.ca = fs.readFileSync(path.join(__dirname, directConnConfig.ca), 'utf8')
         }
       } else {
-        log.error('Error: Direct Connection Configuration missing either TLS Cert or Private Key.')
+        logger.error(messages.TLS_CONFIGURATION_CERTIFICATE_OR_KEY_DOES_NOT_EXIST)
         return process.exit()
       }
       if (directConnConfig.secureOptions) {
@@ -228,7 +224,7 @@ export default {
       }
       return directConnConfig
     } catch (ex) {
-      log.error('Exception directTLSConfiguration:', ex.message)
+      logger.error(messages.TLS_CONFIGURATION_DIRECTTLS_CONFIGURATION_EXCEPTION, ex.message)
       return process.exit()
     }
   }

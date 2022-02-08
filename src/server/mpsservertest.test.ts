@@ -10,7 +10,7 @@ import { Device } from '../models/models'
 import { IDeviceTable } from '../interfaces/IDeviceTable'
 import { IDB } from '../interfaces/IDb'
 import { Environment } from '../utils/Environment'
-import { logger } from '../utils/logger'
+import { logger } from '../logging'
 import APFProcessor from '../amt/APFProcessor'
 
 let certs: certificatesType

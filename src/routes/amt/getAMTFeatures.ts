@@ -6,7 +6,7 @@
  **********************************************************************/
 
 import { Response, Request } from 'express'
-import { logger as log } from '../../utils/logger'
+import { logger, messages } from '../../logging'
 import { UserConsentOptions } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MPSValidationError } from '../../utils/MPSValidationError'
@@ -21,22 +21,22 @@ export async function getAMTFeatures (req: Request, res: Response): Promise<void
     const optServiceResponse = await req.deviceAction.getIpsOptInService()
     const kvmRedirectionResponse = await req.deviceAction.getKvmRedirectionSap()
 
-    MqttProvider.publishEvent('request', ['AMT_GetFeatures'], 'Get AMT Features Requested', guid)
+    MqttProvider.publishEvent('request', ['AMT_GetFeatures'], messages.AMT_FEATURES_GET_REQUESTED, guid)
 
     const { redir, sol, ider } = processAmtRedirectionResponse(amtRedirectionResponse.AMT_RedirectionService)
     const kvm = processKvmRedirectionResponse(kvmRedirectionResponse.CIM_KVMRedirectionSAP)
     const { value, optInState } = processOptServiceResponse(optServiceResponse.IPS_OptInService)
     const userConsent = Object.keys(UserConsentOptions).find(key => UserConsentOptions[key] === value)
 
-    MqttProvider.publishEvent('success', ['AMT_GetFeatures'], 'Get AMT Features', guid)
+    MqttProvider.publishEvent('success', ['AMT_GetFeatures'], messages.AMT_FEATURES_GET_SUCCESS, guid)
     res.status(200).json({ userConsent: userConsent, redirection: redir, KVM: kvm, SOL: sol, IDER: ider, optInState: optInState }).end()
   } catch (error) {
-    log.error(`Exception in get AMT Features: ${error}`)
+    logger.error(`${messages.AMT_FEATURES_EXCEPTION}: ${error}`)
     if (error instanceof MPSValidationError) {
       res.status(error.status || 400).json(ErrorResponse(error.status || 400, error.message))
     } else {
-      MqttProvider.publishEvent('fail', ['AMT_GetFeatures'], 'Internal Server Error')
-      res.status(500).json(ErrorResponse(500, 'Request failed during get AMT Features.'))
+      MqttProvider.publishEvent('fail', ['AMT_GetFeatures'], messages.INTERNAL_SERVICE_ERROR)
+      res.status(500).json(ErrorResponse(500, messages.AMT_FEATURES_EXCEPTION))
     }
   }
 }

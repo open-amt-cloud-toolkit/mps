@@ -2,6 +2,7 @@ import { CIM } from '@open-amt-cloud-toolkit/wsman-messages/dist'
 import { CIRAHandler } from '../../amt/CIRAHandler'
 import { DeviceAction } from '../../amt/DeviceAction'
 import { HttpHandler } from '../../amt/HttpHandler'
+import { messages } from '../../logging'
 import { createSpyObj } from '../../test/helper/jest'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
@@ -74,7 +75,7 @@ describe('Power Capabilities', () => {
     expect(getBootOptionsSpy).toHaveBeenCalled()
     expect(setBootConfigurationSpy).toHaveBeenCalled()
     expect(resSpy.status).toHaveBeenCalledWith(500)
-    expect(resSpy.json).toHaveBeenCalledWith(ErrorResponse(500, 'Request failed during AMT Power action execution.'))
+    expect(resSpy.json).toHaveBeenCalledWith(ErrorResponse(500, messages.POWER_ACTION_EXCEPTION))
     expect(resSpy.end).toHaveBeenCalled()
     expect(mqttSpy).toHaveBeenCalled()
   })

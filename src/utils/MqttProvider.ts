@@ -1,6 +1,11 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation 2021
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 import url from 'url'
 import { eventType, OpenAMTEvent } from '../models/models'
-import { logger as log } from './logger'
+import { logger, messages } from '../logging'
 import { MqttClient, connect } from 'mqtt'
 import { Environment } from './Environment'
 // Provides functions to abstract the interactions
@@ -18,7 +23,7 @@ export class MqttProvider {
   constructor () {
     if (!Environment.Config.mqtt_address) {
       this.turnedOn = false
-      log.info('MQTT is turned off')
+      logger.info(messages.MQTT_OFF)
     } else {
       this.turnedOn = true
       this.mqttUrl = new url.URL(Environment.Config.mqtt_address)
@@ -59,15 +64,15 @@ export class MqttProvider {
     return new Promise((resolve, reject) => {
       MqttProvider.instance.client.publish('mps/events', JSON.stringify(event), function (err) {
         if (err == null) {
-          log.debug('Event message published')
+          logger.debug(messages.MQTT_MESSAGE_PUBLISHED)
           resolve(null)
         } else {
-          log.error('Event message failed')
-          reject(new Error('Event message failed: ' + err.message))
+          logger.error(messages.MQTT_MESSAGE_FAILED)
+          reject(new Error(`${messages.MQTT_MESSAGE_FAILED}: ${err.message}`))
         }
       })
     }).catch((error) => {
-      log.error(`Event message failed: ${error}`)
+      logger.error(`${messages.MQTT_MESSAGE_FAILED}: ${error}`)
     })
   }
 
@@ -75,6 +80,6 @@ export class MqttProvider {
     if (!MqttProvider.instance?.turnedOn) return
 
     MqttProvider.instance.client = MqttProvider.instance.client.end()
-    log.info('MQTT client closed')
+    logger.info(messages.MQTT_CLIENT_CLOSED)
   }
 }
