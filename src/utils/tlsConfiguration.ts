@@ -23,7 +23,7 @@ export default {
         if (fs.existsSync(webTlsConfigPath)) {
           webConfig = JSON.parse(fs.readFileSync(webTlsConfigPath, 'utf8'))
         } else {
-          logger.error(`${messages.TLS_CONFIGURATION_WEBTLS_CONFIG_DOES_NOT_EXIST} ${webTlsConfigPath}`)
+          logger.error(`${messages.TLS_CONFIGURATION_WEB_TLS_CONFIG_DOES_NOT_EXIST} ${webTlsConfigPath}`)
           return
         }
       } catch (ex) {
@@ -192,7 +192,7 @@ export default {
         if (fs.existsSync(directConnTlsConfigPath)) {
           directConnConfig = JSON.parse(fs.readFileSync(directConnTlsConfigPath, 'utf8'))
         } else {
-          logger.error(`${messages.TLS_CONFIGURATION_DIRECTTLS_CONFIG_DOES_NOT_EXIST} ${directConnTlsConfigPath}`)
+          logger.error(`${messages.TLS_CONFIGURATION_DIRECT_TLS_CONFIG_DOES_NOT_EXIST} ${directConnTlsConfigPath}`)
           return
         }
       } catch (ex) {
@@ -224,7 +224,7 @@ export default {
       }
       return directConnConfig
     } catch (ex) {
-      logger.error(messages.TLS_CONFIGURATION_DIRECTTLS_CONFIGURATION_EXCEPTION, ex.message)
+      logger.error(messages.TLS_CONFIGURATION_DIRECT_TLS_CONFIGURATION_EXCEPTION, ex.message)
       return process.exit()
     }
   }

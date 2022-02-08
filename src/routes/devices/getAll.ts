@@ -31,7 +31,7 @@ export async function getAllDevices (req, res): Promise<void> {
       res.status(200).json(list).end()
     }
   } catch (err) {
-    logger.error(`${messages.DEVICE_GETALL_EXCEPTION}: ${err}`)
+    logger.error(`${messages.DEVICE_GET_ALL_EXCEPTION}: ${err}`)
     res.status(500).end()
   }
 }

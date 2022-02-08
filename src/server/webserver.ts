@@ -72,7 +72,7 @@ export class WebServer {
     if (err instanceof SyntaxError) {
       return res.status(400).send(ErrorResponse(400))
     } else {
-      logger.debug(messages.APPUSEJSONPARSER_ERROR)
+      logger.debug(messages.APP_USE_JSON_PARSER_ERROR)
     }
     next()
   }

@@ -381,8 +381,8 @@ const APFProcessor = {
       passwordLen = Common.ReadInt(data, 14 + usernameLen + serviceNameLen + methodNameLen)
       password = data.substring(18 + usernameLen + serviceNameLen + methodNameLen, 18 + usernameLen + serviceNameLen + methodNameLen + passwordLen)
     }
-    logger.silly(`${messages.MPS_USERAUTH_REQUEST} usernameLen=${usernameLen} serviceNameLen=${serviceNameLen} methodNameLen=${methodNameLen}`)
-    logger.silly(`${messages.MPS_USERAUTH_REQUEST} user=${username} service=${serviceName} method=${methodName}`)
+    logger.silly(`${messages.MPS_USER_AUTH_REQUEST} usernameLen=${usernameLen} serviceNameLen=${serviceNameLen} methodNameLen=${methodNameLen}`)
+    logger.silly(`${messages.MPS_USER_AUTH_REQUEST} user=${username} service=${serviceName} method=${methodName}`)
 
     // Emit event to determine if user is authorized
     // TODO: verify this works correctly
@@ -399,7 +399,7 @@ const APFProcessor = {
       Common.Rstr2hex(data.substring(13, 29))
     ).toLowerCase()
     logger.silly(
-      `${messages.MPS_PROTOCOLVERSION}, ${socket.tag.MajorVersion}, ${socket.tag.MinorVersion}, ${socket.tag.SystemId}`
+      `${messages.MPS_PROTOCOL_VERSION}, ${socket.tag.MajorVersion}, ${socket.tag.MinorVersion}, ${socket.tag.SystemId}`
     )
     // TODO: verify this works correctly
 
@@ -430,7 +430,7 @@ const APFProcessor = {
   },
 
   SendServiceAccept: (socket: CIRASocket, service: string): void => {
-    logger.silly(messages.MPS_SEND_SERIVCE_ACCEPT)
+    logger.silly(messages.MPS_SEND_SERVICE_ACCEPT)
     APFProcessor.Write(socket, String.fromCharCode(APFProtocol.SERVICE_ACCEPT) + Common.IntToStr(service.length) + service)
   },
 
