@@ -1,4 +1,4 @@
-import { logger } from '../../utils/logger'
+import { logger, messages } from '../../logging'
 import { devices } from '../../server/mpsserver'
 import { disconnect } from './disconnect'
 
@@ -47,7 +47,7 @@ describe('disconnect', () => {
     } as any
     await disconnect(req, res as any)
     expect(devices[guid].ciraSocket.destroy).toHaveBeenCalled()
-    expect(jsonSpy).toHaveBeenCalledWith({ success: 200, description: `CIRA connection disconnected : ${guid}` })
+    expect(jsonSpy).toHaveBeenCalledWith({ success: 200, description: `${messages.DEVICE_DISCONNECTED_SUCCESS} : ${guid}` })
   })
 
   it('should set status to 500 if error occurs when calling destroy on socket of connected device', async () => {

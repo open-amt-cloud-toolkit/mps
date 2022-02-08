@@ -4,6 +4,7 @@ import { biosElement, card, chassis, chip, computerSystemPackage, mediaAccessDev
 import { DeviceAction } from '../../amt/DeviceAction'
 import { CIRAHandler } from '../../amt/CIRAHandler'
 import { HttpHandler } from '../../amt/HttpHandler'
+import { messages } from '../../logging'
 
 describe('Hardware information', () => {
   let resSpy
@@ -63,7 +64,7 @@ describe('Hardware information', () => {
     ChipSpy.mockResolvedValueOnce(null)
     await hw.hardwareInfo(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(400)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Incorrect URI or Bad Request', errorDescription: 'Request failed during AMTHardware Information BatchEnum Exec for guid : 4c4c4544-004b-4210-8033-b6c04f504633.' })
+    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Incorrect URI or Bad Request', errorDescription: `${messages.HARDWARE_INFORMATION_REQUEST_FAILED} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.` })
   })
   it('should handle error 500', async () => {
     getSpy.mockImplementation(() => {
@@ -71,6 +72,6 @@ describe('Hardware information', () => {
     })
     await hw.hardwareInfo(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(500)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Internal Server Error', errorDescription: 'Request failed during AMTHardware Information.' })
+    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Internal Server Error', errorDescription: messages.HARDWARE_INFORMATION_EXCEPTION })
   })
 })

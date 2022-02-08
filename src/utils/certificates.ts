@@ -1,3 +1,7 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation 2019
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
 /**
 * @fileoverview Script Compiler / Decompiler / Runner
 * @author Ylian Saint-Hilaire
@@ -6,7 +10,7 @@
 * @version v0.1.0e
 */
 
-import { logger as log } from './logger'
+import { logger, messages } from '../logging'
 import { certificatesType, mpsConfigType, webConfigType, certAndKeyType } from '../models/Config'
 import forge from 'node-forge'
 
@@ -26,12 +30,12 @@ export class Certificates {
   }
 
   generateCertificates (): certificatesType {
-    log.info('Generating Root certificate...')
+    logger.info(messages.GENERATING_ROOT_CERTIFICATE)
     const rootCertAndKey: certAndKeyType = this.GenerateRootCertificate(true, 'MPSRoot', null, null, true)
     const rootCertificate = forge.pki.certificateToPem(rootCertAndKey.cert)
     const rootPrivateKey = forge.pki.privateKeyToPem(rootCertAndKey.key)
 
-    log.info('Generating Intel AMT MPS certificate...')
+    logger.info(messages.GENERATING_MPS_CERTIFICATE)
     const mpsCertAndKey: certAndKeyType = this.IssueWebServerCertificate(rootCertAndKey, false, this.config.common_name, this.config.country, this.config.organization, null, false)
     const mpsCertificate = forge.pki.certificateToPem(mpsCertAndKey.cert)
     const mpsPrivateKey = forge.pki.privateKeyToPem(mpsCertAndKey.key)

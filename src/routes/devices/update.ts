@@ -2,7 +2,7 @@
  * Copyright (c) Intel Corporation 2021
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
-import { logger as log } from '../../utils/logger'
+import { logger, messages } from '../../logging'
 import { MPSValidationError } from '../../utils/MPSValidationError'
 import { Request, Response } from 'express'
 
@@ -19,7 +19,7 @@ export async function updateDevice (req: Request, res: Response): Promise<void> 
       res.status(200).json(results).end()
     }
   } catch (err) {
-    log.error(`Failed to update device : ${guid}`, err)
+    logger.error(`${messages.DEVICE_UPDATE_FAILED} : ${guid}`, err)
     if (err instanceof MPSValidationError) {
       res.status(err.status).json({ error: err.name, message: err.message }).end()
     } else {

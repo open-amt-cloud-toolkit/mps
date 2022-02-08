@@ -5,6 +5,7 @@
 import { CIRAHandler } from '../../amt/CIRAHandler'
 import { DeviceAction } from '../../amt/DeviceAction'
 import { HttpHandler } from '../../amt/HttpHandler'
+import { messages } from '../../logging'
 import { createSpyObj } from '../../test/helper/jest'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
@@ -97,7 +98,7 @@ describe('get amt features', () => {
     redirectionSpy.mockRejectedValueOnce({})
     await amtFeatures.getAMTFeatures(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(500)
-    expect(resSpy.json).toHaveBeenCalledWith(ErrorResponse(500, 'Request failed during get AMT Features.'))
+    expect(resSpy.json).toHaveBeenCalledWith(ErrorResponse(500, messages.AMT_FEATURES_EXCEPTION))
     expect(mqttSpy).toHaveBeenCalled()
   })
 })

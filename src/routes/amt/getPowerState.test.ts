@@ -4,6 +4,7 @@ import { serviceAvailableToElement } from '../../test/helper/wsmanResponses'
 import { CIRAHandler } from '../../amt/CIRAHandler'
 import { DeviceAction } from '../../amt/DeviceAction'
 import { HttpHandler } from '../../amt/HttpHandler'
+import { messages } from '../../logging'
 
 describe('power state', () => {
   let resSpy
@@ -34,7 +35,7 @@ describe('power state', () => {
     powerStateSpy.mockResolvedValueOnce(null)
     await powerState(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(400)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Incorrect URI or Bad Request', errorDescription: 'Request failed during powerstate fetch for guid : 4c4c4544-004b-4210-8033-b6c04f504633.' })
+    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Incorrect URI or Bad Request', errorDescription: `${messages.POWER_STATE_REQUEST_FAILED} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.` })
   })
   it('should get an error with status code 500 for an unexpected exception', async () => {
     powerStateSpy.mockImplementation(() => {
@@ -42,6 +43,6 @@ describe('power state', () => {
     })
     await powerState(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(500)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Internal Server Error', errorDescription: 'Request failed during powerstate fetch.' })
+    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Internal Server Error', errorDescription: messages.POWER_STATE_EXCEPTION })
   })
 })

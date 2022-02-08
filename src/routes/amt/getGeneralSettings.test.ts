@@ -3,6 +3,7 @@ import { createSpyObj } from '../../test/helper/jest'
 import { CIRAHandler } from '../../amt/CIRAHandler'
 import { DeviceAction } from '../../amt/DeviceAction'
 import { HttpHandler } from '../../amt/HttpHandler'
+import { messages } from '../../logging'
 
 const response = {
   Envelope: {
@@ -76,7 +77,7 @@ describe('general settings', () => {
     generalSettingsSpy.mockResolvedValueOnce(null)
     await generalSettings(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(400)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Incorrect URI or Bad Request', errorDescription: 'Request failed during GET AMT_GeneralSettings for guid : 4c4c4544-004b-4210-8033-b6c04f504633.' })
+    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Incorrect URI or Bad Request', errorDescription: `${messages.GENERAL_SETTINGS_REQUEST_FAILED} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.` })
   })
   it('should get an error with status code 500 for an unexpected exception', async () => {
     generalSettingsSpy.mockImplementation(() => {
@@ -84,6 +85,6 @@ describe('general settings', () => {
     })
     await generalSettings(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(500)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Internal Server Error', errorDescription: 'Request failed during AMT GeneralSettings.' })
+    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Internal Server Error', errorDescription: messages.GENERAL_SETTINGS_EXCEPTION })
   })
 })
