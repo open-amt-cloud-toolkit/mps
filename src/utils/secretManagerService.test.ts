@@ -1,5 +1,5 @@
 import { SecretManagerService } from './SecretManagerService'
-import { logger as log } from './logger'
+import { logger } from '../logging'
 import { config } from '../test/helper/config'
 import NodeVault from 'node-vault'
 import { Environment } from './Environment'
@@ -12,7 +12,7 @@ beforeEach(() => {
     endpoint: config.vault_address, // default
     token: config.vault_token // optional client token; can be fetched after valid initialization of the server
   }
-  secretManagerService = new SecretManagerService(log, NodeVault(options))
+  secretManagerService = new SecretManagerService(logger, NodeVault(options))
 })
 
 afterEach(() => {
@@ -20,7 +20,7 @@ afterEach(() => {
 })
 
 test('should get a secret for specific given key of a path', async () => {
-  const secretManagerService: SecretManagerService = new SecretManagerService(log)
+  const secretManagerService: SecretManagerService = new SecretManagerService(logger)
   const read = jest.spyOn(secretManagerService.vaultClient, 'read')
   read.mockResolvedValueOnce({ data: { data: { AMT_PASSWORD: 'P@ssw0rd', MEBX_PASSWORD: 'Intel@123', MPS_PASSWORD: 'lLJPJNtU2$8FZTUy' } } })
   const result = await secretManagerService.getSecretFromKey('4c4c4544-004b-4210-8033-b6c04f504633', 'AMT_PASSWORD')

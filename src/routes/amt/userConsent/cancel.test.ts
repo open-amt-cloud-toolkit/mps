@@ -4,6 +4,7 @@ import { cancelOptInResponse } from '../../../test/helper/wsmanResponses'
 import { DeviceAction } from '../../../amt/DeviceAction'
 import { HttpHandler } from '../../../amt/HttpHandler'
 import { CIRAHandler } from '../../../amt/CIRAHandler'
+import { messages } from '../../../logging'
 
 describe('cancel user consent code', () => {
   let resSpy
@@ -60,7 +61,7 @@ describe('cancel user consent code', () => {
     cancelUserConsetCodeSpy.mockResolvedValueOnce(null)
     await cancel(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(400)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Incorrect URI or Bad Request', errorDescription: 'Failed to cancel user consent code for guid : 4c4c4544-004b-4210-8033-b6c04f504633.' })
+    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Incorrect URI or Bad Request', errorDescription: `${messages.USER_CONSENT_CANCEL_FAILED} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.` })
   })
   it('should get an error with status code 500 for an unexpected exception', async () => {
     cancelUserConsetCodeSpy.mockImplementation(() => {
@@ -68,6 +69,6 @@ describe('cancel user consent code', () => {
     })
     await cancel(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(500)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Internal Server Error', errorDescription: 'Failed to cancel user consent code.' })
+    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Internal Server Error', errorDescription: messages.USER_CONSENT_CANCEL_EXCEPTION })
   })
 })
