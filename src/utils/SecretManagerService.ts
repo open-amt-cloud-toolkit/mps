@@ -11,6 +11,7 @@ import NodeVault = require('node-vault')
 import { Environment } from './Environment'
 import { DeviceSecrets } from '../models/models'
 import { ILogger } from '../interfaces/ILogger'
+import { messages } from '../logging'
 
 export class SecretManagerService implements ISecretManagerService {
   vaultClient: NodeVault.client
@@ -36,14 +37,14 @@ export class SecretManagerService implements ISecretManagerService {
   async getSecretFromKey (path: string, key: string): Promise<string> {
     try {
       const fullPath = `${this.secretsPath}${path}`
-      this.logger.verbose(`getting secret from ${fullPath}`)
+      this.logger.verbose(`${messages.SECRET_MANAGER_GETTING_SECRET} ${fullPath}`)
       const data = await this.vaultClient.read(fullPath)
-      this.logger.debug(`received secret from ${fullPath}`)
+      this.logger.debug(`${messages.SECRET_MANAGER_RECEIVED_SECRET} ${fullPath}`)
       if (data.data.data[key] != null) {
         return data.data.data[key]
       }
     } catch (error) {
-      this.logger.error('getSecretFromKey error :', error)
+      this.logger.error(`${messages.SECRET_MANAGER_GET_SECRET_FROM_KEY_ERROR} error :`, error)
     }
     return null
   }
@@ -51,24 +52,24 @@ export class SecretManagerService implements ISecretManagerService {
   async getSecretAtPath (path: string): Promise<any> {
     try {
       const fullPath = `${this.secretsPath}${path}`
-      this.logger.verbose(`getting secrets from path: ${fullPath}`)
+      this.logger.verbose(`${messages.SECRET_MANAGER_SECRET_PATH}: ${fullPath}`)
       const data = await this.vaultClient.read(fullPath)
-      this.logger.debug(`got data back from vault at path: ${fullPath}`)
+      this.logger.debug(`${messages.SECRET_MANAGER_DATA_FROM_SECRET_STORE}: ${fullPath}`)
       return data.data
     } catch (error) {
-      this.logger.error(`getSecretAtPath ${path} error :`, error)
+      this.logger.error(`${messages.SECRET_MANAGER_GET_SECRET_AT_PATH_ERROR} ${path} error :`, error)
       return null
     }
   }
 
   async writeSecretWithObject (path: string, data: any): Promise<boolean> {
     try {
-      this.logger.verbose('writing data to vault:')
+      this.logger.verbose(messages.SECRET_MANAGER_WRITING_DATA_TO_SECRET_STORE)
       await this.vaultClient.write(`${this.secretsPath}${path}`, data)
-      this.logger.debug(`Successfully written data to vault at path: ${path}`)
+      this.logger.debug(`${messages.SECRET_MANAGER_DATA_WRITEN_TO_SECRET_STORE_SUCCESS}: ${path}`)
       return true
     } catch (error) {
-      this.logger.error('Error while writing secrets :', error)
+      this.logger.error(`${messages.SECRET_MANAGER_WRITING_SECRETS_ERROR} :`, error)
       return false
     }
   }

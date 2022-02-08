@@ -4,6 +4,7 @@ import { amtMessageLog } from '../../test/helper/wsmanResponses'
 import { CIRAHandler } from '../../amt/CIRAHandler'
 import { HttpHandler } from '../../amt/HttpHandler'
 import { DeviceAction } from '../../amt/DeviceAction'
+import { messages } from '../../logging'
 
 describe('event log', () => {
   let resSpy
@@ -33,7 +34,7 @@ describe('event log', () => {
     eventLogSpy.mockResolvedValueOnce(null)
     await eventLog(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(400)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Incorrect URI or Bad Request', errorDescription: 'Failed during GET MessageLog guid : 4c4c4544-004b-4210-8033-b6c04f504633.' })
+    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Incorrect URI or Bad Request', errorDescription: `${messages.EVENT_LOG_REQUEST_FAILED} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.` })
   })
   it('should get an error with status code 500 for an unexpected exception', async () => {
     eventLogSpy.mockImplementation(() => {
@@ -41,7 +42,7 @@ describe('event log', () => {
     })
     await eventLog(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(500)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Internal Server Error', errorDescription: 'Request failed during AMT EventLog.' })
+    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Internal Server Error', errorDescription: messages.EVENT_LOG_EXCEPTION })
   })
 })
 

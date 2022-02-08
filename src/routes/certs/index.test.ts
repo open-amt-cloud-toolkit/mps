@@ -1,6 +1,7 @@
 import { mpsrootcert } from './index'
 import { createSpyObj } from '../../test/helper/jest'
 import { ErrorResponse } from '../../utils/amtHelper'
+import { messages } from '../../logging'
 
 describe('Check index', () => {
   let resSpy
@@ -16,7 +17,7 @@ describe('Check index', () => {
     req = {}
     await mpsrootcert(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(500)
-    expect(resSpy.json).toHaveBeenCalledWith(ErrorResponse(500, 'MPS root certificate does not exists.'))
+    expect(resSpy.json).toHaveBeenCalledWith(ErrorResponse(500, messages.MPS_ROOT_CERTIFICATE_DOES_NOT_EXIST))
   })
   it('should pass if cert provided', async () => {
     req = {
@@ -32,6 +33,6 @@ describe('Check index', () => {
   it('should handle exception', async () => {
     await mpsrootcert(null, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(500)
-    expect(resSpy.json).toHaveBeenCalledWith(ErrorResponse(500, 'Request failed while downloading MPS root certificate.'))
+    expect(resSpy.json).toHaveBeenCalledWith(ErrorResponse(500, messages.MPS_ROOT_CERTIFICATE_EXCEPTION))
   })
 })

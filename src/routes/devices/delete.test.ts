@@ -1,4 +1,4 @@
-import { logger as log } from '../../utils/logger'
+import { logger } from '../../logging'
 import { deleteDevice } from './delete'
 
 let res: Express.Response
@@ -63,7 +63,7 @@ describe('delete', () => {
       throw new TypeError('fake error')
     })
     req.db.devices.delete = jest.fn().mockReturnValue({})
-    const errorSpy = jest.spyOn(log, 'error')
+    const errorSpy = jest.spyOn(logger, 'error')
     await deleteDevice(req, res as any)
     expect(statusSpy).toHaveBeenCalledWith(500)
     expect(jsonSpy).not.toHaveBeenCalled()
