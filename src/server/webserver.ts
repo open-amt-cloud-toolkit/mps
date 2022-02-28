@@ -17,7 +17,7 @@ import * as parser from 'body-parser'
 import jws from 'jws'
 import { certificatesType } from '../models/Config'
 import { ErrorResponse } from '../utils/amtHelper'
-import { logger as log, logger } from '../utils/logger'
+import { logger, messages } from '../logging'
 import routes from '../routes'
 import WebSocket from 'ws'
 import { URL } from 'url'
@@ -63,7 +63,7 @@ export class WebServer {
       // Handle upgrade on websocket
       this.server.on('upgrade', this.handleUpgrade.bind(this))
     } catch (error) {
-      log.error(`Exception in webserver: ${error}`)
+      logger.error(`${messages.WEBSERVER_EXCEPTION}: ${error}`)
       process.exit(0)
     }
   }
@@ -72,7 +72,7 @@ export class WebServer {
     if (err instanceof SyntaxError) {
       return res.status(400).send(ErrorResponse(400))
     } else {
-      log.debug('appUseJsonParser received err other than SyntaxError')
+      logger.debug(messages.APP_USE_JSON_PARSER_ERROR)
     }
     next()
   }
@@ -85,10 +85,10 @@ export class WebServer {
 
   afterResponse (req: Request, res: Response): void {
     if (req.deviceAction?.ciraHandler?.channel) {
-      logger.debug('end of request, closing channel')
+      logger.debug(messages.EOR_CLOSING_CHANNEL)
       req.deviceAction.ciraHandler.channel.CloseChannel()
     } else {
-      log.debug('ciraHandler channel null')
+      logger.debug(messages.MPS_CIRA_CHANNEL_NULL)
     }
     res.removeListener('finish', this.afterResponse)
     res.removeListener('close', this.afterResponse)
@@ -100,7 +100,7 @@ export class WebServer {
       const wsRedirect = new WsRedirect(ws, this.secrets)
       await wsRedirect.handleConnection(req)
     } catch (err) {
-      log.error('Exception Caught: ', err)
+      logger.error(`${messages.EXCEPTION_CAUGHT}: `, err)
     }
   }
 
@@ -118,16 +118,16 @@ export class WebServer {
     if (Environment.Config.web_port != null) {
       port = Environment.Config.web_port
     } else {
-      log.debug('web_port config variable is null')
+      logger.debug(messages.WEB_PORT_NULL)
     }
 
     this.server.listen(port, () => {
-      log.info(`MPS Microservice running on ${Environment.Config.common_name}:${port}.`)
+      logger.info(`${messages.MPS_RUNNING_ON} ${Environment.Config.common_name}:${port}.`)
     }).on('error', function (err: NodeJS.ErrnoException) {
       if (err.code === 'EADDRINUSE' || err.code === 'EACCES') {
-        log.error('Chosen web port is invalid or not available')
+        logger.error(messages.WEB_PORT_INVALID)
       } else {
-        log.error(JSON.stringify(err))
+        logger.error(JSON.stringify(err))
       }
       process.exit(0)
     })
@@ -141,7 +141,7 @@ export class WebServer {
         this.relayWSS.emit('connection', ws, request)
       })
     } else { // Invalid endpoint
-      log.debug('Route does not exist. Closing connection...')
+      logger.debug(messages.ROUTE_DOES_NOT_EXIST)
       socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
       socket.destroy()
     }

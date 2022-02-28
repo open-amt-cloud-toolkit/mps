@@ -2,7 +2,7 @@
  * Copyright (c) Intel Corporation 2021
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
-import { logger as log } from '../../../utils/logger'
+import { logger, messages } from '../../../logging'
 import { PostgresDb } from '..'
 import { IDeviceTable } from '../../../interfaces/IDeviceTable'
 import { Device } from '../../../models/models'
@@ -137,7 +137,7 @@ export class DeviceTable implements IDeviceTable {
       }
       return null
     } catch (error) {
-      log.error(`Failed to insert: ${device.guid}`, error)
+      logger.error(`${messages.DATABASE_INSERT_FAILED}: ${device.guid}`, error)
       if (error.code === '23505') { // Unique key violation
         throw new MPSValidationError(`Device ID: ${device.guid} already exists`, 400, 'Unique key violation')
       }
@@ -170,7 +170,7 @@ export class DeviceTable implements IDeviceTable {
       }
       throw new MPSValidationError(`Failed to update device: ${device.guid}`, 400)
     } catch (error) {
-      log.error(`Failed to update: ${device.guid}`, error)
+      logger.error(`${messages.DATABASE_UPDATE_FAILED}: ${device.guid}`, error)
       throw new MPSValidationError(`Failed to update device: ${device.guid}, error: ${error}`, 500)
     }
   }
@@ -192,10 +192,10 @@ export class DeviceTable implements IDeviceTable {
         false,
         tenantId
       ])
-      log.debug('Clean DB instance before exit', results)
+      logger.debug('Clean DB instance before exit', results)
       return true
     } catch (error) {
-      log.error('Failed to update DB:', error)
+      logger.error(`${messages.DATABASE_UPDATE_FAILED} DB:`, error)
     }
     return false
   }

@@ -5,18 +5,18 @@
 **********************************************************************/
 
 import { Response, Request } from 'express'
-import { logger as log } from '../../utils/logger'
+import { logger, messages } from '../../logging'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
 
 export async function generalSettings (req: Request, res: Response): Promise<void> {
   try {
     const guid: string = req.params.guid
-    MqttProvider.publishEvent('request', ['AMT_GeneralSettings'], 'General Settings Requested', guid)
+    MqttProvider.publishEvent('request', ['AMT_GeneralSettings'], messages.GENERAL_SETTINGS_GET_REQUESTED, guid)
     const response = await req.deviceAction.getGeneralSettings()
 
     if (response != null) {
-      MqttProvider.publishEvent('success', ['AMT_GeneralSettings'], 'Sent General Settings', guid)
+      MqttProvider.publishEvent('success', ['AMT_GeneralSettings'], messages.GENERAL_SETTINGS_GET_SUCCESS, guid)
       // matches version 2.x API for Open AMT
       const result = {
         Header: response.Header,
@@ -24,13 +24,13 @@ export async function generalSettings (req: Request, res: Response): Promise<voi
       }
       res.status(200).json(result)
     } else {
-      log.error(`Request failed during GET AMT_GeneralSettings for guid : ${guid}.`)
-      MqttProvider.publishEvent('fail', ['AMT_GeneralSettings'], 'Failed to Get General Settings', guid)
-      res.status(400).json(ErrorResponse(400, `Request failed during GET AMT_GeneralSettings for guid : ${guid}.`))
+      logger.error(`${messages.GENERAL_SETTINGS_REQUEST_FAILED} for guid : ${guid}.`)
+      MqttProvider.publishEvent('fail', ['AMT_GeneralSettings'], messages.GENERAL_SETTINGS_REQUEST_FAILED, guid)
+      res.status(400).json(ErrorResponse(400, `${messages.GENERAL_SETTINGS_REQUEST_FAILED} for guid : ${guid}.`))
     }
   } catch (error) {
-    log.error(`Exception in AMT GeneralSettings: ${error}`)
-    MqttProvider.publishEvent('fail', ['AMT_GeneralSettings'], 'Internal Server Error')
-    res.status(500).json(ErrorResponse(500, 'Request failed during AMT GeneralSettings.'))
+    logger.error(`${messages.GENERAL_SETTINGS_EXCEPTION}: ${error}`)
+    MqttProvider.publishEvent('fail', ['AMT_GeneralSettings'], messages.INTERNAL_SERVICE_ERROR)
+    res.status(500).json(ErrorResponse(500, messages.GENERAL_SETTINGS_EXCEPTION))
   }
 }

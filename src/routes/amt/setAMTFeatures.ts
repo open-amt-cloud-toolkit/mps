@@ -5,7 +5,7 @@
  * Author: Madhavi Losetty
  **********************************************************************/
 import { Response, Request } from 'express'
-import { logger as log } from '../../utils/logger'
+import { logger, messages } from '../../logging'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { UserConsentOptions } from '../../utils/constants'
@@ -19,7 +19,7 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
     const guid: string = req.params.guid
     payload.guid = guid
 
-    MqttProvider.publishEvent('request', ['AMT_SetFeatures'], 'Set AMT Features Requested', guid)
+    MqttProvider.publishEvent('request', ['AMT_SetFeatures'], messages.AMT_FEATURES_SET_REQUESTED, guid)
 
     const amtRedirectionResponse = await req.deviceAction.getRedirectionService()
     const optServiceResponse = await req.deviceAction.getIpsOptInService()
@@ -73,12 +73,12 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
       await setUserConsent(req.deviceAction, optServiceResponse, payload.guid)
     }
 
-    MqttProvider.publishEvent('success', ['AMT_SetFeatures'], 'Set AMT Features', guid)
-    res.status(200).json({ status: 'Updated AMT Features' }).end()
+    MqttProvider.publishEvent('success', ['AMT_SetFeatures'], messages.AMT_FEATURES_SET_SUCCESS, guid)
+    res.status(200).json({ status: messages.AMT_FEATURES_SET_SUCCESS }).end()
   } catch (error) {
-    log.error(`Exception in set AMT Features: ${error}`)
-    MqttProvider.publishEvent('fail', ['AMT_SetFeatures'], 'Internal Server Error')
-    res.status(500).json(ErrorResponse(500, 'Request failed during set AMT Features.')).end()
+    logger.error(`${messages.AMT_FEATURES_SET_EXCEPTION}: ${error}`)
+    MqttProvider.publishEvent('fail', ['AMT_SetFeatures'], messages.INTERNAL_SERVICE_ERROR)
+    res.status(500).json(ErrorResponse(500, messages.AMT_FEATURES_SET_EXCEPTION)).end()
   }
 }
 export async function setRedirectionService (device: DeviceAction, amtRedirResponse: AMT.Models.RedirectionResponse, kvm: boolean, guid: string): Promise<void> {

@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation 2021
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 // Convert boolean strings to boolean
 // And number strings to numbers.
 // Need this to support ENV variables whose values are always strings

@@ -19,7 +19,7 @@
 * @version v0.2.0c
 */
 
-import { logger } from '../utils/logger'
+import { logger, messages } from '../logging'
 import { Environment } from '../utils/Environment'
 import { Server } from 'net'
 import { createServer as tlsCreateServer, TLSSocket } from 'tls'
@@ -58,15 +58,17 @@ export class MPSServer {
     this.server = tlsCreateServer(this.certs.mps_tls_config, this.onTLSConnection)
 
     this.server.on('error', (err) => {
-      logger.error(`ERROR: Intel(R) AMT server port ${Environment.Config.port} is not available.`)
+      logger.error(`${messages.PORT_NOT_AVAILABLE} : ${Environment.Config.port}`)
       if (err) logger.error(JSON.stringify(err))
     })
   }
 
   listen (): void {
-    this.server.listen(Environment.Config.port, () => {
-      logger.info(`Intel(R) AMT server running on ${Environment.Config.common_name}:${Environment.Config.port}.`)
-    })
+    this.server.listen(Environment.Config.port, this.listeningListener)
+  }
+
+  listeningListener (): void {
+    logger.info(`${messages.SERVER_RUNNING_ON} ${Environment.Config.common_name}:${Environment.Config.port}.`)
   }
 
   onAPFDisconnected = async (nodeId: string): Promise<void> => {
@@ -76,9 +78,9 @@ export class MPSServer {
     this.events.emit('disconnected', nodeId)
   }
 
-  onAPFProtocolVersion = (socket: CIRASocket): void => {
+  onAPFProtocolVersion = async (socket: CIRASocket): Promise<void> => {
     // Check if the device exits in db
-    if (this.db.devices.getByName(socket.tag.SystemId)) {
+    if (await this.db.devices.getByName(socket.tag.SystemId) != null) {
       socket.tag.nodeid = socket.tag.SystemId
       // if (socket.tag.certauth) { // is this even used?
       //   devices[socket.tag.nodeid] = socket
@@ -86,7 +88,7 @@ export class MPSServer {
       // }
     } else {
       try {
-        logger.warn(`MPS:GUID ${socket.tag.nodeid} is not allowed to connect.`)
+        logger.warn(`${messages.MPS_DEVICE_NOT_ALLOWED} : ${socket.tag.nodeid}`)
         socket.end()
       } catch (e) { }
     }
@@ -99,11 +101,11 @@ export class MPSServer {
       const pwd = await this.secrets.getSecretFromKey(`devices/${socket.tag.SystemId}`, 'MPS_PASSWORD')
       if (username === device?.mpsusername && password === pwd) {
         if (devices[socket.tag.SystemId]) {
-          logger.silly(`MPS: Close and delete the old CIRA connection with socketid ${socket.tag.id} for ${socket.tag.SystemId}`)
+          logger.silly(`${messages.MPS_CIRA_CLOSE_OLD_CONNECTION} for ${socket.tag.SystemId} with socketid ${socket.tag.id}`)
           devices[socket.tag.SystemId].ciraSocket.end() // close old connection before adding new connection
           await this.handleDeviceDisconnect(socket.tag.SystemId) // delete and disconnect
         }
-        logger.debug(`MPS: CIRA Authentication successful for: ${username}`)
+        logger.debug(`${messages.MPS_CIRA_AUTHENTICATION_SUCCESS} for: ${username}`)
         const cred = await this.secrets.getAMTCredentials(socket.tag.SystemId)
 
         devices[socket.tag.SystemId] = new ConnectedDevice(socket, cred[0], cred[1])
@@ -111,7 +113,7 @@ export class MPSServer {
         await this.handleDeviceConnect(socket.tag.SystemId)
         APFProcessor.SendUserAuthSuccess(socket) // Notify the auth success on the CIRA connection
       } else {
-        logger.warn(`MPS: CIRA Authentication failed for: ${username}`)
+        logger.warn(`${messages.MPS_CIRA_AUTHENTICATION_FAILED} for: ${username}`)
         APFProcessor.SendUserAuthFail(socket)
       }
     } catch (err) {
@@ -121,7 +123,7 @@ export class MPSServer {
   }
 
   onTLSConnection = (socket: TLSSocket): void => {
-    logger.debug('MPS: New TLS connection');
+    logger.debug(messages.MPS_NEW_TLS_CONNECTION); // New TLS connection detected
     (socket as CIRASocket).tag = { id: randomBytes(16).toString('hex'), first: true, clientCert: socket.getPeerCertificate(true), accumulator: '', activetunnels: 0, boundPorts: [], socket: socket, host: null, nextchannelid: 4, channels: {}, nextsourceport: 0, nodeid: null }
     this.addHandlers(socket as CIRASocket)
   }
@@ -136,16 +138,16 @@ export class MPSServer {
   }
 
   onTimeout = async (socket: CIRASocket): Promise<void> => {
-    logger.debug('MPS: CIRA timeout, disconnecting')
+    logger.debug(messages.MPS_CIRA_TIMEOUT_DISCONNECTING)
     try {
       socket.end()
       // Delete and update status to disconnected if socket id's match
       if (devices[socket.tag.nodeid]?.ciraSocket?.tag.id === socket?.tag.id) {
-        logger.silly(`MPS: Disconnect CIRA connection with socketid ${socket.tag.id} for ${socket.tag.nodeid}`)
+        logger.silly(`${messages.MPS_CIRA_DISCONNECT} for ${socket.tag.nodeid} with socketid ${socket.tag.id}`)
         await this.handleDeviceDisconnect(socket.tag.nodeid)
       }
     } catch (err) {
-      logger.error(`Error from socket timeout: ${err}`)
+      logger.error(`${messages.SOCKET_TIMEOUT}: ${err}`)
     }
   }
 
@@ -157,12 +159,12 @@ export class MPSServer {
       if (socket.tag.accumulator.length < 3) return
       // if (!socket.tag.clientCert.subject) { console.log("MPS Connection, no client cert: " + socket.remoteAddress); socket.write('HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\nMeshCentral2 MPS server.\r\nNo client certificate given.'); socket.end(); return; }
       if (socket.tag.accumulator.substring(0, 3) === 'GET') {
-        logger.debug(`MPS: HTTP GET detected: ${socket.remoteAddress}`)
+        logger.debug(`${messages.MPS_HTTP_GET_CONNECTION}: ${socket.remoteAddress}`)
         socket.write('HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: close\r\n\r\n<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>Intel Management Presence Server (MPS).<br />Intel&reg; AMT computers must connect here using CIRA.</body></html>')
         socket.end()
         return
       }
-      logger.debug('MPS: CIRA connection detected')
+      logger.debug(messages.MPS_CIRA_NEW_TLS_CONNECTION)
       socket.tag.first = false
     }
 
@@ -188,26 +190,26 @@ export class MPSServer {
       if (socket.tag.nodeid) { // If this is a CIRA connection
         if (devices[socket.tag.nodeid]?.ciraSocket?.tag.id === socket?.tag.id) {
           // Make sure we only delete/update device connection if socket id's match
-          logger.debug(`MPS: CIRA connection with socketid ${socket.tag.id} for ${socket.tag.nodeid} closed`)
+          logger.debug(`${messages.MPS_CIRA_CONNECTION_CLOSED} for ${socket.tag.nodeid} with socketid ${socket.tag.id}`)
           await this.handleDeviceDisconnect(socket.tag.nodeid)
         } else {
           // This is an old/inactive connection which we've already ended
           // There might already be a new CIRA connection active so no action needed
-          logger.silly(`MPS: CIRA connection with socketid ${socket.tag.id} for ${socket.tag.nodeid} closed, connection status was already updated`)
+          logger.silly(`${messages.MPS_CIRA_CONNECTION_CLOSED} for ${socket.tag.nodeid} with socketid ${socket.tag.id}, connection status was already updated`)
         }
       } else {
         // This is called when user makes HTTP GET request
-        logger.debug('MPS: Connection closed')
+        logger.debug(messages.MPS_CONNECTION_CLOSED)
       }
     } catch (e) {
-      logger.error(`Error from socket close: ${e}`)
+      logger.error(`${messages.SOCKET_CLOSE_ERROR}: ${e}`)
     }
   }
 
   onError = (socket: CIRASocket, error: NodeJS.ErrnoException): void => {
     // error "ECONNRESET" means the other side of the TCP conversation abruptly closed its end of the connection.
     if (error.code !== 'ECONNRESET') {
-      logger.error(`MPS socket error ${socket.tag.nodeid},  ${socket.remoteAddress}: ${JSON.stringify(error)}`)
+      logger.error(`${messages.SOCKET_ERROR} ${socket.tag.SystemId},  ${socket.remoteAddress}: ${JSON.stringify(error)}`)
     }
   }
 
@@ -220,7 +222,8 @@ export class MPSServer {
         device.mpsInstance = null
         const results = await this.db.devices.update(device)
         if (results) {
-          logger.debug(`Device connection status of ${guid} updated in db to disconnected`)
+          // Device connection status updated in db
+          logger.debug(`${messages.DEVICE_CONNECTION_STATUS_UPDATED} : ${guid}`)
         }
       }
       this.events.emit('disconnected', guid)
@@ -233,11 +236,11 @@ export class MPSServer {
     device.mpsInstance = Environment.Config.instance_name
     const results = await this.db.devices.update(device)
     if (results) {
-      MqttProvider.publishEvent('success', ['CIRA_Connected'], 'CIRA Connection Established', guid)
-      logger.debug(`CIRA connection established for ${guid}`)
+      MqttProvider.publishEvent('success', ['CIRA_Connected'], messages.MPS_CIRA_CONNECTION_ESTABLISHED, guid)
+      logger.debug(`${messages.MPS_CIRA_CONNECTION_ESTABLISHED} for ${guid}`)
     } else {
-      MqttProvider.publishEvent('fail', ['CIRA_Connected'], 'CIRA Connection Failed', guid)
-      logger.error(`Failed to update CIRA Connection established status in DB ${guid}`)
+      MqttProvider.publishEvent('fail', ['CIRA_Connected'], messages.MPS_CIRA_CONNECTION_FAILED, guid)
+      logger.error(`${messages.MPS_CIRA_CONNECTION_FAILED} for ${guid}`)
     }
   }
 }

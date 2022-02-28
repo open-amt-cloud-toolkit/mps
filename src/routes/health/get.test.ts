@@ -3,6 +3,7 @@ import { Environment } from '../../utils/Environment'
 import { createSpyObj } from '../../test/helper/jest'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { ErrorResponse } from '../../utils/amtHelper'
+import { messages } from '../../logging'
 
 describe('Checks health of dependent services', () => {
   let resSpy
@@ -24,7 +25,7 @@ describe('Checks health of dependent services', () => {
   it('should handle health check failed', async () => {
     await getHealthCheck(null, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(500)
-    expect(resSpy.json).toHaveBeenCalledWith(ErrorResponse(500, 'Health Check failed'))
+    expect(resSpy.json).toHaveBeenCalledWith(ErrorResponse(500, messages.HEALTH_CHECK_FAILED))
     expect(mqttSpy).toHaveBeenCalled()
   })
   it('should be healthy when database is ready and vault is unsealed', async () => {

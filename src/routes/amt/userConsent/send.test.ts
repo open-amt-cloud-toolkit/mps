@@ -4,6 +4,7 @@ import { sendOptInCodeResponse } from '../../../test/helper/wsmanResponses'
 import { HttpHandler } from '../../../amt/HttpHandler'
 import { CIRAHandler } from '../../../amt/CIRAHandler'
 import { DeviceAction } from '../../../amt/DeviceAction'
+import { messages } from '../../../logging'
 
 describe('send user consent code', () => {
   let resSpy
@@ -61,7 +62,7 @@ describe('send user consent code', () => {
     sendUserConsetCodeSpy.mockResolvedValueOnce(null)
     await send(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(400)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Incorrect URI or Bad Request', errorDescription: 'Failed to send user consent code for guid : 4c4c4544-004b-4210-8033-b6c04f504633.' })
+    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Incorrect URI or Bad Request', errorDescription: `${messages.USER_CONSENT_SENT_FAILED} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.` })
   })
   it('should get an error with status code 500 for an unexpected exception', async () => {
     sendUserConsetCodeSpy.mockImplementation(() => {
@@ -69,6 +70,6 @@ describe('send user consent code', () => {
     })
     await send(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(500)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Internal Server Error', errorDescription: 'Failed to send user consent code.' })
+    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Internal Server Error', errorDescription: messages.USER_CONSENT_SENT_EXCEPTION })
   })
 })

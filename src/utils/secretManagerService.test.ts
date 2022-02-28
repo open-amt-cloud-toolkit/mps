@@ -1,18 +1,49 @@
 import { SecretManagerService } from './SecretManagerService'
-import { logger as log } from './logger'
+import { logger } from '../logging'
 import { config } from '../test/helper/config'
-import NodeVault from 'node-vault'
 import { Environment } from './Environment'
 
 let secretManagerService: SecretManagerService = null
 Environment.Config = config
-beforeEach(() => {
-  const options: NodeVault.VaultOptions = {
-    apiVersion: 'v1', // default
-    endpoint: config.vault_address, // default
-    token: config.vault_token // optional client token; can be fetched after valid initialization of the server
+let gotSpy: jest.SpyInstance
+const secretPath = '4c4c4544-004b-4210-8033-b6c04f504633'
+const secretCreds = {
+  data: {
+    data: {
+      AMT_PASSWORD: 'P@ssw0rd',
+      MEBX_PASSWORD: 'Intel@123',
+      MPS_PASSWORD: 'lLJPJNtU2$8FZTUy'
+    }
   }
-  secretManagerService = new SecretManagerService(log, NodeVault(options))
+}
+
+const secretCert = {
+  data: {
+    mps_tls_config: {
+      cert: '-----BEGIN CERTIFICATE-----\r\ncert\r\n-----END CERTIFICATE-----\r\n',
+      key: '-----BEGIN RSA PRIVATE KEY-----\r\nkey\r\n-----END RSA PRIVATE KEY-----\r\n',
+      minVersion: 'TLSv1',
+      rejectUnauthorized: false,
+      requestCert: true
+    },
+    root_key: '-----BEGIN RSA PRIVATE KEY-----\r\nrootkey\r\n-----END RSA PRIVATE KEY-----\r\n',
+    web_tls_config: {
+      ca: '-----BEGIN CERTIFICATE-----\r\nca\r\n-----END CERTIFICATE-----\r\n',
+      cert: '-----BEGIN CERTIFICATE-----\r\ncert\r\n-----END CERTIFICATE-----\r\n',
+      key: '-----BEGIN RSA PRIVATE KEY-----\r\nkey\r\n-----END RSA PRIVATE KEY-----\r\n'
+    }
+  }
+}
+
+beforeEach(() => {
+  secretManagerService = new SecretManagerService(logger)
+  gotSpy = jest.spyOn(secretManagerService.gotClient, 'get').mockImplementation(() => {
+    return {
+      json: jest.fn(() => {
+        return secretCreds
+      })
+    } as any
+  })
 })
 
 afterEach(() => {
@@ -20,136 +51,82 @@ afterEach(() => {
 })
 
 test('should get a secret for specific given key of a path', async () => {
-  const secretManagerService: SecretManagerService = new SecretManagerService(log)
-  const read = jest.spyOn(secretManagerService.vaultClient, 'read')
-  read.mockResolvedValueOnce({ data: { data: { AMT_PASSWORD: 'P@ssw0rd', MEBX_PASSWORD: 'Intel@123', MPS_PASSWORD: 'lLJPJNtU2$8FZTUy' } } })
-  const result = await secretManagerService.getSecretFromKey('4c4c4544-004b-4210-8033-b6c04f504633', 'AMT_PASSWORD')
+  const result = await secretManagerService.getSecretFromKey(secretPath, 'AMT_PASSWORD')
+  expect(gotSpy).toHaveBeenCalledWith(secretPath)
   expect(result).toBe('P@ssw0rd')
 })
 
 test('should get null, if the key does not exists in the path', async () => {
-  const read = jest.spyOn(secretManagerService.vaultClient, 'read')
-  read.mockResolvedValueOnce({ data: { data: { AMT_PASSWORD: 'P@ssw0rd', MEBX_PASSWORD: 'Intel@123', MPS_PASSWORD: 'lLJPJNtU2$8FZTUy' } } })
-  const result = await secretManagerService.getSecretFromKey('4c4c4544-004b-4210-8033-b6c04f504633', 'AMT_PASSWORD1')
+  const result = await secretManagerService.getSecretFromKey(secretPath, 'AMT_PASSWORD1')
   expect(result).toBe(null)
+  expect(gotSpy).toHaveBeenCalledWith(secretPath)
 })
 
 test('should get null, if path does not exist', async () => {
-  const read = jest.spyOn(secretManagerService.vaultClient, 'read')
-  read.mockRejectedValueOnce('Status 404')
-  const result = await secretManagerService.getSecretFromKey('4c4c4544-004b-4210-8033-b6c04f504634', 'AMT_PASSWORD')
+  const gotFailSpy = jest.spyOn(secretManagerService.gotClient, 'get').mockResolvedValue({
+    json: jest.fn(async () => await Promise.reject(new Error('Not Found')))
+  })
+  const result = await secretManagerService.getSecretFromKey(secretPath, 'AMT_PASSWORD')
   expect(result).toBe(null)
+  expect(gotFailSpy).toHaveBeenCalledWith(secretPath)
 })
 
 test('should get a secret from a specific given path', async () => {
-  const data = { data: { data: { AMT_PASSWORD: 'P@ssw0rd', MEBX_PASSWORD: 'Intel@123', MPS_PASSWORD: 'lLJPJNtU2$8FZTUy' } } }
-  const read = jest.spyOn(secretManagerService.vaultClient, 'read')
-  read.mockResolvedValueOnce({ data: { data: { AMT_PASSWORD: 'P@ssw0rd', MEBX_PASSWORD: 'Intel@123', MPS_PASSWORD: 'lLJPJNtU2$8FZTUy' } } })
-  const result = await secretManagerService.getSecretAtPath('4c4c4544-004b-4210-8033-b6c04f504633?version=3')
-  expect(result).toEqual(data.data)
+  const result = await secretManagerService.getSecretAtPath(secretPath)
+  expect(result).toEqual(secretCreds.data)
+  expect(gotSpy).toHaveBeenCalledWith(secretPath)
 })
 
 test('should throw an exception and return null if given path does not exist', async () => {
-  const read = jest.spyOn(secretManagerService.vaultClient, 'read')
-  read.mockRejectedValueOnce('Status 404')
-  const result = await secretManagerService.getSecretAtPath('doesnotexists')
+  const gotFailSpy = jest.spyOn(secretManagerService.gotClient, 'get').mockResolvedValue({
+    json: jest.fn(async () => await Promise.reject(new Error('Not Found')))
+  })
+  const result = await secretManagerService.getSecretAtPath('does/not/exist')
   expect(result).toEqual(null)
+  expect(gotFailSpy).toHaveBeenCalledWith('does/not/exist')
 })
 
 test('should create a secret', async () => {
-  const data = {
-    data: {
-      mps_tls_config: {
-        cert: '-----BEGIN CERTIFICATE-----\r\ncert\r\n-----END CERTIFICATE-----\r\n',
-        key: '-----BEGIN RSA PRIVATE KEY-----\r\nkey\r\n-----END RSA PRIVATE KEY-----\r\n',
-        minVersion: 'TLSv1',
-        rejectUnauthorized: false,
-        requestCert: true
-      },
-      root_key: '-----BEGIN RSA PRIVATE KEY-----\r\nrootkey\r\n-----END RSA PRIVATE KEY-----\r\n',
-      web_tls_config: {
-        ca: '-----BEGIN CERTIFICATE-----\r\nca\r\n-----END CERTIFICATE-----\r\n',
-        cert: '-----BEGIN CERTIFICATE-----\r\ncert\r\n-----END CERTIFICATE-----\r\n',
-        key: '-----BEGIN RSA PRIVATE KEY-----\r\nkey\r\n-----END RSA PRIVATE KEY-----\r\n'
-      }
-    }
-  }
-  const write = jest.spyOn(secretManagerService.vaultClient, 'write')
-  write.mockResolvedValueOnce({})
-  const result = await secretManagerService.writeSecretWithObject('test', data)
+  const gotPostSpy = jest.spyOn(secretManagerService.gotClient, 'post').mockResolvedValue(null)
+  const result = await secretManagerService.writeSecretWithObject('test', secretCert)
   expect(result).toBe(true)
+  expect(gotPostSpy).toHaveBeenCalledWith('test', { json: secretCert })
 })
 
 test('should return false if the path does not exist', async () => {
-  const data = {
-    data: {
-      mps_tls_config: {
-        cert: '-----BEGIN CERTIFICATE-----\r\ncert\r\n-----END CERTIFICATE-----\r\n',
-        key: '-----BEGIN RSA PRIVATE KEY-----\r\nkey\r\n-----END RSA PRIVATE KEY-----\r\n',
-        minVersion: 'TLSv1',
-        rejectUnauthorized: false,
-        requestCert: true
-      },
-      root_key: '-----BEGIN RSA PRIVATE KEY-----\r\nrootkey\r\n-----END RSA PRIVATE KEY-----\r\n',
-      web_tls_config: {
-        ca: '-----BEGIN CERTIFICATE-----\r\nca\r\n-----END CERTIFICATE-----\r\n',
-        cert: '-----BEGIN CERTIFICATE-----\r\ncert\r\n-----END CERTIFICATE-----\r\n',
-        key: '-----BEGIN RSA PRIVATE KEY-----\r\nkey\r\n-----END RSA PRIVATE KEY-----\r\n'
-      }
-    }
-  }
-  const write = jest.spyOn(secretManagerService.vaultClient, 'write')
-  write.mockRejectedValueOnce('Status 404')
-  const result = await secretManagerService.writeSecretWithObject('doesnotexist', data)
+  const gotFailSpy = jest.spyOn(secretManagerService.gotClient, 'post').mockRejectedValue('')
+  const result = await secretManagerService.writeSecretWithObject('does/not/exist', secretCert)
   expect(result).toBe(false)
+  expect(gotFailSpy).toHaveBeenCalledWith('does/not/exist', { json: secretCert })
 })
 
 test('should get AMT credentials for a specific device', async () => {
   const data = ['admin', 'P@ssw0rd']
-  const read = jest.spyOn(secretManagerService.vaultClient, 'read')
-  read.mockResolvedValueOnce({ data: { data: { AMT_PASSWORD: 'P@ssw0rd', MEBX_PASSWORD: 'Intel@123', MPS_PASSWORD: 'lLJPJNtU2$8FZTUy' } } })
-  const result = await secretManagerService.getAMTCredentials('4c4c4544-004b-4210-8033-b6c04f504633')
+  const secretAtPathSpy = jest.spyOn(secretManagerService, 'getSecretAtPath').mockResolvedValue(secretCreds.data)
+  const result = await secretManagerService.getAMTCredentials(secretPath)
   expect(result).toEqual(data)
+  expect(secretAtPathSpy).toHaveBeenCalledWith(`devices/${secretPath}`)
 })
 
 test('should return null if AMT credentials for a specific device does not exists', async () => {
-  const getSecretAtPath = jest.spyOn(secretManagerService, 'getSecretAtPath')
-  getSecretAtPath.mockResolvedValueOnce(null)
-  const result = await secretManagerService.getAMTCredentials('4c4c4544-004b-4210-8033-b6c04f504633')
+  const secretAtPathSpy = jest.spyOn(secretManagerService, 'getSecretAtPath').mockResolvedValue(null)
+  const result = await secretManagerService.getAMTCredentials(secretPath)
   expect(result).toEqual(null)
+  expect(secretAtPathSpy).toHaveBeenCalledWith(`devices/${secretPath}`)
 })
 
 test('should get MPS certs', async () => {
-  const data = {
-    data: {
-      data: {
-        mps_tls_config: {
-          cert: '-----BEGIN CERTIFICATE-----\r\ncert\r\n-----END CERTIFICATE-----\r\n',
-          key: '-----BEGIN RSA PRIVATE KEY-----\r\nkey\r\n-----END RSA PRIVATE KEY-----\r\n',
-          minVersion: 'TLSv1',
-          rejectUnauthorized: false,
-          requestCert: true
-        },
-        root_key: '-----BEGIN RSA PRIVATE KEY-----\r\nrootkey\r\n-----END RSA PRIVATE KEY-----\r\n',
-        web_tls_config: {
-          ca: '-----BEGIN CERTIFICATE-----\r\nca\r\n-----END CERTIFICATE-----\r\n',
-          cert: '-----BEGIN CERTIFICATE-----\r\ncert\r\n-----END CERTIFICATE-----\r\n',
-          key: '-----BEGIN RSA PRIVATE KEY-----\r\nkey\r\n-----END RSA PRIVATE KEY-----\r\n'
-        }
-      }
-    }
-  }
-  const read = jest.spyOn(secretManagerService.vaultClient, 'read')
-  read.mockResolvedValueOnce(data)
+  const secretAtPathSpy = jest.spyOn(secretManagerService, 'getSecretAtPath').mockResolvedValue(secretCert)
   const result = await secretManagerService.getMPSCerts()
-  expect(result).toEqual(data.data.data)
+  expect(result).toEqual(secretCert.data)
+  expect(secretAtPathSpy).toHaveBeenCalledWith('MPSCerts')
 })
 
 test('should return null if MPS certs does not exists', async () => {
-  const getSecretAtPath = jest.spyOn(secretManagerService, 'getSecretAtPath')
-  getSecretAtPath.mockResolvedValueOnce(null)
+  const secretAtPathSpy = jest.spyOn(secretManagerService, 'getSecretAtPath').mockResolvedValue(null)
   const result = await secretManagerService.getMPSCerts()
   expect(result).toEqual(null)
+  expect(secretAtPathSpy).toHaveBeenCalledWith('MPSCerts')
 })
 
 test('should get health of vault', async () => {
@@ -165,8 +142,14 @@ test('should get health of vault', async () => {
     cluster_name: 'vault-cluster-426a5cd4',
     cluster_id: '3f02d0f2-4048-cdcd-7e4d-7d2905c52995'
   }
-  const health = jest.spyOn(secretManagerService.vaultClient, 'health')
-  health.mockResolvedValueOnce(data)
+  const gothealthSpy = jest.spyOn(secretManagerService.gotClient, 'get').mockImplementation(() => {
+    return {
+      json: jest.fn(() => {
+        return data
+      })
+    } as any
+  })
   const result = await secretManagerService.health()
   expect(result).toEqual(data)
+  expect(gothealthSpy).toHaveBeenCalledWith('sys/health', { prefixUrl: `${Environment.Config.vault_address}/v1/` })
 })

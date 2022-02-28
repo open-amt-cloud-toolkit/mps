@@ -3,7 +3,7 @@
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
 
-import { logger } from '../utils/logger'
+import { logger, messages } from '../logging'
 import { createHash } from 'crypto'
 import * as xml2js from 'xml2js'
 import { DigestChallenge } from '@open-amt-cloud-toolkit/wsman-messages/dist/models/common'
@@ -85,7 +85,7 @@ export class HttpHandler {
       ].join('\r\n'), 'utf8')
       return message
     } catch (err) {
-      logger.error('httpHandler unable to create hashed string: ', err.message)
+      logger.error(`${messages.CREATE_HASH_STRING_FAILED}:`, err.message)
       return null
     }
   }
@@ -117,7 +117,7 @@ export class HttpHandler {
     let wsmanResponse: string
     this.parser.parseString(xmlBody, (err, result) => {
       if (err) {
-        logger.error('failed to parse XML :', err)
+        logger.error(`${messages.XML_PARSE_FAILED}:`, err)
         wsmanResponse = null
       } else {
         wsmanResponse = result

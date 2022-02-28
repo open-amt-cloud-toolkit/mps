@@ -1,5 +1,5 @@
 import Common from '../utils/common'
-import { logger } from '../utils/logger'
+import { logger } from '../logging'
 import APFProcessor, { APFProtocol } from './APFProcessor'
 import { CIRASocket } from '../models/models'
 import { CIRAChannel } from './CIRAChannel'
