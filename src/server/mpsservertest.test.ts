@@ -67,7 +67,7 @@ describe('MPS Server', function () {
     sendUserAuthFailSpy = jest.spyOn(APFProcessor, 'SendUserAuthFail').mockReturnValue(null)
     processCommandSpy = jest.spyOn(APFProcessor, 'processCommand').mockResolvedValue(0)
     socket = {
-      tag: { SystemId: '123' },
+      tag: { SystemId: '123', id: 'ABC123XYZ', nodeid: '123' },
       end: jest.fn(),
       write: jest.fn(),
       setEncoding: jest.fn(),
@@ -100,9 +100,9 @@ describe('MPS Server', function () {
     expect(infoSpy).toHaveBeenCalledWith('Intel(R) AMT server running on localhost:3000.')
   })
   it('should handle onAPFDisconnected', async () => {
-    const deviceDisconnectSpy = jest.spyOn(mps, 'handleDeviceDisconnect').mockResolvedValue(null)
+    const deviceDisconnectSpy = jest.spyOn(mps, 'handleDeviceDisconnect')
     const emitSpy = jest.spyOn(mps.events, 'emit')
-    devices['123'] = { device: 'a device' } as any
+    devices['123'] = { ciraSocket: { tag: { id: 'ABC123XYZ', nodeid: '123' } } } as any
     await mps.onAPFDisconnected('123')
     expect(devices['123']).toBeUndefined()
     expect(deviceDisconnectSpy).toHaveBeenCalledWith('123')
@@ -126,6 +126,20 @@ describe('MPS Server', function () {
     expect(getSecretSpy).toHaveBeenCalledWith('devices/123', 'MPS_PASSWORD')
     expect(getCredsSpy).toHaveBeenCalledWith('123')
     expect(devices['123']).toBeDefined()
+    expect(deviceConnectSpy).toHaveBeenCalledWith('123')
+    expect(sendUserAuthSpy).toHaveBeenCalledWith(socket)
+  })
+  it('should delete old device connection if a new connection request comes from same device', async () => {
+    const deviceConnectSpy = jest.spyOn(mps, 'handleDeviceConnect')
+    const deviceDisconnectSpy = jest.spyOn(mps, 'handleDeviceDisconnect')
+    devices['123'] = { ciraSocket: { tag: { SystemId: '123', id: 'MNO123XYZ', nodeid: '123' }, end: jest.fn() } } as any
+    await mps.onVerifyUserAuth(socket, 'admin', 'P@ssw0rd')
+    expect(deviceSpy).toHaveBeenCalledWith('123')
+    expect(getSecretSpy).toHaveBeenCalledWith('devices/123', 'MPS_PASSWORD')
+    expect(deviceDisconnectSpy).toHaveBeenCalledWith('123')
+    expect(getCredsSpy).toHaveBeenCalledWith('123')
+    expect(devices['123']).toBeDefined()
+    expect(devices['123'].ciraSocket.tag.id).toEqual('ABC123XYZ')
     expect(deviceConnectSpy).toHaveBeenCalledWith('123')
     expect(sendUserAuthSpy).toHaveBeenCalledWith(socket)
   })
@@ -170,10 +184,21 @@ describe('MPS Server', function () {
   })
   it('should disconnect on timeout', async () => {
     const endSpy = jest.spyOn(socket, 'end')
-    const deviceDisconnectSpy = jest.spyOn(mps, 'handleDeviceDisconnect').mockResolvedValue(null)
+    const deviceDisconnectSpy = jest.spyOn(mps, 'handleDeviceDisconnect')
+    devices['123'] = { ciraSocket: { tag: { id: 'ABC123XYZ', nodeid: '123' } } } as any
     await mps.onTimeout(socket)
     expect(endSpy).toHaveBeenCalled()
     expect(deviceDisconnectSpy).toHaveBeenCalledWith('123')
+    expect(devices['123']).toBeUndefined()
+  })
+  it('should NOT disconnect on timeout if socketids dont match', async () => {
+    const endSpy = jest.spyOn(socket, 'end')
+    const deviceDisconnectSpy = jest.spyOn(mps, 'handleDeviceDisconnect')
+    devices['123'] = { ciraSocket: { tag: { id: 'Mno123XYZ', nodeid: '123' } } } as any
+    await mps.onTimeout(socket)
+    expect(endSpy).toHaveBeenCalled()
+    expect(deviceDisconnectSpy).not.toHaveBeenCalledWith('123')
+    expect(devices['123']).toBeDefined()
   })
   it('should do nothing data when not much is received', async () => {
     const endSpy = jest.spyOn(socket, 'end')
@@ -227,9 +252,17 @@ describe('MPS Server', function () {
     expect(endSpy).toHaveBeenCalled()
   })
   it('should disconnect on close', async () => {
-    const deviceDisconnectSpy = jest.spyOn(mps, 'handleDeviceDisconnect').mockResolvedValue(null)
+    const deviceDisconnectSpy = jest.spyOn(mps, 'handleDeviceDisconnect')
+    devices['123'] = { ciraSocket: { tag: { id: 'ABC123XYZ', nodeid: '123' } } } as any
     await mps.onClose(socket)
     expect(deviceDisconnectSpy).toHaveBeenCalledWith('123')
+  })
+  it('should NOT disconnect on close if socketids dont match', async () => {
+    const deviceDisconnectSpy = jest.spyOn(mps, 'handleDeviceDisconnect')
+    devices['123'] = { ciraSocket: { tag: { id: 'OAMCT123MNO', nodeid: '123' } } } as any
+    await mps.onClose(socket)
+    expect(deviceDisconnectSpy).not.toHaveBeenCalledWith('123')
+    expect(devices['123']).toBeDefined()
   })
   it('should NOT log on error when ECONNRESET', () => {
     const errorLogSpy = jest.spyOn(logger, 'error')
@@ -250,7 +283,6 @@ describe('MPS Server', function () {
     expect(deviceUpdateSpy).toHaveBeenCalledWith({ connectionStatus: false, mpsInstance: null, mpsusername: 'admin' })
     expect(emitSpy).toHaveBeenCalledWith('disconnected', '123')
   })
-
   it('should handle device connect', async () => {
     devices['123'] = { device: 'a device' } as any
     Environment.Config = { instance_name: 'mpsInstance' } as any
