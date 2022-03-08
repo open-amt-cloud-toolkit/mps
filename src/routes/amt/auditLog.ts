@@ -11,7 +11,7 @@ import { MqttProvider } from '../../utils/MqttProvider'
 import { atob } from 'atob'
 import Common from '../../utils/common'
 import { AmtAuditStringTable, RealmNames } from '../../utils/constants'
-import { AuditLogReadRecordsOutput, AuditLogRecord, AuditLogResult } from '@open-amt-cloud-toolkit/wsman-messages/dist/models/common'
+import { AuditLogReadRecordsOutput, AuditLogRecord, AuditLogResult } from '@open-amt-cloud-toolkit/wsman-messages/models/common'
 
 export async function auditLog (req: Request, res: Response): Promise<void> {
   try {

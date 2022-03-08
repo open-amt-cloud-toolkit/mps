@@ -10,7 +10,7 @@ import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { SystemEntityTypes, SystemFirmwareError, SystemFirmwareProgress, WatchdogCurrentStates } from '../../utils/constants'
 import Common from '../../utils/common'
-import { AMT } from '@open-amt-cloud-toolkit/wsman-messages/dist'
+import { AMT } from '@open-amt-cloud-toolkit/wsman-messages'
 
 export async function eventLog (req: Request, res: Response): Promise<void> {
   try {

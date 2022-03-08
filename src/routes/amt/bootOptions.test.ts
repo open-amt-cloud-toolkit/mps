@@ -1,4 +1,4 @@
-import { AMT } from '@open-amt-cloud-toolkit/wsman-messages/dist'
+import { AMT } from '@open-amt-cloud-toolkit/wsman-messages'
 import { CIRAHandler } from '../../amt/CIRAHandler'
 import { DeviceAction } from '../../amt/DeviceAction'
 import { HttpHandler } from '../../amt/HttpHandler'
