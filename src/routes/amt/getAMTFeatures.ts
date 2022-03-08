@@ -11,8 +11,8 @@ import { UserConsentOptions } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MPSValidationError } from '../../utils/MPSValidationError'
 import { MqttProvider } from '../../utils/MqttProvider'
-import { AMT, CIM, IPS } from '@open-amt-cloud-toolkit/wsman-messages/dist'
-import { AMT_REDIRECTION_SERVICE_ENABLE_STATE, CIM_KVM_REDIRECTION_SAP_ENABLED_STATE, CIM_KVM_REDIRECTION_SAP_REQUESTED_STATE } from '@open-amt-cloud-toolkit/wsman-messages/dist/models/common'
+import { AMT, CIM, IPS } from '@open-amt-cloud-toolkit/wsman-messages'
+import { AMT_REDIRECTION_SERVICE_ENABLE_STATE, CIM_KVM_REDIRECTION_SAP_ENABLED_STATE, CIM_KVM_REDIRECTION_SAP_REQUESTED_STATE } from '@open-amt-cloud-toolkit/wsman-messages/models/common'
 
 export async function getAMTFeatures (req: Request, res: Response): Promise<void> {
   try {

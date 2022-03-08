@@ -4,22 +4,22 @@
 **********************************************************************/
 import { logger, messages } from '../logging'
 import { CIRAHandler } from './CIRAHandler'
-import { AMT, CIM, IPS, Common } from '@open-amt-cloud-toolkit/wsman-messages/dist/index'
+import { AMT, CIM, IPS, Common } from '@open-amt-cloud-toolkit/wsman-messages/index'
 import { CIRASocket } from '../models/models'
 
 export class DeviceAction {
   ciraHandler: CIRAHandler
   ciraSocket: CIRASocket
   messageId: number = 0
-  cim: CIM.CIM
-  amt: AMT.AMT
-  ips: IPS.IPS
+  cim: CIM.Messages
+  amt: AMT.Messages
+  ips: IPS.Messages
   constructor (ciraHandler: CIRAHandler, ciraSocket: CIRASocket) {
     this.ciraHandler = ciraHandler
     this.ciraSocket = ciraSocket
-    this.cim = new CIM.CIM()
-    this.amt = new AMT.AMT()
-    this.ips = new IPS.IPS()
+    this.cim = new CIM.Messages()
+    this.amt = new AMT.Messages()
+    this.ips = new IPS.Messages()
   }
 
   async getPowerState (): Promise<Common.Models.Pull<CIM.Models.AssociatedPowerManagementService>> {

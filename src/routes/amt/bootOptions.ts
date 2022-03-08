@@ -9,7 +9,7 @@ import { logger, messages } from '../../logging'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { AMTStatusCodes } from '../../utils/constants'
-import { AMT } from '@open-amt-cloud-toolkit/wsman-messages/dist'
+import { AMT } from '@open-amt-cloud-toolkit/wsman-messages'
 
 export async function bootOptions (req: Request, res: Response): Promise<void> {
   try {

@@ -9,8 +9,8 @@ import { logger, messages } from '../../logging'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { UserConsentOptions } from '../../utils/constants'
-import { AMT_REDIRECTION_SERVICE_ENABLE_STATE } from '@open-amt-cloud-toolkit/wsman-messages/dist/models/common'
-import { AMT, IPS } from '@open-amt-cloud-toolkit/wsman-messages/dist'
+import { AMT_REDIRECTION_SERVICE_ENABLE_STATE } from '@open-amt-cloud-toolkit/wsman-messages/models/common'
+import { AMT, IPS } from '@open-amt-cloud-toolkit/wsman-messages'
 import { DeviceAction } from '../../amt/DeviceAction'
 
 export async function setAMTFeatures (req: Request, res: Response): Promise<void> {

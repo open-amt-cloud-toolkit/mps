@@ -5,7 +5,7 @@
 import { MqttProvider } from '../../utils/MqttProvider'
 import { createSpyObj } from '../../test/helper/jest'
 import { setAMTFeatures } from './setAMTFeatures'
-import { AMT_REDIRECTION_SERVICE_ENABLE_STATE } from '@open-amt-cloud-toolkit/wsman-messages/dist/models/common'
+import { AMT_REDIRECTION_SERVICE_ENABLE_STATE } from '@open-amt-cloud-toolkit/wsman-messages/models/common'
 import { DeviceAction } from '../../amt/DeviceAction'
 import { CIRAHandler } from '../../amt/CIRAHandler'
 import { HttpHandler } from '../../amt/HttpHandler'

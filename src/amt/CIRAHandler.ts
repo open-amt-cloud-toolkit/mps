@@ -12,8 +12,8 @@ import {
   DigestChallenge,
   Enumerate,
   Pull
-} from '@open-amt-cloud-toolkit/wsman-messages/dist/models/common'
-import { Common } from '@open-amt-cloud-toolkit/wsman-messages/dist'
+} from '@open-amt-cloud-toolkit/wsman-messages/models/common'
+import { Common } from '@open-amt-cloud-toolkit/wsman-messages'
 import { CIRAChannel } from './CIRAChannel'
 import { parseBody } from '../utils/parseWSManResponseBody'
 export interface PendingRequests {
