@@ -70,7 +70,7 @@ describe('Connected Device', () => {
     it('should send power action', async () => {
       getSpy.mockResolvedValueOnce({ Envelope: { Body: { RequestPowerStateChange_OUTPUT: { ReturnValue: 0 } } } })
       const result = await device.sendPowerAction(10)
-      expect(result).toEqual({ RequestPowerStateChange_OUTPUT: { ReturnValue: 0 } })
+      expect(result).toEqual({ Body: { RequestPowerStateChange_OUTPUT: { ReturnValue: 0 } } })
     })
   })
 

@@ -33,14 +33,16 @@ describe('Power Capabilities', () => {
     resSpy.json.mockReturnThis()
     resSpy.send.mockReturnThis()
     mqttSpy = jest.spyOn(MqttProvider, 'publishEvent')
-    powerActionFromDevice = { RequestPowerStateChange_OUTPUT: { ReturnValue: 0 } }
+    powerActionFromDevice = { Body: { RequestPowerStateChange_OUTPUT: { ReturnValue: 0 } } } as any
     getBootOptionsSpy = jest.spyOn(device, 'getBootOptions').mockResolvedValue({ AMT_BootSettingData: {} } as any)
     setBootConfigurationSpy = jest.spyOn(device, 'setBootConfiguration').mockResolvedValue({} as any)
   })
   it('Should send power action', async () => {
     const expectedResponse = {
-      ReturnValue: 0,
-      ReturnValueStr: 'SUCCESS'
+      Body: {
+        ReturnValue: 0,
+        ReturnValueStr: 'SUCCESS'
+      }
     }
     jest.spyOn(device, 'sendPowerAction').mockResolvedValue(powerActionFromDevice)
     await powerAction(req as any, resSpy)
@@ -54,10 +56,12 @@ describe('Power Capabilities', () => {
 
   it('Should send power action with unknown error', async () => {
     const expectedResponse = {
-      ReturnValue: -1,
-      ReturnValueStr: 'UNKNOWN_ERROR'
+      Body: {
+        ReturnValue: -1,
+        ReturnValueStr: 'UNKNOWN_ERROR'
+      }
     }
-    const powerActionErrorFromDevice: CIM.Models.PowerActionResponse = { RequestPowerStateChange_OUTPUT: { ReturnValue: -1 } }
+    const powerActionErrorFromDevice: CIM.Models.PowerActionResponse = { Body: { RequestPowerStateChange_OUTPUT: { ReturnValue: -1 } } } as any
     jest.spyOn(device, 'sendPowerAction').mockResolvedValue(powerActionErrorFromDevice)
 
     await powerAction(req as any, resSpy)

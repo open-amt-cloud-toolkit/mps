@@ -158,13 +158,13 @@ export class DeviceAction {
     return result.Envelope.Body
   }
 
-  async sendPowerAction (powerState: number): Promise<CIM.Models.PowerActionResponse> {
+  async sendPowerAction (powerState: number): Promise<any> {
     logger.silly(`sendPowerAction ${messages.REQUEST}`)
     const messageId = (this.messageId++).toString()
     const xmlToSend = this.cim.PowerManagementService(CIM.Methods.REQUEST_POWER_STATE_CHANGE, messageId, powerState)
     const result = await this.ciraHandler.Get<CIM.Models.PowerActionResponse>(this.ciraSocket, xmlToSend, messageId)
     logger.silly(`sendPowerAction ${messages.COMPLETE}`)
-    return result.Envelope.Body
+    return result.Envelope
   }
 
   async getSetupAndConfigurationService (): Promise<Common.Models.Envelope<AMT.Models.SetupAndConfigurationService>> {

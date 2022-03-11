@@ -54,43 +54,47 @@ export function formatResponse (response: any): any {
   return {
     CIM_ComputerSystemPackage: {
       response: response.CIM_ComputerSystemPackage?.Body?.CIM_ComputerSystemPackage,
-      status: response.CIM_ComputerSystemPackage?.Body?.CIM_ComputerSystemPackage ? '200' : '400'
+      responses: Array.isArray(response.CIM_ComputerSystemPackage) ? response.CIM_ComputerSystemPackage : [response.CIM_ComputerSystemPackage],
+      status: response.CIM_ComputerSystemPackage?.Body?.CIM_ComputerSystemPackage ? 200 : 400
     },
     CIM_SystemPackaging: {
       responses: [response.CIM_SystemPackaging?.Body?.PullResponse?.Items.CIM_ComputerSystemPackage],
-      status: response.CIM_SystemPackaging?.Body?.PullResponse?.Items.CIM_ComputerSystemPackage ? '200' : '400'
+      status: response.CIM_SystemPackaging?.Body?.PullResponse?.Items.CIM_ComputerSystemPackage ? 200 : 400
     },
     CIM_Chassis: {
       response: response.CIM_Chassis?.Body?.CIM_Chassis,
-      status: response.CIM_Chassis?.Body?.CIM_Chassis ? '200' : '400'
+      responses: Array.isArray(response.CIM_Chassis) ? response.CIM_Chassis : [response.CIM_Chassis],
+      status: response.CIM_Chassis?.Body?.CIM_Chassis ? 200 : 400
     },
     CIM_Chip: {
       responses: [response.CIM_Chip?.Body?.PullResponse?.Items?.CIM_Chip],
-      status: response.CIM_Chip?.Body ? '200' : '400'
+      status: response.CIM_Chip?.Body ? 200 : 400
     },
     CIM_Card: {
       response: response.CIM_Card?.Body?.CIM_Card,
-      status: response.CIM_Card?.Body ? '200' : '400'
+      responses: Array.isArray(response.CIM_Card?.Body?.CIM_Card) ? response.CIM_Card : [response.CIM_Card],
+      status: response.CIM_Card?.Body ? 200 : 400
     },
     CIM_BIOSElement: {
       response: response.CIM_BIOSElement?.Body?.CIM_BIOSElement,
-      status: response.CIM_BIOSElement?.Body ? '200' : '400'
+      responses: Array.isArray(response.CIM_BIOSElement?.Body?.CIM_BIOSElement) ? response.CIM_BIOSElement : [response.CIM_BIOSElement],
+      status: response.CIM_BIOSElement?.Body ? 200 : 400
     },
     CIM_Processor: {
       responses: [response.CIM_Processor?.Body?.PullResponse?.Items?.CIM_Processor],
-      status: response.CIM_Processor?.Body?.PullResponse?.Items?.CIM_Processor ? '200' : '400'
+      status: response.CIM_Processor?.Body?.PullResponse?.Items?.CIM_Processor ? 200 : 400
     },
     CIM_PhysicalMemory: {
-      responses: response.CIM_PhysicalMemory?.Body?.PullResponse?.Items?.CIM_PhysicalMemory,
-      status: response.CIM_Processor?.Body?.PullResponse?.Items?.CIM_Processor ? '200' : '400'
+      responses: Array.isArray(response.CIM_PhysicalMemory?.Body?.PullResponse?.Items?.CIM_PhysicalMemory) ? response.CIM_PhysicalMemory?.Body?.PullResponse?.Items?.CIM_PhysicalMemory : [response.CIM_PhysicalMemory?.Body?.PullResponse?.Items?.CIM_PhysicalMemory],
+      status: response.CIM_Processor?.Body?.PullResponse?.Items?.CIM_Processor ? 200 : 400
     },
     CIM_MediaAccessDevice: {
-      responses: [response.CIM_MediaAccessDevice?.Body?.PullResponse?.Items?.CIM_MediaAccessDevice],
-      status: response.CIM_MediaAccessDevice?.Body?.PullResponse?.Items?.CIM_MediaAccessDevice ? '200' : '400'
+      responses: Array.isArray(response.CIM_MediaAccessDevice?.Body?.PullResponse?.Items?.CIM_MediaAccessDevice) ? response.CIM_MediaAccessDevice?.Body?.PullResponse?.Items?.CIM_MediaAccessDevice : [response.CIM_MediaAccessDevice?.Body?.PullResponse?.Items?.CIM_MediaAccessDevice],
+      status: response.CIM_MediaAccessDevice?.Body?.PullResponse?.Items?.CIM_MediaAccessDevice ? 200 : 400
     },
     CIM_PhysicalPackage: {
       responses: [response.CIM_PhysicalPackage?.Body?.PullResponse?.Items?.CIM_Card],
-      status: response.CIM_PhysicalPackage?.Body?.PullResponse?.Items?.CIM_Card ? '200' : '400'
+      status: response.CIM_PhysicalPackage?.Body?.PullResponse?.Items?.CIM_Card ? 200 : 400
     }
   }
 }
