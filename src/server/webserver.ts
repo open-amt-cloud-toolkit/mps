@@ -87,8 +87,6 @@ export class WebServer {
     if (req.deviceAction?.ciraHandler?.channel) {
       logger.debug(messages.EOR_CLOSING_CHANNEL)
       req.deviceAction.ciraHandler.channel.CloseChannel()
-    } else {
-      logger.debug(messages.MPS_CIRA_CHANNEL_NULL)
     }
     res.removeListener('finish', this.afterResponse)
     res.removeListener('close', this.afterResponse)

@@ -28,6 +28,7 @@ export class CIRAHandler {
   password: string
   channel: CIRAChannel
   channelState: number = 0
+  connectAttempts: number = 0
   socket: CIRASocket
   constructor (httpHandler: HttpHandler, username: string, password: string) {
     this.username = username
@@ -122,19 +123,26 @@ export class CIRAHandler {
   handleResult (data: string): any {
     const message = httpZ.parse(data) as HttpZResponseModel
     if (message.statusCode === 401) {
-      this.httpHandler.digestChallenge = this.handleAuth(message)
-      this.httpHandler.authResolve()
-      if (this.httpHandler.digestChallenge != null) {
+      this.connectAttempts++
+      if (this.connectAttempts < 4) {
+        this.httpHandler.digestChallenge = this.handleAuth(message)
+        this.httpHandler.authResolve()
+        if (this.httpHandler.digestChallenge != null) {
         // Executing the failed request once again
-        throw new Error('Unauthorized') // could be better
+          throw new Error('Unauthorized') // could be better
+        }
+      } else {
+        throw new Error('Unable to authenticate with AMT. Exceeded Retry Attempts')
       }
     } else if (message.statusCode === 200) {
+      this.connectAttempts = 0
       const xmlBody = parseBody(message)
       // pares WSMan xml response to json
       const response = this.httpHandler.parseXML(xmlBody)
       response.statusCode = message.statusCode
       return response
     } else {
+      this.connectAttempts = 0
       const xmlBody = parseBody(message)
       // pares WSMan xml response to json
       const response = this.httpHandler.parseXML(xmlBody)
