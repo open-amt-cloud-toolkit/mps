@@ -27,9 +27,10 @@ export async function bootOptions (req: Request, res: Response): Promise<void> {
     }
     const newAction = determinePowerAction(payload.action)
     const powerActionResult = await device.sendPowerAction(newAction)
-    powerActionResult.RequestPowerStateChange_OUTPUT.ReturnValueStr = AMTStatusToString(powerActionResult.RequestPowerStateChange_OUTPUT.ReturnValue)
+    powerActionResult.Body.RequestPowerStateChange_OUTPUT.ReturnValueStr = AMTStatusToString(powerActionResult.Body.RequestPowerStateChange_OUTPUT.ReturnValue)
+    powerActionResult.Body = powerActionResult.Body.RequestPowerStateChange_OUTPUT
 
-    res.status(200).json(powerActionResult.RequestPowerStateChange_OUTPUT)
+    res.status(200).json(powerActionResult)
   } catch (error) {
     logger.error(`${messages.BOOT_SETTING_EXCEPTION} : ${error}`)
     MqttProvider.publishEvent('fail', ['AMT_BootSettingData'], messages.INTERNAL_SERVICE_ERROR)
