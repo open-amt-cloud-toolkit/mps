@@ -55,7 +55,7 @@ describe('Boot Options', () => {
     changeBootOrderSpy = jest.spyOn(device, 'changeBootOrder')
     changeBootOrderSpy.mockResolvedValue({})
     sendPowerActionSpy = jest.spyOn(device, 'sendPowerAction')
-    sendPowerActionSpy.mockResolvedValue({ RequestPowerStateChange_OUTPUT: { ReturnValue: 0 } })
+    sendPowerActionSpy.mockResolvedValue({ Body: { RequestPowerStateChange_OUTPUT: { ReturnValue: 0 } } })
   })
   it('should handle error', async () => {
     setBootConfigurationSpy.mockRejectedValue({})
@@ -73,7 +73,7 @@ describe('Boot Options', () => {
     expect(changeBootOrderSpy).toHaveBeenCalled()
     expect(sendPowerActionSpy).toHaveBeenCalledWith(10)
     expect(resSpy.status).toHaveBeenCalledWith(200)
-    expect(resSpy.json).toHaveBeenCalledWith({ ReturnValue: 0, ReturnValueStr: 'SUCCESS' })
+    expect(resSpy.json).toHaveBeenCalledWith({ Body: { ReturnValue: 0, ReturnValueStr: 'SUCCESS' } })
   })
   it('should do advanced power action when NOT force PXE Boot', async () => {
     req.body.action = 201
