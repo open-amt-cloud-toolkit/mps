@@ -116,6 +116,8 @@ export enum messages {
   REDIRECT_CLOSING_WEB_SOCKET = 'Closing web socket connection',
   REDIRECT_CREATING_CREDENTIAL = 'Creating credential',
   REDIRECT_CIRA_STATE_CHANGE = 'Relay CIRA state change',
+  REDIRECTION_SESSION_STARTED = 'Redirection session started',
+  REDIRECTION_SESSION_ENDED = 'Redirection session ended',
   REQUEST = 'Request',
   RESPONSE_NULL = 'Failed to get Response',
   ROUTE_DOES_NOT_EXIST = 'Route does not exist. Closing connection...',
