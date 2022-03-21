@@ -41,7 +41,7 @@
     "test": "jest --detectOpenHandles --forceExit --coverage"
   },
   "dependencies": {
-    "@open-amt-cloud-toolkit/wsman-messages": "1.7.0",
+    "@open-amt-cloud-toolkit/wsman-messages": "2.1.0",
     "atob": "^2.1.2",
     "consul": "^0.40.0",
     "cors": "^2.8.5",
