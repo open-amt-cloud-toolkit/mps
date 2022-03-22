@@ -4,6 +4,7 @@ import { RedirectInterceptor } from './redirectInterceptor'
 import { devices } from '../server/mpsserver'
 import { ConnectedDevice } from '../amt/ConnectedDevice'
 import { Socket } from 'net'
+import { MqttProvider } from './MqttProvider'
 
 const fakeGuid = '00000000-0000-0000-0000-000000000000'
 
@@ -41,9 +42,11 @@ describe('WsRedirect tests', () => {
       devices[fakeGuid] = new ConnectedDevice(null, 'admin', 'P@ssw0rd')
 
       const setNormalTCPSpy = jest.spyOn(wsRedirect, 'setNormalTCP').mockReturnValue()
+      const publishEventSpy = jest.spyOn(MqttProvider, 'publishEvent')
       await wsRedirect.handleConnection(mockIncomingMessage as any)
 
       expect(setNormalTCPSpy).toBeCalled()
+      expect(publishEventSpy).toHaveBeenCalled()
       expect(pauseSpy).toHaveBeenCalled()
     })
   })
@@ -76,8 +79,9 @@ describe('WsRedirect tests', () => {
         CloseChannel: jest.fn()
       } as any
       jest.spyOn(wsRedirect.websocketFromDevice, 'CloseChannel')
+      const publishEventSpy = jest.spyOn(MqttProvider, 'publishEvent')
       wsRedirect.handleClose(params, null)
-
+      expect(publishEventSpy).toHaveBeenCalled()
       expect(wsRedirect.websocketFromDevice.CloseChannel).toBeCalled()
     })
   })

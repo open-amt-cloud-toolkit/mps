@@ -12,6 +12,7 @@ import { RedirectInterceptor } from './redirectInterceptor'
 import WebSocket from 'ws'
 import { CIRAHandler } from '../amt/CIRAHandler'
 import { CIRAChannel } from '../amt/CIRAChannel'
+import { MqttProvider } from './MqttProvider'
 
 export class WsRedirect {
   secrets: ISecretManagerService
@@ -46,6 +47,7 @@ export class WsRedirect {
 
     // We got a new web socket connection, initiate a TCP connection to the target Intel AMT host/port.
     logger.debug(`${messages.REDIRECT_OPENING_WEB_SOCKET} to ${params.host}: ${params.port}.`)
+    MqttProvider.publishEvent('success', ['handleConnection'], messages.REDIRECTION_SESSION_STARTED)
 
     // Fetch Intel AMT credentials & Setup interceptor
     const credentials = await this.secrets.getAMTCredentials(params.host)
@@ -76,6 +78,7 @@ export class WsRedirect {
     logger.debug(`${messages.REDIRECT_CLOSING_WEB_SOCKET} to ${params.host}: ${params.port}.`)
     if (this.websocketFromDevice) {
       this.websocketFromDevice.CloseChannel()
+      MqttProvider.publishEvent('success', ['handleClose'], messages.REDIRECTION_SESSION_ENDED)
     }
   }
 
