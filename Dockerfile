@@ -28,5 +28,6 @@ COPY .mpsrc ./
 RUN npm run build
 RUN npm prune --production
 
+USER node
+
 CMD [ "node", "./dist/index.js" ]
-# CMD [ "npm", "start" ]
