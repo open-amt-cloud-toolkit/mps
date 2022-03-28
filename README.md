@@ -82,3 +82,4 @@ jwt_secrets:
     key: 9EmRJTbIiIb4bIeSsmgcWIjrR6HyETqc #sample key
     secret: myStrongSecret
 ```
+
