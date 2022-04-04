@@ -33,18 +33,6 @@ export class HttpHandler {
     this.parser = new xml2js.Parser({ ignoreAttrs: true, mergeAttrs: false, explicitArray: false, tagNameProcessors: [this.stripPrefix], valueProcessors: [xml2js.processors.parseNumbers, xml2js.processors.parseBooleans] })
   }
 
-  // async isAuthenticated (): Promise<boolean> {
-  //   console.log('IS AUTHENTICATED?????')
-  //   while (this.digestChallenge == null && this.isAuthInProgress) {
-  //     console.log("we don't have digest challenge")
-  //     if (this.isAuthInProgress) {
-  //       console.log('authentication in progress')
-  //     }
-  //     // we don't have auth yet, and we are waiting for auth
-  //   }
-  //   return true
-  // }
-
   wrapIt (connectionParams: connectionParams, data: string): string {
     try {
       const url = '/wsman'
@@ -58,9 +46,10 @@ export class HttpHandler {
         let responseDigest = null
         // console nonce should be a unique opaque quoted string
         connectionParams.consoleNonce = Math.random().toString(36).substring(7)
+        const nc = ('00000000' + (this.nonceCounter++).toString(16)).slice(-8)
         const HA1 = this.hashIt(`${connectionParams.username}:${connectionParams.digestChallenge.realm}:${connectionParams.password}`)
         const HA2 = this.hashIt(`${action}:${url}`)
-        responseDigest = this.hashIt(`${HA1}:${connectionParams.digestChallenge.nonce}:${this.nonceCounter}:${connectionParams.consoleNonce}:${connectionParams.digestChallenge.qop}:${HA2}`)
+        responseDigest = this.hashIt(`${HA1}:${connectionParams.digestChallenge.nonce}:${nc}:${connectionParams.consoleNonce}:${connectionParams.digestChallenge.qop}:${HA2}`)
         const authorizationRequestHeader = this.digestIt({
           username: connectionParams.username,
           realm: connectionParams.digestChallenge.realm,
@@ -68,7 +57,7 @@ export class HttpHandler {
           uri: url,
           qop: connectionParams.digestChallenge.qop,
           response: responseDigest,
-          nc: this.nonceCounter++,
+          nc,
           cnonce: connectionParams.consoleNonce
         })
         message += `Authorization: ${authorizationRequestHeader}\r\n`
