@@ -77,6 +77,7 @@ export class WsRedirect {
   handleClose (params: queryParams, CloseEvent: WebSocket.CloseEvent): void {
     logger.debug(`${messages.REDIRECT_CLOSING_WEB_SOCKET} to ${params.host}: ${params.port}.`)
     if (this.websocketFromDevice) {
+      devices[params.host].kvmConnect = false // Indicate no current KVM session on the device
       this.websocketFromDevice.CloseChannel()
       MqttProvider.publishEvent('success', ['handleClose'], messages.REDIRECTION_SESSION_ENDED)
     }

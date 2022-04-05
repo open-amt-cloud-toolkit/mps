@@ -5,6 +5,7 @@ import { WebServer } from './webserver'
 import { Environment } from '../utils/Environment'
 import { IncomingMessage } from 'http'
 import { Socket } from 'net'
+import { devices } from './mpsserver'
 
 Environment.Config = config
 
@@ -42,14 +43,25 @@ describe('verify client token', () => {
   it('should return false when client jwt token is invalid', () => {
     const jwsSpy = jest.spyOn(web.jws, 'verify')
     jwsSpy.mockImplementationOnce(() => false)
-    const info = { req: { headers: ['sec-websocket-protocol:invalid'] } }
+    const info = {
+      req: {
+        url: '/relay/webrelay.ashx?p=2&host=4c4c4544-004b-4210-8033-b6c04f504633&port=16994&tls=0&tls1only=0',
+        headers: ['sec-websocket-protocol:invalid']
+      }
+    }
     const result = web.verifyClientToken(info)
     expect(result).toBe(false)
   })
   it('should return true when client jwt token is valid', () => {
     const jwsSpy = jest.spyOn(web.jws, 'verify')
+    devices['4c4c4544-004b-4210-8033-b6c04f504633'] = {} as any
     jwsSpy.mockImplementationOnce(() => true)
-    const info = { req: { headers: ['sec-websocket-protocol:supersecret'] } }
+    const info = {
+      req: {
+        url: '/relay/webrelay.ashx?p=2&host=4c4c4544-004b-4210-8033-b6c04f504633&port=16994&tls=0&tls1only=0',
+        headers: ['sec-websocket-protocol:supersecret']
+      }
+    }
     const result = web.verifyClientToken(info)
     expect(result).toBe(true)
   })
@@ -58,7 +70,38 @@ describe('verify client token', () => {
     jwsSpy.mockImplementationOnce(() => {
       throw new Error()
     })
-    const info = { req: { headers: ['sec-websocket-protocol:invalid'] } }
+    const info = {
+      req: {
+        url: '/relay/webrelay.ashx?p=2&host=4c4c4544-004b-4210-8033-b6c04f504633&port=16994&tls=0&tls1only=0',
+        headers: ['sec-websocket-protocol:invalid']
+      }
+    }
+    const result = web.verifyClientToken(info)
+    expect(result).toBe(false)
+  })
+  it('should allow KVM connection when no KVM connection', () => {
+    const jwsSpy = jest.spyOn(web.jws, 'verify')
+    jwsSpy.mockImplementationOnce(() => true)
+    devices['4c4c4544-004b-4210-8033-b6c04f504633'].kvmConnect = false // {} as any
+    const info = {
+      req: {
+        url: '/relay/webrelay.ashx?p=2&host=4c4c4544-004b-4210-8033-b6c04f504633&port=16994&tls=0&tls1only=0',
+        headers: ['sec-websocket-protocol:supersecret']
+      }
+    }
+    const result = web.verifyClientToken(info)
+    expect(result).toBe(true)
+  })
+  it('should not allow KVM connection when KVM connection active', () => {
+    const jwsSpy = jest.spyOn(web.jws, 'verify')
+    jwsSpy.mockImplementationOnce(() => true)
+    devices['4c4c4544-004b-4210-8033-b6c04f504633'].kvmConnect = true // {} as any
+    const info = {
+      req: {
+        url: '/relay/webrelay.ashx?p=2&host=4c4c4544-004b-4210-8033-b6c04f504633&port=16994&tls=0&tls1only=0',
+        headers: ['sec-websocket-protocol:supersecret']
+      }
+    }
     const result = web.verifyClientToken(info)
     expect(result).toBe(false)
   })
