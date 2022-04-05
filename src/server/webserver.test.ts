@@ -105,6 +105,19 @@ describe('verify client token', () => {
     const result = web.verifyClientToken(info)
     expect(result).toBe(false)
   })
+  it('should not allow KVM connection when no connection exists', () => {
+    const jwsSpy = jest.spyOn(web.jws, 'verify')
+    jwsSpy.mockImplementationOnce(() => true)
+    devices['4c4c4544-004b-4210-8033-b6c04f504633'] = null
+    const info = {
+      req: {
+        url: '/relay/webrelay.ashx?p=2&host=4c4c4544-004b-4210-8033-b6c04f504633&port=16994&tls=0&tls1only=0',
+        headers: ['sec-websocket-protocol:supersecret']
+      }
+    }
+    const result = web.verifyClientToken(info)
+    expect(result).toBe(false)
+  })
 })
 
 describe('handle upgrade', () => {
