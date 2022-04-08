@@ -26,6 +26,7 @@ import { DbCreatorFactory } from '../factories/DbCreatorFactory'
 import { Environment } from '../utils/Environment'
 import { ISecretManagerService } from '../interfaces/ISecretManagerService'
 import { WsRedirect } from '../utils/wsRedirect'
+import { devices } from './mpsserver'
 
 export class WebServer {
   app: express.Express
@@ -155,6 +156,16 @@ export class WebServer {
     } catch (err) { // reject connection if problem with verify
       return false
     }
-    return true
+    // Test if device has an established KVM session
+    const startIndex = info.req.url.indexOf('host=')
+    const guid = info.req.url.substring(startIndex + 5, startIndex + 5 + 36)
+    if (devices[guid]?.kvmConnect) {
+      return false
+    } else if (devices[guid] != null) {
+      devices[guid].kvmConnect = true
+      return true
+    } else {
+      return false
+    }
   }
 }

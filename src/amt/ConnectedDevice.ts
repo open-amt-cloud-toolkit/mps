@@ -8,9 +8,11 @@ import { HttpHandler } from './HttpHandler'
 export class ConnectedDevice {
   httpHandler: HttpHandler
   ciraSocket: CIRASocket
+  kvmConnect: boolean
 
   constructor (ciraSocket: CIRASocket, readonly username: string, readonly password: string) {
     this.ciraSocket = ciraSocket
     this.httpHandler = new HttpHandler()
+    this.kvmConnect = false
   }
 }
