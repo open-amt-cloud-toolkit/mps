@@ -11,7 +11,7 @@ import { MqttProvider } from '../../utils/MqttProvider'
 import { atob } from 'atob'
 import Common from '../../utils/common'
 import { AmtAuditStringTable, RealmNames } from '../../utils/constants'
-import { AuditLogReadRecordsOutput, AuditLogRecord, AuditLogResult } from '@open-amt-cloud-toolkit/wsman-messages/models/common'
+import { Common as WsmanMessagesCommon } from '@open-amt-cloud-toolkit/wsman-messages'
 
 export async function auditLog (req: Request, res: Response): Promise<void> {
   try {
@@ -31,8 +31,8 @@ export async function auditLog (req: Request, res: Response): Promise<void> {
   }
 }
 
-export function convertToAuditLogResult (readRecordsOutput: AuditLogReadRecordsOutput): AuditLogResult {
-  const auditLogResult: AuditLogResult = {
+export function convertToAuditLogResult (readRecordsOutput: WsmanMessagesCommon.Models.AuditLogReadRecordsOutput): WsmanMessagesCommon.Models.AuditLogResult {
+  const auditLogResult: WsmanMessagesCommon.Models.AuditLogResult = {
     totalCnt: 0,
     records: []
   }
@@ -47,7 +47,7 @@ export function convertToAuditLogResult (readRecordsOutput: AuditLogReadRecordsO
   for (const eventRecord of readRecordsOutput.EventRecords) {
     let ptr: number
     const decodedEventRecord: string = atob(eventRecord)
-    const auditLogRecord: AuditLogRecord = {
+    const auditLogRecord: WsmanMessagesCommon.Models.AuditLogRecord = {
       AuditAppID: 0,
       EventID: 0,
       InitiatorType: 0,

@@ -9,8 +9,7 @@ import { logger, messages } from '../../logging'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { UserConsentOptions } from '../../utils/constants'
-import { AMT_REDIRECTION_SERVICE_ENABLE_STATE } from '@open-amt-cloud-toolkit/wsman-messages/models/common'
-import { AMT, IPS } from '@open-amt-cloud-toolkit/wsman-messages'
+import { AMT, IPS, Common } from '@open-amt-cloud-toolkit/wsman-messages'
 import { DeviceAction } from '../../amt/DeviceAction'
 
 export async function setAMTFeatures (req: Request, res: Response): Promise<void> {
@@ -27,12 +26,12 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
 
     let isRedirectionChanged = false
     let redir = amtRedirectionResponse.AMT_RedirectionService.ListenerEnabled
-    let sol = (amtRedirectionResponse.AMT_RedirectionService.EnabledState & AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled) !== 0
-    let ider = (amtRedirectionResponse.AMT_RedirectionService.EnabledState & AMT_REDIRECTION_SERVICE_ENABLE_STATE.Other) !== 0
-    let kvm = ((kvmRedirectionResponse.CIM_KVMRedirectionSAP.EnabledState === AMT_REDIRECTION_SERVICE_ENABLE_STATE.EnabledButOffline &&
-      kvmRedirectionResponse.CIM_KVMRedirectionSAP.RequestedState === AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled) ||
-      kvmRedirectionResponse.CIM_KVMRedirectionSAP.EnabledState === AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled ||
-      kvmRedirectionResponse.CIM_KVMRedirectionSAP.EnabledState === AMT_REDIRECTION_SERVICE_ENABLE_STATE.EnabledButOffline)
+    let sol = (amtRedirectionResponse.AMT_RedirectionService.EnabledState & Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled) !== 0
+    let ider = (amtRedirectionResponse.AMT_RedirectionService.EnabledState & Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Other) !== 0
+    let kvm = ((kvmRedirectionResponse.CIM_KVMRedirectionSAP.EnabledState === Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.EnabledButOffline &&
+      kvmRedirectionResponse.CIM_KVMRedirectionSAP.RequestedState === Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled) ||
+      kvmRedirectionResponse.CIM_KVMRedirectionSAP.EnabledState === Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled ||
+      kvmRedirectionResponse.CIM_KVMRedirectionSAP.EnabledState === Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.EnabledButOffline)
 
     if (payload.enableSOL !== sol) {
       sol = payload.enableSOL
@@ -86,7 +85,7 @@ export async function setRedirectionService (device: DeviceAction, amtRedirRespo
   // for SOL and IDER
   await device.setRedirectionService(amtRedirResponse.AMT_RedirectionService.EnabledState)
   // for kvm
-  await device.setKvmRedirectionSap(kvm ? AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled : AMT_REDIRECTION_SERVICE_ENABLE_STATE.Disabled)
+  await device.setKvmRedirectionSap(kvm ? Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled : Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Disabled)
 
   await device.putRedirectionService(amtRedirResponse)
 }

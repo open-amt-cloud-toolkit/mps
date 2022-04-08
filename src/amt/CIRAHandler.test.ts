@@ -27,27 +27,27 @@ describe('CIRA Handler', () => {
   })
   it('should call Send when Pull<T> called', async () => {
     sendSpy = jest.spyOn(ciraHandler, 'Send').mockResolvedValue('xml')
-    await ciraHandler.Pull<any>(null, '', '1')
-    expect(sendSpy).toHaveBeenCalledWith(null, '', '1')
+    await ciraHandler.Pull<any>(null, '')
+    expect(sendSpy).toHaveBeenCalledWith(null, '')
   })
   it('should call Send when Get<T> called', async () => {
     sendSpy = jest.spyOn(ciraHandler, 'Send').mockResolvedValue('xml')
-    await ciraHandler.Get<any>(null, '', '1')
-    expect(sendSpy).toHaveBeenCalledWith(null, '', '1')
+    await ciraHandler.Get<any>(null, '')
+    expect(sendSpy).toHaveBeenCalledWith(null, '')
   })
   it('should call Send when Enumerate called', async () => {
     sendSpy = jest.spyOn(ciraHandler, 'Send').mockResolvedValue('xml')
-    await ciraHandler.Enumerate(null, '', '1')
-    expect(sendSpy).toHaveBeenCalledWith(null, '', '1')
+    await ciraHandler.Enumerate(null, '')
+    expect(sendSpy).toHaveBeenCalledWith(null, '')
   })
 
   it('Should add request to send', async () => {
     // const socket: CIRASocket = null
     // const rawXml = '<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/enumeration/Enumerate</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_SoftwareIdentity</w:ResourceURI><a:MessageID>0</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>PT60S</w:OperationTimeout></Header><Body><Enumerate xmlns="http://schemas.xmlsoap.org/ws/2004/09/enumeration" /></Body></Envelope>'
     const spy = jest.spyOn(ciraHandler, 'ExecRequest').mockResolvedValue('data')
-    const result = await ciraHandler.Send(null, 'hello', '1')
+    const result = await ciraHandler.Send(null, 'hello')
     expect(ciraHandler.socket).toBeNull()
-    expect(spy).toHaveBeenCalledWith('hello', '1')
+    expect(spy).toHaveBeenCalledWith('hello')
     expect(result).toBe('data')
   })
 
@@ -75,7 +75,7 @@ describe('CIRA Handler', () => {
     })
     const connectSpy = jest.spyOn(ciraHandler, 'Connect').mockResolvedValue(2)
     expect(ciraHandler.channelState).toBe(0)
-    const result = await ciraHandler.ExecRequest('xml', '1')
+    const result = await ciraHandler.ExecRequest('xml')
     expect(connectSpy).toHaveBeenCalled()
     expect(closeSpy).toHaveBeenCalled()
     expect(handleResultSpy).toHaveBeenNthCalledWith(1, 'response')
@@ -97,7 +97,7 @@ describe('CIRA Handler', () => {
       ciraHandler.httpHandler.authResolve = resolve
     })
     ciraHandler.httpHandler.authResolve()
-    const result = await ciraHandler.ExecRequest('xml', '1')
+    const result = await ciraHandler.ExecRequest('xml')
     expect(connectSpy).not.toHaveBeenCalled()
     expect(handleResultSpy).toHaveBeenCalled()
     expect(result).toStrictEqual({ data: 'data' })

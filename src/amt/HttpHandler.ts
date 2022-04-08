@@ -6,7 +6,7 @@
 import { logger, messages } from '../logging'
 import { createHash } from 'crypto'
 import * as xml2js from 'xml2js'
-import { DigestChallenge } from '@open-amt-cloud-toolkit/wsman-messages/models/common'
+import { Common } from '@open-amt-cloud-toolkit/wsman-messages'
 
 export class connectionParams {
   port: number
@@ -16,7 +16,7 @@ export class connectionParams {
   nonce?: string
   nonceCounter?: number
   consoleNonce?: string
-  digestChallenge?: DigestChallenge
+  digestChallenge?: Common.Models.DigestChallenge
 }
 
 export class HttpHandler {
@@ -92,7 +92,7 @@ export class HttpHandler {
     return `Digest ${paramNames.reduce((s1, ii) => `${s1},${ii}="${params[ii]}"`, '').substring(1)}`
   }
 
-  parseAuthenticateResponseHeader = (value: string): DigestChallenge => {
+  parseAuthenticateResponseHeader = (value: string): Common.Models.DigestChallenge => {
     const params = value.replace('Digest realm', 'realm').split(',')
     const challengeParams = params.reduce((obj: any, s: string) => {
       const parts = s.split('=')

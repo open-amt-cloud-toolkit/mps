@@ -8,11 +8,6 @@ import APFProcessor from './APFProcessor'
 import { connectionParams, HttpHandler } from './HttpHandler'
 import httpZ, { HttpZResponseModel } from 'http-z'
 import { amtPort } from '../utils/constants'
-import {
-  DigestChallenge,
-  Enumerate,
-  Pull
-} from '@open-amt-cloud-toolkit/wsman-messages/models/common'
 import { Common } from '@open-amt-cloud-toolkit/wsman-messages'
 import { CIRAChannel } from './CIRAChannel'
 import { parseBody } from '../utils/parseWSManResponseBody'
@@ -41,7 +36,7 @@ export class CIRAHandler {
     const sourcePort = (socket.tag.nextsourceport++ % 30000) + 1024
     const channel = new CIRAChannel(this.httpHandler, targetPort, socket)
     APFProcessor.SendChannelOpen(channel.socket, false, channel.channelid, channel.ciraWindow, channel.socket.tag.host, channel.targetport, '1.2.3.4', sourcePort)
-    channel.write = async (rawXML: string, messageId: string): Promise<any> => {
+    channel.write = async (rawXML: string): Promise<any> => {
       const params: connectionParams = {
         guid: this.channel.socket.tag.nodeid,
         port: amtPort,
@@ -49,7 +44,7 @@ export class CIRAHandler {
         username: this.username,
         password: this.password
       }
-      return await channel.writeData(rawXML, params, messageId)
+      return await channel.writeData(rawXML, params)
     }
     socket.tag.channels[channel.channelid] = channel
     return channel
@@ -65,24 +60,24 @@ export class CIRAHandler {
     })
   }
 
-  async Enumerate (socket: CIRASocket, rawXml: string, messageId: string): Promise<Common.Models.Response<Enumerate>> {
-    return await this.Send(socket, rawXml, messageId)
+  async Enumerate (socket: CIRASocket, rawXml: string): Promise<Common.Models.Response<Common.Models.Enumerate>> {
+    return await this.Send(socket, rawXml)
   }
 
-  async Pull<T>(socket: CIRASocket, rawXml: string, messageId: string): Promise<Common.Models.Response<Pull<T>>> {
-    return await this.Send(socket, rawXml, messageId)
+  async Pull<T>(socket: CIRASocket, rawXml: string): Promise<Common.Models.Response<Common.Models.Pull<T>>> {
+    return await this.Send(socket, rawXml)
   }
 
-  async Get<T>(socket: CIRASocket, rawXml: string, messageId: string): Promise<Common.Models.Response<T>> {
-    return await this.Send(socket, rawXml, messageId)
+  async Get<T>(socket: CIRASocket, rawXml: string): Promise<Common.Models.Response<T>> {
+    return await this.Send(socket, rawXml)
   }
 
-  async Send (socket: CIRASocket, rawXml: string, messageId: string): Promise<any> {
+  async Send (socket: CIRASocket, rawXml: string): Promise<any> {
     this.socket = socket
-    return await this.ExecRequest(rawXml, messageId)
+    return await this.ExecRequest(rawXml)
   }
 
-  async ExecRequest (xml: string, messageId: string): Promise<any> {
+  async ExecRequest (xml: string): Promise<any> {
     if (this.channelState === 0) {
       this.channelState = await this.Connect()
     }
@@ -95,14 +90,13 @@ export class CIRAHandler {
         } else {
           await this.httpHandler.isAuthInProgress
         }
-        const data = await this.channel.write(xml, messageId)
+        const data = await this.channel.write(xml)
         const parsedData = this.handleResult(data)
-
         return parsedData
       } catch (error) {
         if (error?.message === 'Unauthorized' || error?.message === 'Closed') {
           this.channelState = this.channel.CloseChannel()
-          return await this.ExecRequest(xml, messageId)
+          return await this.ExecRequest(xml)
         } else {
           throw error
         }
@@ -112,7 +106,7 @@ export class CIRAHandler {
     return null
   }
 
-  handleAuth (message: HttpZResponseModel): DigestChallenge {
+  handleAuth (message: HttpZResponseModel): Common.Models.DigestChallenge {
     const found = message.headers.find(item => item.name === 'Www-Authenticate')
     if (found != null) {
       return this.httpHandler.parseAuthenticateResponseHeader(found.value)

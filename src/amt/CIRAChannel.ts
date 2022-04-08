@@ -20,7 +20,7 @@ export class CIRAChannel {
   amtpendingcredits: number
   amtCiraWindow: number
   ciraWindow: number
-  write?: (data: string, messageId: string) => Promise<string>
+  write?: (data: string) => Promise<string>
   sendBuffer?: string = null
   amtchannelid?: number
   closing?: number
@@ -66,8 +66,18 @@ export class CIRAChannel {
     }
   }
 
-  async writeData (data: string, params?: connectionParams, messageId?: string): Promise<string> {
+  async writeData (data: string, params?: connectionParams): Promise<string> {
+    let messageId
     return await new Promise((resolve, reject) => {
+      if (data) {
+        const messageIDStartIndex = data.indexOf('<a:MessageID>')
+        if (messageIDStartIndex !== -1) {
+          const messageIDEndIndex = data.indexOf('</a:MessageID>')
+          messageId = data.substring(messageIDStartIndex + 13, messageIDEndIndex)
+        }
+      } else {
+        messageId = 0
+      }
       if (messageId != null) {
         this.resolve = this.messages[messageId] = resolve
       } else {

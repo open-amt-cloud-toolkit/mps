@@ -11,8 +11,7 @@ import { UserConsentOptions } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MPSValidationError } from '../../utils/MPSValidationError'
 import { MqttProvider } from '../../utils/MqttProvider'
-import { AMT, CIM, IPS } from '@open-amt-cloud-toolkit/wsman-messages'
-import { AMT_REDIRECTION_SERVICE_ENABLE_STATE, CIM_KVM_REDIRECTION_SAP_ENABLED_STATE, CIM_KVM_REDIRECTION_SAP_REQUESTED_STATE } from '@open-amt-cloud-toolkit/wsman-messages/models/common'
+import { AMT, CIM, IPS, Common } from '@open-amt-cloud-toolkit/wsman-messages'
 
 export async function getAMTFeatures (req: Request, res: Response): Promise<void> {
   try {
@@ -43,16 +42,16 @@ export async function getAMTFeatures (req: Request, res: Response): Promise<void
 
 export function processAmtRedirectionResponse (amtRedirection: AMT.Models.RedirectionService): {redir: boolean, sol: boolean, ider: boolean} {
   const redir = amtRedirection.ListenerEnabled
-  const sol = (amtRedirection.EnabledState & AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled) !== 0
-  const ider = (amtRedirection.EnabledState & AMT_REDIRECTION_SERVICE_ENABLE_STATE.Other) !== 0
+  const sol = (amtRedirection.EnabledState & Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled) !== 0
+  const ider = (amtRedirection.EnabledState & Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Other) !== 0
   return { redir, sol, ider }
 }
 
 export function processKvmRedirectionResponse (kvmRedirection: CIM.Models.KVMRedirectionSAP): boolean {
-  const kvm = ((kvmRedirection.EnabledState === CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.EnabledButOffline &&
-                kvmRedirection.RequestedState === CIM_KVM_REDIRECTION_SAP_REQUESTED_STATE.Enabled) ||
-                kvmRedirection.EnabledState === CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.Enabled ||
-                kvmRedirection.EnabledState === CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.EnabledButOffline)
+  const kvm = ((kvmRedirection.EnabledState === Common.Models.CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.EnabledButOffline &&
+                kvmRedirection.RequestedState === Common.Models.CIM_KVM_REDIRECTION_SAP_REQUESTED_STATE.Enabled) ||
+                kvmRedirection.EnabledState === Common.Models.CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.Enabled ||
+                kvmRedirection.EnabledState === Common.Models.CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.EnabledButOffline)
   return kvm
 }
 

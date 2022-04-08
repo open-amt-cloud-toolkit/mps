@@ -1,5 +1,4 @@
-import { CIM } from '@open-amt-cloud-toolkit/wsman-messages'
-import { DigestChallenge } from '@open-amt-cloud-toolkit/wsman-messages/models/common'
+import { CIM, Common } from '@open-amt-cloud-toolkit/wsman-messages'
 import { connectionParams, HttpHandler } from './HttpHandler'
 
 const httpHandler = new HttpHandler()
@@ -22,7 +21,7 @@ it('should parse authentication response header', async () => {
     qop: 'auth'
   }
   const value: string = 'Digest realm="Digest:56ABC7BE224EF620C69EB88F01071DC8", nonce="fVNueyEAAAAAAAAAcO8WqJ8s+WdyFUIY",stale="false",qop="auth"'
-  const result: DigestChallenge = httpHandler.parseAuthenticateResponseHeader(value)
+  const result: Common.Models.DigestChallenge = httpHandler.parseAuthenticateResponseHeader(value)
   expect(JSON.stringify(result)).toBe(JSON.stringify(digestChallenge))
 })
 it('should return a WSMan request', async () => {
