@@ -78,11 +78,13 @@ describe('WsRedirect tests', () => {
       wsRedirect.websocketFromDevice = {
         CloseChannel: jest.fn()
       } as any
+      devices[params.host] = {} as any
       jest.spyOn(wsRedirect.websocketFromDevice, 'CloseChannel')
       const publishEventSpy = jest.spyOn(MqttProvider, 'publishEvent')
       wsRedirect.handleClose(params, null)
       expect(publishEventSpy).toHaveBeenCalled()
       expect(wsRedirect.websocketFromDevice.CloseChannel).toBeCalled()
+      expect(devices[params.host].kvmConnect).toBeFalsy()
     })
   })
 

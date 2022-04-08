@@ -65,7 +65,7 @@ describe('CIRA Channel', () => {
       password: 'P@ssw0rd'
     }
     const sendChannelSpy = jest.spyOn(APFProcessor, 'SendChannelData').mockImplementation(() => {})
-
+    ciraChannel.messages['0'] = Promise.resolve()
     const writePromise = ciraChannel.writeData(data, params, '1')
     ciraChannel.onData(httpHeader200 + enumCimSoftwareIdentityResponse)
     const responseData = await writePromise
