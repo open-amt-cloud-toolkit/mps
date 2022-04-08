@@ -27,7 +27,7 @@ import { CIRAHandler } from './CIRAHandler'
 import { DeviceAction } from './DeviceAction'
 import { HttpHandler } from './HttpHandler'
 
-describe('Connected Device', () => {
+describe('Device Action Tests', () => {
   let enumerateSpy: jest.SpyInstance
   let pullSpy: jest.SpyInstance
   let getSpy: jest.SpyInstance

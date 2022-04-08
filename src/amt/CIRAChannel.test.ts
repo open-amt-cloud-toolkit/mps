@@ -12,6 +12,9 @@ describe('CIRA Channel', () => {
     socket = { tag: { nextChannelId: 0 } } as any
     ciraChannel = new CIRAChannel(new HttpHandler(), 4000, socket)
   })
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
   it('should initialize', () => {
     expect(ciraChannel).toBeDefined()
     expect(ciraChannel.state).toBe(1)
@@ -28,7 +31,7 @@ describe('CIRA Channel', () => {
     ciraChannel.state = 0
     let error
     try {
-      await ciraChannel.writeData(null, null, '1')
+      await ciraChannel.writeData(null, null)
     } catch (err) {
       error = err?.message
     } finally {
@@ -65,14 +68,33 @@ describe('CIRA Channel', () => {
       password: 'P@ssw0rd'
     }
     const sendChannelSpy = jest.spyOn(APFProcessor, 'SendChannelData').mockImplementation(() => {})
-    ciraChannel.messages['0'] = Promise.resolve()
-    const writePromise = ciraChannel.writeData(data, params, '1')
+
+    const writePromise = ciraChannel.writeData(data, params)
     ciraChannel.onData(httpHeader200 + enumCimSoftwareIdentityResponse)
     const responseData = await writePromise
 
     expect(responseData).toEqual(httpHeader200 + enumCimSoftwareIdentityResponse)
     // await expect(ciraChannel.writeData(data, params, '1')).rejects.toEqual(1)
     expect(sendChannelSpy).toHaveBeenCalledTimes(1)
+    expect(ciraChannel.sendcredits).toBe(0)
+  })
+  it('should resolve if data does not contain messageId', async () => {
+    ciraChannel.state = 2
+    ciraChannel.sendcredits = 116
+    const data = 'KVMR'
+    const params: connectionParams = {
+      guid: '4c4c4544-004b-4210-8033-b6c04f504633',
+      port: 16992,
+      digestChallenge: null,
+      username: 'admin',
+      password: 'P@ssw0rd'
+    }
+    const sendChannelSpy = jest.spyOn(APFProcessor, 'SendChannelData').mockImplementation(() => {})
+    const writePromise = ciraChannel.writeData(data, params)
+    ciraChannel.onData('KVMR')
+    const responseData = await writePromise
+    expect(sendChannelSpy).toHaveBeenCalledTimes(1)
+    expect(responseData).toEqual(null)
     expect(ciraChannel.sendcredits).toBe(0)
   })
 })
