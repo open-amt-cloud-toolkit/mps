@@ -80,7 +80,7 @@ export class MPSServer {
 
   onAPFProtocolVersion = async (socket: CIRASocket): Promise<void> => {
     // Check if the device exits in db
-    if (await this.db.devices.getByName(socket.tag.SystemId) != null) {
+    if (await this.db.devices.getById(socket.tag.SystemId) != null) {
       socket.tag.nodeid = socket.tag.SystemId
       // if (socket.tag.certauth) { // is this even used?
       //   devices[socket.tag.nodeid] = socket
@@ -97,7 +97,7 @@ export class MPSServer {
   onVerifyUserAuth = async (socket: CIRASocket, username: string, password: string): Promise<void> => {
     // Authenticate device connection using username and password
     try {
-      const device = await this.db.devices.getByName(socket.tag.SystemId)
+      const device = await this.db.devices.getById(socket.tag.SystemId)
       const pwd = await this.secrets.getSecretFromKey(`devices/${socket.tag.SystemId}`, 'MPS_PASSWORD')
       if (username === device?.mpsusername && password === pwd) {
         if (devices[socket.tag.SystemId]) {
@@ -216,7 +216,7 @@ export class MPSServer {
   async handleDeviceDisconnect (guid: string): Promise<void> {
     if (devices[guid]) {
       delete devices[guid]
-      const device: Device = await this.db.devices.getByName(guid)
+      const device: Device = await this.db.devices.getById(guid)
       if (device != null) {
         device.connectionStatus = false
         device.mpsInstance = null
@@ -231,7 +231,7 @@ export class MPSServer {
   }
 
   async handleDeviceConnect (guid: string): Promise<void> {
-    const device: Device = await this.db.devices.getByName(guid)
+    const device: Device = await this.db.devices.getById(guid)
     device.connectionStatus = true
     device.mpsInstance = Environment.Config.instance_name
     const results = await this.db.devices.update(device)

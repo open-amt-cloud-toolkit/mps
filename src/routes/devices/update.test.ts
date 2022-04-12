@@ -33,11 +33,11 @@ describe('update', () => {
   const guid = '00000000-0000-0000-0000-000000000000'
   const errorSpy = jest.spyOn(logger, 'error')
 
-  it('should set status to 404 if getByName gets no result', async () => {
+  it('should set status to 404 if getById gets no result', async () => {
     const req = {
       db: {
         devices: {
-          getByName: jest.fn().mockReturnValue(null)
+          getById: jest.fn().mockReturnValue(null)
         }
       },
       body: {
@@ -50,13 +50,13 @@ describe('update', () => {
     expect(endSpy).toBeCalled()
   })
 
-  it('should set status to 200 if getByName gets a result', async () => {
+  it('should set status to 200 if getById gets a result', async () => {
     const device = {} as any
 
     const req = {
       db: {
         devices: {
-          getByName: jest.fn().mockReturnValue(device),
+          getById: jest.fn().mockReturnValue(device),
           update: () => {}
         }
       },
@@ -80,7 +80,7 @@ describe('update', () => {
     const req = {
       db: {
         devices: {
-          getByName: jest.fn().mockImplementation(() => {
+          getById: jest.fn().mockImplementation(() => {
             throw new MPSValidationError(errorMessage, errorStatus, errorName)
           })
         }
@@ -100,7 +100,7 @@ describe('update', () => {
     const req = {
       db: {
         devices: {
-          getByName: jest.fn().mockImplementation(() => {
+          getById: jest.fn().mockImplementation(() => {
             throw new TypeError('fake error')
           })
         }

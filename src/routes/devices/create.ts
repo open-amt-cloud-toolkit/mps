@@ -10,7 +10,7 @@ import { Request, Response } from 'express'
 export async function insertDevice (req: Request, res: Response): Promise<void> {
   let device: Device
   try {
-    device = await req.db.devices.getByName(req.body.guid)
+    device = await req.db.devices.getById(req.body.guid)
     if (device != null) {
       device.hostname = req.body.hostname ?? device.hostname
       device.tags = req.body.tags ?? device.tags

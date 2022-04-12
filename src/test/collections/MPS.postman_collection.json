@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "09400cc1-0adf-4e7e-abaf-37f7686596d0",
+		"_postman_id": "ec1483e3-180d-4c5e-9bd4-63f0fef67877",
 		"name": "MPS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -695,6 +695,67 @@
 				},
 				{
 					"name": "All Devices by tags",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Should bring all devices with tag acm\", function () {\r",
+									"   var jsonData = pm.response.json();\r",
+									"   pm.expect(jsonData[0].guid).to.eql(\"143e4567-e89b-12d3-a456-426614174000\");\r",
+									"   pm.expect(jsonData[0].hostname).to.eql(\"hostname\");\r",
+									"   pm.expect(jsonData[0].tags.length).to.eql(1);\r",
+									"    pm.expect(jsonData[0].tags[0]).to.eql(\"acm\");\r",
+									"   pm.expect(jsonData[0].mpsInstance).to.eql(null);\r",
+									"   pm.expect(jsonData[0].connectionStatus).to.eql(false);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices?$tags=acm",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices"
+							],
+							"query": [
+								{
+									"key": "$tags",
+									"value": "acm"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All Devices by hostname",
 					"event": [
 						{
 							"listen": "test",
