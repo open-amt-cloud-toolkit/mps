@@ -9,7 +9,7 @@ import { Request, Response } from 'express'
 export async function updateDevice (req: Request, res: Response): Promise<void> {
   const guid: string = req.body.guid
   try {
-    let device = await req.db.devices.getByName(guid)
+    let device = await req.db.devices.getById(guid)
     if (device == null) {
       res.status(404).json({ error: 'NOT FOUND', message: `Device ID ${guid} not found` }).end()
     } else {

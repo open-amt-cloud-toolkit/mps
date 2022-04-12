@@ -35,8 +35,9 @@ describe('MPS Server', function () {
       get: async () => { return [] as Device[] },
       getCount: async () => { return 0 },
       getDistinctTags: async () => { return ['tag'] },
-      getByName: async (guid) => { return device as Device },
+      getById: async (guid) => { return device as Device },
       getByTags: async (tags) => { return [device] as Device[] },
+      getByHostname: async (hostname) => { return [device] as Device[] },
       clearInstanceStatus: async () => {},
       delete: async (guid) => { return true },
       insert: async (device) => { return device },
@@ -59,7 +60,7 @@ describe('MPS Server', function () {
       mps_tls_config: {} as any,
       web_tls_config: {} as any
     }
-    deviceSpy = jest.spyOn(devicesMock, 'getByName')
+    deviceSpy = jest.spyOn(devicesMock, 'getById')
     deviceUpdateSpy = jest.spyOn(devicesMock, 'update')
     getSecretSpy = jest.spyOn(secrets, 'getSecretFromKey')
     getCredsSpy = jest.spyOn(secrets, 'getAMTCredentials')
@@ -113,7 +114,7 @@ describe('MPS Server', function () {
     expect(deviceSpy).toHaveBeenCalledWith('123')
   })
   it('should not allow device to connect if exists in db', async () => {
-    deviceSpy = jest.spyOn(devicesMock, 'getByName').mockResolvedValue(null)
+    deviceSpy = jest.spyOn(devicesMock, 'getById').mockResolvedValue(null)
     const endSpy = jest.spyOn(socket, 'end')
     await mps.onAPFProtocolVersion(socket)
     expect(deviceSpy).toHaveBeenCalledWith('123')

@@ -51,13 +51,13 @@ describe('create', () => {
       },
       db: {
         devices: {
-          getByName: jest.fn().mockReturnValue(deviceFromMockDb),
+          getById: jest.fn().mockReturnValue(deviceFromMockDb),
           update: jest.fn().mockReturnValue(expectedUpdateResultFromDb)
         }
       }
     } as any
     await insertDevice(req, res as any)
-    expect(req.db.devices.getByName).toHaveBeenCalledWith(guidFromRequest)
+    expect(req.db.devices.getById).toHaveBeenCalledWith(guidFromRequest)
     expect(statusSpy).toHaveBeenCalledWith(200)
     expect(jsonSpy).toHaveBeenCalledWith(expectedUpdateResultFromDb)
     expect(req.db.devices.update).toHaveBeenCalledWith(expectedUpdateResultFromDb)
@@ -91,13 +91,13 @@ describe('create', () => {
       },
       db: {
         devices: {
-          getByName: jest.fn().mockReturnValue(deviceFromMockDb),
+          getById: jest.fn().mockReturnValue(deviceFromMockDb),
           update: jest.fn().mockReturnValue(expectedUpdateResultFromDb)
         }
       }
     } as any
     await insertDevice(req, res as any)
-    expect(req.db.devices.getByName).toHaveBeenCalledWith(guidFromRequest)
+    expect(req.db.devices.getById).toHaveBeenCalledWith(guidFromRequest)
     expect(statusSpy).toHaveBeenCalledWith(200)
     expect(jsonSpy).toHaveBeenCalledWith(expectedUpdateResultFromDb)
     expect(req.db.devices.update).toHaveBeenCalledWith(expectedUpdateResultFromDb)
@@ -129,13 +129,13 @@ describe('create', () => {
       },
       db: {
         devices: {
-          getByName: jest.fn().mockReturnValue(deviceFromMockDb),
+          getById: jest.fn().mockReturnValue(deviceFromMockDb),
           insert: jest.fn().mockReturnValue(expectedInsertResultFromDb)
         }
       }
     } as any
     await insertDevice(req, res as any)
-    expect(req.db.devices.getByName).toHaveBeenCalledWith(guidFromRequest)
+    expect(req.db.devices.getById).toHaveBeenCalledWith(guidFromRequest)
     expect(statusSpy).toHaveBeenCalledWith(201)
     expect(jsonSpy).toHaveBeenCalledWith(expectedInsertResultFromDb)
     expect(req.db.devices.insert).toHaveBeenCalledWith(expectedInsertResultFromDb)
@@ -167,13 +167,13 @@ describe('create', () => {
       },
       db: {
         devices: {
-          getByName: jest.fn().mockReturnValue(deviceFromMockDb),
+          getById: jest.fn().mockReturnValue(deviceFromMockDb),
           insert: jest.fn().mockReturnValue(expectedInsertResultFromDb)
         }
       }
     } as any
     await insertDevice(req, res as any)
-    expect(req.db.devices.getByName).toHaveBeenCalledWith(guidFromRequest)
+    expect(req.db.devices.getById).toHaveBeenCalledWith(guidFromRequest)
     expect(statusSpy).toHaveBeenCalledWith(201)
     expect(jsonSpy).toHaveBeenCalledWith(expectedInsertResultFromDb)
     expect(req.db.devices.insert).toHaveBeenCalledWith(expectedInsertResultFromDb)
@@ -190,7 +190,7 @@ describe('create', () => {
       },
       db: {
         devices: {
-          getByName: jest.fn().mockImplementation(() => {
+          getById: jest.fn().mockImplementation(() => {
             throw new MPSValidationError(errorMessage, errorStatus, errorName)
           })
         }
@@ -214,7 +214,7 @@ describe('create', () => {
       },
       db: {
         devices: {
-          getByName: jest.fn().mockImplementation(() => {
+          getById: jest.fn().mockImplementation(() => {
             throw new TypeError('fake error')
           })
         }

@@ -35,14 +35,14 @@ const req = {
   db: {
     devices: {
       delete: () => {},
-      getByName: () => {}
+      getById: () => {}
     }
   }
 } as any
 
 describe('delete', () => {
   it('should set status to 404 and not delete device if it does not exist in db', async () => {
-    req.db.devices.getByName = jest.fn().mockReturnValue(null)
+    req.db.devices.getById = jest.fn().mockReturnValue(null)
     await deleteDevice(req, res as any)
     expect(statusSpy).toHaveBeenCalledWith(404)
     expect(jsonSpy).toHaveBeenCalledWith({ error: 'NOT FOUND', message: `Device ID ${req.params.guid} not found` })
@@ -50,7 +50,7 @@ describe('delete', () => {
   })
 
   it('should set status to 204 and delete device if it exists in db', async () => {
-    req.db.devices.getByName = jest.fn().mockReturnValue({})
+    req.db.devices.getById = jest.fn().mockReturnValue({})
     req.db.devices.delete = jest.fn().mockReturnValue({})
     await deleteDevice(req, res as any)
     expect(statusSpy).toHaveBeenCalledWith(204)
@@ -59,7 +59,7 @@ describe('delete', () => {
   })
 
   it('should set status to 500 and not delete device if error occurs', async () => {
-    req.db.devices.getByName = jest.fn().mockImplementation(() => {
+    req.db.devices.getById = jest.fn().mockImplementation(() => {
       throw new TypeError('fake error')
     })
     req.db.devices.delete = jest.fn().mockReturnValue({})

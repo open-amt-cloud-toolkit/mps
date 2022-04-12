@@ -7,7 +7,10 @@ import { Request, Response } from 'express'
 
 export async function getDevice (req: Request, res: Response): Promise<void> {
   try {
-    const results = await req.db.devices.getByName(req.params.guid)
+    let id
+    if (req.params.guid && req.params.guid.length === 36) { id = req.params.guid }
+    if (req.params.hostname && req.params.hostname.length < 256) { id = req.params.hostname }
+    const results = await req.db.devices.getById(id)
     if (results != null) {
       res.status(200).json(results).end()
     } else {

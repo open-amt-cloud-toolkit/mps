@@ -53,7 +53,7 @@ export class DeviceTable implements IDeviceTable {
    * @param {string} guid
    * @returns {Device} Device object
    */
-  async getByName (guid: string, tenantId: string = ''): Promise<Device> {
+  async getById (id: string, tenantId: string = ''): Promise<Device> {
     const results = await this.db.query<Device>(`
     SELECT
       guid as "guid",
@@ -64,9 +64,25 @@ export class DeviceTable implements IDeviceTable {
       mpsusername as "mpsusername",
       tenantid as "tenantId"
     FROM devices 
-    WHERE guid = $1 and tenantid = $2`, [guid, tenantId])
+    WHERE guid = $1 and tenantid = $2`, [id, tenantId])
 
     return results.rowCount > 0 ? results.rows[0] : null
+  }
+
+  async getByHostname (hostname: string, tenantId: string = ''): Promise<Device[]> {
+    const results = await this.db.query<Device>(`
+    SELECT
+      guid as "guid",
+      hostname as "hostname",
+      tags as "tags",
+      mpsinstance as "mpsInstance",
+      connectionstatus as "connectionStatus",
+      mpsusername as "mpsusername",
+      tenantid as "tenantId"
+    FROM devices 
+    WHERE hostname = $1 and tenantid = $2`, [hostname, tenantId])
+
+    return results.rowCount > 0 ? results.rows : null
   }
 
   async getByTags (tags: string[], method: string, top: number = DEFAULT_TOP, skip: number = DEFAULT_SKIP, tenantId: string = ''): Promise<Device[]> {
@@ -133,7 +149,7 @@ export class DeviceTable implements IDeviceTable {
         device.tenantId
       ])
       if (results.rowCount > 0) {
-        return await this.getByName(device.guid)
+        return await this.getById(device.guid)
       }
       return null
     } catch (error) {
@@ -166,7 +182,7 @@ export class DeviceTable implements IDeviceTable {
         device.tenantId
       ])
       if (results.rowCount > 0) {
-        return await this.getByName(device.guid)
+        return await this.getById(device.guid)
       }
       throw new MPSValidationError(`Failed to update device: ${device.guid}`, 400)
     } catch (error) {
