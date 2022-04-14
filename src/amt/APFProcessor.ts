@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { logger, messages } from '../logging'
+import {logger, messages} from '../logging'
 import Common from '../utils/common'
-import { CIRASocket } from '../models/models'
-import { EventEmitter } from 'stream'
+import {CIRASocket} from '../models/models'
+import {EventEmitter} from 'stream'
+
 const KEEPALIVE_INTERVAL = 30 // 30 seconds is typical keepalive interval for AMT CIRA connection
 
 export enum APFProtocol {
@@ -68,46 +69,47 @@ export enum APFChannelOpenFailureReasonCode {
   ResourceShortage = 4,
 }
 
+export const APFPropValueMaxLength = 2048
+export const APFBulkDataMaxLength = 1048576
+
 const APFProcessor = {
   APFEvents: new EventEmitter(),
   // Process one APF command
   processCommand: async (socket: CIRASocket): Promise<number> => {
-    const cmd = socket.tag.accumulator.charCodeAt(0)
-    const len = socket.tag.accumulator.length
     const data = socket.tag.accumulator
-    if (len === 0) {
+    if (data.length === 0) {
       return 0
     }
-
+    const cmd = socket.tag.accumulator.charCodeAt(0)
     switch (cmd) {
       case APFProtocol.KEEPALIVE_REQUEST:
-        return APFProcessor.keepAliveRequest(socket, len, data)
+        return APFProcessor.keepAliveRequest(socket, data.length, data)
       case APFProtocol.KEEPALIVE_REPLY:
-        return APFProcessor.keepAliveReply(len)
+        return APFProcessor.keepAliveReply(data.length, data)
       case APFProtocol.KEEPALIVE_OPTIONS_REPLY:
-        return APFProcessor.keepAliveOptionsReply(len, data)
+        return APFProcessor.keepAliveOptionsReply(data.length, data)
       case APFProtocol.PROTOCOLVERSION:
-        return APFProcessor.protocolVersion(socket, len, data)
+        return APFProcessor.protocolVersion(socket, data.length, data)
       case APFProtocol.USERAUTH_REQUEST:
-        return APFProcessor.userAuthRequest(socket, len, data)
+        return APFProcessor.userAuthRequest(socket, data.length, data)
       case APFProtocol.SERVICE_REQUEST:
-        return APFProcessor.serviceRequest(socket, len, data)
+        return APFProcessor.serviceRequest(socket, data.length, data)
       case APFProtocol.GLOBAL_REQUEST:
-        return APFProcessor.globalRequest(socket, len, data)
+        return APFProcessor.globalRequest(socket, data.length, data)
       case APFProtocol.CHANNEL_OPEN:
-        return APFProcessor.channelOpen(socket, len, data)
+        return APFProcessor.channelOpen(socket, data.length, data)
       case APFProtocol.CHANNEL_OPEN_CONFIRMATION:
-        return APFProcessor.channelOpenConfirmation(socket, len, data)
+        return APFProcessor.channelOpenConfirmation(socket, data.length, data)
       case APFProtocol.CHANNEL_OPEN_FAILURE:
-        return APFProcessor.channelOpenFailure(socket, len, data)
+        return APFProcessor.channelOpenFailure(socket, data.length, data)
       case APFProtocol.CHANNEL_CLOSE:
-        return APFProcessor.channelClose(socket, len, data)
+        return APFProcessor.channelClose(socket, data.length, data)
       case APFProtocol.CHANNEL_WINDOW_ADJUST:
-        return APFProcessor.channelWindowAdjust(socket, len, data)
+        return APFProcessor.channelWindowAdjust(socket, data.length, data)
       case APFProtocol.CHANNEL_DATA:
-        return APFProcessor.channelData(socket, len, data)
+        return APFProcessor.channelData(socket, data.length, data)
       case APFProtocol.DISCONNECT:
-        return APFProcessor.disconnect(socket, len, data)
+        return APFProcessor.disconnect(socket, data.length, data)
       default: {
         logger.warn(`${messages.MPS_UNKNOWN_CIRA_COMMAND}: ${cmd}`)
         return -1
@@ -115,45 +117,76 @@ const APFProcessor = {
     }
   },
 
-  disconnect: (socket: CIRASocket, len: number, data: string): number => {
-    if (len < 7) return 0
-    const ReasonCode: number = Common.ReadInt(data, 1)
-    logger.silly(`${messages.MPS_DISCONNECT}, ${ReasonCode.toString()}`)
+  disconnect: (socket: CIRASocket, dataLen: number, data: string): number => {
+    if (dataLen < 7) return 0
+    let parseIndex: number = 1
+    const reasonCode: number = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    // reserved short
+    const reserved: number = Common.ReadShort(data, parseIndex)
+    parseIndex += 2
+    if (reserved !== 0) {
+      logger.warn(`${messages.MPS_WARN_RESERVED_VALUE}, ${reserved.toString()}`)
+    }
+    logger.silly(`${messages.MPS_DISCONNECT}, ${reasonCode.toString()}`)
     APFProcessor.APFEvents.emit('disconnected', socket.tag.nodeid)
-    return 7
+    return parseIndex
   },
 
-  channelData: (socket: CIRASocket, len: number, data: string): number => {
-    if (len < 9) return 0
-    const RecipientChannel: number = Common.ReadInt(data, 1)
-    const LengthOfData: number = Common.ReadInt(data, 5)
-    if (len < 9 + LengthOfData) return 0
-    logger.silly(`${messages.MPS_CHANNEL_DATA}, ${RecipientChannel.toString()}, ${LengthOfData.toString()}`)
-    const cirachannel = socket.tag.channels[RecipientChannel]
-    if (cirachannel == null) {
-      logger.error(`${messages.DATA_NO_CHANNEL_ID} ${RecipientChannel}`)
-      return 9 + LengthOfData
+  channelData: (socket: CIRASocket, dataLen: number, data: string): number => {
+    if (dataLen < 9) {
+      return 0
     }
-    cirachannel.amtpendingcredits += LengthOfData
-    if (cirachannel.onData) { cirachannel.onData(data.substring(9, 9 + LengthOfData)) }
+    let parseIndex: number = 1
+    const recipientChnlId: number = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    const chnlDataLen: number = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    if (chnlDataLen > APFBulkDataMaxLength) {
+      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFBulkDataMaxLength} `+
+        `channelData:chnlDataLen: ${chnlDataLen} `)
+      return -1
+    }
+    if (dataLen < parseIndex + chnlDataLen) {
+      return 0
+    }
+    const chnlData: string = data.substring(parseIndex, parseIndex + chnlDataLen)
+    parseIndex += chnlDataLen
+    logger.silly(`${messages.MPS_CHANNEL_DATA}, ${recipientChnlId.toString()}, ${chnlDataLen.toString()}`)
+    const cirachannel = socket.tag.channels[recipientChnlId]
+    if (cirachannel == null) {
+      logger.error(`${messages.DATA_NO_CHANNEL_ID} ${recipientChnlId}`)
+      return parseIndex
+    }
+    cirachannel.amtpendingcredits += chnlDataLen
+    if (cirachannel.onData) {
+      cirachannel.onData(chnlData)
+    }
     if (cirachannel.amtpendingcredits > cirachannel.ciraWindow / 2) {
-      APFProcessor.SendChannelWindowAdjust(cirachannel.socket, cirachannel.amtchannelid, cirachannel.amtpendingcredits) // Adjust the buffer window
+      // Adjust the buffer window
+      APFProcessor.SendChannelWindowAdjust(cirachannel.socket,
+        cirachannel.amtchannelid,
+        cirachannel.amtpendingcredits)
       cirachannel.amtpendingcredits = 0
     }
-    return 9 + LengthOfData
+    return parseIndex
   },
 
-  channelWindowAdjust: (socket: CIRASocket, len: number, data: string): number => {
-    if (len < 9) return 0
-    const RecipientChannel = Common.ReadInt(data, 1)
-    const ByteToAdd = Common.ReadInt(data, 5)
-    const cirachannel = socket.tag.channels[RecipientChannel]
+  channelWindowAdjust: (socket: CIRASocket, dataLen: number, data: string): number => {
+    if (dataLen < 9) return 0
+    let parseIndex: number = 1
+    const recipientChnlId: number = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    const bytesToAdd: number = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+
+    const cirachannel = socket.tag.channels[recipientChnlId]
     if (cirachannel == null) {
-      logger.error(`${messages.WINDOW_ADJUST_NO_CHANNEL_ID} ${RecipientChannel}`)
-      return 9
+      logger.error(`${messages.WINDOW_ADJUST_NO_CHANNEL_ID} ${recipientChnlId}`)
+      return parseIndex
     }
-    cirachannel.sendcredits += ByteToAdd
-    logger.silly(`${messages.MPS_WINDOW_ADJUST}, ${RecipientChannel.toString()}, ${ByteToAdd.toString()}, ${cirachannel.sendcredits}`)
+    cirachannel.sendcredits += bytesToAdd
+    logger.silly(`${messages.MPS_WINDOW_ADJUST}, ${recipientChnlId.toString()}, ${bytesToAdd.toString()}, ${cirachannel.sendcredits}`)
     if (cirachannel.state === 2 && cirachannel.sendBuffer != null) {
       // Compute how much data we can send
       if (cirachannel.sendBuffer.length <= cirachannel.sendcredits) {
@@ -168,17 +201,20 @@ const APFProcessor = {
         cirachannel.sendcredits = 0
       }
     }
-    return 9
+    return parseIndex
   },
 
-  channelClose: (socket: CIRASocket, len: number, data: string): number => {
-    if (len < 5) return 0
-    const RecipientChannel: number = Common.ReadInt(data, 1)
-    logger.silly(`${messages.MPS_CHANNEL_CLOSE} ${RecipientChannel.toString()}`)
-    const cirachannel = socket.tag.channels[RecipientChannel]
+  channelClose: (socket: CIRASocket, dataLen: number, data: string): number => {
+    if (dataLen < 5) return 0
+    let parseIndex: number = 1
+    const recipientChnlId: number = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    logger.silly(`${messages.MPS_CHANNEL_CLOSE} ${recipientChnlId.toString()}`)
+
+    const cirachannel = socket.tag.channels[recipientChnlId]
     if (cirachannel == null) {
-      logger.error(`${messages.CHANNEL_CLOSE_NO_CHANNEL_ID} ${RecipientChannel}`)
-      return 5
+      logger.error(`${messages.CHANNEL_CLOSE_NO_CHANNEL_ID} ${recipientChnlId}`)
+      return parseIndex
     }
     APFProcessor.SendChannelClose(cirachannel.socket, cirachannel.amtchannelid)
     socket.tag.activetunnels--
@@ -187,44 +223,61 @@ const APFProcessor = {
       if (cirachannel.onStateChange) {
         cirachannel.onStateChange.emit('stateChange', cirachannel.state)
       }
-      delete socket.tag.channels[RecipientChannel]
+      delete socket.tag.channels[recipientChnlId]
     }
-    return 5
+    return parseIndex
   },
 
-  channelOpenFailure: (socket: CIRASocket, length: number, data: string): number => {
-    if (length < 17) return 0
-    const recipientChannel = Common.ReadInt(data, 1)
-    const reasonCode = Common.ReadInt(data, 5)
-    logger.silly(`${messages.MPS_CHANNEL_OPEN_FAILURE}, ${recipientChannel.toString()}, ${reasonCode.toString()}`)
-    const cirachannel = socket.tag.channels[recipientChannel]
+  channelOpenFailure: (socket: CIRASocket, dataLen: number, data: string): number => {
+    if (dataLen < 17) {
+      return 0
+    }
+    let parseIndex: number = 1
+    const recipientChnlId: number = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    const reasonCode = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    // reserved 4 bytes
+    parseIndex += 4
+    // reserved 4 bytes
+    parseIndex += 4
+    logger.silly(`${messages.MPS_CHANNEL_OPEN_FAILURE}, ${recipientChnlId.toString()}, ${reasonCode.toString()}`)
+
+    const cirachannel = socket.tag.channels[recipientChnlId]
     if (cirachannel == null) {
-      logger.error(`${messages.CHANNEL_OPEN_FAILURE_NO_CHANNEL_ID} ${recipientChannel}`)
-      return 17
+      logger.error(`${messages.CHANNEL_OPEN_FAILURE_NO_CHANNEL_ID} ${recipientChnlId}`)
+      return parseIndex
     }
     if (cirachannel.state > 0) {
       cirachannel.state = 0
       if (cirachannel.onStateChange) {
         cirachannel.onStateChange.emit('stateChange', cirachannel.state)
       }
-      delete socket.tag.channels[recipientChannel]
+      delete socket.tag.channels[recipientChnlId]
     }
-    return 17
+    return parseIndex
   },
 
-  channelOpenConfirmation: (socket: CIRASocket, length: number, data: string): number => {
-    if (length < 17) return 0
-    const recipientChannel = Common.ReadInt(data, 1)
-    const senderChannel = Common.ReadInt(data, 5)
-    const windowSize = Common.ReadInt(data, 9)
+  channelOpenConfirmation: (socket: CIRASocket, dataLen: number, data: string): number => {
+    if (dataLen < 17) return 0
+    let parseIndex: number = 1
+    const recipientChnlId: number = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    const senderChnlId = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    const windowSize = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    // reserved 4 bytes
+    parseIndex += 4
+
     socket.tag.activetunnels++
-    const cirachannel = socket.tag.channels[recipientChannel]
+    const cirachannel = socket.tag.channels[recipientChnlId]
     if (cirachannel == null) {
-      return 17
+      return parseIndex
     }
-    cirachannel.amtchannelid = senderChannel
+    cirachannel.amtchannelid = senderChnlId
     cirachannel.sendcredits = cirachannel.amtCiraWindow = windowSize
-    logger.silly(`${messages.MPS_CHANNEL_OPEN_CONFIRMATION}, ${recipientChannel.toString()}, ${senderChannel.toString()}, ${windowSize.toString()}`)
+    logger.silly(`${messages.MPS_CHANNEL_OPEN_CONFIRMATION}, ${recipientChnlId.toString()}, ${senderChnlId.toString()}, ${windowSize.toString()}`)
     if (cirachannel.closing === 1) {
       // Close this channel
       APFProcessor.SendChannelClose(cirachannel.socket, cirachannel.amtchannelid)
@@ -249,111 +302,219 @@ const APFProcessor = {
         cirachannel.onStateChange.emit('stateChange', cirachannel.state)
       }
     }
-    return 17
+    return parseIndex
   },
 
-  channelOpen: (socket: CIRASocket, length: number, data: string): number => {
-    if (length < 33) return 0
-    const ChannelTypeLength: number = Common.ReadInt(data, 1)
-    if (length < 33 + ChannelTypeLength) return 0
+  channelOpen: (socket: CIRASocket, dataLen: number, data: string): number => {
+    if (dataLen < 5) return 0
+    let parseIndex: number = 1
+    // Channel Type
+    const chnlTypeLen: number = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    if (chnlTypeLen > APFPropValueMaxLength) {
+      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} `+
+        `channelOpen:chnlTypeLen: ${chnlTypeLen} `)
+      return -1
+    }
+    // add len check here for the next couple of fields too
+    if (dataLen < parseIndex + chnlTypeLen + (4 * 4)) {
+      return 0
+    }
+    const chnlType: string = data.substring(parseIndex, parseIndex + chnlTypeLen)
+    parseIndex += chnlTypeLen
 
     // Decode channel identifiers and window size
-    const ChannelType: string = data.substring(5, 5 + ChannelTypeLength)
-    const SenderChannel: number = Common.ReadInt(data, 5 + ChannelTypeLength)
-    const WindowSize: number = Common.ReadInt(data, 9 + ChannelTypeLength)
+    const senderChnlId: number = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    const windowSize: number = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    // reserved 4 bytes
+    parseIndex += 4
+    const connectedAddrLen: number = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    if (connectedAddrLen > APFPropValueMaxLength) {
+      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} `+
+        `channelOpen:connectedAddrLen: ${connectedAddrLen} `)
+      return -1
+    }
+    if (dataLen < parseIndex + connectedAddrLen + (4 * 2)) {
+      return 0
+    }
+    const connectedAddr: string = data.substring(parseIndex, parseIndex + connectedAddrLen)
+    parseIndex += connectedAddrLen
+    const connectedPort: number = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
 
-    // Decode the target
-    const TargetLen: number = Common.ReadInt(data, 17 + ChannelTypeLength)
-    if (length < 33 + ChannelTypeLength + TargetLen) return 0
-    const Target: string = data.substring(21 + ChannelTypeLength, 21 + ChannelTypeLength + TargetLen)
-    const TargetPort: number = Common.ReadInt(data, 21 + ChannelTypeLength + TargetLen)
+    const originatorAddrLen: number = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    if (originatorAddrLen > APFPropValueMaxLength) {
+      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} `+
+        `channelOpen:originatorAddrLen: ${originatorAddrLen} `)
+      return -1
+    }
+    if (dataLen < parseIndex + originatorAddrLen + 4) {
+      return 0
+    }
+    const originatorAddr: string = data.substring(parseIndex, parseIndex + originatorAddrLen)
+    parseIndex += originatorAddrLen
+    const originatorPort: number = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
 
-    // Decode the source
-    const SourceLen: number = Common.ReadInt(data, 25 + ChannelTypeLength + TargetLen)
-    if (length < 33 + ChannelTypeLength + TargetLen + SourceLen) return 0
-    const Source: string = data.substring(29 + ChannelTypeLength + TargetLen, 29 + ChannelTypeLength + TargetLen + SourceLen)
-    const SourcePort: number = Common.ReadInt(data, 29 + ChannelTypeLength + TargetLen + SourceLen)
-
-    logger.silly(`${messages.MPS_CHANNEL_OPEN}, ${ChannelType}, ${SenderChannel.toString()}, ${WindowSize.toString()}, ${Target}:${TargetPort}, ${Source}:${SourcePort}`)
+    logger.silly(`${messages.MPS_CHANNEL_OPEN}, ` +
+      `${chnlType}, ${senderChnlId.toString()}, ${windowSize.toString()}, ` +
+      `${connectedAddr}:${connectedPort}, ${originatorAddr}:${originatorPort}`)
 
     // Check if we understand this channel type
     // if (ChannelType.toLowerCase() == "direct-tcpip")
 
     // We don't understand this channel type, send an error back
-    APFProcessor.SendChannelOpenFailure(socket, SenderChannel, APFChannelOpenFailureReasonCode.UnknownChannelType)
-    return 33 + ChannelTypeLength + TargetLen + SourceLen
+    APFProcessor.SendChannelOpenFailure(socket, senderChnlId, APFChannelOpenFailureReasonCode.UnknownChannelType)
 
-    /*
-    // This is a correct connection. Lets get it setup
-    var MeshAmtEventEndpoint = { ServerChannel: GetNextBindId(), AmtChannel: SenderChannel, MaxWindowSize: 2048, CurrentWindowSize:2048, SendWindow: WindowSize, InfoHeader: "Target: " + Target + ":" + TargetPort + ", Source: " + Source + ":" + SourcePort};
-    // TODO: Connect this socket for a WSMAN event
-    SendChannelOpenConfirmation(socket, SenderChannel, MeshAmtEventEndpoint.ServerChannel, MeshAmtEventEndpoint.MaxWindowSize);
-    */
+    // // This is a correct connection. Lets get it setup
+    // var MeshAmtEventEndpoint = { ServerChannel: GetNextBindId(), AmtChannel: SenderChannel,
+    // MaxWindowSize: APFPropValueMaxLength, CurrentWindowSize:APFPropValueMaxLength, SendWindow: WindowSize,
+    // InfoHeader: "Target: " + Target + ":" + TargetPort + ", Source: " + Source + ":" + SourcePort};
+    // // TODO: Connect this socket for a WSMAN event
+    // SendChannelOpenConfirmation(socket, SenderChannel, MeshAmtEventEndpoint.ServerChannel,
+    // MeshAmtEventEndpoint.MaxWindowSize);
+    return parseIndex
   },
 
-  globalRequest: (socket: CIRASocket, length: number, data: string): number => {
-    if (length < 14) return 0
-    const requestLen: number = Common.ReadInt(data, 1)
-    if (length < 14 + requestLen) return 0
-    const request: string = data.substring(5, 5 + requestLen)
-    // const wantResponse: string = data.charCodeAt(5 + requestLen)
+  globalRequest: (socket: CIRASocket, dataLen: number, data: string): number => {
+    // check bounds and parse the request
+    if (dataLen < 5) {
+      return 0
+    }
+    let parseIndex: number = 1
+    const reqLen: number = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    if (reqLen > APFPropValueMaxLength) {
+      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} `+
+        `globalRequest:reqLen: ${reqLen} `)
+      return -1
+    }
+    if (dataLen < parseIndex + reqLen) {
+      return 0
+    }
+    const request: string = data.substring(parseIndex, parseIndex + reqLen)
+    parseIndex += reqLen
+    // wantResponse is 1 byte, but currently unused
+    parseIndex += 1
+    // check bounds and parse the host
+    if (dataLen < parseIndex + 4) {
+      return 0
+    }
+    // host and port parsed here are common fields to all the messages
+    const hostLen = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    if (hostLen > APFPropValueMaxLength) {
+      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} `+
+        `globalRequest:hostLen: ${hostLen} `)
+      return -1
+    }
+    if (dataLen < parseIndex + hostLen) {
+      return 0
+    }
+    let host = data.substring(parseIndex, parseIndex + hostLen)
+    parseIndex += hostLen
+
+    // check bounds and parse the port
+    if (dataLen < parseIndex + 4) {
+      return 0
+    }
+    const port = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    logger.silly(`${messages.MPS_GLOBAL_REQUEST} ${socket.tag.nodeid} ${request} ${host}: ${port}`)
 
     if (request === 'tcpip-forward') {
-      const addrLen: number = Common.ReadInt(data, 6 + requestLen)
-      if (length < 14 + requestLen + addrLen) return 0
-      let addr = data.substring(10 + requestLen, 10 + requestLen + addrLen)
-      const port = Common.ReadInt(data, 10 + requestLen + addrLen)
-      if (addr === '') addr = undefined
-      logger.silly(`${messages.MPS_GLOBAL_REQUEST} ${socket.tag.nodeid} ${request} ${addr}: ${port}`)
-      // this.ChangeHostname(socket, addr)
+      // this.ChangeHostname(socket, host)
       if (!socket.tag.boundPorts.includes(port)) {
         socket.tag.boundPorts.push(port)
       }
+      logger.silly(`${messages.MPS_GLOBAL_REQUEST_TCPIPFWD_PORTS} ${socket.tag.boundPorts}`)
       APFProcessor.SendTcpForwardSuccessReply(socket, port)
-      // 5900 port is the last TCP port on which connections for forwarding are to be cancelled. Ports order: 16993, 16992, 664, 623, 16995, 16994, 5900
+      // 5900 port is the last TCP port on which connections for forwarding are to be cancelled.
+      // Ports order: 16993, 16992, 664, 623, 16995, 16994, 5900
       // Request keepalive interval time
-      if (port === 5900) { APFProcessor.SendKeepaliveOptionsRequest(socket, KEEPALIVE_INTERVAL, 0) }
-      return 14 + requestLen + addrLen
+      if (port === 5900) {
+        APFProcessor.SendKeepaliveOptionsRequest(socket, KEEPALIVE_INTERVAL, 0)
+      }
     }
 
     if (request === 'cancel-tcpip-forward') {
-      const addrLen = Common.ReadInt(data, 6 + requestLen)
-      if (length < 14 + requestLen + addrLen) return 0
-      const addr = data.substring(10 + requestLen, 10 + requestLen + addrLen)
-      const port = Common.ReadInt(data, 10 + requestLen + addrLen)
-      logger.silly(`${messages.MPS_GLOBAL_REQUEST}, ${request}, ${addr}:${port}`)
       const portindex = socket.tag.boundPorts.indexOf(port)
       if (portindex >= 0) {
         socket.tag.boundPorts.splice(portindex, 1)
       }
+      logger.silly(`${messages.MPS_GLOBAL_REQUEST_TCPIPFWD_PORTS} ${socket.tag.boundPorts}`)
       APFProcessor.SendTcpForwardCancelReply(socket)
-      return 14 + requestLen + addrLen
     }
 
     if (request === 'udp-send-to@amt.intel.com') {
-      const addrLen = Common.ReadInt(data, 6 + requestLen)
-      if (length < 26 + requestLen + addrLen) return 0
-      const addr = data.substring(10 + requestLen, 10 + requestLen + addrLen)
-      const port = Common.ReadInt(data, 10 + requestLen + addrLen)
-      const oaddrLen = Common.ReadInt(data, 14 + requestLen + addrLen)
-      if (length < 26 + requestLen + addrLen + oaddrLen) return 0
-      const oaddr = data.substring(18 + requestLen, 18 + requestLen + addrLen)
-      const oport = Common.ReadInt(data, 18 + requestLen + addrLen + oaddrLen)
-      const datalen = Common.ReadInt(data, 22 + requestLen + addrLen + oaddrLen)
-      if (length < 26 + requestLen + addrLen + oaddrLen + datalen) return 0
-      logger.silly(`${messages.MPS_GLOBAL_REQUEST}, ${request}, ${addr}:${port}, ${oaddr}:${oport}, ${datalen.toString()}`)
+      // check bounds and parse the email host
+      if (dataLen < parseIndex + 4) {
+        return 0
+      }
+      const originatorAddrLen = Common.ReadInt(data, parseIndex)
+      parseIndex += 4
+      if (originatorAddrLen > APFPropValueMaxLength) {
+        logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} `+
+          `globalRequest:udpSendToHostLen: ${originatorAddrLen} `)
+        return -1
+      }
+      if (dataLen < parseIndex + originatorAddrLen) {
+        return 0
+      }
+      const originatorAddr = data.substring(parseIndex, parseIndex + originatorAddrLen)
+      parseIndex += originatorAddrLen
+      // check bounds and parse the email port
+      if (dataLen < parseIndex + 4) {
+        return 0
+      }
+      const originatorPort = Common.ReadInt(data, parseIndex)
+      parseIndex += 4
+      // check bounds and parse the email message
+      if (dataLen < parseIndex + 4) {
+        return 0
+      }
+      const udpMsgLen = Common.ReadInt(data, parseIndex)
+      parseIndex += 4
+      // max message size is 64KB
+      const maxUdpMsgLen = 65536
+      if (udpMsgLen > maxUdpMsgLen) {
+        logger.warn(`${messages.MPS_ERR_MAXLEN} ${maxUdpMsgLen} `+
+          `globalRequest:udpSendToMsg: ${udpMsgLen} `)
+        return -1
+      }
+      if (dataLen < parseIndex + udpMsgLen) {
+        return 0
+      }
+      const msgEmail = data.substring(parseIndex, parseIndex + udpMsgLen)
+      parseIndex += udpMsgLen
+      logger.silly(`${messages.MPS_GLOBAL_REQUEST}, 
+      ${originatorAddr}:${originatorPort}, 
+      ${udpMsgLen.toString()}, ${msgEmail}`)
       // TODO
-      return 26 + requestLen + addrLen + oaddrLen + datalen
     }
 
-    return 6 + requestLen
+    return parseIndex
   },
 
-  serviceRequest: (socket: CIRASocket, length: number, data: string): number => {
-    if (length < 5) return 0
-    const serviceNameLen: number = Common.ReadInt(data, 1)
-    if (length < 5 + serviceNameLen) return 0
-    const serviceName = data.substring(5, 5 + serviceNameLen)
+  serviceRequest: (socket: CIRASocket, dataLen: number, data: string): number => {
+    if (dataLen < 5) return 0
+    let parseIndex: number = 1
+    const serviceNameLen: number = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    if (serviceNameLen > APFPropValueMaxLength) {
+      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} `+
+        `serviceRequest:svcNameLen: ${serviceNameLen} `)
+      return -1
+    }
+    if (dataLen < parseIndex + serviceNameLen) {
+      return 0
+    }
+    const serviceName: string = data.substring(parseIndex, parseIndex + serviceNameLen)
+    parseIndex += serviceNameLen
     logger.silly(`${messages.MPS_SERVICE_REQUEST}: ${serviceName}`)
     if (serviceName === 'pfwd@amt.intel.com') {
       APFProcessor.SendServiceAccept(socket, 'pfwd@amt.intel.com')
@@ -361,81 +522,151 @@ const APFProcessor = {
     if (serviceName === 'auth@amt.intel.com') {
       APFProcessor.SendServiceAccept(socket, 'auth@amt.intel.com')
     }
-    return 5 + serviceNameLen
+    return parseIndex
   },
 
-  userAuthRequest: (socket: CIRASocket, length: number, data: string): number => {
-    if (length < 13) return 0
-    const usernameLen: number = Common.ReadInt(data, 1)
-    const username: string = data.substring(5, 5 + usernameLen)
-    const serviceNameLen: number = Common.ReadInt(data, 5 + usernameLen)
-    const serviceName: string = data.substring(
-      9 + usernameLen,
-      9 + usernameLen + serviceNameLen
-    )
-    const methodNameLen: number = Common.ReadInt(
-      data,
-      9 + usernameLen + serviceNameLen
-    )
-    const methodName: string = data.substring(
-      13 + usernameLen + serviceNameLen,
-      13 + usernameLen + serviceNameLen + methodNameLen
-    )
-    let passwordLen = 0
-    let password: string = null
-    if (methodName === 'password') {
-      passwordLen = Common.ReadInt(data, 14 + usernameLen + serviceNameLen + methodNameLen)
-      password = data.substring(18 + usernameLen + serviceNameLen + methodNameLen, 18 + usernameLen + serviceNameLen + methodNameLen + passwordLen)
+  userAuthRequest: (socket: CIRASocket, dataLen: number, data: string): number => {
+    if (dataLen < 5) {
+      return 0
     }
-    logger.silly(`${messages.MPS_USER_AUTH_REQUEST} usernameLen=${usernameLen} serviceNameLen=${serviceNameLen} methodNameLen=${methodNameLen}`)
-    logger.silly(`${messages.MPS_USER_AUTH_REQUEST} user=${username} service=${serviceName} method=${methodName}`)
+    const maxLen64: number = 64
+    let parseIndex: number = 1
+    // username ASCII encoding, maximum allowed size is 64 bytes.
+    const userLen: number = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    if (userLen > maxLen64) {
+      logger.warn(`${messages.MPS_ERR_MAXLEN} ${maxLen64} `+
+        `userAuthRequest:userLen: ${userLen} `)
+      return -1
+    }
+    if (dataLen < parseIndex + userLen + 4) {
+      return 0
+    }
+    const user: string = data.substring(parseIndex, parseIndex + userLen)
+    parseIndex += userLen
+    // service name: only supported name is "pfwd@amt.intel.com"
+    const serviceLen: number = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    if (serviceLen > APFPropValueMaxLength) {
+      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} `+
+        `userAuthRequest:serviceLen: ${serviceLen} `)
+      return -1
+    }
+    if (dataLen < parseIndex + serviceLen + 4) {
+      return 0
+    }
+    const service: string = data.substring(parseIndex, parseIndex + serviceLen)
+    parseIndex += serviceLen
+    // authentication method only defined methods are "none" and "password".
+    const authMethodLen: number = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    if (authMethodLen > APFPropValueMaxLength) {
+      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} `+
+        `userAuthRequest:authMethodLen: ${authMethodLen} `)
+      return -1
+    }
+    if (dataLen < parseIndex + authMethodLen) {
+      return 0
+    }
+    const authMethod: string = data.substring(parseIndex, parseIndex + authMethodLen)
+    parseIndex += authMethodLen
+
+    let password: string = null
+    if (authMethod === 'password') {
+      // password plaintext ASCII encoding, maximum allowed size is 64 bytes.
+      if (dataLen < parseIndex + 5) {
+        return 0
+      }
+      // reserved byte
+      const reserved: number = data.charCodeAt(parseIndex)
+      parseIndex += 1
+      if (reserved !== 0) {
+        logger.warn(`${messages.MPS_WARN_RESERVED_VALUE}, ${reserved.toString()}`)
+      }
+      const passwordLen: number = Common.ReadInt(data, parseIndex)
+      parseIndex += 4
+      if (passwordLen > maxLen64) {
+        logger.warn(`${messages.MPS_ERR_MAXLEN} ${maxLen64} `+
+          `userAuthRequest:passwordLen: ${passwordLen} `)
+        return -1
+      }
+      if (dataLen < parseIndex + passwordLen) {
+        return 0
+      }
+      password = data.substring(parseIndex, parseIndex + passwordLen)
+      parseIndex += passwordLen
+      logger.silly(`${messages.MPS_USER_AUTH_REQUEST} password has been provided with length: ${passwordLen}`)
+    }
+    logger.silly(`${messages.MPS_USER_AUTH_REQUEST} user=${user} service=${service} method=${authMethod}`)
 
     // Emit event to determine if user is authorized
     // TODO: verify this works correctly
-    APFProcessor.APFEvents.emit('userAuthRequest', socket, username, password)
+    APFProcessor.APFEvents.emit('userAuthRequest', socket, user, password)
 
-    return 18 + usernameLen + serviceNameLen + methodNameLen + passwordLen
+    return parseIndex
   },
 
-  protocolVersion: (socket: CIRASocket, length: number, data: string): number => {
-    if (length < 93) return 0
-    socket.tag.MajorVersion = Common.ReadInt(data, 1)
-    socket.tag.MinorVersion = Common.ReadInt(data, 5)
-    socket.tag.SystemId = APFProcessor.guidToStr(
-      Common.Rstr2hex(data.substring(13, 29))
-    ).toLowerCase()
-    logger.silly(
-      `${messages.MPS_PROTOCOL_VERSION}, ${socket.tag.MajorVersion}, ${socket.tag.MinorVersion}, ${socket.tag.SystemId}`
+  protocolVersion: (socket: CIRASocket, dataLen: number, data: string): number => {
+    if (dataLen < 93) return 0
+    let parseIndex = 1
+    const majorVersion = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    const minorVersion = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    // reserved 4 bytes
+    parseIndex += 4
+    const rstr = data.substring(parseIndex, parseIndex + 16)
+    parseIndex += 16
+    // reserved 64 bytes
+    parseIndex += 64
+
+    socket.tag.MajorVersion = majorVersion
+    socket.tag.MinorVersion = minorVersion
+    socket.tag.SystemId = APFProcessor.guidToStr(Common.Rstr2hex(rstr)).toLowerCase()
+
+    logger.silly(`${messages.MPS_PROTOCOL_VERSION}, ` +
+      `${socket.tag.MajorVersion}, ` +
+      `${socket.tag.MinorVersion}, ` +
+      `${socket.tag.SystemId}`
     )
     // TODO: verify this works correctly
-
     APFProcessor.APFEvents.emit('protocolVersion', socket)
-
     logger.silly(`device uuid: ${socket.tag.SystemId} and socketid : ${socket.tag.id}`)
-    return 93
+    return parseIndex
   },
 
-  keepAliveReply: (length: Number): number => {
-    if (length < 5) return 0
-    logger.silly(messages.MPS_KEEPALIVE_REPLY)
-    return 5
-  },
-
-  keepAliveOptionsReply: (length: number, data: string): number => {
-    if (length < 9) return 0
-    const keepaliveInterval = Common.ReadInt(data, 1)
-    const timeout = Common.ReadInt(data, 5)
-    logger.silly(`KEEPALIVE_OPTIONS_REPLY, Keepalive Interval=${keepaliveInterval} Timeout=${timeout}`)
-    return 9
-  },
-
-  keepAliveRequest: (socket: CIRASocket, length: number, data: string): number => {
-    if (length < 5) {
+  keepAliveReply: (dataLen: number, data: string): number => {
+    if (dataLen < 5) {
       return 0
     }
-    logger.verbose(`${messages.MPS_KEEPALIVE_REQUEST}: ${socket.tag.nodeid}`)
-    APFProcessor.SendKeepAliveReply(socket, Common.ReadInt(data, 1))
-    return 5
+    let parseIndex = 1
+    const cookie = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    logger.silly(`${messages.MPS_KEEPALIVE_REPLY}: ${cookie}`)
+    return parseIndex
+  },
+
+  keepAliveOptionsReply: (dataLen: number, data: string): number => {
+    if (dataLen < 9) return 0
+    let parseIndex = 1
+    const keepAliveInterval = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    const readTimeout = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    logger.silly(`KEEPALIVE_OPTIONS_REPLY, Keepalive Interval=${keepAliveInterval} Timeout=${readTimeout}`)
+    return parseIndex
+  },
+
+  keepAliveRequest: (socket: CIRASocket, dataLen: number, data: string): number => {
+    if (dataLen < 5) {
+      return 0
+    }
+    let parseIndex = 1
+    const cookie = Common.ReadInt(data, parseIndex)
+    parseIndex += 4
+    logger.verbose(`${messages.MPS_KEEPALIVE_REQUEST}: ${socket.tag.nodeid} ${cookie}`)
+    APFProcessor.SendKeepAliveReply(socket, cookie)
+    return parseIndex
   },
 
   SendKeepaliveOptionsRequest: (socket: CIRASocket, keepaliveTime: number, timeout: number): void => {
@@ -448,7 +679,7 @@ const APFProcessor = {
     )
   },
 
-  SendKeepAliveReply: (socket: CIRASocket, cookie): void => {
+  SendKeepAliveReply: (socket: CIRASocket, cookie: number): void => {
     logger.silly(messages.MPS_SEND_KEEPALIVE_REPLY)
     APFProcessor.Write(socket, String.fromCharCode(APFProtocol.KEEPALIVE_REPLY) + Common.IntToStr(cookie))
   },
@@ -458,7 +689,7 @@ const APFProcessor = {
     APFProcessor.Write(socket, String.fromCharCode(APFProtocol.SERVICE_ACCEPT) + Common.IntToStr(service.length) + service)
   },
 
-  SendTcpForwardSuccessReply: (socket: CIRASocket, port): void => {
+  SendTcpForwardSuccessReply: (socket: CIRASocket, port: number): void => {
     logger.silly(messages.MPS_SEND_TCP_FORWARD_SUCCESS_REPLY)
     APFProcessor.Write(socket, String.fromCharCode(APFProtocol.REQUEST_SUCCESS) + Common.IntToStr(port))
   },
@@ -468,37 +699,46 @@ const APFProcessor = {
     APFProcessor.Write(socket, String.fromCharCode(APFProtocol.REQUEST_SUCCESS))
   },
 
-  SendKeepAliveRequest: (socket: CIRASocket, cookie): void => {
+  SendKeepAliveRequest: (socket: CIRASocket, cookie: number): void => {
     logger.silly(messages.MPS_SEND_KEEP_ALIVE_REQUEST)
     APFProcessor.Write(socket, String.fromCharCode(APFProtocol.KEEPALIVE_REQUEST) + Common.IntToStr(cookie))
   },
 
-  SendChannelOpenFailure: (socket: CIRASocket, senderChannel, reasonCode): void => {
+  SendChannelOpenFailure: (socket: CIRASocket, senderChannel, reasonCode: number): void => {
     logger.silly(messages.MPS_SEND_CHANNEL_OPEN_FAILURE)
     APFProcessor.Write(
       socket,
       String.fromCharCode(APFProtocol.CHANNEL_OPEN_FAILURE) +
-        Common.IntToStr(senderChannel) +
-        Common.IntToStr(reasonCode) +
-        Common.IntToStr(0) +
-        Common.IntToStr(0)
+      Common.IntToStr(senderChannel) +
+      Common.IntToStr(reasonCode) +
+      Common.IntToStr(0) +
+      Common.IntToStr(0)
     )
   },
 
-  SendChannelOpenConfirmation: (socket: CIRASocket, recipientChannelId, senderChannelId, initialWindowSize): void => {
+  SendChannelOpenConfirmation: (socket: CIRASocket,
+                                recipientChannelId: number,
+                                senderChannelId: number,
+                                initialWindowSize: number): void => {
     logger.silly(messages.MPS_SEND_CHANNEL_OPEN_CONFIRMATION)
     APFProcessor.Write(
       socket,
       String.fromCharCode(APFProtocol.CHANNEL_OPEN_CONFIRMATION) +
-        Common.IntToStr(recipientChannelId) +
-        Common.IntToStr(senderChannelId) +
-        Common.IntToStr(initialWindowSize) +
-        Common.IntToStr(-1)
+      Common.IntToStr(recipientChannelId) +
+      Common.IntToStr(senderChannelId) +
+      Common.IntToStr(initialWindowSize) +
+      Common.IntToStr(-1)
     )
   },
 
-  SendChannelOpen: (socket: CIRASocket, direct: boolean, channelid: number, windowSize: number, target: string, targetPort: number, source: string, sourcePort: number
-  ): void => {
+  SendChannelOpen: (socket: CIRASocket,
+                    direct: boolean,
+                    channelid: number,
+                    windowSize: number,
+                    target: string,
+                    targetPort: number,
+                    source: string,
+                    sourcePort: number): void => {
     logger.silly(messages.MPS_SEND_CHANNEL_OPEN)
     const connectionType = direct ? 'direct-tcpip' : 'forwarded-tcpip'
     // TODO: Reports of target being undefined that causes target.length to fail. This is a hack.
@@ -506,53 +746,53 @@ const APFProcessor = {
     APFProcessor.Write(
       socket,
       String.fromCharCode(APFProtocol.CHANNEL_OPEN) +
-        Common.IntToStr(connectionType.length) +
-        connectionType +
-        Common.IntToStr(channelid) +
-        Common.IntToStr(windowSize) +
-        Common.IntToStr(-1) +
-        Common.IntToStr(target.length) +
-        target +
-        Common.IntToStr(targetPort) +
-        Common.IntToStr(source.length) +
-        source +
-        Common.IntToStr(sourcePort)
+      Common.IntToStr(connectionType.length) +
+      connectionType +
+      Common.IntToStr(channelid) +
+      Common.IntToStr(windowSize) +
+      Common.IntToStr(-1) +
+      Common.IntToStr(target.length) +
+      target +
+      Common.IntToStr(targetPort) +
+      Common.IntToStr(source.length) +
+      source +
+      Common.IntToStr(sourcePort)
     )
   },
 
-  SendChannelClose: (socket: CIRASocket, channelid): void => {
+  SendChannelClose: (socket: CIRASocket, channelid: number): void => {
     logger.silly(`${messages.MPS_SEND_CHANNEL_CLOSE}, ${channelid}`)
     APFProcessor.Write(socket, String.fromCharCode(APFProtocol.CHANNEL_CLOSE) + Common.IntToStr(channelid))
   },
 
-  SendChannelData: (socket: CIRASocket, channelid, data): void => {
+  SendChannelData: (socket: CIRASocket, channelid: number, data: string): void => {
     logger.silly(`${messages.MPS_SEND_CHANNEL_DATA}, ${channelid}`)
     APFProcessor.Write(
       socket,
       String.fromCharCode(APFProtocol.CHANNEL_DATA) +
-        Common.IntToStr(channelid) +
-        Common.IntToStr(data.length) +
-        data
+      Common.IntToStr(channelid) +
+      Common.IntToStr(data.length) +
+      data
     )
   },
 
-  SendChannelWindowAdjust: (socket: CIRASocket, channelid, bytestoadd): void => {
+  SendChannelWindowAdjust: (socket: CIRASocket, channelid: number, bytestoadd: number): void => {
     logger.silly(`${messages.MPS_SEND_CHANNEL_WINDOW_ADJUST}, ${channelid}, ${bytestoadd}`)
     APFProcessor.Write(
       socket,
       String.fromCharCode(APFProtocol.CHANNEL_WINDOW_ADJUST) +
-        Common.IntToStr(channelid) +
-        Common.IntToStr(bytestoadd)
+      Common.IntToStr(channelid) +
+      Common.IntToStr(bytestoadd)
     )
   },
 
-  SendDisconnect: (socket: CIRASocket, reasonCode): void => {
+  SendDisconnect: (socket: CIRASocket, reasonCode: number): void => {
     logger.silly(`${messages.MPS_SEND_CHANNEL_DISCONNECT}, ${reasonCode}`)
     APFProcessor.Write(
       socket,
       String.fromCharCode(APFProtocol.DISCONNECT) +
-        Common.IntToStr(reasonCode) +
-        Common.ShortToStr(0)
+      Common.IntToStr(reasonCode) +
+      Common.ShortToStr(0)
     )
   },
 
@@ -561,9 +801,9 @@ const APFProcessor = {
     APFProcessor.Write(
       socket,
       String.fromCharCode(APFProtocol.USERAUTH_FAILURE) +
-        Common.IntToStr(8) +
-        'password' +
-        Common.ShortToStr(0)
+      Common.IntToStr(8) +
+      'password' +
+      String.fromCharCode(0)
     )
   },
 
@@ -572,11 +812,11 @@ const APFProcessor = {
     APFProcessor.Write(socket, String.fromCharCode(APFProtocol.USERAUTH_SUCCESS))
   },
 
-  Write: (socket: CIRASocket, data): void => {
+  Write: (socket: CIRASocket, data: string): void => {
     socket.write(Buffer.from(data, 'binary'))
   },
 
-  guidToStr: (g): string => {
+  guidToStr: (g: string): string => {
     return (
       g.substring(6, 8) +
       g.substring(4, 6) +
