@@ -127,6 +127,7 @@ const APFProcessor = {
     if (len < 9) return 0
     const RecipientChannel: number = Common.ReadInt(data, 1)
     const LengthOfData: number = Common.ReadInt(data, 5)
+    if (LengthOfData > 1048576) return -1
     if (len < 9 + LengthOfData) return 0
     logger.silly(`${messages.MPS_CHANNEL_DATA}, ${RecipientChannel.toString()}, ${LengthOfData.toString()}`)
     const cirachannel = socket.tag.channels[RecipientChannel]
@@ -255,6 +256,7 @@ const APFProcessor = {
   channelOpen: (socket: CIRASocket, length: number, data: string): number => {
     if (length < 33) return 0
     const ChannelTypeLength: number = Common.ReadInt(data, 1)
+    if (ChannelTypeLength > 2048) return -1
     if (length < 33 + ChannelTypeLength) return 0
 
     // Decode channel identifiers and window size
@@ -264,12 +266,14 @@ const APFProcessor = {
 
     // Decode the target
     const TargetLen: number = Common.ReadInt(data, 17 + ChannelTypeLength)
+    if (TargetLen > 2048) return -1
     if (length < 33 + ChannelTypeLength + TargetLen) return 0
     const Target: string = data.substring(21 + ChannelTypeLength, 21 + ChannelTypeLength + TargetLen)
     const TargetPort: number = Common.ReadInt(data, 21 + ChannelTypeLength + TargetLen)
 
     // Decode the source
     const SourceLen: number = Common.ReadInt(data, 25 + ChannelTypeLength + TargetLen)
+    if (SourceLen > 2048) return -1
     if (length < 33 + ChannelTypeLength + TargetLen + SourceLen) return 0
     const Source: string = data.substring(29 + ChannelTypeLength + TargetLen, 29 + ChannelTypeLength + TargetLen + SourceLen)
     const SourcePort: number = Common.ReadInt(data, 29 + ChannelTypeLength + TargetLen + SourceLen)
@@ -294,6 +298,7 @@ const APFProcessor = {
   globalRequest: (socket: CIRASocket, length: number, data: string): number => {
     if (length < 14) return 0
     const requestLen: number = Common.ReadInt(data, 1)
+    if (requestLen > 2048) return -1
     if (length < 14 + requestLen) return 0
     const request: string = data.substring(5, 5 + requestLen)
     // const wantResponse: string = data.charCodeAt(5 + requestLen)
@@ -352,6 +357,7 @@ const APFProcessor = {
   serviceRequest: (socket: CIRASocket, length: number, data: string): number => {
     if (length < 5) return 0
     const serviceNameLen: number = Common.ReadInt(data, 1)
+    if (serviceNameLen > 2048) return -1
     if (length < 5 + serviceNameLen) return 0
     const serviceName = data.substring(5, 5 + serviceNameLen)
     logger.silly(`${messages.MPS_SERVICE_REQUEST}: ${serviceName}`)
@@ -367,8 +373,10 @@ const APFProcessor = {
   userAuthRequest: (socket: CIRASocket, length: number, data: string): number => {
     if (length < 13) return 0
     const usernameLen: number = Common.ReadInt(data, 1)
+    if ((usernameLen > 2048) || (length < (5 + usernameLen))) return -1
     const username: string = data.substring(5, 5 + usernameLen)
     const serviceNameLen: number = Common.ReadInt(data, 5 + usernameLen)
+    if ((serviceNameLen > 2048) || (length < (9 + usernameLen + serviceNameLen))) return -1
     const serviceName: string = data.substring(
       9 + usernameLen,
       9 + usernameLen + serviceNameLen
@@ -377,6 +385,7 @@ const APFProcessor = {
       data,
       9 + usernameLen + serviceNameLen
     )
+    if ((methodNameLen > 2048) || (length < (13 + usernameLen + serviceNameLen + methodNameLen))) return -1
     const methodName: string = data.substring(
       13 + usernameLen + serviceNameLen,
       13 + usernameLen + serviceNameLen + methodNameLen
@@ -385,6 +394,7 @@ const APFProcessor = {
     let password: string = null
     if (methodName === 'password') {
       passwordLen = Common.ReadInt(data, 14 + usernameLen + serviceNameLen + methodNameLen)
+      if ((passwordLen > 2048) || (length < (18 + usernameLen + serviceNameLen + methodNameLen + passwordLen))) return -1
       password = data.substring(18 + usernameLen + serviceNameLen + methodNameLen, 18 + usernameLen + serviceNameLen + methodNameLen + passwordLen)
     }
     logger.silly(`${messages.MPS_USER_AUTH_REQUEST} usernameLen=${usernameLen} serviceNameLen=${serviceNameLen} methodNameLen=${methodNameLen}`)
