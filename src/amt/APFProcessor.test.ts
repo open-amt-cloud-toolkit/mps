@@ -6,7 +6,6 @@ import { CIRAChannel } from './CIRAChannel'
 import { EventEmitter } from 'stream'
 
 describe('APFProcessor Tests', () => {
-
   beforeEach(() => {
     jest.clearAllMocks()
     jest.resetAllMocks()
@@ -146,7 +145,6 @@ describe('APFProcessor Tests', () => {
       data = String.fromCharCode(APFProtocol.DISCONNECT) +
         Common.IntToStr(22) +
         Common.ShortToStr(0)
-
     })
     it('should return 0 if not enough dataLen for the disconnect code', () => {
       const result = APFProcessor.disconnect(fakeCiraSocket, data.length - 1, data)

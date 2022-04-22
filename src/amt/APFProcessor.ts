@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import {logger, messages} from '../logging'
+import { logger, messages } from '../logging'
 import Common from '../utils/common'
-import {CIRASocket} from '../models/models'
-import {EventEmitter} from 'stream'
+import { CIRASocket } from '../models/models'
+import { EventEmitter } from 'stream'
 
 const KEEPALIVE_INTERVAL = 30 // 30 seconds is typical keepalive interval for AMT CIRA connection
 
@@ -143,7 +143,7 @@ const APFProcessor = {
     const chnlDataLen: number = Common.ReadInt(data, parseIndex)
     parseIndex += 4
     if (chnlDataLen > APFBulkDataMaxLength) {
-      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFBulkDataMaxLength} `+
+      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFBulkDataMaxLength} ` +
         `channelData:chnlDataLen: ${chnlDataLen} `)
       return -1
     }
@@ -312,7 +312,7 @@ const APFProcessor = {
     const chnlTypeLen: number = Common.ReadInt(data, parseIndex)
     parseIndex += 4
     if (chnlTypeLen > APFPropValueMaxLength) {
-      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} `+
+      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} ` +
         `channelOpen:chnlTypeLen: ${chnlTypeLen} `)
       return -1
     }
@@ -333,7 +333,7 @@ const APFProcessor = {
     const connectedAddrLen: number = Common.ReadInt(data, parseIndex)
     parseIndex += 4
     if (connectedAddrLen > APFPropValueMaxLength) {
-      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} `+
+      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} ` +
         `channelOpen:connectedAddrLen: ${connectedAddrLen} `)
       return -1
     }
@@ -348,7 +348,7 @@ const APFProcessor = {
     const originatorAddrLen: number = Common.ReadInt(data, parseIndex)
     parseIndex += 4
     if (originatorAddrLen > APFPropValueMaxLength) {
-      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} `+
+      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} ` +
         `channelOpen:originatorAddrLen: ${originatorAddrLen} `)
       return -1
     }
@@ -389,7 +389,7 @@ const APFProcessor = {
     const reqLen: number = Common.ReadInt(data, parseIndex)
     parseIndex += 4
     if (reqLen > APFPropValueMaxLength) {
-      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} `+
+      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} ` +
         `globalRequest:reqLen: ${reqLen} `)
       return -1
     }
@@ -408,14 +408,14 @@ const APFProcessor = {
     const hostLen = Common.ReadInt(data, parseIndex)
     parseIndex += 4
     if (hostLen > APFPropValueMaxLength) {
-      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} `+
+      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} ` +
         `globalRequest:hostLen: ${hostLen} `)
       return -1
     }
     if (dataLen < parseIndex + hostLen) {
       return 0
     }
-    let host = data.substring(parseIndex, parseIndex + hostLen)
+    const host = data.substring(parseIndex, parseIndex + hostLen)
     parseIndex += hostLen
 
     // check bounds and parse the port
@@ -458,7 +458,7 @@ const APFProcessor = {
       const originatorAddrLen = Common.ReadInt(data, parseIndex)
       parseIndex += 4
       if (originatorAddrLen > APFPropValueMaxLength) {
-        logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} `+
+        logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} ` +
           `globalRequest:udpSendToHostLen: ${originatorAddrLen} `)
         return -1
       }
@@ -482,7 +482,7 @@ const APFProcessor = {
       // max message size is 64KB
       const maxUdpMsgLen = 65536
       if (udpMsgLen > maxUdpMsgLen) {
-        logger.warn(`${messages.MPS_ERR_MAXLEN} ${maxUdpMsgLen} `+
+        logger.warn(`${messages.MPS_ERR_MAXLEN} ${maxUdpMsgLen} ` +
           `globalRequest:udpSendToMsg: ${udpMsgLen} `)
         return -1
       }
@@ -506,7 +506,7 @@ const APFProcessor = {
     const serviceNameLen: number = Common.ReadInt(data, parseIndex)
     parseIndex += 4
     if (serviceNameLen > APFPropValueMaxLength) {
-      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} `+
+      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} ` +
         `serviceRequest:svcNameLen: ${serviceNameLen} `)
       return -1
     }
@@ -535,7 +535,7 @@ const APFProcessor = {
     const userLen: number = Common.ReadInt(data, parseIndex)
     parseIndex += 4
     if (userLen > maxLen64) {
-      logger.warn(`${messages.MPS_ERR_MAXLEN} ${maxLen64} `+
+      logger.warn(`${messages.MPS_ERR_MAXLEN} ${maxLen64} ` +
         `userAuthRequest:userLen: ${userLen} `)
       return -1
     }
@@ -548,7 +548,7 @@ const APFProcessor = {
     const serviceLen: number = Common.ReadInt(data, parseIndex)
     parseIndex += 4
     if (serviceLen > APFPropValueMaxLength) {
-      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} `+
+      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} ` +
         `userAuthRequest:serviceLen: ${serviceLen} `)
       return -1
     }
@@ -561,7 +561,7 @@ const APFProcessor = {
     const authMethodLen: number = Common.ReadInt(data, parseIndex)
     parseIndex += 4
     if (authMethodLen > APFPropValueMaxLength) {
-      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} `+
+      logger.warn(`${messages.MPS_ERR_MAXLEN} ${APFPropValueMaxLength} ` +
         `userAuthRequest:authMethodLen: ${authMethodLen} `)
       return -1
     }
@@ -586,8 +586,7 @@ const APFProcessor = {
       const passwordLen: number = Common.ReadInt(data, parseIndex)
       parseIndex += 4
       if (passwordLen > maxLen64) {
-        logger.warn(`${messages.MPS_ERR_MAXLEN} ${maxLen64} `+
-          `userAuthRequest:passwordLen: ${passwordLen} `)
+        logger.warn(`${messages.MPS_ERR_MAXLEN} ${maxLen64} userAuthRequest:password`)
         return -1
       }
       if (dataLen < parseIndex + passwordLen) {
@@ -595,7 +594,7 @@ const APFProcessor = {
       }
       password = data.substring(parseIndex, parseIndex + passwordLen)
       parseIndex += passwordLen
-      logger.silly(`${messages.MPS_USER_AUTH_REQUEST} password has been provided with length: ${passwordLen}`)
+      logger.silly(`${messages.MPS_USER_AUTH_REQUEST} userAuthRequest:password has been parsed`)
     }
     logger.silly(`${messages.MPS_USER_AUTH_REQUEST} user=${user} service=${service} method=${authMethod}`)
 
@@ -717,9 +716,9 @@ const APFProcessor = {
   },
 
   SendChannelOpenConfirmation: (socket: CIRASocket,
-                                recipientChannelId: number,
-                                senderChannelId: number,
-                                initialWindowSize: number): void => {
+    recipientChannelId: number,
+    senderChannelId: number,
+    initialWindowSize: number): void => {
     logger.silly(messages.MPS_SEND_CHANNEL_OPEN_CONFIRMATION)
     APFProcessor.Write(
       socket,
@@ -732,13 +731,13 @@ const APFProcessor = {
   },
 
   SendChannelOpen: (socket: CIRASocket,
-                    direct: boolean,
-                    channelid: number,
-                    windowSize: number,
-                    target: string,
-                    targetPort: number,
-                    source: string,
-                    sourcePort: number): void => {
+    direct: boolean,
+    channelid: number,
+    windowSize: number,
+    target: string,
+    targetPort: number,
+    source: string,
+    sourcePort: number): void => {
     logger.silly(messages.MPS_SEND_CHANNEL_OPEN)
     const connectionType = direct ? 'direct-tcpip' : 'forwarded-tcpip'
     // TODO: Reports of target being undefined that causes target.length to fail. This is a hack.
