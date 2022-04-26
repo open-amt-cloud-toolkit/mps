@@ -13,6 +13,7 @@
   "vault_token": "myroot",
   "mqtt_address": "",
   "secrets_path": "secret/data/",
+  "secrets_provider": "vault",
   "cert_format": "file",
   "data_path": "../private/data.json",
   "cert_path": "../private",

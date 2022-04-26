@@ -1,9 +1,9 @@
-import { SecretManagerService } from './SecretManagerService'
-import { logger } from '../logging'
-import { config } from '../test/helper/config'
-import { Environment } from './Environment'
+import { VaultSecretManagerService } from '.'
+import { logger } from '../../logging'
+import { config } from '../../test/helper/config'
+import { Environment } from '../../utils/Environment'
 
-let secretManagerService: SecretManagerService = null
+let secretManagerService: VaultSecretManagerService = null
 Environment.Config = config
 let gotSpy: jest.SpyInstance
 const secretPath = '4c4c4544-004b-4210-8033-b6c04f504633'
@@ -36,7 +36,7 @@ const secretCert = {
 }
 
 beforeEach(() => {
-  secretManagerService = new SecretManagerService(logger)
+  secretManagerService = new VaultSecretManagerService(logger)
   gotSpy = jest.spyOn(secretManagerService.gotClient, 'get').mockImplementation(() => {
     return {
       json: jest.fn(() => {

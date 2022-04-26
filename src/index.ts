@@ -7,13 +7,13 @@ import { logger } from './logging'
 import { configType, certificatesType } from './models/Config'
 import { Certificates } from './utils/certificates'
 import tlsConfig from './utils/tlsConfiguration'
-import { SecretManagerService } from './utils/SecretManagerService'
 import { parseValue } from './utils/parseEnvValue'
 import rc from 'rc'
 import { Environment } from './utils/Environment'
 import { MqttProvider } from './utils/MqttProvider'
 import { ISecretManagerService } from './interfaces/ISecretManagerService'
 import { DbCreatorFactory } from './factories/DbCreatorFactory'
+import { SecretManagerCreatorFactory } from './factories/SecretManagerCreatorFactory'
 import { IDB } from './interfaces/IDb'
 import { WebServer } from './server/webserver'
 import { MPSServer } from './server/mpsserver'
@@ -27,8 +27,11 @@ async function main (): Promise<void> {
     const db = await newDB.getDb()
 
     await setupSignalHandling(db)
+
     // Secret store initialization
-    const secrets: ISecretManagerService = new SecretManagerService(logger)
+    const newSecrets = new SecretManagerCreatorFactory()
+    const secrets = await newSecrets.getSecretManager(logger)
+
     const certs = await loadCertificates(secrets)
     // MQTT Connection - Creates a static connection to be access across MPS
     const mqtt: MqttProvider = new MqttProvider()
