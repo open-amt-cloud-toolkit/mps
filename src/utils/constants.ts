@@ -357,3 +357,33 @@ export const AmtAuditStringTable = {
 }
 
 export const RealmNames = '||Redirection|PT Administration|Hardware Asset|Remote Control|Storage|Event Manager|Storage Admin|Agent Presence Local|Agent Presence Remote|Circuit Breaker|Network Time|General Information|Firmware Update|EIT|LocalUN|Endpoint Access Control|Endpoint Access Control Admin|Event Log Reader|Audit Log|ACL Realm|||Local System'.split('|')
+
+export const VAULT_RESPONSE_CODES = (statusCode: any = null): string => {
+  let vaultError: string
+  if (statusCode != null) {
+    switch (statusCode) {
+      case 429:
+        vaultError = 'unsealed and standby'
+        break
+      case 472:
+        vaultError = 'disaster recovery mode replication secondary and active'
+        break
+      case 473:
+        vaultError = 'performance standby'
+        break
+      case 501:
+        vaultError = 'not initialized'
+        break
+      case 503:
+        vaultError = 'sealed'
+        break
+      default:
+        vaultError = 'unknown error'
+        break
+    }
+  } else {
+    vaultError = 'statusCode null'
+  }
+
+  return vaultError
+}
