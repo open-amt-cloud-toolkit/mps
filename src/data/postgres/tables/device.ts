@@ -82,7 +82,7 @@ export class DeviceTable implements IDeviceTable {
     FROM devices 
     WHERE hostname = $1 and tenantid = $2`, [hostname, tenantId])
 
-    return results.rowCount > 0 ? results.rows : null
+    return results.rowCount > 0 ? results.rows : []
   }
 
   async getByTags (tags: string[], method: string, top: number = DEFAULT_TOP, skip: number = DEFAULT_SKIP, tenantId: string = ''): Promise<Device[]> {

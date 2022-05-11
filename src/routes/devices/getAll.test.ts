@@ -4,6 +4,7 @@ import { getAllDevices } from './getAll'
 let res: Express.Response
 let statusSpy: jest.SpyInstance
 let jsonSpy: jest.SpyInstance
+let endSpy: jest.SpyInstance
 
 beforeEach(() => {
   res = {
@@ -19,6 +20,7 @@ beforeEach(() => {
   }
   statusSpy = jest.spyOn(res as any, 'status')
   jsonSpy = jest.spyOn(res as any, 'json')
+  endSpy = jest.spyOn(res as any, 'end')
 })
 
 afterEach(() => {
@@ -49,7 +51,7 @@ describe('getAll', () => {
         }
       }
     }
-    await getAllDevices(req, res)
+    await getAllDevices(req as any, res as any)
     const tags = req.query.tags.split(',')
     expect(req.db.devices.getByTags).toHaveBeenCalledWith(tags, req.query.method, req.query.$top, req.query.$skip)
     expect(statusSpy).toHaveBeenCalledWith(200)
@@ -73,7 +75,7 @@ describe('getAll', () => {
         }
       }
     }
-    await getAllDevices(req, res)
+    await getAllDevices(req as any, res as any)
     expect(req.db.devices.get).toHaveBeenCalledWith(req.query.$top, req.query.$skip)
     expect(statusSpy).toHaveBeenCalledWith(200)
     expect(jsonSpy).toHaveBeenCalledWith(deviceList)
@@ -99,8 +101,52 @@ describe('getAll', () => {
       }
     }
     const logSpy = jest.spyOn(logger, 'error')
-    await getAllDevices(req, res)
+    await getAllDevices(req as any, res as any)
     expect(statusSpy).toHaveBeenCalledWith(500)
     expect(logSpy).toHaveBeenCalled()
+  })
+
+  describe('hostname get', () => {
+    const req = {
+      query: {
+        hostname: 'test'
+      },
+      db: {
+        devices: {
+          getById: () => {}
+        }
+      }
+    } as any
+    const logSpy = jest.spyOn(logger, 'error')
+
+    it('should set status to 200 and get result if device exists in DB', async () => {
+      req.db.devices.getByHostname = jest.fn().mockReturnValue([{}])
+      await getAllDevices(req, res as any)
+      expect(req.db.devices.getByHostname).toHaveBeenCalledWith(req.query.hostname)
+      expect(statusSpy).toHaveBeenCalledWith(200)
+      expect(jsonSpy).toHaveBeenCalledWith([{}])
+      expect(endSpy).toHaveBeenCalled()
+    })
+
+    it('should set status to 404 if device does not exist in DB', async () => {
+      req.db.devices.getByHostname = jest.fn().mockReturnValue([])
+      await getAllDevices(req, res as any)
+      expect(req.db.devices.getByHostname).toHaveBeenCalledWith(req.query.hostname)
+      expect(statusSpy).toHaveBeenCalledWith(200)
+      expect(jsonSpy).toHaveBeenCalledWith([])
+      expect(endSpy).toHaveBeenCalled()
+    })
+
+    it('should set status to 500 if error occurs while getting device from DB', async () => {
+      req.db.devices.getByHostname = jest.fn().mockImplementation(() => {
+        throw new TypeError('fake error')
+      })
+      await getAllDevices(req, res as any)
+      expect(req.db.devices.getByHostname).toHaveBeenCalledWith(req.query.hostname)
+      expect(statusSpy).toHaveBeenCalledWith(500)
+      expect(jsonSpy).not.toHaveBeenCalled()
+      expect(endSpy).toHaveBeenCalled()
+      expect(logSpy).toHaveBeenCalled()
+    })
   })
 })

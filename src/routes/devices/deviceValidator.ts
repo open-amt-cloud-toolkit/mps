@@ -27,10 +27,12 @@ export const odataValidator = (): any => {
     query('$top')
       .optional()
       .isInt({ min: 0 })
+      .default(25)
       .withMessage('The number of items to return should be a positive integer'),
     query('$skip')
       .optional()
       .isInt({ min: 0 })
+      .default(0)
       .withMessage('The number of items to skip before starting to collect the result set should be a positive integer'),
     query('$count')
       .optional()
@@ -44,6 +46,10 @@ export const metadataQueryValidator = (): any => {
   return [
     check('tags')
       .optional()
+      .isString(),
+    check('hostname')
+      .optional()
+      .isLength({ min: 0, max: 256 })
       .isString(),
     check('status')
       .optional()
