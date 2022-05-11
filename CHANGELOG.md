@@ -1,4 +1,44 @@
 
+
+<a name="2.3.0"></a>
+## [2.3.0] - 2022-05-11
+
+### Build
+- bump version to v2.3.0 (#54a6d04) 
+- **dep:** adds support for wsman-messages 2.3.1 (#5a80dd8) 
+- **deps:** bump winston from 3.7.1 to 3.7.2 (#f217c87) 
+- **deps:** bump minimist from 1.2.5 to 1.2.6 (#9c17ab6) 
+- **deps:** bump express from 4.17.3 to 4.18.0 (#52cfb30) 
+- **deps:** bump winston from 3.6.0 to 3.7.1 (#ef43f4d) 
+- **deps:** bump node-forge from 1.3.0 to 1.3.1 (#c117d26) 
+- **deps:** bump ws from 8.5.0 to 8.6.0 (#d1c2c66) 
+- **deps:** bump express from 4.18.0 to 4.18.1 (#7d79041) 
+- **deps:** bump node-forge from 1.2.1 to 1.3.0 (#759acd0) 
+- **deps-dev:** bump jest-junit from 13.0.0 to 13.1.0 (#511be1b) 
+- **deps-dev:** bump [@types](https://github.com/types)/node-forge from 1.0.1 to 1.0.2 (#6289229) 
+- **deps-dev:** bump jest-junit from 13.1.0 to 13.2.0 (#18aa98d) 
+- **deps-dev:** bump typescript from 4.6.2 to 4.6.3 (#386f59d) 
+- **deps-dev:** bump typescript from 4.6.3 to 4.6.4 (#7c5ac1a) 
+- **deps-dev:** bump ts-jest from 27.1.3 to 27.1.4 (#9906ff6) 
+- **deps-dev:** bump eslint-plugin-import from 2.25.4 to 2.26.0 (#1e74ca8) 
+
+### Ci
+- **lint:** adds semantic checks to PRs (#8433d8a) 
+
+### Feat
+- **API:** Adds hostname query parameter to getDevices (#d67cc3d) 
+- **redirection:** adds mqtt start and stop events for redirection ([#573](https://github.com/open-amt-cloud-toolkit/mps/issues/573)) (#e51906e) 
+- **ws:** prevents multiple KVM/SOL session attempts ([#587](https://github.com/open-amt-cloud-toolkit/mps/issues/587)) (#8051abb) 
+
+### Fix
+- **dockerfile:** set user as non-root (#4808186) 
+- **nonce:** set nonce to 8 character hexadecimal (#2135830) 
+
+### Refactor
+- **healthcheck:** improves testability and code coverage (#02ff45f) 
+- **mps:** Input validation checks in APFProcessor for max size ([#597](https://github.com/open-amt-cloud-toolkit/mps/issues/597)) (#82e3efd) 
+
+
 <a name="2.2.0"></a>
 ## [2.2.0] - 2022-03-18
 ### Build
