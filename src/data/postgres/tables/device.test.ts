@@ -164,8 +164,8 @@ describe('device tests', () => {
   test('Should get null when called with hostname and no device exist', async () => {
     const query = jest.spyOn(deviceTable.db, 'query')
     query.mockResolvedValueOnce({ rows: [], command: '', fields: null, rowCount: 0, oid: 0 })
-    const device: Device[] = await deviceTable.getByHostname('hostname')
-    expect(device).toBe(null)
+    const devices: Device[] = await deviceTable.getByHostname('hostname')
+    expect(devices.length).toBe(0)
     expect(query).toBeCalledTimes(1)
     expect(query).toBeCalledWith(`
     SELECT
