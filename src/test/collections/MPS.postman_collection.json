@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "2ab47e6c-7432-4a70-b78b-a10a20adff20",
+		"_postman_id": "8f7b0cd5-fb98-49d2-af45-968ba340cc26",
 		"name": "MPS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -635,6 +635,52 @@
 								"api",
 								"v1",
 								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Device redirection token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJZCI6IiIsImlzcyI6IjlFbVJKVGJJaUliNGJJZVNzbWdjV0lqclI2SHlFVHFjIiwiZXhwIjoxNjUyNTU3MTYwfQ.ZkmzU-uWPMQbCRiSllCWyM7_QxvKMgIdhxxEkyipIVc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/authorize/redirection/d12428be-9fa1-4226-9784-54b2038beab6",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"authorize",
+								"redirection",
+								"d12428be-9fa1-4226-9784-54b2038beab6"
 							]
 						}
 					},
@@ -1927,10 +1973,10 @@
 			]
 		},
 		{
-			"name": "Login",
+			"name": "Authorize",
 			"item": [
 				{
-					"name": "Authorize",
+					"name": "Login",
 					"event": [
 						{
 							"listen": "test",
@@ -1978,7 +2024,7 @@
 					"response": []
 				},
 				{
-					"name": "Authorize without username",
+					"name": "Login without username",
 					"event": [
 						{
 							"listen": "test",
@@ -2028,7 +2074,7 @@
 					"response": []
 				},
 				{
-					"name": "Authorize without password",
+					"name": "Login without password",
 					"event": [
 						{
 							"listen": "test",
@@ -2072,6 +2118,48 @@
 								"api",
 								"v1",
 								"authorize"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Device redirection token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"request should fail without username\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.errors[0].msg).to.be.eql(\"Invalid value\");\r",
+									"    pm.expect(jsonData.errors[0].param).to.be.eql(\"guid\");\r",
+									"    pm.expect(jsonData.errors[0].location).to.be.eql(\"params\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/authorize/redirection/1",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"authorize",
+								"redirection",
+								"1"
 							]
 						}
 					},

@@ -51,5 +51,6 @@
       "SSL_OP_NO_TLSv1",
       "SSL_OP_NO_TLSv11"
     ]
-  }
+  },
+  "redirection_expiration_time": "5"
 }
