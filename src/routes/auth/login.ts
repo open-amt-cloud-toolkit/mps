@@ -11,9 +11,13 @@ export async function login (req: Request, res: Response): Promise<void> {
     res.status(400).json({ errors: errors.array() })
     return
   }
+  // todo: implement a more advanced authentication system and RBAC
+  if (!Environment.Config.web_auth_enabled) {
+    res.status(405).send({ message: messages.AUTH_DISABLED })
+    return
+  }
   const username: string = req.body.username
   const password: string = req.body.password
-  // todo: implement a more advanced authentication system and RBAC
   if (username.toLowerCase() === Environment.Config.web_admin_user.toLowerCase() && password === Environment.Config.web_admin_password) {
     const expirationMinutes = Number(Environment.Config.jwt_expiration)
     const expiration = Math.floor((Date.now() + (1000 * 60 * expirationMinutes)) / 1000)

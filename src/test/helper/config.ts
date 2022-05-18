@@ -55,5 +55,6 @@ export const config: configType = {
   tls_cert_ca: '',
   web_tls_cert: '',
   web_tls_cert_key: '',
-  web_tls_cert_ca: ''
+  web_tls_cert_ca: '',
+  web_auth_enabled: true
 }
