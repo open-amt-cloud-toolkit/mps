@@ -13,7 +13,10 @@ let writeSecretWithObjectSpy: jest.SpyInstance
 const config = {
   common_name: 'me',
   country: 'us',
-  organization: 'rbhe'
+  organization: 'rbhe',
+  mps_tls_config: {
+    minVersion: 'TLS1'
+  }
 }
 const secrets = {
   getMPSCerts: () => undefined,
