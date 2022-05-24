@@ -36,6 +36,7 @@ export interface configType {
   db_provider: string
   connection_string: string
   instance_name: string
+  redirection_expiration_time: number
   web_auth_enabled: boolean
 }
 

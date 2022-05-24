@@ -2,7 +2,6 @@ import router from './index'
 
 describe('Check index from routes', () => {
   const routes = [
-    { path: '/authorize', method: 'post' },
     { path: '/ciracert', method: 'get' }
   ]
   it('should have routes', () => {
@@ -14,6 +13,7 @@ describe('Check index from routes', () => {
     })
   })
   const routers = [
+    { path: '/authorize', method: 'use' },
     { path: '/devices', method: 'use' },
     { path: '/amt', method: 'use' },
     { path: '/health', method: 'use' }]
