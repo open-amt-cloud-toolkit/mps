@@ -37,6 +37,7 @@ export interface configType {
   connection_string: string
   instance_name: string
   redirection_expiration_time: number
+  web_auth_enabled: boolean
 }
 
 export interface certificatesType {

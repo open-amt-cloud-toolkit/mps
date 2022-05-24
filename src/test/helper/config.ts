@@ -11,6 +11,7 @@ export const config: configType = {
   generate_certificates: true,
   web_admin_user: '',
   web_admin_password: '',
+  web_auth_enabled: true,
   vault_address: 'http://localhost:8200',
   vault_token: 'myroot',
   mqtt_address: '',

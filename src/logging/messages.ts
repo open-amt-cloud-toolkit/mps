@@ -12,6 +12,7 @@ export enum messages {
   AMT_FEATURES_SET_SUCCESS = 'AMT Features updated',
   APP_USE_JSON_PARSER_ERROR = 'appUseJsonParser received err other than SyntaxError',
   AUDIT_LOG_EXCEPTION = 'Exception during AMT AuditLog request',
+  AUTH_DISABLED = 'Authentication disabled on MPS',
   BOOT_SETTING_EXCEPTION = 'Exception during Boot Setting request',
   CHANNEL_CLOSE_NO_CHANNEL_ID = 'MPS Error in CHANNEL_CLOSE: Unable to find channelId',
   CHANNEL_OPEN_FAILURE_NO_CHANNEL_ID = 'MPS Error in CHANNEL_OPEN_FAILURE: Unable to find channelId',
