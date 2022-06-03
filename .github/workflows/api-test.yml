@@ -16,6 +16,7 @@ jobs:
     - run: docker-compose up -d
     - run: sleep 30
     - run: docker run --network=host -v  /home/runner/work/mps/mps/src/test/collections/:/collections postman/newman run /collections/MPS.postman_collection.json -e /collections/MPS.postman_environment.json --insecure
+    - run: docker run --network=host -v  /home/runner/work/mps/mps/src/test/collections/:/collections postman/newman run /collections/using-verbs.postman_collection.json -e /collections/using-verbs.postman_collection.json -d /collections/data/mps_verbdata.json --insecure
     - name: Dump docker logs on
       if: failure()
       uses: jwalton/gh-docker-logs@v1
