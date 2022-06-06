@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 import { generalSettings } from './getGeneralSettings'
 import { createSpyObj } from '../../test/helper/jest'
 import { CIRAHandler } from '../../amt/CIRAHandler'

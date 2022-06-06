@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 // Import all required methods from common.js file
 import Common from './common'
 const v = 256

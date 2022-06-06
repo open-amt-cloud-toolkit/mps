@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 export const createSpyObj = (baseName, methodNames): { [key: string]: jest.Mock<any> } => {
   const obj: any = {}
 

@@ -1,7 +1,6 @@
 /*********************************************************************
-* Copyright (c) Intel Corporation 2019
+* Copyright (c) Intel Corporation
 * SPDX-License-Identifier: Apache-2.0
-* Description: Handler to get power capabilities of amt device
 **********************************************************************/
 
 import { Response, Request } from 'express'

@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 import { validationResult } from 'express-validator'
 import { Request, Response } from 'express'
 import { logger } from '../../logging/logger'

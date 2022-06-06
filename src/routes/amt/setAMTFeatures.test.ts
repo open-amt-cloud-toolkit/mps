@@ -1,7 +1,8 @@
 /*********************************************************************
- * Copyright (c) Intel Corporation 2021
- * SPDX-License-Identifier: Apache-2.0
- **********************************************************************/
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 import { MqttProvider } from '../../utils/MqttProvider'
 import { createSpyObj } from '../../test/helper/jest'
 import { setAMTFeatures } from './setAMTFeatures'

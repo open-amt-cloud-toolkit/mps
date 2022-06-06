@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 import { version } from './getVersion'
 import { createSpyObj } from '../../test/helper/jest'
 import { setupAndConfigurationServiceResponse, softwareIdentityResponse, versionResponse } from '../../test/helper/wsmanResponses'

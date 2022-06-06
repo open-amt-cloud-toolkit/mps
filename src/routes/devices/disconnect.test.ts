@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 import { logger, messages } from '../../logging'
 import { devices } from '../../server/mpsserver'
 import { disconnect } from './disconnect'

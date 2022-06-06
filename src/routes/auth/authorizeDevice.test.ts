@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 import { authorizeDevice } from './authorizeDevice'
 import { createSpyObj } from '../../test/helper/jest'
 import { Environment } from '../../utils/Environment'

@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 import { Certificates } from './certificates'
 import { certificatesType } from '../models/Config'
 import forge from 'node-forge'

@@ -1,5 +1,5 @@
 /*********************************************************************
-* Copyright (c) Intel Corporation 2021
+* Copyright (c) Intel Corporation
 * SPDX-License-Identifier: Apache-2.0
 **********************************************************************/
 

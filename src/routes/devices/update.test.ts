@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 import { MPSValidationError } from '../../utils/MPSValidationError'
 import { updateDevice } from './update'
 import { logger } from '../../logging'

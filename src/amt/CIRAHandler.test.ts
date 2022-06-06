@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 // import { CIRASocket } from '../models/models'
 // import { card, computerSystemPackage, enumerateResponseCIMSoftwareIdentity } from '../test/helper/wsmanResponses'
 import { HttpZResponseModel } from 'http-z'

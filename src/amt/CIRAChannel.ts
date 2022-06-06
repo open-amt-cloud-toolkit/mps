@@ -1,7 +1,7 @@
 /*********************************************************************
- * Copyright (c) Intel Corporation 2018-2021
- * SPDX-License-Identifier: Apache-2.0
- **********************************************************************/
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
 
 // import httpZ, { HttpZResponseModel } from 'http-z'
 import { CIRASocket } from '../models/models'

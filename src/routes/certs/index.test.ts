@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 import { mpsrootcert } from './index'
 import { createSpyObj } from '../../test/helper/jest'
 import { ErrorResponse } from '../../utils/amtHelper'

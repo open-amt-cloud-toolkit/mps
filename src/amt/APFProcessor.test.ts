@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 import Common from '../utils/common'
 import { logger } from '../logging'
 import APFProcessor, { APFProtocol } from './APFProcessor'

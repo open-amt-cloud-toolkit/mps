@@ -1,7 +1,6 @@
 /*********************************************************************
-* Copyright (c) Intel Corporation 2019
+* Copyright (c) Intel Corporation
 * SPDX-License-Identifier: Apache-2.0
-* Description: Handler to execute a power action on amt device
 **********************************************************************/
 
 import { Response, Request } from 'express'

@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 import * as parse from './parseEnvValue'
 
 describe('Check parseEnvValue', () => {

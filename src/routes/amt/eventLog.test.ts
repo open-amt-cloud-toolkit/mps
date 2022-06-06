@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 import { eventLog, GetEventDetailStr } from './eventLog'
 import { createSpyObj } from '../../test/helper/jest'
 import { amtMessageLog } from '../../test/helper/wsmanResponses'

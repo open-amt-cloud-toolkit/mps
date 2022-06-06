@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 import { powerState } from './getPowerState'
 import { createSpyObj } from '../../test/helper/jest'
 import { serviceAvailableToElement } from '../../test/helper/wsmanResponses'

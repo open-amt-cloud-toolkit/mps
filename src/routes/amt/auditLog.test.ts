@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 import { atob } from 'atob'
 import auditLog = require('./auditLog')
 import { MqttProvider } from '../../utils/MqttProvider'

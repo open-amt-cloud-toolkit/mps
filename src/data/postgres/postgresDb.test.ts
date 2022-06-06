@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 import { QueryResult } from 'pg'
 import PostgresDb, { POSTGRES_RESPONSE_CODES } from '.'
 

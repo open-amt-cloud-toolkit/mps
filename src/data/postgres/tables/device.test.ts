@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 import { DeviceTable } from './device'
 import { Device } from '../../../models/models'
 import PostgresDb from '..'

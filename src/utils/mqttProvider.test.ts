@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 import { MqttProvider } from './MqttProvider'
 import { Environment } from './Environment'
 import { config } from '../test/helper/config'

@@ -1,9 +1,7 @@
 /*********************************************************************
- * Copyright (c) Intel Corporation 2019
- * SPDX-License-Identifier: Apache-2.0
- * Description: stores amt profiles
- * Author: Ramu Bachala
- **********************************************************************/
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
 
 import { ISecretManagerService } from '../interfaces/ISecretManagerService'
 import { certificatesType } from '../models/Config'

@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 import { SecretManagerService } from './SecretManagerService'
 import { logger } from '../logging'
 import { config } from '../test/helper/config'

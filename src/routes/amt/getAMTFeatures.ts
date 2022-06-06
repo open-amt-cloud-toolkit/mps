@@ -1,9 +1,7 @@
 /*********************************************************************
- * Copyright (c) Intel Corporation 2020
- * SPDX-License-Identifier: Apache-2.0
- * Description: Handler to get AMT Features
- * Author: Madhavi Losetty
- **********************************************************************/
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
 
 import { Response, Request } from 'express'
 import { logger, messages } from '../../logging'

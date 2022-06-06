@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 import PostgresDb from '../data/postgres'
 import { Environment } from '../utils/Environment'
 import { DbCreatorFactory } from './DbCreatorFactory'

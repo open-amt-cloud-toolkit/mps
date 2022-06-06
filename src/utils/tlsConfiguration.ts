@@ -1,7 +1,6 @@
 /*********************************************************************
-* Copyright (c) Intel Corporation 2019
+* Copyright (c) Intel Corporation
 * SPDX-License-Identifier: Apache-2.0
-* Description: MPS and Web Server TLS Configuration Interface
 **********************************************************************/
 
 import path from 'path'

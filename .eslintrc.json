@@ -19,9 +19,14 @@
         "project": "./tsconfig.json"
     },
     "plugins": [
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "license-header"
     ],
     "rules": {
+        "license-header/header": [
+            "error",
+            "./license-header.js"
+          ],
         "@typescript-eslint/strict-boolean-expressions": 0,
         "@typescript-eslint/restrict-template-expressions": 0,
         "@typescript-eslint/no-dynamic-delete": 0,

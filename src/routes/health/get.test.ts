@@ -1,3 +1,8 @@
+/*********************************************************************
+* Copyright (c) Intel Corporation
+* SPDX-License-Identifier: Apache-2.0
+**********************************************************************/
+
 import { getHealthCheck, getDBHealth, getSecretStoreHealth } from './get'
 import { Environment } from '../../utils/Environment'
 import { createSpyObj } from '../../test/helper/jest'
