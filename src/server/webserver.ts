@@ -1,7 +1,7 @@
 /*********************************************************************
-* Copyright (c) Intel Corporation 2018-2019
-* SPDX-License-Identifier: Apache-2.0
-**********************************************************************/
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
 
 /**
 * @description Intel AMT Web server object

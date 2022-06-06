@@ -1,7 +1,8 @@
 /*********************************************************************
-* Copyright (c) Intel Corporation 2021
-* SPDX-License-Identifier: Apache-2.0
-**********************************************************************/
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
+
 import { createHash, randomBytes } from 'crypto'
 const Common = {
   ReadShort: (v: string, p: number): number => {

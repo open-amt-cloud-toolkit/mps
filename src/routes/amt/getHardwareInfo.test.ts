@@ -1,3 +1,8 @@
+/*********************************************************************
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
+
 import * as hw from './getHardwareInfo'
 import { createSpyObj } from '../../test/helper/jest'
 import { biosElement, card, chassis, chip, computerSystemPackage, mediaAccessDevice, physicalMemory, physicalPackage, processor, systemPackaging } from '../../test/helper/wsmanResponses'
