@@ -1,3 +1,8 @@
+/*********************************************************************
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
+
 import { createSpyObj } from '../../../test/helper/jest'
 import { cancel } from './cancel'
 import { cancelOptInResponse } from '../../../test/helper/wsmanResponses'

@@ -1,7 +1,8 @@
 /*********************************************************************
-* Copyright (c) Intel Corporation 2022
-* SPDX-License-Identifier: Apache-2.0
-**********************************************************************/
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
+
 import { logger, messages } from '../logging'
 import { CIRAHandler } from './CIRAHandler'
 import { AMT, CIM, IPS, Common } from '@open-amt-cloud-toolkit/wsman-messages'

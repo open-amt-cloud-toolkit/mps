@@ -1,7 +1,7 @@
 /*********************************************************************
-* Copyright (c) Intel Corporation 2022
-* SPDX-License-Identifier: Apache-2.0
-**********************************************************************/
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
 
 export enum messages {
   AMT_FEATURES_EXCEPTION = 'Exception during AMT Features request',

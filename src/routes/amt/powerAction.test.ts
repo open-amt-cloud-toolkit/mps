@@ -1,3 +1,8 @@
+/*********************************************************************
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
+
 import { CIM } from '@open-amt-cloud-toolkit/wsman-messages'
 import { CIRAHandler } from '../../amt/CIRAHandler'
 import { DeviceAction } from '../../amt/DeviceAction'

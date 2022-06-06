@@ -1,3 +1,8 @@
+/*********************************************************************
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
+
 import { certificatesType } from '../models/Config'
 import { ISecretManagerService } from '../interfaces/ISecretManagerService'
 import { config } from '../test/helper/config'

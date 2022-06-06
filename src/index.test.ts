@@ -1,3 +1,8 @@
+/*********************************************************************
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
+
 import * as indexFile from './index'
 import { logger } from './logging'
 import { Environment } from './utils/Environment'
