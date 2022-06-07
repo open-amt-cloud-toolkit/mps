@@ -8,7 +8,6 @@ import { configType, certificatesType } from './models/Config'
 import { Certificates } from './utils/certificates'
 import tlsConfig from './utils/tlsConfiguration'
 import { SecretManagerService } from './utils/SecretManagerService'
-import { parseValue } from './utils/parseEnvValue'
 import rc from 'rc'
 import { Environment } from './utils/Environment'
 import { MqttProvider } from './utils/MqttProvider'
@@ -17,10 +16,19 @@ import { DbCreatorFactory } from './factories/DbCreatorFactory'
 import { IDB } from './interfaces/IDb'
 import { WebServer } from './server/webserver'
 import { MPSServer } from './server/mpsserver'
+import { parseValue } from './utils/parseEnvValue'
 
-async function main (): Promise<void> {
+export async function main (): Promise<void> {
   try {
-    Environment.Config = loadConfig()
+    // To merge ENV variables. consider after lower-casing ENV since our config keys are lowercase
+    process.env = Object.keys(process.env)
+      .reduce((destination, key) => {
+        destination[key.toLowerCase()] = parseValue(process.env[key])
+        return destination
+      }, {})
+    // build config object
+    const config: configType = rc('mps')
+    Environment.Config = loadConfig(config)
 
     // DB initialization
     const newDB = new DbCreatorFactory()
@@ -45,19 +53,16 @@ async function main (): Promise<void> {
   }
 }
 
-function loadConfig (): configType {
+export function loadConfig (config: any): configType {
   // To merge ENV variables. consider after lower-casing ENV since our config keys are lowercase
-  process.env = Object.keys(process.env)
-    .reduce((destination, key) => {
-      destination[key.toLowerCase()] = parseValue(process.env[key])
-      return destination
-    }, {})
-
-  // build config object
-  const config: configType = rc('mps')
-
-  if (!config.web_admin_password || !config.web_admin_user || !config.jwt_secret) {
-    logger.error('Web admin username, password and jwt secret are mandatory. Make sure to set values for these variables.')
+  if (config.web_auth_enabled) {
+    if (!config.web_admin_password || !config.web_admin_user) {
+      logger.error('If auth enabled is set to true, Web admin username and password are mandatory. Make sure to set values for these variables.')
+      process.exit(1)
+    }
+  }
+  if (!config.jwt_secret) {
+    logger.error('jwt secret is mandatory.')
     process.exit(1)
   }
 
@@ -80,7 +85,7 @@ async function setupSignalHandling (db: IDB): Promise<void> {
   })
 }
 
-async function loadCertificates (secrets: ISecretManagerService): Promise<certificatesType> {
+export async function loadCertificates (secrets: ISecretManagerService): Promise<certificatesType> {
   // path where Self-signed certificates are generated
   let certs: certificatesType
   // Certificate Configuration and Operations
@@ -117,6 +122,8 @@ async function loadCertificates (secrets: ISecretManagerService): Promise<certif
   return certs
 }
 
-main().then().catch(err => {
-  logger.error(err)
-})
+if (process.env.NODE_ENV !== 'test') {
+  main().then().catch(err => {
+    logger.error(err)
+  })
+}

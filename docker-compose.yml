@@ -19,6 +19,7 @@ services:
     environment:
       MPS_CONNECTION_STRING: "postgresql://postgresadmin:admin123@db:5432/mpsdb"
       MPS_VAULT_ADDRESS: "http://vault:8200"
+      MPS_WEB_AUTH_ENABLED: "true"
       MPS_WEB_ADMIN_USER: "standalone"
       MPS_WEB_ADMIN_PASSWORD: "G@ppm0ym"
       MPS_JWT_SECRET: "mpssecret"

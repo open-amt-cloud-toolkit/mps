@@ -33,13 +33,13 @@
     "test": "jest --detectOpenHandles --forceExit --coverage"
   },
   "dependencies": {
-    "@open-amt-cloud-toolkit/wsman-messages": "^2.3.2",
+    "@open-amt-cloud-toolkit/wsman-messages": "^2.3.3",
     "atob": "^2.1.2",
     "consul": "^0.40.0",
     "cors": "^2.8.5",
     "express": "^4.18.1",
-    "express-validator": "^6.14.0",
-    "got": "^11.8.3",
+    "express-validator": "^6.14.1",
+    "got": "^11.8.5",
     "http-z": "^6.1.2",
     "jws": "^4.0.0",
     "mqtt": "^4.3.7",
@@ -47,7 +47,7 @@
     "pg": "^8.7.3",
     "rc": "^1.2.8",
     "winston": "^3.7.2",
-    "ws": "^8.6.0",
+    "ws": "^8.7.0",
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
@@ -65,12 +65,12 @@
     "eslint-config-standard-with-typescript": "^21.0.1",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-promise": "^5.0.0",
     "jest": "27.5.1",
     "jest-junit": "^13.2.0",
     "jest-transform-stub": "^2.0.0",
     "ts-jest": "^27.1.4",
-    "ts-node": "^10.7.0",
-    "typescript": "^4.6.4"
+    "ts-node": "^10.8.0",
+    "typescript": "^4.7.3"
   }
 }
