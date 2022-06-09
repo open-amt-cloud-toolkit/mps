@@ -1,0 +1,70 @@
+{
+	"info": {
+		"_postman_id": "d0edafd2-5cf9-4fab-83ce-306db5584098",
+		"name": "Verbs Copy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "postman-calls-using-verbs",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.set(\"METHOD\", \"{{verb}}\");\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response Status Code is: \" + pm.response.code, () => {\r",
+							"    pm.expect(pm.response.code).to.equal(Number(data.expected));\r",
+							"    if (pm.response.code === 200 && pm.request.url.getPath() === '/mps/login/api/v1/authorize' && pm.request.method === 'POST') {\r",
+							"        pm.collectionVariables.set(\"token\", pm.response.json().token);\r",
+							"        console.log(pm.collectionVariables.get(\"token\"))\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "{{METHOD}}",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{body}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

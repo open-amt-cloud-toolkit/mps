@@ -1,0 +1,58 @@
+[
+  {
+    "_TEST_CASE_6597": "MPS: Rest API- Use POST method for mps api's (positive test)",
+    "url": "{{protocol}}://{{host}}/api/v1/authorize",
+    "verb": "POST",
+    "body": "{\"username\":\"standalone\",\"password\":\"G@ppm0ym\"}",
+    "expected": "200"
+  },
+  {
+    "_TEST_CASE_6597": "MPS: Rest API- Use PUT method for mps api (negative test)",
+    "url": "{{protocol}}://{{host}}/api/v1/authorize",
+    "verb": "PUT",
+    "body": "{\"username\":\"standalone\",\"password\":\"G@ppm0ym\"}",
+    "expected": "404"
+  },
+  {
+    "_TEST_CASE_5368": "MPS: Rest API- Use POST method for mps api (positive test)",
+    "url": "{{protocol}}://{{host}}/api/v1/authorize",
+    "verb": "POST",
+	   "body": "{\"username\":\"standalone\",\"password\":\"G@ppm0ym\"}",
+
+    "expected": "200"
+  },
+  {
+    "_TEST_CASE_5368": "MPS: Rest API- Use GET method for mps api's instead of POST (negative test)",
+    "url": "{{protocol}}://{{host}}/api/v1/authorize",
+    "verb": "GET",
+  	"body": "{\"username\":\"standalone\",\"password\":\"G@ppm0ym\"}",
+    "expected": "404"
+  },
+  {
+    "_TEST_CASE_6599": "MPS: Rest API- Use POST method for mps api (positive test)",
+    "url": "{{protocol}}://{{host}}/api/v1/devices",
+    "verb": "POST",
+	"body": "{  \"guid\": \"123e4567-e89b-12d3-a456-426614174002\",  \"hostname\": \"AMTDEVICENUC2\",  \"tags\": [    \"Texas\",    \"NUC\",    \"Store #222\"  ]}",
+    "expected": "201"
+  },
+  {
+    "_TEST_CASE_6599": "MPS: Rest API-  Use DELETE method for mps api's instead of POST (negative test)",
+    "url": "{{protocol}}://{{host}}/api/v1/devices",
+    "verb": "DELETE",
+	"body": "{  \"guid\": \"123e4567-e89b-12d3-a456-426614174002\",  \"hostname\": \"AMTDEVICENUC2\",  \"tags\": [    \"Texas\",    \"NUC\",    \"Store #222\"  ]}",
+    "expected": "404"
+  },
+  {
+    "_TEST_CASE_6601": "MPS: Rest API-  Use POST method for mps api (positive test)",
+    "url": "{{protocol}}://{{host}}/api/v1/devices",
+    "verb": "POST",
+    "body": "{  \"guid\": \"123e4567-e89b-12d3-a456-426614174003\",  \"hostname\": \"AMTDEVICENUC3\",  \"tags\": [    \"Texas\",    \"NUC\",    \"Store #333\"  ]}",
+    "expected": "201"
+  },
+  {
+    "_TEST_CASE_6601": "MPS: Rest API-  Use COPY method for mps api's instead of POST (negative test)",
+    "url": "{{protocol}}://{{host}}/api/v1/devices",
+    "verb": "COPY",
+    "expected": "404"
+  }
+]
