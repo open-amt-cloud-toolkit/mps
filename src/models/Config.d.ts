@@ -11,13 +11,15 @@ export interface configType {
   listen_any: boolean
   https?: boolean
   web_port: number
-  generate_certificates: boolean
+  generate_certificates: boolean | 'vault'
   secrets_path?: string
   data_path?: string
   cert_path: string
   cert_format: string
   vault_address?: string
   vault_token?: string
+  vault_pki_path?: string
+  vault_pki_role?: string
   mqtt_address?: string
   jwt_secret: string
   jwt_issuer: string

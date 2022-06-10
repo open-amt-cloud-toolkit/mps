@@ -24,22 +24,45 @@ export class Certificates {
   async getCertificates (): Promise<certificatesType> {
     let certificates: certificatesType = await this.secrets.getMPSCerts()
     if (certificates == null) {
-      certificates = this.generateCertificates()
+      certificates = await this.generateCertificates()
       await this.storeCertificates(certificates)
     }
     return certificates// return mps and web certificates
   }
 
-  generateCertificates (): certificatesType {
-    logger.info(messages.GENERATING_ROOT_CERTIFICATE)
-    const rootCertAndKey: certAndKeyType = this.GenerateRootCertificate(true, 'MPSRoot', null, null, true)
-    const rootCertificate = forge.pki.certificateToPem(rootCertAndKey.cert)
-    const rootPrivateKey = forge.pki.privateKeyToPem(rootCertAndKey.key)
+  async generateCertificates (): Promise<certificatesType> {
+    let rootPrivateKey: forge.pki.PEM | undefined
+    let rootCertificate: forge.pki.PEM
+    let mpsCertificate: forge.pki.PEM
+    let mpsPrivateKey: forge.pki.PEM
 
-    logger.info(messages.GENERATING_MPS_CERTIFICATE)
-    const mpsCertAndKey: certAndKeyType = this.IssueWebServerCertificate(rootCertAndKey, false, this.config.common_name, this.config.country, this.config.organization, null, false)
-    const mpsCertificate = forge.pki.certificateToPem(mpsCertAndKey.cert)
-    const mpsPrivateKey = forge.pki.privateKeyToPem(mpsCertAndKey.key)
+    if (this.config.generate_certificates === 'vault') {
+      const resp = await this.secrets.issuePkiCertificate(
+        `${this.config.vault_pki_path}/issue/${this.config.vault_pki_role}`,
+        {
+          ttl: '87600h',
+          common_name: this.config.common_name,
+          country: this.config.country,
+          organization: this.config.organization,
+          format: 'pem',
+          private_key_format: 'pem',
+        }
+      )
+
+      rootCertificate = resp.data.issuing_ca
+      mpsCertificate = resp.data.certificate
+      mpsPrivateKey = resp.data.private_key
+    } else {
+      logger.info(messages.GENERATING_ROOT_CERTIFICATE)
+      const rootCertAndKey: certAndKeyType = this.GenerateRootCertificate(true, 'MPSRoot', null, null, true)
+      rootCertificate = forge.pki.certificateToPem(rootCertAndKey.cert)
+      rootPrivateKey = forge.pki.privateKeyToPem(rootCertAndKey.key)
+
+      logger.info(messages.GENERATING_MPS_CERTIFICATE)
+      const mpsCertAndKey: certAndKeyType = this.IssueWebServerCertificate(rootCertAndKey, false, this.config.common_name, this.config.country, this.config.organization, null, false)
+      mpsCertificate = forge.pki.certificateToPem(mpsCertAndKey.cert)
+      mpsPrivateKey = forge.pki.privateKeyToPem(mpsCertAndKey.key)
+    }
 
     // Set MPS TLS Configuration
     const mpsConfig: mpsConfigType = { cert: mpsCertificate, key: mpsPrivateKey, minVersion: 'TLSv1', requestCert: true, rejectUnauthorized: false }

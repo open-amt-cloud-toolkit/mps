@@ -12,6 +12,8 @@
   "web_auth_enabled": true,
   "vault_address": "http://localhost:8200",
   "vault_token": "myroot",
+  "vault_pki_path": "pki",
+  "vault_pki_role": "amt-certificate-role",
   "mqtt_address": "",
   "secrets_path": "secret/data/",
   "cert_format": "file",

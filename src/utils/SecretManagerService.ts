@@ -62,6 +62,21 @@ export class SecretManagerService implements ISecretManagerService {
     }
   }
 
+  async issuePkiCertificate (path: string, data: any): Promise<any | false> {
+    try {
+      this.logger.verbose(messages.SECRET_MANAGER_WRITING_ISSUE_CERTIFICATE)
+      const rspJson: any = await this.gotClient.post(path, {
+        prefixUrl: `${Environment.Config.vault_address}/v1/`,
+        json: data
+      }).json()
+      this.logger.debug(`${messages.SECRET_MANAGER_DATA_CERTIFICATE_ISSUED_SUCCESS}: ${path}`)
+      return rspJson
+    } catch (error) {
+      this.logger.error(`${messages.SECRET_MANAGER_ISSUE_CERTIFICATE_ERROR} :`, error)
+      return false
+    }
+  }
+
   async getAMTCredentials (path: string): Promise<string[]> {
     const user = 'admin'
     const secret: { data: DeviceSecrets } = await this.getSecretAtPath(`devices/${path}`)
