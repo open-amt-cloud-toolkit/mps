@@ -37,21 +37,10 @@ export class Certificates {
     let mpsPrivateKey: forge.pki.PEM
 
     if (this.config.generate_certificates === 'vault') {
-      const resp = await this.secrets.issuePkiCertificate(
-        `${this.config.vault_pki_path}/issue/${this.config.vault_pki_role}`,
-        {
-          ttl: '87600h',
-          common_name: this.config.common_name,
-          country: this.config.country,
-          organization: this.config.organization,
-          format: 'pem',
-          private_key_format: 'pem',
-        }
-      )
-
-      rootCertificate = resp.data.issuing_ca
-      mpsCertificate = resp.data.certificate
-      mpsPrivateKey = resp.data.private_key
+      const resp = await this.IssueWebServerCertificateByVault(this.config.common_name, this.config.country, this.config.organization, null)
+      rootCertificate = resp.ca
+      mpsCertificate = resp.cert
+      mpsPrivateKey = resp.key
     } else {
       logger.info(messages.GENERATING_ROOT_CERTIFICATE)
       const rootCertAndKey: certAndKeyType = this.GenerateRootCertificate(true, 'MPSRoot', null, null, true)
@@ -170,5 +159,25 @@ export class Certificates {
     cert.sign(rootcert.key, forge.md.sha384.create())
 
     return { cert: cert, key: keys.privateKey }
+  }
+
+  IssueWebServerCertificateByVault = async (commonName: string, country: string, organization: string, extKeyUsage): Promise<{ca: string, cert: string, key: string}> => {
+    const resp = await this.secrets.issuePkiCertificate(
+      `${this.config.vault_pki_path}/issue/${this.config.vault_pki_role}`,
+      {
+        ttl: '87600h',
+        common_name: commonName,
+        country: country,
+        organization: organization,
+        format: 'pem',
+        private_key_format: 'pem'
+      }
+    )
+
+    return {
+      ca: resp.data.issuing_ca,
+      cert: resp.data.certificate,
+      key: resp.data.private_key
+    }
   }
 }

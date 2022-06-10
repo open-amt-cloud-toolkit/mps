@@ -13,20 +13,24 @@ let createCertificateSpy: jest.SpyInstance
 let getPublicKeyFingerprintSpy: jest.SpyInstance
 let sha384CreateSpy: jest.SpyInstance
 let getMPSCertsSpy: jest.SpyInstance
+let issuePkiCertificateSpy: jest.SpyInstance
 let storeCertificatesSpy: jest.SpyInstance
 let writeSecretWithObjectSpy: jest.SpyInstance
 const config = {
   common_name: 'me',
   country: 'us',
-  organization: 'rbhe'
+  organization: 'rbhe',
+  generate_certificates: true as any
 }
 const secrets = {
   getMPSCerts: () => undefined,
-  writeSecretWithObject: async () => undefined
+  writeSecretWithObject: async () => undefined,
+  issuePkiCertificate: async (path: string, data: any) => false
 }
 
 beforeEach(() => {
   getMPSCertsSpy = jest.spyOn(secrets, 'getMPSCerts')
+  issuePkiCertificateSpy = jest.spyOn(secrets, 'issuePkiCertificate')
   certificates = new Certificates(config, secrets)
   writeSecretWithObjectSpy = jest.spyOn(secrets, 'writeSecretWithObject')
   storeCertificatesSpy = jest.spyOn(certificates, 'storeCertificates')
@@ -49,12 +53,12 @@ describe('constructor', () => {
 })
 
 describe('generateCertificates', () => {
-  it('should generate certificates', () => {
+  it('should generate certificates', async () => {
     const generateRootCertificateSpy = jest.spyOn(certificates, 'GenerateRootCertificate').mockReturnValue({})
     const certificateToPemSpy = jest.spyOn(forge.pki, 'certificateToPem').mockReturnValue('certificate')
     const privateKeyToPemSpy = jest.spyOn(forge.pki, 'privateKeyToPem').mockReturnValue('private key')
     const issueWebServerCertificateSpy = jest.spyOn(certificates, 'IssueWebServerCertificate').mockReturnValue({})
-    const result: certificatesType = certificates.generateCertificates()
+    const result: certificatesType = await certificates.generateCertificates()
     expect(result.mps_tls_config).toBeTruthy()
     expect(result.web_tls_config).toBeTruthy()
     expect(result.root_key).toBeTruthy()
@@ -62,6 +66,36 @@ describe('generateCertificates', () => {
     expect(privateKeyToPemSpy).toBeCalled()
     expect(issueWebServerCertificateSpy).toBeCalled()
     expect(generateRootCertificateSpy).toBeCalled()
+  })
+})
+
+describe('issueCertificates by vault', () => {
+  beforeEach(() => {
+    config.generate_certificates = 'vault'
+  })
+
+  afterEach(() => {
+    config.generate_certificates = true
+  })
+
+  it('should issue certificates', async () => {
+    issuePkiCertificateSpy.mockReturnValue(Promise.resolve({
+      data: {
+        //
+        issuing_ca: '.',
+        certificate: '.',
+        private_key: '.'
+      }
+    }))
+    const generateRootCertificateSpy = jest.spyOn(certificates, 'GenerateRootCertificate').mockReturnValue({})
+    const issueWebServerCertificateByVaultSpy = jest.spyOn(certificates, 'IssueWebServerCertificateByVault')
+    const result: certificatesType = await certificates.generateCertificates()
+    expect(result.mps_tls_config).toBeTruthy()
+    expect(result.web_tls_config).toBeTruthy()
+    expect(result.root_key).toBeUndefined()
+    expect(generateRootCertificateSpy).not.toBeCalled()
+    expect(issuePkiCertificateSpy).toBeCalled()
+    expect(issueWebServerCertificateByVaultSpy).toBeCalled()
   })
 })
 
