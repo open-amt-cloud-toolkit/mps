@@ -13,7 +13,11 @@ export async function mpsrootcert (req: Request, res: Response): Promise<void> {
       res.status(500).json(ErrorResponse(500, messages.MPS_ROOT_CERTIFICATE_DOES_NOT_EXIST)).end()
       return
     }
-    res.send(req.certs.web_tls_config.ca)
+    if (Array.isArray(req.certs.web_tls_config.ca)) {
+      res.send(req.certs.web_tls_config.ca[0])
+    } else {
+      res.send(req.certs.web_tls_config.ca)
+    }
   } catch (error) {
     logger.error(`${messages.MPS_ROOT_CERTIFICATE_EXCEPTION}: ${error}`)
     res.status(500).json(ErrorResponse(500, messages.MPS_ROOT_CERTIFICATE_EXCEPTION)).end()

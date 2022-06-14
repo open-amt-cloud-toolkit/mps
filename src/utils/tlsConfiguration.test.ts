@@ -4,7 +4,6 @@
  **********************************************************************/
 
 import tlsConfiguration from './tlsConfiguration'
-import path from 'path'
 import fs from 'fs'
 import { logger } from '../logging'
 import { mpsConfigType, webConfigType, directConfigType } from '../models/Config'
@@ -32,6 +31,22 @@ afterEach(() => {
   jest.resetModules()
 })
 
+const defaultWebConfig = {
+  ca: '',
+  cert: '',
+  key: '',
+  secureOptions: [constants.SSL_OP_NO_SSLv2]
+}
+
+const defaultMpsConfig = {
+  cert: '',
+  key: '',
+  minVersion: 'TLSv1',
+  secureOptions: [constants.SSL_OP_NO_SSLv2],
+  requestCert: true,
+  rejectUnauthorized: false
+}
+
 describe('web', () => {
   it('should return webConfig (more than one secure options)', () => {
     const webConfig = {
@@ -44,7 +59,7 @@ describe('web', () => {
     readFileSyncSpy.mockImplementation()
     jsonParseSpy.mockReturnValue(webConfig)
     existsSyncSpy.mockReturnValue(true)
-    const result = web()
+    const result = web(defaultWebConfig)
     expect(result).toEqual(webConfig)
     expect(readFileSyncSpy).toHaveBeenCalled()
   })
@@ -59,13 +74,45 @@ describe('web', () => {
     readFileSyncSpy.mockImplementation()
     jsonParseSpy.mockReturnValue(webConfig)
     existsSyncSpy.mockReturnValue(true)
-    const result = web()
+    const result = web(defaultWebConfig)
     expect(result).toEqual(webConfig)
     expect(readFileSyncSpy).toHaveBeenCalled()
   })
+
+  it('should return webConfig after read the file', () => {
+    const webConfig = {
+      ca: 'ca.crt',
+      cert: 'tls.crt',
+      key: 'tls.key',
+      secureOptions: [constants.SSL_OP_NO_SSLv2, constants.SSL_OP_NO_SSLv3, constants.SSL_OP_NO_TLSv1],
+      null: null
+    }
+
+    const mockFile = (p: string): string | undefined => {
+      if (p === webConfig.ca) {
+        return 'CA'
+      } else if (p === webConfig.cert) {
+        return 'CERT'
+      } else if (p === webConfig.key) {
+        return 'KEY'
+      }
+    }
+    readFileSyncSpy.mockImplementation((p) => mockFile(p))
+    existsSyncSpy.mockImplementation((p) => !!mockFile(p))
+    jsonParseSpy.mockReturnValue(webConfig)
+    const result = web(webConfig)
+    expect(result).toEqual({
+      ...webConfig,
+      ca: ['CA'],
+      cert: 'CERT',
+      key: 'KEY'
+    })
+    expect(readFileSyncSpy).toHaveBeenCalled()
+  })
+
   it('should return void if webTlsConfigPath does not exist', () => {
     existsSyncSpy.mockReturnValue(false)
-    const result = web()
+    const result = web(defaultWebConfig)
     expect(result).toBeUndefined()
     expect(errorSpy).toHaveBeenCalled()
   })
@@ -80,7 +127,7 @@ describe('web', () => {
     readFileSyncSpy.mockImplementation()
     jsonParseSpy.mockReturnValue(webConfig)
     existsSyncSpy.mockReturnValue(true)
-    const result = web()
+    const result = web(defaultWebConfig)
     expect(result).toBeFalsy()
     expect(errorSpy).toHaveBeenCalled()
     expect(exitSpy).toHaveBeenCalled()
@@ -96,15 +143,15 @@ describe('web', () => {
     readFileSyncSpy.mockImplementation()
     jsonParseSpy.mockReturnValue(webConfig)
     existsSyncSpy.mockImplementation((p) => {
-      if (p === path.join(__dirname, webConfig.key)) {
+      if (p === webConfig.key) {
         return false
-      } else if (p === path.join(__dirname, webConfig.cert)) {
+      } else if (p === webConfig.cert) {
         return false
       } else {
         return true
       }
     })
-    const result = web()
+    const result = web(defaultWebConfig)
     expect(result).toBeFalsy()
     expect(errorSpy).toHaveBeenCalled()
     expect(exitSpy).toHaveBeenCalled()
@@ -115,7 +162,7 @@ describe('web', () => {
     jsonParseSpy.mockImplementation(() => {
       throw new Error('fake json parse error')
     })
-    const result = web()
+    const result = web(defaultWebConfig)
     expect(result).toBeFalsy()
     expect(errorSpy).toHaveBeenCalled()
     expect(exitSpy).toHaveBeenCalled()
@@ -131,15 +178,15 @@ describe('web', () => {
     readFileSyncSpy.mockImplementation()
     jsonParseSpy.mockReturnValue(webConfig)
     existsSyncSpy.mockImplementation((p) => {
-      if (p === path.join(__dirname, webConfig.key)) {
+      if (p === webConfig.key) {
         return true
-      } else if (p === path.join(__dirname, webConfig.cert)) {
+      } else if (p === webConfig.cert) {
         return true
       } else {
         return true
       }
     })
-    const result = web()
+    const result = web(defaultWebConfig)
     expect(result).toBeFalsy()
     expect(errorSpy).toHaveBeenCalled()
     expect(exitSpy).toHaveBeenCalled()
@@ -153,13 +200,13 @@ describe('web', () => {
       secureOptions: [constants.SSL_OP_NO_SSLv2, constants.SSL_OP_NO_SSLv3]
     }
     readFileSyncSpy.mockImplementation((p, e) => {
-      if (p === path.join(__dirname, webConfig.key)) {
+      if (p === webConfig.key) {
         throw Error('fake read file error')
       }
     })
     jsonParseSpy.mockReturnValue(webConfig)
     existsSyncSpy.mockReturnValue(true)
-    const result = web()
+    const result = web(defaultWebConfig)
     expect(result).toBeFalsy()
     expect(errorSpy).toHaveBeenCalled()
     expect(exitSpy).toHaveBeenCalled()
@@ -180,7 +227,7 @@ describe('mps', () => {
     readFileSyncSpy.mockImplementation()
     jsonParseSpy.mockReturnValue(mpsConfig)
     existsSyncSpy.mockReturnValue(true)
-    const result = mps()
+    const result = mps(defaultMpsConfig)
     expect(result).toEqual(mpsConfig)
     expect(readFileSyncSpy).toHaveBeenCalled()
   })
@@ -198,14 +245,44 @@ describe('mps', () => {
     readFileSyncSpy.mockImplementation()
     jsonParseSpy.mockReturnValue(mpsConfig)
     existsSyncSpy.mockReturnValue(true)
-    const result = mps()
+    const result = mps(defaultMpsConfig)
     expect(result).toEqual(mpsConfig)
+    expect(readFileSyncSpy).toHaveBeenCalled()
+  })
+
+  it('should return mpsConfig after read the file', () => {
+    const mpsConfig = {
+      cert: 'tls.crt',
+      key: 'tls.key',
+      minVersion: '',
+      secureOptions: [constants.SSL_OP_NO_SSLv2, constants.SSL_OP_NO_SSLv3, constants.SSL_OP_NO_TLSv1],
+      requestCert: true,
+      rejectUnauthorized: true,
+      null: null
+    }
+
+    const mockFile = (p: string): string | undefined => {
+      if (p === mpsConfig.cert) {
+        return 'CERT'
+      } else if (p === mpsConfig.key) {
+        return 'KEY'
+      }
+    }
+    readFileSyncSpy.mockImplementation((p) => mockFile(p))
+    existsSyncSpy.mockImplementation((p) => !!mockFile(p))
+    jsonParseSpy.mockReturnValue(mpsConfig)
+    const result = mps(mpsConfig)
+    expect(result).toEqual({
+      ...mpsConfig,
+      cert: 'CERT',
+      key: 'KEY'
+    })
     expect(readFileSyncSpy).toHaveBeenCalled()
   })
 
   it('should return void if mpsTlsConfigPath does not exist', () => {
     existsSyncSpy.mockReturnValue(false)
-    const result = mps()
+    const result = mps(defaultMpsConfig)
     expect(result).toBeUndefined()
     expect(errorSpy).toHaveBeenCalled()
   })
@@ -222,7 +299,7 @@ describe('mps', () => {
     readFileSyncSpy.mockImplementation()
     jsonParseSpy.mockReturnValue(mpsConfig)
     existsSyncSpy.mockReturnValue(true)
-    const result = mps()
+    const result = mps(defaultMpsConfig)
     expect(result).toBeFalsy()
     expect(errorSpy).toHaveBeenCalled()
     expect(exitSpy).toHaveBeenCalled()
@@ -240,15 +317,15 @@ describe('mps', () => {
     readFileSyncSpy.mockImplementation()
     jsonParseSpy.mockReturnValue(mpsConfig)
     existsSyncSpy.mockImplementation((p) => {
-      if (p === path.join(__dirname, mpsConfig.key)) {
+      if (p === mpsConfig.key) {
         return false
-      } else if (p === path.join(__dirname, mpsConfig.cert)) {
+      } else if (p === mpsConfig.cert) {
         return false
       } else {
         return true
       }
     })
-    const result = mps()
+    const result = mps(defaultMpsConfig)
     expect(result).toBeFalsy()
     expect(errorSpy).toHaveBeenCalled()
     expect(exitSpy).toHaveBeenCalled()
@@ -259,7 +336,7 @@ describe('mps', () => {
     jsonParseSpy.mockImplementation(() => {
       throw new Error('fake json parse error')
     })
-    const result = mps()
+    const result = mps(defaultMpsConfig)
     expect(result).toBeFalsy()
     expect(errorSpy).toHaveBeenCalled()
     expect(exitSpy).toHaveBeenCalled()
@@ -275,13 +352,13 @@ describe('mps', () => {
       rejectUnauthorized: true
     }
     readFileSyncSpy.mockImplementation((p, e) => {
-      if (p === path.join(__dirname, mpsConfig.key)) {
+      if (p === mpsConfig.key) {
         throw Error('fake read file error')
       }
     })
     jsonParseSpy.mockReturnValue(mpsConfig)
     existsSyncSpy.mockReturnValue(true)
-    const result = mps()
+    const result = mps(defaultMpsConfig)
     expect(result).toBeFalsy()
     expect(errorSpy).toHaveBeenCalled()
     expect(exitSpy).toHaveBeenCalled()
@@ -344,9 +421,9 @@ describe('direct', () => {
     readFileSyncSpy.mockImplementation()
     jsonParseSpy.mockReturnValue(directConfig)
     existsSyncSpy.mockImplementation((p) => {
-      if (p === path.join(__dirname, directConfig.key)) {
+      if (p === directConfig.key) {
         return true
-      } else if (p === path.join(__dirname, directConfig.cert)) {
+      } else if (p === directConfig.cert) {
         return false
       } else {
         return true
@@ -379,7 +456,7 @@ describe('direct', () => {
       ciphers: 'ciphers'
     }
     readFileSyncSpy.mockImplementation((p, e) => {
-      if (p === path.join(__dirname, directConfig.key)) {
+      if (p === directConfig.key) {
         throw Error('fake read file error')
       }
     })

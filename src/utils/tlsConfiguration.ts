@@ -14,7 +14,7 @@ const webTlsConfigPath = path.join(__dirname, '../../private/webtlsconfig.json')
 const mpsTlsConfigPath = path.join(__dirname, '../../private/mpstlsconfig.json')
 const directConnTlsConfigPath = path.join(__dirname, '../../private/directConntlsconfig.json')
 export default {
-  web: (): webConfigType => {
+  web: (secondConfig: webConfigType): webConfigType => {
     try {
       let webConfig: webConfigType
       // Parse Web TLS Configuration json file
@@ -22,8 +22,11 @@ export default {
         if (fs.existsSync(webTlsConfigPath)) {
           webConfig = JSON.parse(fs.readFileSync(webTlsConfigPath, 'utf8'))
         } else {
-          logger.error(`${messages.TLS_CONFIGURATION_WEB_TLS_CONFIG_DOES_NOT_EXIST} ${webTlsConfigPath}`)
-          return
+          if (!secondConfig.key || !secondConfig.cert) {
+            logger.error(`${messages.TLS_CONFIGURATION_WEB_TLS_CONFIG_DOES_NOT_EXIST} ${webTlsConfigPath}`)
+            return
+          }
+          webConfig = secondConfig
         }
       } catch (ex) {
         logger.error(messages.TLS_CONFIGURATION_JSON_PARSE_EXCEPTION, ex.message)
@@ -45,18 +48,18 @@ export default {
       // Load SSL Cert and key
       if (webConfig.key && webConfig.cert) {
         if (
-          !fs.existsSync(path.join(__dirname, webConfig.key)) &&
-          !fs.existsSync(path.join(__dirname, webConfig.cert))
+          !fs.existsSync(webConfig.key) &&
+          !fs.existsSync(webConfig.cert)
         ) {
           logger.error(messages.TLS_CONFIGURATION_TLS_CERTIFICATE_OR_KEY_DOES_NOT_EXIST)
           return process.exit()
         } else {
           webConfig.key = fs.readFileSync(
-            path.join(__dirname, webConfig.key),
+            webConfig.key,
             'utf8'
           )
           webConfig.cert = fs.readFileSync(
-            path.join(__dirname, webConfig.cert),
+            webConfig.cert,
             'utf8'
           )
         }
@@ -67,13 +70,13 @@ export default {
 
       // Load CA certificates
       if (webConfig.ca) {
-        const caCertLocationArr = webConfig.ca
+        const caCertLocationArr = (typeof webConfig.ca === 'string') ? [webConfig.ca] : webConfig.ca
         const caCertArr = []
         for (let i: number = 0; i < caCertLocationArr.length; i++) {
-          if (!fs.existsSync(path.join(__dirname, caCertLocationArr[i]))) {
+          if (fs.existsSync(caCertLocationArr[i])) {
             caCertArr.push(
               fs.readFileSync(
-                path.join(__dirname, caCertLocationArr[i]),
+                caCertLocationArr[i],
                 'utf8'
               )
             )
@@ -107,7 +110,7 @@ export default {
     }
   },
 
-  mps: (): mpsConfigType => {
+  mps: (secondConfig: mpsConfigType): mpsConfigType => {
     try {
       let mpsConfig: mpsConfigType
       // Parse MPS TLS Configuration json file
@@ -115,8 +118,11 @@ export default {
         if (fs.existsSync(mpsTlsConfigPath)) {
           mpsConfig = JSON.parse(fs.readFileSync(mpsTlsConfigPath, 'utf8'))
         } else {
-          logger.error(`${messages.TLS_CONFIGURATION_MPS_TLS_CONFIG_DOES_NOT_EXIST} ${mpsTlsConfigPath}`)
-          return
+          if (!secondConfig.key || !secondConfig.cert) {
+            logger.error(`${messages.TLS_CONFIGURATION_MPS_TLS_CONFIG_DOES_NOT_EXIST} ${mpsTlsConfigPath}`)
+            return
+          }
+          mpsConfig = secondConfig
         }
       } catch (ex) {
         logger.error(messages.TLS_CONFIGURATION_JSON_PARSE_EXCEPTION, ex.message)
@@ -140,18 +146,18 @@ export default {
       // Load SSL Cert and key
       if (mpsConfig.key && mpsConfig.cert) {
         if (
-          !fs.existsSync(path.join(__dirname, mpsConfig.key)) ||
-          !fs.existsSync(path.join(__dirname, mpsConfig.cert))
+          !fs.existsSync(mpsConfig.key) ||
+          !fs.existsSync(mpsConfig.cert)
         ) {
           logger.error(messages.TLS_CONFIGURATION_TLS_CERTIFICATE_OR_KEY_DOES_NOT_EXIST)
           return process.exit()
         } else {
           mpsConfig.key = fs.readFileSync(
-            path.join(__dirname, mpsConfig.key),
+            mpsConfig.key,
             'utf8'
           )
           mpsConfig.cert = fs.readFileSync(
-            path.join(__dirname, mpsConfig.cert),
+            mpsConfig.cert,
             'utf8'
           )
         }
@@ -201,13 +207,13 @@ export default {
 
       // Load SSL Cert and key
       if (directConnConfig.key && directConnConfig.cert && directConnConfig.ca) {
-        if (!fs.existsSync(path.join(__dirname, directConnConfig.key)) || !fs.existsSync(path.join(__dirname, directConnConfig.cert))) {
+        if (!fs.existsSync(directConnConfig.key) || !fs.existsSync(directConnConfig.cert)) {
           logger.error(messages.TLS_CONFIGURATION_TLS_CERTIFICATE_OR_KEY_DOES_NOT_EXIST)
           return process.exit()
         } else {
-          directConnConfig.key = fs.readFileSync(path.join(__dirname, directConnConfig.key), 'utf8')
-          directConnConfig.cert = fs.readFileSync(path.join(__dirname, directConnConfig.cert), 'utf8')
-          directConnConfig.ca = fs.readFileSync(path.join(__dirname, directConnConfig.ca), 'utf8')
+          directConnConfig.key = fs.readFileSync(directConnConfig.key, 'utf8')
+          directConnConfig.cert = fs.readFileSync(directConnConfig.cert, 'utf8')
+          directConnConfig.ca = fs.readFileSync(directConnConfig.ca, 'utf8')
         }
       } else {
         logger.error(messages.TLS_CONFIGURATION_CERTIFICATE_OR_KEY_DOES_NOT_EXIST)

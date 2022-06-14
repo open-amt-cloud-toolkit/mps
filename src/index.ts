@@ -112,7 +112,7 @@ export async function loadCertificates (secrets: ISecretManagerService): Promise
       certs = { mps_tls_config: Environment.Config.mps_tls_config, web_tls_config: Environment.Config.web_tls_config }
     } else { // else read the certs from files
       logger.debug('using cert from file')
-      certs = { mps_tls_config: tlsConfig.mps(), web_tls_config: tlsConfig.web() }
+      certs = { mps_tls_config: tlsConfig.mps(Environment.Config.mps_tls_config), web_tls_config: tlsConfig.web(Environment.Config.web_tls_config) }
     }
     logger.debug('Loaded existing certificates')
   } else {
