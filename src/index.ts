@@ -98,7 +98,7 @@ export async function loadCertificates (secrets: ISecretManagerService): Promise
         Environment.Config.mps_tls_config.key = Environment.Config.tls_cert_key
         Environment.Config.mps_tls_config.cert = Environment.Config.tls_cert
       } else {
-        Environment.Config.mps_tls_config = { cert: Environment.Config.tls_cert, key: Environment.Config.tls_cert_key, minVersion: 'TLSv1', requestCert: true, rejectUnauthorized: false }
+        Environment.Config.mps_tls_config = { cert: Environment.Config.tls_cert, key: Environment.Config.tls_cert_key, minVersion: Environment.Config.mps_tls_config.minVersion, requestCert: true, rejectUnauthorized: false }
       }
 
       if (Environment.Config.web_tls_config) {
