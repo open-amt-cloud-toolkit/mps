@@ -42,7 +42,10 @@ export class Certificates {
     const mpsPrivateKey = forge.pki.privateKeyToPem(mpsCertAndKey.key)
 
     // Set MPS TLS Configuration
-    const mpsConfig: mpsConfigType = { cert: mpsCertificate, key: mpsPrivateKey, minVersion: this.config.mps_tls_config.minVersion, requestCert: true, rejectUnauthorized: false }
+    var ciphers = ['TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384',
+               'TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384',
+               'TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384'].join(':');
+    const mpsConfig: mpsConfigType = { cert: mpsCertificate, key: mpsPrivateKey, minVersion: this.config.mps_tls_config.minVersion, requestCert: true, rejectUnauthorized: false, ciphers: ciphers }
     // Set WebServer TLS Configuration
     const webConfig: webConfigType = { ca: rootCertificate, cert: mpsCertificate, key: mpsPrivateKey }
     const certificates: certificatesType = { mps_tls_config: mpsConfig, web_tls_config: webConfig, root_key: rootPrivateKey }
