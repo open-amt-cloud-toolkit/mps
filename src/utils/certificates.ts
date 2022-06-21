@@ -45,7 +45,12 @@ export class Certificates {
     const ciphers = ['TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384',
       'TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384',
       'TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384'].join(':')
-    const mpsConfig: mpsConfigType = { cert: mpsCertificate, key: mpsPrivateKey, minVersion: this.config.mps_tls_config.minVersion, requestCert: true, rejectUnauthorized: false, ciphers: ciphers }
+    const ciphersTls1 = 'HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA'
+    if (this.config.mps_tls_config.minVersion == 'TLSv1.2' || this.config.mps_tls_config.minVersion == 'TLSv1.3') {
+      var mpsConfig: mpsConfigType = { cert: mpsCertificate, key: mpsPrivateKey, minVersion: this.config.mps_tls_config.minVersion, requestCert: true, rejectUnauthorized: false, ciphers: ciphers }
+    } else {
+      var mpsConfig: mpsConfigType = { cert: mpsCertificate, key: mpsPrivateKey, minVersion: this.config.mps_tls_config.minVersion, requestCert: true, rejectUnauthorized: false, ciphers: ciphersTls1 }
+    }
     // Set WebServer TLS Configuration
     const webConfig: webConfigType = { ca: rootCertificate, cert: mpsCertificate, key: mpsPrivateKey }
     const certificates: certificatesType = { mps_tls_config: mpsConfig, web_tls_config: webConfig, root_key: rootPrivateKey }
