@@ -88,7 +88,9 @@ describe('webserver tests', () => {
     it('should allow KVM connection when no KVM connection', () => {
       const jwsSpy = jest.spyOn(web.jws, 'verify')
       jwsSpy.mockImplementationOnce(() => true)
-      devices['4c4c4544-004b-4210-8033-b6c04f504633'].kvmConnect = false // {} as any
+      devices['4c4c4544-004b-4210-8033-b6c04f504633'] = {
+        kvmConnect: null
+      } as any
       const info = {
         req: {
           url: '/relay/webrelay.ashx?p=2&host=4c4c4544-004b-4210-8033-b6c04f504633&port=16994&tls=0&tls1only=0',
@@ -101,7 +103,9 @@ describe('webserver tests', () => {
     it('should not allow KVM connection when KVM connection active', () => {
       const jwsSpy = jest.spyOn(web.jws, 'verify')
       jwsSpy.mockImplementationOnce(() => true)
-      devices['4c4c4544-004b-4210-8033-b6c04f504633'].kvmConnect = true // {} as any
+      devices['4c4c4544-004b-4210-8033-b6c04f504633'] = {
+        kvmConnect: '6342c091-08fd-4a9d-a503-dd4c9df0c7a4'
+      } as any
       const info = {
         req: {
           url: '/relay/webrelay.ashx?p=2&host=4c4c4544-004b-4210-8033-b6c04f504633&port=16994&tls=0&tls1only=0',
@@ -275,6 +279,45 @@ describe('webserver tests', () => {
       const relayConnectionSpy = jest.spyOn(web, 'relayConnection')
       await web.relayConnection(mockWebSocketExt as any, mockIncomingMessage as any)
       expect(relayConnectionSpy).toHaveBeenCalledTimes(1)
+    })
+
+    it('clear kvmConnect when WebSocket closed', async () => {
+      const guid = 'b90141f7-5cba-41cc-89bf-e8a2a2908ab6'
+      const sessionId = '1b17394f-445d-453b-97a7-c8f09af5e6ef'
+
+      devices[guid] = {
+        kvmConnect: null
+      } as any
+
+      const mockWebSocket = {
+        pause: jest.fn()
+      }
+      const mockSocket = new Socket()
+      mockSocket.connect = jest.fn()
+
+      const mockWebSocketExt = {
+        _socket: mockWebSocket,
+        forwardclient: mockSocket,
+        on: jest.fn(),
+        onclose: () => {}
+      }
+      const mockIncomingMessage = {
+        headers: {},
+        url: `https://iotg.com?tls=0&host=${guid}`,
+        sessionId
+      }
+
+      const jwsSpy = jest.spyOn(web.jws, 'verify')
+      jwsSpy.mockImplementationOnce(() => true)
+      web.verifyClientToken({ req: mockIncomingMessage })
+
+      expect(devices[guid].kvmConnect).toEqual(sessionId)
+
+      await web.relayConnection(mockWebSocketExt as any, mockIncomingMessage as any)
+
+      mockWebSocketExt.onclose()
+
+      expect(devices[guid].kvmConnect).toBeNull()
     })
   })
 

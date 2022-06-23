@@ -15,6 +15,7 @@ import { CIRAChannel } from '../amt/CIRAChannel'
 import { MqttProvider } from './MqttProvider'
 
 export class WsRedirect {
+  sessionId: string
   secrets: ISecretManagerService
   interceptor: RedirectInterceptor
   websocketFromWeb: WebSocket
@@ -26,6 +27,7 @@ export class WsRedirect {
   }
 
   handleConnection = async (req: IncomingMessage): Promise<void> => {
+    this.sessionId = (req as any).sessionId
     const reqQueryURL = new URL(req.url, 'http://dummy.com')
     const params: queryParams = {
       host: reqQueryURL.searchParams.get('host'),
@@ -76,8 +78,10 @@ export class WsRedirect {
 
   handleClose (params: queryParams, CloseEvent: WebSocket.CloseEvent): void {
     logger.debug(`${messages.REDIRECT_CLOSING_WEB_SOCKET} to ${params.host}: ${params.port}.`)
+    if (devices[params.host].kvmConnect === this.sessionId) {
+      devices[params.host].kvmConnect = null // Indicate no current KVM session on the device
+    }
     if (this.websocketFromDevice) {
-      devices[params.host].kvmConnect = false // Indicate no current KVM session on the device
       this.websocketFromDevice.CloseChannel()
       MqttProvider.publishEvent('success', ['handleClose'], messages.REDIRECTION_SESSION_ENDED)
     }

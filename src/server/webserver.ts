@@ -22,6 +22,7 @@ import routes from '../routes'
 import WebSocket from 'ws'
 import { URL } from 'url'
 import cors from 'cors'
+import * as uuid from 'uuid'
 import { DbCreatorFactory } from '../factories/DbCreatorFactory'
 import { Environment } from '../utils/Environment'
 import { ISecretManagerService } from '../interfaces/ISecretManagerService'
@@ -45,7 +46,10 @@ export class WebServer {
 
       const options: WebSocket.ServerOptions = {
         noServer: true,
-        verifyClient: (info) => this.verifyClientToken(info)
+        verifyClient: (info) => {
+          info.req.sessionId = uuid.v4()
+          return this.verifyClientToken(info)
+        }
       }
       this.relayWSS = new WebSocket.Server(options)
 
@@ -135,8 +139,10 @@ export class WebServer {
   // Handle Upgrade - WebSocket
   handleUpgrade (request: IncomingMessage, socket: Socket, head: Buffer): void {
     const pathname = (new URL(request.url, 'http://dummy.com')).pathname
+    console.error('pathname: ', pathname, ' || ', head)
     if (pathname === '/relay/webrelay.ashx') {
       this.relayWSS.handleUpgrade(request, socket, head, (ws) => {
+        console.log('handleUpgrade', ws.url)
         this.relayWSS.emit('connection', ws, request)
       })
     } else { // Invalid endpoint
@@ -162,7 +168,7 @@ export class WebServer {
     if (devices[guid]?.kvmConnect) {
       return false
     } else if (devices[guid] != null) {
-      devices[guid].kvmConnect = true
+      devices[guid].kvmConnect = info.req.sessionId
       return true
     } else {
       return false

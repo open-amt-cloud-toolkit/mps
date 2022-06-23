@@ -9,11 +9,11 @@ import { HttpHandler } from './HttpHandler'
 export class ConnectedDevice {
   httpHandler: HttpHandler
   ciraSocket: CIRASocket
-  kvmConnect: boolean
+  kvmConnect: string | null // Session ID
 
   constructor (ciraSocket: CIRASocket, readonly username: string, readonly password: string) {
     this.ciraSocket = ciraSocket
     this.httpHandler = new HttpHandler()
-    this.kvmConnect = false
+    this.kvmConnect = null
   }
 }
