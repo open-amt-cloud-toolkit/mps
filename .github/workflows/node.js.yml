@@ -45,3 +45,8 @@ jobs:
     - uses: codecov/codecov-action@v1.0.14
       name: Upload Coverage Results
       if: ${{ matrix.node-version == '16.x' }}
+    - name: Upload JEST Results
+      uses: actions/upload-artifact@v3
+      with:
+        name: results
+        path: junit.xml
