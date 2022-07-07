@@ -1,10 +1,55 @@
 
 
-<a name="2.3.0"></a>
-## [2.3.0] - 2022-05-11
-
+<a name="2.4.0"></a>
+## [2.4.0] - 2022-07-05
 ### Build
-- bump version to v2.3.0 (#54a6d04) 
+- **deps:** bump ws from 8.7.0 to 8.8.0 (#dbc8f13) 
+- **deps:** bump express-validator from 6.14.0 to 6.14.1 (#d3a78e3) 
+- **deps:** bump [@open](https://github.com/open)-amt-cloud-toolkit/wsman-messages (#49e90ee) 
+- **deps:** bump ws from 8.6.0 to 8.7.0 (#a86b29d) 
+- **deps:** bump got from 11.8.3 to 11.8.5 ([#618](https://github.com/open-amt-cloud-toolkit/mps/issues/618)) (#0ad4afc) 
+- **deps:** bump [@open](https://github.com/open)-amt-cloud-toolkit/wsman-messages (#632f6e1) 
+- **deps-dev:** bump typescript from 4.6.4 to 4.7.2 (#7bb7e65) 
+- **deps-dev:** bump ts-node from 10.7.0 to 10.8.0 (#1d522d2) 
+- **deps-dev:** bump ts-node from 10.8.0 to 10.8.1 (#67b549c) 
+- **deps-dev:** bump typescript from 4.7.2 to 4.7.3 (#ea1c12b) 
+
+### Ci
+- rename test file output (#60be506) 
+- remove node 12 and add 18 for build (#fbb918c) 
+- **codeql:** upgrade codeql to v2 (#56d18db) 
+- **jest:** upload junit results as built artifact (#6c24f6a) 
+- **lint:** enforce consistent copyright and license across all code files (#28e7b22) 
+- **postman:** upload postman results as build artifact (#ab79fab) 
+
+### Feat
+- **api:** to get short lived bearer token for direction sessions ([#612](https://github.com/open-amt-cloud-toolkit/mps/issues/612)) (#32c5652) 
+- **auth:** Added a User Auth configuration setting to disable/enable MPS auth (#897e9f2) 
+
+### Fix
+- **Security:** variable to set minimum TLS version ([#611](https://github.com/open-amt-cloud-toolkit/mps/issues/611)) (#4657e06) 
+
+### Test
+- **db:** refactor initialization for unit tests (#274b31e) 
+- **postman:** automated mps (#cc63b5f) 
+
+
+<a name="v2.3.2"></a>
+## [v2.3.2] - 2022-06-15
+### Fix
+- **dependencies:** resolve peer dependencies for eslint (#abe8e9c) 
+
+
+<a name="v2.3.1"></a>
+## [v2.3.1] - 2022-05-11
+### Fix
+- **devices:** query parameters now work as expected (#150ac31) 
+
+
+<a name="v2.3.0"></a>
+## [v2.3.0] - 2022-05-11
+### Build
+- bump version to v2.3.0 (#0f8daab) 
 - **dep:** adds support for wsman-messages 2.3.1 (#5a80dd8) 
 - **deps:** bump winston from 3.7.1 to 3.7.2 (#f217c87) 
 - **deps:** bump minimist from 1.2.5 to 1.2.6 (#9c17ab6) 
@@ -25,6 +70,9 @@
 ### Ci
 - **lint:** adds semantic checks to PRs (#8433d8a) 
 
+### Docs
+- update changelog for v2.3.0 (#824a75b) 
+
 ### Feat
 - **API:** Adds hostname query parameter to getDevices (#d67cc3d) 
 - **redirection:** adds mqtt start and stop events for redirection ([#573](https://github.com/open-amt-cloud-toolkit/mps/issues/573)) (#e51906e) 
@@ -39,8 +87,8 @@
 - **mps:** Input validation checks in APFProcessor for max size ([#597](https://github.com/open-amt-cloud-toolkit/mps/issues/597)) (#82e3efd) 
 
 
-<a name="2.2.0"></a>
-## [2.2.0] - 2022-03-18
+<a name="v2.2.0"></a>
+## [v2.2.0] - 2022-03-18
 ### Build
 - **deps:** bump node-forge from 0.10.0 to 1.0.0 (#6ad11a6) 
 - **deps:** bump ws from 8.2.3 to 8.3.0 (#b88178e) 
@@ -110,7 +158,7 @@
 - **workflow:** optimize node CI (#a1d482f) 
 
 ### Docs
-- update changelog for release (#eab3618) 
+- update changelog for release (#997f184) 
 - **swagger:** removes swagger from source control (#4d3833f) 
 
 ### Feat
@@ -174,8 +222,8 @@
 - **utils:** Adding parseEnvValue unit test (#2eda6a7) 
 
 
-<a name="2.1.0"></a>
-## [2.1.0] - 2021-11-08
+<a name="v2.1.0"></a>
+## [v2.1.0] - 2021-11-08
 ### Build
 - **dep:** update jest to 27.2.1 (#491c247) 
 - **deps:** bump express-validator from 6.12.2 to 6.13.0 (#8bab749) 
@@ -216,6 +264,7 @@
 ### Docs
 - adds issue template (#2373ba3) 
 - add contributing guidelines (#c0673e9) 
+- **changelog:** update changelog (#220587c) 
 - **github:** add pull request template (#01051ae) 
 
 ### Feat
@@ -664,8 +713,13 @@ Auth is now stateless, db and vault required
 - **docker:** optimize dockerfile (#51cfb0e) 
 
 
-[Unreleased]: https://github.com/open-amt-cloud-toolkit/mps/compare/2.1.0...HEAD
-[2.1.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v2.0.1...2.1.0
+[Unreleased]: https://github.com/open-amt-cloud-toolkit/mps/compare/2.3.0...HEAD
+[2.3.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v2.3.2...2.3.0
+[v2.3.2]: https://github.com/open-amt-cloud-toolkit/mps/compare/v2.3.1...v2.3.2
+[v2.3.1]: https://github.com/open-amt-cloud-toolkit/mps/compare/v2.3.0...v2.3.1
+[v2.3.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v2.2.0...v2.3.0
+[v2.2.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v2.1.0...v2.2.0
+[v2.1.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v2.0.1...v2.1.0
 [v2.0.1]: https://github.com/open-amt-cloud-toolkit/mps/compare/v2.0.0...v2.0.1
 [v2.0.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v1.5.0...v2.0.0
 [v1.5.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v1.4.0...v1.5.0
