@@ -23,5 +23,5 @@ jobs:
     - name: Upload Postman Results
       uses: actions/upload-artifact@v3
       with:
-        name: results
+        name: mps-api
         path: /home/runner/work/mps/mps/src/test/results
