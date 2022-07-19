@@ -44,8 +44,8 @@ export class Certificates {
     // Set MPS TLS Configuration
     const ciphers = ['HIGH:TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384',
       'TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384',
-      'TLS13-AES-256-GCM-SHA384',
-      'TLS13-AES-128-GCM-SHA256',
+      'TLS-AES-256-GCM-SHA384',
+      'TLS-AES-128-GCM-SHA256',
       'TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384'].join(':')
     const ciphersTls1 = 'HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA'
     let mpsConfig: mpsConfigType
