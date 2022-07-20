@@ -42,17 +42,17 @@ export class Certificates {
     const mpsPrivateKey = forge.pki.privateKeyToPem(mpsCertAndKey.key)
 
     // Set MPS TLS Configuration
-    const ciphers = ['HIGH:TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384',
-      'TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384',
+    const secureCiphers = ['HIGH:TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384',
+      'TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384',
+      'TLS_DHE_RSA_WITH_AES_256_GCM_SHA384',
       'TLS-AES-256-GCM-SHA384',
-      'TLS-AES-128-GCM-SHA256',
-      'TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384'].join(':')
-    const ciphersTls1 = 'HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA'
+      'TLS-AES-128-GCM-SHA256'].join(':')
+    const legacySupportCiphers = 'HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA'
     let mpsConfig: mpsConfigType
     if (this.config.mps_tls_config.minVersion === 'TLSv1.2' || this.config.mps_tls_config.minVersion === 'TLSv1.3') {
-      mpsConfig = { cert: mpsCertificate, key: mpsPrivateKey, minVersion: this.config.mps_tls_config.minVersion, requestCert: true, rejectUnauthorized: false, ciphers: ciphers }
+      mpsConfig = { cert: mpsCertificate, key: mpsPrivateKey, minVersion: this.config.mps_tls_config.minVersion, requestCert: true, rejectUnauthorized: false, ciphers: secureCiphers }
     } else {
-      mpsConfig = { cert: mpsCertificate, key: mpsPrivateKey, minVersion: this.config.mps_tls_config.minVersion, requestCert: true, rejectUnauthorized: false, ciphers: ciphersTls1 }
+      mpsConfig = { cert: mpsCertificate, key: mpsPrivateKey, minVersion: this.config.mps_tls_config.minVersion, requestCert: true, rejectUnauthorized: false, ciphers: legacySupportCiphers }
     }
     // Set WebServer TLS Configuration
     const webConfig: webConfigType = { ca: rootCertificate, cert: mpsCertificate, key: mpsPrivateKey }
