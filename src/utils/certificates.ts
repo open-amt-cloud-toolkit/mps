@@ -42,11 +42,11 @@ export class Certificates {
     const mpsPrivateKey = forge.pki.privateKeyToPem(mpsCertAndKey.key)
 
     // Set MPS TLS Configuration
-    const secureCiphers = ['HIGH:TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384',
-      'TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384',
-      'TLS_DHE_RSA_WITH_AES_256_GCM_SHA384',
-      'TLS-AES-256-GCM-SHA384',
-      'TLS-AES-128-GCM-SHA256'].join(':')
+    const secureCiphers = ['ECDHE-ECDSA-AES256-GCM-SHA384',
+      'ECDHE-RSA-AES256-GCM-SHA384',
+      'DHE-RSA-AES256-GCM-SHA384',
+      'TLS_AES_256_GCM_SHA384',
+      'TLS_AES_128_GCM_SHA256'].join(':')
     const legacySupportCiphers = 'HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA'
     let mpsConfig: mpsConfigType
     if (this.config.mps_tls_config.minVersion === 'TLSv1.2' || this.config.mps_tls_config.minVersion === 'TLSv1.3') {
