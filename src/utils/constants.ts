@@ -15,6 +15,7 @@ export const httpErrorTable = {
   400: 'Incorrect URI or Bad Request',
   401: 'Authentication Error',
   404: {
+    alarm: 'Alarm instance not found',
     device: 'Device not found/connected. Please connect again using CIRA.',
     method: 'Request does not contain method',
     noMethod: 'Requested method does not exists',

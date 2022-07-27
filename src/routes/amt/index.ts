@@ -13,8 +13,11 @@ import { bootOptions } from './bootOptions'
 import { powerCapabilities } from './powerCapabilities'
 import { powerState } from './getPowerState'
 import { version } from './getVersion'
+import { deleteAlarmOccurrence } from './deleteAlarmOccurrence'
+import { getAlarmOccurrences } from './getAlarmOccurrences'
 import { getAMTFeatures } from './getAMTFeatures'
 import { setAMTFeatures } from './setAMTFeatures'
+import { setAlarmOccurrence } from './setAlarmOccurrence'
 import { amtFeaturesValidator } from './amtFeatureValidator'
 import { powerActionValidator } from './powerActionValidator'
 import { auditLogValidator } from './auditLogValidator'
@@ -44,5 +47,8 @@ amtRouter.get('/version/:guid', ciraMiddleware, version)
 amtRouter.get('/userConsentCode/cancel/:guid', ciraMiddleware, cancel)
 amtRouter.get('/userConsentCode/:guid', ciraMiddleware, request)
 amtRouter.post('/userConsentCode/:guid', userConsentValidator(), validateMiddleware, ciraMiddleware, send)
+amtRouter.get('/alarmOccurrences/:guid', ciraMiddleware, getAlarmOccurrences)
+amtRouter.post('/alarmOccurrences/:guid', validateMiddleware, ciraMiddleware, setAlarmOccurrence)
+amtRouter.delete('/alarmOccurrences/:guid', validateMiddleware, ciraMiddleware, deleteAlarmOccurrence)
 
 export default amtRouter

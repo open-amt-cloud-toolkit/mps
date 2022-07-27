@@ -5,6 +5,8 @@
 
 import { CIRASocket } from '../models/models'
 import {
+  alarmClockOccurrences,
+  addAlarmClockOccurrenceResponse,
   amtMessageLog,
   auditLog,
   biosElement,
@@ -14,7 +16,9 @@ import {
   chassis,
   chip,
   computerSystemPackage,
+  deleteAlarmClockOccurrence,
   enumerateResponse,
+  enumerateResponseIPSAlarmClockOccurrence,
   generalSettings,
   mediaAccessDevice,
   physicalMemory,
@@ -31,12 +35,15 @@ import {
 import { CIRAHandler } from './CIRAHandler'
 import { DeviceAction } from './DeviceAction'
 import { HttpHandler } from './HttpHandler'
+import { Selector } from '@open-amt-cloud-toolkit/wsman-messages/WSMan'
+import { AlarmClockOccurrence } from '@open-amt-cloud-toolkit/wsman-messages/ips/models'
 
 describe('Device Action Tests', () => {
   let enumerateSpy: jest.SpyInstance
   let pullSpy: jest.SpyInstance
   let getSpy: jest.SpyInstance
   let sendSpy: jest.SpyInstance
+  let deleteSpy: jest.SpyInstance
   let device: DeviceAction
   beforeEach(() => {
     const socket: CIRASocket = null
@@ -46,12 +53,14 @@ describe('Device Action Tests', () => {
     pullSpy = jest.spyOn(device.ciraHandler, 'Pull')
     getSpy = jest.spyOn(device.ciraHandler, 'Get')
     sendSpy = jest.spyOn(device.ciraHandler, 'Send')
+    deleteSpy = jest.spyOn(device.ciraHandler, 'Delete')
   })
 
   afterEach(() => {
     getSpy.mockReset()
     enumerateSpy.mockReset()
     pullSpy.mockReset()
+    deleteSpy.mockReset()
   })
 
   describe('power', () => {
@@ -293,6 +302,54 @@ describe('Device Action Tests', () => {
       getSpy.mockResolvedValueOnce(bootCapabilities)
       const result = await device.getPowerCapabilities()
       expect(result).toEqual(bootCapabilities.Envelope)
+    })
+  })
+  describe('alarm occurrences', () => {
+    it('should return null when enumerate call to getAlarmClockOccurrences fails', async () => {
+      enumerateSpy.mockResolvedValueOnce(null)
+      const result = await device.getAlarmClockOccurrences()
+      expect(result).toBe(null)
+    })
+    it('should get alarm occurrences', async () => {
+      enumerateSpy.mockResolvedValueOnce(enumerateResponseIPSAlarmClockOccurrence)
+      pullSpy.mockResolvedValueOnce(alarmClockOccurrences)
+      const result = await device.getAlarmClockOccurrences()
+      expect(result).toEqual(alarmClockOccurrences.Envelope)
+    })
+
+    const fakeSelector: Selector = {
+      name: 'Name',
+      value: 'Alarm Instance Name'
+    }
+    it('should delete an alarm occurence', async () => {
+      deleteSpy.mockResolvedValueOnce(deleteAlarmClockOccurrence)
+
+      const result = await device.deleteAlarmClockOccurrence(fakeSelector)
+      expect(result).toEqual(deleteAlarmClockOccurrence.Envelope)
+    })
+
+    it('should return null when call to deleteAlarmClockOccurrence fails', async () => {
+      deleteSpy.mockResolvedValueOnce(null)
+      const result = await device.deleteAlarmClockOccurrence(fakeSelector)
+      expect(result).toBe(null)
+    })
+
+    const fakeAlarm: AlarmClockOccurrence = {
+      DeleteOnCompletion: true,
+      ElementName: 'Instance Name',
+      InstanceID: 'Instance',
+      StartTime: new Date('2022-12-31T23:59:00Z')
+    }
+    it('should create an alarm occurence', async () => {
+      getSpy.mockResolvedValueOnce(addAlarmClockOccurrenceResponse)
+
+      const result = await device.addAlarmClockOccurrence(fakeAlarm)
+      expect(result).toEqual(addAlarmClockOccurrenceResponse.Envelope)
+    })
+    it('should return null when call to addAlarmClockOccurrence fails', async () => {
+      getSpy.mockResolvedValueOnce(null)
+      const result = await device.addAlarmClockOccurrence(fakeAlarm)
+      expect(result).toBe(null)
     })
   })
 })

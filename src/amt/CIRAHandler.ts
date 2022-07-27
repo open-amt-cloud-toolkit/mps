@@ -60,6 +60,10 @@ export class CIRAHandler {
     })
   }
 
+  async Delete<T> (socket: CIRASocket, rawXml: string): Promise<Common.Models.Response<T>> {
+    return await this.Send(socket, rawXml)
+  }
+
   async Enumerate (socket: CIRASocket, rawXml: string): Promise<Common.Models.Response<Common.Models.Enumerate>> {
     return await this.Send(socket, rawXml)
   }
