@@ -834,3 +834,209 @@ export const bootCapabilities = {
     }
   }
 }
+
+export const enumerateResponseIPSAlarmClockOccurrence = {
+  Envelope: {
+    Header: {
+      To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+      RelatesTo: 16,
+      Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/EnumerateResponse',
+      MessageID: 'uuid:00000000-8086-8086-8086-000000000030',
+      ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/ips-schema/1/IPS_AlarmClockOccurrence'
+    },
+    Body: {
+      EnumerateResponse: {
+        EnumerationContext: '18000000-0000-0000-0000-000000000000'
+      }
+    }
+  },
+  statusCode: 200
+}
+
+export const alarmClockOccurrences = {
+  Envelope: {
+    Header: {
+      To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+      RelatesTo: '17',
+      Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse',
+      MessageID: 'uuid:00000000-8086-8086-8086-000000000010',
+      ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/ips-schema/1/IPS_AlarmClockOccurrence'
+    },
+    Body: {
+      PullResponse: {
+        EnumerationContext: '18000000-0000-0000-0000-000000000000',
+        Items: {
+          IPS_AlarmClockOccurrence: {
+            DeleteOnCompletion: true,
+            ElementName: 'Instance Name',
+            InstanceID: 'Instance',
+            StartTime: {
+              Datetime: '2022-12-31T23:59:00Z'
+            }
+          }
+        },
+        EndOfSequence: 'true'
+      }
+    }
+  }
+}
+
+export const alarmClockManyOccurrences = {
+  Envelope: {
+    Header: {
+      To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+      RelatesTo: '17',
+      Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse',
+      MessageID: 'uuid:00000000-8086-8086-8086-000000000010',
+      ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/ips-schema/1/IPS_AlarmClockOccurrence'
+    },
+    Body: {
+      PullResponse: {
+        EnumerationContext: '18000000-0000-0000-0000-000000000000',
+        Items: {
+          IPS_AlarmClockOccurrence: [
+            {
+              DeleteOnCompletion: true,
+              ElementName: 'Instance Name',
+              InstanceID: 'Instance',
+              StartTime: {
+                Datetime: '2022-12-31T23:59:00Z'
+              }
+            },
+            {
+              DeleteOnCompletion: true,
+              ElementName: 'Instance Name 2',
+              InstanceID: 'Instance2',
+              StartTime: {
+                Datetime: '2023-12-31T23:59:00Z'
+              }
+            }
+          ]
+        },
+        EndOfSequence: 'true'
+      }
+    }
+  }
+}
+
+export const alarmClockNoOccurrences = {
+  Envelope: {
+    Header: {
+      To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+      RelatesTo: '18',
+      Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse',
+      MessageID: 'uuid:00000000-8086-8086-8086-000000000010',
+      ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/ips-schema/1/IPS_AlarmClockOccurrence'
+    },
+    Body: {
+      PullResponse: {
+        EnumerationContext: '18000000-0000-0000-0000-000000000000',
+        Items: { },
+        EndOfSequence: 'true'
+      }
+    }
+  }
+}
+
+export const deleteAlarmClockOccurrence = {
+  Envelope: {
+    Header: {
+      To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+      RelatesTo: '19',
+      Action: 'http://schemas.xmlsoap.org/ws/2004/09/transfer/DeleteResponse',
+      MessageID: 'uuid:00000000-8086-8086-8086-000000000260',
+      ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/ips-schema/1/IPS_AlarmClockOccurrence'
+    }
+  }
+}
+
+export const deleteAlarmClockOccurrenceNotFound = {
+  Envelope: {
+    Header: {
+      To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+      RelatesTo: '19',
+      Action: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/fault',
+      MessageID: 'uuid:00000000-8086-8086-8086-00000000004F',
+      ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/ips-schema/1/IPS_AlarmClockOccurrence'
+    },
+    Body: {
+      Fault: {
+        Code: {
+          Value: 'a:Sender',
+          Subcode: {
+            Value: 'b:DestinationUnreachable'
+          }
+        },
+        Reason: 'No route can be determined to reach the destination role defined by the WSAddressing To.'
+      }
+    }
+  }
+}
+
+export const addAlarmClockOccurrenceResponse = {
+  Envelope: {
+    Header: {
+      To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+      RelatesTo: '20',
+      Action: 'http://intel.com/wbem/wscim/1/amt-schema/1/AMT_AlarmClockService/AddAlarmResponse',
+      MessageID: 'uuid:00000000-8086-8086-8086-0000000001C3',
+      ResourceURI: 'http://intel.com/wbem/wscim/1/amt-schema/1/AMT_AlarmClockService'
+    },
+    Body: {
+      AddAlarm_OUTPUT: {
+        AlarmClock: {
+          Address: 'default'
+        },
+        ReturnValue: '0'
+      }
+    }
+  }
+}
+
+export const addAlarmClockOccurrenceDuplicateResponse = {
+  Envelope: {
+    Header: {
+      To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+      RelatesTo: '21',
+      Action: 'http://schemas.dmtf.org/wbem/wsman/1/wsman/fault',
+      MessageID: 'uuid:00000000-8086-8086-8086-00000000004E'
+    },
+    Body: {
+      Fault: {
+        Code: {
+          Value: 'a:Sender',
+          Subcode: {
+            Value: 'd:InvalidRepresentation'
+          }
+        },
+        Reason: 'The XML content is not valid.',
+        Detail: {
+          FaultDetail: 'http://schemas.dmtf.org/wbem/wsman/1/wsman/faultDetail/MissingValues'
+        }
+      }
+    }
+  }
+}
+
+export const addAlarmClockOccurrenceQuotaLimitResponse = {
+  Envelope: {
+    Header: {
+      To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+      RelatesTo: '22',
+      Action: 'http://schemas.dmtf.org/wbem/wsman/1/wsman/fault',
+      MessageID: 'uuid:00000000-8086-8086-8086-00000000004E'
+    },
+    Body: {
+      Fault: {
+        Code: {
+          Value: 'a:Sender',
+          Subcode: {
+            Value: 'e:QuotaLimit'
+          }
+        },
+        Reason: 'The service is busy servicing other requests.',
+        Detail: { }
+      }
+    }
+  }
+}
