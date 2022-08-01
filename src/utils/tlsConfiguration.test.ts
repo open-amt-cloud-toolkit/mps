@@ -294,7 +294,8 @@ describe('mps', () => {
       minVersion: '',
       secureOptions: [constants.SSL_OP_NO_SSLv2, constants.SSL_OP_NO_SSLv3],
       requestCert: true,
-      rejectUnauthorized: true
+      rejectUnauthorized: true,
+      ciphers: null
     }
     readFileSyncSpy.mockImplementation()
     jsonParseSpy.mockReturnValue(mpsConfig)
@@ -312,7 +313,8 @@ describe('mps', () => {
       minVersion: '',
       secureOptions: [constants.SSL_OP_NO_SSLv2, constants.SSL_OP_NO_SSLv3],
       requestCert: true,
-      rejectUnauthorized: true
+      rejectUnauthorized: true,
+      ciphers: null
     }
     readFileSyncSpy.mockImplementation()
     jsonParseSpy.mockReturnValue(mpsConfig)
@@ -349,7 +351,8 @@ describe('mps', () => {
       minVersion: '',
       secureOptions: [constants.SSL_OP_NO_SSLv2, constants.SSL_OP_NO_SSLv3],
       requestCert: true,
-      rejectUnauthorized: true
+      rejectUnauthorized: true,
+      ciphers: null
     }
     readFileSyncSpy.mockImplementation((p, e) => {
       if (p === mpsConfig.key) {

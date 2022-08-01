@@ -52,6 +52,7 @@ export interface mpsConfigType {
   secureOptions?: any
   requestCert: boolean
   rejectUnauthorized: boolean
+  ciphers: any
 }
 
 export interface webConfigType {
