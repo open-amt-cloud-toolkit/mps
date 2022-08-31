@@ -46,10 +46,8 @@ export function processAmtRedirectionResponse (amtRedirection: AMT.Models.Redire
 }
 
 export function processKvmRedirectionResponse (kvmRedirection: CIM.Models.KVMRedirectionSAP): boolean {
-  const kvm = ((kvmRedirection.EnabledState === Common.Models.CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.EnabledButOffline &&
-                kvmRedirection.RequestedState === Common.Models.CIM_KVM_REDIRECTION_SAP_REQUESTED_STATE.Enabled) ||
-                kvmRedirection.EnabledState === Common.Models.CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.Enabled ||
-                kvmRedirection.EnabledState === Common.Models.CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.EnabledButOffline)
+  const kvm = (kvmRedirection.EnabledState === Common.Models.CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.Enabled ||
+               kvmRedirection.EnabledState === Common.Models.CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.EnabledButOffline)
   return kvm
 }
 
