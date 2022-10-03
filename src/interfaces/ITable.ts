@@ -5,7 +5,7 @@
 
 export interface ITable<T> {
   getCount: (tenantId?: string) => Promise<number>
-  get: (limit: number, offset: number, tenantId?: string) => Promise<T[]>
+  get: (limit: number | "NULL", offset: number, tenantId?: string) => Promise<T[]>
   getById: (id: string, tenantId?: string) => Promise<T>
   delete: (name: string, tenantId?: string) => Promise<boolean>
   insert: (item: T) => Promise<T>
