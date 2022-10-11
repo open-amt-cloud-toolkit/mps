@@ -35,7 +35,7 @@
   "dependencies": {
     "@open-amt-cloud-toolkit/wsman-messages": "^2.4.1",
     "atob": "^2.1.2",
-    "consul": "^1.0.1",
+    "consul": "^1.1.0",
     "cors": "^2.8.5",
     "express": "^4.18.1",
     "express-validator": "^6.14.2",
