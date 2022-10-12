@@ -35,7 +35,7 @@
   "dependencies": {
     "@open-amt-cloud-toolkit/wsman-messages": "^2.4.1",
     "atob": "^2.1.2",
-    "consul": "^1.0.1",
+    "consul": "^1.1.0",
     "cors": "^2.8.5",
     "express": "^4.18.1",
     "express-validator": "^6.14.2",
@@ -47,7 +47,7 @@
     "pg": "^8.8.0",
     "rc": "^1.2.8",
     "winston": "^3.8.2",
-    "ws": "^8.8.1",
+    "ws": "^8.9.0",
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
@@ -73,6 +73,6 @@
     "jest-transform-stub": "^2.0.0",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.9.1",
-    "typescript": "^4.8.3"
+    "typescript": "^4.8.4"
   }
 }
