@@ -8,7 +8,7 @@ import { PostgresDb } from '..'
 import { IDeviceTable } from '../../../interfaces/IDeviceTable'
 import { Device } from '../../../models/models'
 import { MPSValidationError } from '../../../utils/MPSValidationError'
-import { DEFAULT_SKIP, DEFAULT_TOP } from '../../../utils/constants'
+import { DefaultSkip, DefaultTop } from '../../../utils/constants'
 
 export class DeviceTable implements IDeviceTable {
   db: PostgresDb
@@ -32,7 +32,7 @@ export class DeviceTable implements IDeviceTable {
    * @description Get all devices from DB
    * @returns {Device[]} returns an array of objects
    */
-  async get (top: number = DEFAULT_TOP, skip: number = DEFAULT_SKIP, tenantId: string = ''): Promise<Device[]> {
+  async get (top: number = DefaultTop, skip: number = DefaultSkip, tenantId: string = ''): Promise<Device[]> {
     const results = await this.db.query<Device>(`
     SELECT 
       guid as "guid",
@@ -86,7 +86,7 @@ export class DeviceTable implements IDeviceTable {
     return results.rowCount > 0 ? results.rows : []
   }
 
-  async getByTags (tags: string[], method: string, top: number = DEFAULT_TOP, skip: number = DEFAULT_SKIP, tenantId: string = ''): Promise<Device[]> {
+  async getByTags (tags: string[], method: string, top: number = DefaultTop, skip: number = DefaultSkip, tenantId: string = ''): Promise<Device[]> {
     let results
     if (method === 'AND') {
       results = await this.db.query(`

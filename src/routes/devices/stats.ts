@@ -4,10 +4,10 @@
  **********************************************************************/
 
 import { Request, Response } from 'express'
-import { DEFAULT_SKIP, DEFAULT_TOP } from '../../utils/constants'
+import { DefaultSkip, DefaultTop } from '../../utils/constants'
 
 export async function stats (req: Request, res: Response): Promise<void> {
-  const devices = await req.db.devices.get(DEFAULT_TOP, DEFAULT_SKIP)
+  const devices = await req.db.devices.get(DefaultTop, DefaultSkip)
   let connectedCount = 0
   let totalCount = 0
   if (devices != null) {
