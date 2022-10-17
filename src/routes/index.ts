@@ -9,6 +9,7 @@ import { mpsrootcert } from './certs'
 import authRouter from './auth/index'
 import amtRouter from './amt/index'
 import healthRouter from './health'
+import version from './version'
 
 const router: Router = Router()
 
@@ -17,5 +18,6 @@ router.use('/devices', deviceRouter)
 router.get('/ciracert', mpsrootcert)
 router.use('/amt', amtRouter)
 router.use('/health', healthRouter)
+router.use('/version', version)
 
 export default router
