@@ -3,18 +3,23 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-export const amtPort = 16992
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const packageObj = require('../../package.json')
+export const ServiceVersion = packageObj.version
+
+export const AMTPort = 16992
 
 export const DefaultNetworkingAdaptor = 'eth0'
 
 export const UUIDRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/
 
 // HTTP error codes
-export const httpErrorTable = {
-  200: 'OK',
+export const HTTPErrorTable = {
+  200: 'httpErrorTableOK',
   400: 'Incorrect URI or Bad Request',
   401: 'Authentication Error',
   404: {
+    alarm: 'Alarm instance not found',
     device: 'Device not found/connected. Please connect again using CIRA.',
     method: 'Request does not contain method',
     noMethod: 'Requested method does not exists',
@@ -137,8 +142,8 @@ export const AMTStatusCodes = {
 
 // Default top and skip for api pagination
 
-export const DEFAULT_TOP = 25
-export const DEFAULT_SKIP = 0
+export const DefaultTop = 25
+export const DefaultSkip = 0
 
 export const SystemEntityTypes: {[key: number]: string} = {
   0: 'Unspecified',
@@ -249,7 +254,7 @@ export const WatchdogCurrentStates: {[key: number]: string} = {
   8: 'Expired',
   16: 'Suspended'
 }
-export const AmtAuditStringTable = {
+export const AMTAuditStringTable = {
   16: 'Security Admin',
   17: 'RCO',
   18: 'Redirection Manager',
@@ -358,7 +363,7 @@ export const AmtAuditStringTable = {
 
 export const RealmNames = '||Redirection|PT Administration|Hardware Asset|Remote Control|Storage|Event Manager|Storage Admin|Agent Presence Local|Agent Presence Remote|Circuit Breaker|Network Time|General Information|Firmware Update|EIT|LocalUN|Endpoint Access Control|Endpoint Access Control Admin|Event Log Reader|Audit Log|ACL Realm|||Local System'.split('|')
 
-export const VAULT_RESPONSE_CODES = (statusCode: any = null): string => {
+export const VaultResponseCodes = (statusCode: any = null): string => {
   let vaultError: string
   if (statusCode != null) {
     switch (statusCode) {

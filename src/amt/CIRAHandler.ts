@@ -7,7 +7,7 @@ import { CIRASocket } from '../models/models'
 import APFProcessor from './APFProcessor'
 import { connectionParams, HttpHandler } from './HttpHandler'
 import httpZ, { HttpZResponseModel } from 'http-z'
-import { amtPort } from '../utils/constants'
+import { AMTPort } from '../utils/constants'
 import { Common } from '@open-amt-cloud-toolkit/wsman-messages'
 import { CIRAChannel } from './CIRAChannel'
 import { parseBody } from '../utils/parseWSManResponseBody'
@@ -39,7 +39,7 @@ export class CIRAHandler {
     channel.write = async (rawXML: string): Promise<any> => {
       const params: connectionParams = {
         guid: this.channel.socket.tag.nodeid,
-        port: amtPort,
+        port: AMTPort,
         digestChallenge: this.httpHandler.digestChallenge,
         username: this.username,
         password: this.password
@@ -52,12 +52,16 @@ export class CIRAHandler {
 
   async Connect (): Promise<number> {
     return await new Promise((resolve, reject) => {
-      this.channel = this.SetupCiraChannel(this.socket, amtPort)
+      this.channel = this.SetupCiraChannel(this.socket, AMTPort)
       this.channel.onStateChange.on('stateChange', (state: number) => {
         this.channelState = state
         resolve(state)
       })
     })
+  }
+
+  async Delete<T> (socket: CIRASocket, rawXml: string): Promise<Common.Models.Response<T>> {
+    return await this.Send(socket, rawXml)
   }
 
   async Enumerate (socket: CIRASocket, rawXml: string): Promise<Common.Models.Response<Common.Models.Enumerate>> {

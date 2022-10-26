@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { ISecretManagerService } from '../interfaces/ISecretManagerService'
-import { certificatesType } from '../models/Config'
+import { ISecretManagerService } from '../../interfaces/ISecretManagerService'
+import { certificatesType } from '../../models/Config'
 import got, { Got } from 'got'
-import { Environment } from './Environment'
-import { DeviceSecrets } from '../models/models'
-import { ILogger } from '../interfaces/ILogger'
-import { messages } from '../logging'
+import { Environment } from '../../utils/Environment'
+import { DeviceSecrets } from '../../models/models'
+import { ILogger } from '../../interfaces/ILogger'
+import { messages } from '../../logging'
 
-export class SecretManagerService implements ISecretManagerService {
+export class VaultSecretManagerService implements ISecretManagerService {
   gotClient: Got
   logger: ILogger
   constructor (logger: ILogger) {
@@ -88,3 +88,4 @@ export class SecretManagerService implements ISecretManagerService {
     return rspJson
   }
 }
+export default VaultSecretManagerService
