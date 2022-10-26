@@ -10,7 +10,7 @@ import { ErrorResponse } from '../../utils/amtHelper'
 import { Environment } from '../../utils/Environment'
 import { logger, messages } from '../../logging'
 import { MqttProvider } from '../../utils/MqttProvider'
-import { VAULT_RESPONSE_CODES } from '../../utils/constants'
+import { VaultResponseCodes } from '../../utils/constants'
 import { ISecretManagerService } from '../../interfaces/ISecretManagerService'
 import { IDB } from '../../interfaces/IDb'
 
@@ -63,9 +63,9 @@ export async function getSecretStoreHealth (secretsManager: ISecretManagerServic
     return secretProviderResponse
   } catch (secretProviderError) {
     if (secretProviderError.error) {
-      return VAULT_RESPONSE_CODES(secretProviderError.error.code)
+      return VaultResponseCodes(secretProviderError.error.code)
     } else {
-      return VAULT_RESPONSE_CODES(secretProviderError)
+      return VaultResponseCodes(secretProviderError)
     }
   }
 }
