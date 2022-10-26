@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) Intel Corporation 2018-2021
+ * Copyright (c) Intel Corporation 2022
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
@@ -197,7 +197,7 @@ const APFProcessor = {
     if (length < 17) return 0
     const recipientChannel = Common.ReadInt(data, 1)
     const reasonCode = Common.ReadInt(data, 5)
-    logger.silly(`${messages.MPS_CHANNEL_OPEN_FAILURE}, ${recipientChannel.toString()}, ${reasonCode.toString()}`)
+    logger.error(`${messages.MPS_CHANNEL_OPEN_FAILURE}, ${recipientChannel.toString()}, ${reasonCode.toString()}`)
     const cirachannel = socket.tag.channels[recipientChannel]
     if (cirachannel == null) {
       logger.error(`${messages.CHANNEL_OPEN_FAILURE_NO_CHANNEL_ID} ${recipientChannel}`)

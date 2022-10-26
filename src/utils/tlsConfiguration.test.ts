@@ -1,3 +1,8 @@
+/*********************************************************************
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
+
 import tlsConfiguration from './tlsConfiguration'
 import path from 'path'
 import fs from 'fs'
@@ -212,7 +217,8 @@ describe('mps', () => {
       minVersion: '',
       secureOptions: [constants.SSL_OP_NO_SSLv2, constants.SSL_OP_NO_SSLv3],
       requestCert: true,
-      rejectUnauthorized: true
+      rejectUnauthorized: true,
+      ciphers: null
     }
     readFileSyncSpy.mockImplementation()
     jsonParseSpy.mockReturnValue(mpsConfig)
@@ -230,7 +236,8 @@ describe('mps', () => {
       minVersion: '',
       secureOptions: [constants.SSL_OP_NO_SSLv2, constants.SSL_OP_NO_SSLv3],
       requestCert: true,
-      rejectUnauthorized: true
+      rejectUnauthorized: true,
+      ciphers: null
     }
     readFileSyncSpy.mockImplementation()
     jsonParseSpy.mockReturnValue(mpsConfig)
@@ -267,7 +274,8 @@ describe('mps', () => {
       minVersion: '',
       secureOptions: [constants.SSL_OP_NO_SSLv2, constants.SSL_OP_NO_SSLv3],
       requestCert: true,
-      rejectUnauthorized: true
+      rejectUnauthorized: true,
+      ciphers: null
     }
     readFileSyncSpy.mockImplementation((p, e) => {
       if (p === path.join(__dirname, mpsConfig.key)) {

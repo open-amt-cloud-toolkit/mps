@@ -1,8 +1,7 @@
 /*********************************************************************
-* Copyright (c) Intel Corporation 2019
-* SPDX-License-Identifier: Apache-2.0
-* Description: config type definitions
-**********************************************************************/
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
 
 export interface configType {
   common_name: string
@@ -37,6 +36,8 @@ export interface configType {
   db_provider: string
   connection_string: string
   instance_name: string
+  redirection_expiration_time: number
+  web_auth_enabled: boolean
 }
 
 export interface certificatesType {
@@ -52,6 +53,7 @@ export interface mpsConfigType {
   secureOptions?: any
   requestCert: boolean
   rejectUnauthorized: boolean
+  ciphers: any
 }
 
 export interface webConfigType {

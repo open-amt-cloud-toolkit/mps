@@ -1,9 +1,23 @@
 /*********************************************************************
-* Copyright (c) Intel Corporation 2022
-* SPDX-License-Identifier: Apache-2.0
-**********************************************************************/
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
 
 export enum messages {
+  ALARM_ADD_REQUESTED = 'Alarm add requested',
+  ALARM_ADD_REQUEST_FAILED = 'Alarm add request failed',
+  ALARM_ADD_INVALID_PARAMETERS = 'Alarm add request invalid parameters',
+  ALARM_ADD_QUOTA_LIMIT = 'Alarm add request quota exceeded',
+  ALARM_ADD_RESPONSE_NULL = 'Add failed',
+  ALARM_OCCURRENCES_EXCEPTION = 'Exception during alarm occurrences request',
+  ALARM_OCCURRENCES_DELETE_REQUESTED = 'Alarm occurrence delete request',
+  ALARM_OCCURRENCES_DELETE_REQUEST_FAILED = 'Alarm occurrence delete request failed',
+  ALARM_OCCURRENCES_DELETE_REQUEST_NOT_FOUND = 'Alarm occurrence delete request: alarm not found',
+  ALARM_OCCURRENCES_DELETE_SUCCESS = 'Alarm occurrence deleted',
+  ALARM_OCCURRENCES_GET_REQUESTED = 'Alarm occurrences request',
+  ALARM_OCCURRENCES_GET_REQUEST_FAILED = 'Alarm occurrence get request failed',
+  ALARM_OCCURRENCES_GET_SUCCESS = 'Alarm occurrences received',
+  ALARM_OCCURRENCES_INVALID_REQUEST = 'Invalid alarm occurrence request',
   AMT_FEATURES_EXCEPTION = 'Exception during AMT Features request',
   AMT_FEATURES_SET_EXCEPTION = 'Exception during AMT Features Set request',
   AMT_FEATURES_GET_REQUESTED = 'AMT Features requested',
@@ -12,6 +26,7 @@ export enum messages {
   AMT_FEATURES_SET_SUCCESS = 'AMT Features updated',
   APP_USE_JSON_PARSER_ERROR = 'appUseJsonParser received err other than SyntaxError',
   AUDIT_LOG_EXCEPTION = 'Exception during AMT AuditLog request',
+  AUTH_DISABLED = 'Authentication disabled on MPS',
   BOOT_SETTING_EXCEPTION = 'Exception during Boot Setting request',
   CHANNEL_CLOSE_NO_CHANNEL_ID = 'MPS Error in CHANNEL_CLOSE: Unable to find channelId',
   CHANNEL_OPEN_FAILURE_NO_CHANNEL_ID = 'MPS Error in CHANNEL_OPEN_FAILURE: Unable to find channelId',
@@ -20,6 +35,8 @@ export enum messages {
   DATA_NO_CHANNEL_ID = 'MPS Error in CHANNEL_DATA: Unable to find channelId',
   DATABASE_UPDATE_FAILED = 'Failed to update',
   DATABASE_INSERT_FAILED = 'Failed to insert',
+  DELETE = 'Delete',
+  DELETE_RESPONSE_NULL = 'Delete failed',
   DEVICE_CONNECTION_STATUS_UPDATED = 'Device connection status updated in db',
   DEVICE_CREATE_FAILED = 'Device update/insert failed',
   DEVICE_DELETE_FAILED = 'Device delete failed',

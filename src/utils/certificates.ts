@@ -1,7 +1,8 @@
 /*********************************************************************
-* Copyright (c) Intel Corporation 2019
-* SPDX-License-Identifier: Apache-2.0
-**********************************************************************/
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
+
 /**
 * @fileoverview Script Compiler / Decompiler / Runner
 * @author Ylian Saint-Hilaire
@@ -41,7 +42,18 @@ export class Certificates {
     const mpsPrivateKey = forge.pki.privateKeyToPem(mpsCertAndKey.key)
 
     // Set MPS TLS Configuration
-    const mpsConfig: mpsConfigType = { cert: mpsCertificate, key: mpsPrivateKey, minVersion: 'TLSv1', requestCert: true, rejectUnauthorized: false }
+    const secureCiphers = ['ECDHE-ECDSA-AES256-GCM-SHA384',
+      'ECDHE-RSA-AES256-GCM-SHA384',
+      'DHE-RSA-AES256-GCM-SHA384',
+      'TLS_AES_256_GCM_SHA384',
+      'TLS_AES_128_GCM_SHA256'].join(':')
+    const legacySupportCiphers = 'HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA'
+    let mpsConfig: mpsConfigType
+    if (this.config.mps_tls_config.minVersion === 'TLSv1.2' || this.config.mps_tls_config.minVersion === 'TLSv1.3') {
+      mpsConfig = { cert: mpsCertificate, key: mpsPrivateKey, minVersion: this.config.mps_tls_config.minVersion, requestCert: true, rejectUnauthorized: false, ciphers: secureCiphers }
+    } else {
+      mpsConfig = { cert: mpsCertificate, key: mpsPrivateKey, minVersion: this.config.mps_tls_config.minVersion, requestCert: true, rejectUnauthorized: false, ciphers: legacySupportCiphers }
+    }
     // Set WebServer TLS Configuration
     const webConfig: webConfigType = { ca: rootCertificate, cert: mpsCertificate, key: mpsPrivateKey }
     const certificates: certificatesType = { mps_tls_config: mpsConfig, web_tls_config: webConfig, root_key: rootPrivateKey }

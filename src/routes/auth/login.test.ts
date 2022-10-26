@@ -1,3 +1,8 @@
+/*********************************************************************
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
+
 import { login } from './login'
 import jws from 'jws'
 import { createSpyObj } from '../../test/helper/jest'
@@ -34,19 +39,27 @@ describe('Check login', () => {
       jwt_secret: 'my_secret'
     } as any
   })
+  it('should fail when auth disabled', async () => {
+    Environment.Config.web_auth_enabled = false
+    await login(req, resSpy)
+    expect(resSpy.status).toHaveBeenCalledWith(405)
+  })
   it('should pass with correct user and password', async () => {
+    Environment.Config.web_auth_enabled = true
     Environment.Config.web_admin_user = 'admin'
     Environment.Config.web_admin_password = 'Passw0rd'
     await login(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(200)
   })
   it('should fail with incorrect user', async () => {
+    Environment.Config.web_auth_enabled = true
     Environment.Config.web_admin_user = 'fake'
     Environment.Config.web_admin_password = 'Passw0rd'
     await login(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(401)
   })
   it('should pass with lowercase user', async () => {
+    Environment.Config.web_auth_enabled = true
     Environment.Config.web_admin_user = 'ADMIN'
     req = {
       body: {
@@ -58,6 +71,7 @@ describe('Check login', () => {
     expect(resSpy.status).toHaveBeenCalledWith(200)
   })
   it('should pass with uppercase user', async () => {
+    Environment.Config.web_auth_enabled = true
     req = {
       body: {
         username: 'ADMIN',
@@ -68,6 +82,7 @@ describe('Check login', () => {
     expect(resSpy.status).toHaveBeenCalledWith(200)
   })
   it('should pass with expected expiration', async () => {
+    Environment.Config.web_auth_enabled = true
     jest.spyOn(global.Date, 'now').mockImplementation(() => new Date('2019-05-14T11:01:58.135Z').valueOf())
     const expiration = Math.floor((Date.now() + (1000 * 60 * Environment.Config.jwt_expiration)) / 1000)
     const expected = {
@@ -85,6 +100,7 @@ describe('Check login', () => {
     expect(resSpy.send).toHaveBeenCalled()
   })
   it('should pass with correct issuer', async () => {
+    Environment.Config.web_auth_enabled = true
     const expected = {
       payload: {
         iss: 'fake'
@@ -101,6 +117,7 @@ describe('Check login', () => {
     expect(resSpy.send).toHaveBeenCalled()
   })
   it('should fail with incorrect password', async () => {
+    Environment.Config.web_auth_enabled = true
     Environment.Config.web_admin_password = 'Passw0rdFake'
     await login(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(401)

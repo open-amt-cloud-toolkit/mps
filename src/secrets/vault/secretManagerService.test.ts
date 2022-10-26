@@ -1,4 +1,9 @@
-import { VaultSecretManagerService } from '.'
+/*********************************************************************
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
+
+import { VaultSecretManagerService } from './'
 import { logger } from '../../logging'
 import { config } from '../../test/helper/config'
 import { Environment } from '../../utils/Environment'

@@ -1,8 +1,7 @@
 /*********************************************************************
-* Copyright (c) Intel Corporation 2019
-* SPDX-License-Identifier: Apache-2.0
-* Description: Handler to execute a power action on amt device
-**********************************************************************/
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
 
 import { Response, Request } from 'express'
 import { logger, messages } from '../../logging'
@@ -22,7 +21,7 @@ export async function powerAction (req: Request, res: Response): Promise<void> {
     powerAction.Body.RequestPowerStateChange_OUTPUT.ReturnValueStr = AMTStatusToString(powerAction.Body.RequestPowerStateChange_OUTPUT.ReturnValue)
     powerAction.Body = powerAction.Body.RequestPowerStateChange_OUTPUT
     MqttProvider.publishEvent('success', ['AMT_PowerAction'], messages.POWER_ACTION_REQUESTED)
-    return res.status(200).json(powerAction).end()
+    res.status(200).json(powerAction).end()
   } catch (error) {
     logger.error(`${messages.POWER_ACTION_EXCEPTION} : ${error}`)
     MqttProvider.publishEvent('fail', ['AMT_PowerAction'], messages.INTERNAL_SERVICE_ERROR)

@@ -1,8 +1,7 @@
 /*********************************************************************
-* Copyright (c) Intel Corporation 2019
-* SPDX-License-Identifier: Apache-2.0
-* Description: Handler to get power capabilities of amt device
-**********************************************************************/
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
 
 import { Response, Request } from 'express'
 import { logger, messages } from '../../logging'
@@ -19,7 +18,7 @@ export async function powerCapabilities (req: Request, res: Response): Promise<v
     const powerCapabilities = await req.deviceAction.getPowerCapabilities()
     const bootCaps = bootCapabilities(version, powerCapabilities.Body.AMT_BootCapabilities)
     MqttProvider.publishEvent('success', ['AMT_BootCapabilities'], messages.POWER_CAPABILITIES_SUCCESS, guid)
-    return res.status(200).json(bootCaps).end()
+    res.status(200).json(bootCaps).end()
   } catch (error) {
     logger.error(`${messages.POWER_CAPABILITIES_EXCEPTION} : ${error}`)
     MqttProvider.publishEvent('fail', ['AMT_BootCapabilities'], messages.INTERNAL_SERVICE_ERROR)

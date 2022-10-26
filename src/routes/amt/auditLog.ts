@@ -1,8 +1,7 @@
 /*********************************************************************
-* Copyright (c) Intel Corporation 2019
-* SPDX-License-Identifier: Apache-2.0
-* Description: Handler to get amt device audit logs
-**********************************************************************/
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
 
 import { Response, Request } from 'express'
 import { logger, messages } from '../../logging'
@@ -10,7 +9,7 @@ import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { atob } from 'atob'
 import Common from '../../utils/common'
-import { AmtAuditStringTable, RealmNames } from '../../utils/constants'
+import { AMTAuditStringTable, RealmNames } from '../../utils/constants'
 import { Common as WsmanMessagesCommon } from '@open-amt-cloud-toolkit/wsman-messages'
 
 export async function auditLog (req: Request, res: Response): Promise<void> {
@@ -63,9 +62,9 @@ export function convertToAuditLogResult (readRecordsOutput: WsmanMessagesCommon.
 
     auditLogRecord.AuditAppID = Common.ReadShort(decodedEventRecord, 0)
     auditLogRecord.EventID = Common.ReadShort(decodedEventRecord, 2)
-    auditLogRecord.AuditApp = AmtAuditStringTable[auditLogRecord.AuditAppID]
+    auditLogRecord.AuditApp = AMTAuditStringTable[auditLogRecord.AuditAppID]
     auditLogRecord.InitiatorType = decodedEventRecord.charCodeAt(4)
-    auditLogRecord.Event = AmtAuditStringTable[(auditLogRecord.AuditAppID * 100) + auditLogRecord.EventID]
+    auditLogRecord.Event = AMTAuditStringTable[(auditLogRecord.AuditAppID * 100) + auditLogRecord.EventID]
 
     if (!auditLogRecord.Event) auditLogRecord.Event = '#' + auditLogRecord.EventID
 

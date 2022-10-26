@@ -1,8 +1,14 @@
+/*********************************************************************
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
+
 import { Certificates } from './certificates'
 import { certificatesType } from '../models/Config'
 import forge from 'node-forge'
 
 let certificates: Certificates
+let certificatesTls12: Certificates
 let generateKeyPairSpy: jest.SpyInstance
 let createCertificateSpy: jest.SpyInstance
 let getPublicKeyFingerprintSpy: jest.SpyInstance
@@ -13,7 +19,18 @@ let writeSecretWithObjectSpy: jest.SpyInstance
 const config = {
   common_name: 'me',
   country: 'us',
-  organization: 'rbhe'
+  organization: 'rbhe',
+  mps_tls_config: {
+    minVersion: 'TLSv1'
+  }
+}
+const configtls12 = {
+  common_name: 'me',
+  country: 'us',
+  organization: 'rbhe',
+  mps_tls_config: {
+    minVersion: 'TLSv1.2'
+  }
 }
 const secrets = {
   getMPSCerts: () => undefined,
@@ -23,6 +40,7 @@ const secrets = {
 beforeEach(() => {
   getMPSCertsSpy = jest.spyOn(secrets, 'getMPSCerts')
   certificates = new Certificates(config, secrets)
+  certificatesTls12 = new Certificates(configtls12, secrets)
   writeSecretWithObjectSpy = jest.spyOn(secrets, 'writeSecretWithObject')
   storeCertificatesSpy = jest.spyOn(certificates, 'storeCertificates')
   generateKeyPairSpy = jest.spyOn(forge.pki.rsa, 'generateKeyPair')
@@ -50,6 +68,21 @@ describe('generateCertificates', () => {
     const privateKeyToPemSpy = jest.spyOn(forge.pki, 'privateKeyToPem').mockReturnValue('private key')
     const issueWebServerCertificateSpy = jest.spyOn(certificates, 'IssueWebServerCertificate').mockReturnValue({})
     const result: certificatesType = certificates.generateCertificates()
+    expect(result.mps_tls_config).toBeTruthy()
+    expect(result.web_tls_config).toBeTruthy()
+    expect(result.root_key).toBeTruthy()
+    expect(certificateToPemSpy).toBeCalled()
+    expect(privateKeyToPemSpy).toBeCalled()
+    expect(issueWebServerCertificateSpy).toBeCalled()
+    expect(generateRootCertificateSpy).toBeCalled()
+  })
+
+  it('should generate certificates for TLS1.2', () => {
+    const generateRootCertificateSpy = jest.spyOn(certificatesTls12, 'GenerateRootCertificate').mockReturnValue({})
+    const certificateToPemSpy = jest.spyOn(forge.pki, 'certificateToPem').mockReturnValue('certificate')
+    const privateKeyToPemSpy = jest.spyOn(forge.pki, 'privateKeyToPem').mockReturnValue('private key')
+    const issueWebServerCertificateSpy = jest.spyOn(certificatesTls12, 'IssueWebServerCertificate').mockReturnValue({})
+    const result: certificatesType = certificatesTls12.generateCertificates()
     expect(result.mps_tls_config).toBeTruthy()
     expect(result.web_tls_config).toBeTruthy()
     expect(result.root_key).toBeTruthy()

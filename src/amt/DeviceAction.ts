@@ -1,10 +1,12 @@
 /*********************************************************************
-* Copyright (c) Intel Corporation 2022
-* SPDX-License-Identifier: Apache-2.0
-**********************************************************************/
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
+
 import { logger, messages } from '../logging'
 import { CIRAHandler } from './CIRAHandler'
 import { AMT, CIM, IPS, Common } from '@open-amt-cloud-toolkit/wsman-messages'
+import { Selector } from '@open-amt-cloud-toolkit/wsman-messages/WSMan'
 import { CIRASocket } from '../models/models'
 
 export class DeviceAction {
@@ -351,5 +353,43 @@ export class DeviceAction {
     }
     logger.silly(`getAuditLog ${messages.COMPLETE}`)
     return getResponse.Envelope.Body
+  }
+
+  async addAlarmClockOccurrence (alarm: IPS.Models.AlarmClockOccurrence): Promise<any> {
+    logger.silly(`addAlarmClockOccurrence ${messages.ALARM_ADD_REQUESTED}`)
+    const xmlRequestBody = this.amt.AlarmClockService(AMT.Methods.ADD_ALARM, alarm)
+    const addResponse = await this.ciraHandler.Get(this.ciraSocket, xmlRequestBody)
+    if (addResponse == null) {
+      logger.error(`addAlarmClockOccurrence failed. Reason: ${messages.ALARM_ADD_RESPONSE_NULL}`)
+      return null
+    }
+    logger.silly(`addAlarmClockOccurrence ${messages.COMPLETE}`)
+    return addResponse.Envelope
+  }
+
+  async getAlarmClockOccurrences (): Promise<Common.Models.Envelope<Common.Models.Pull<IPS.Models.AlarmClockOccurrence>>> {
+    logger.silly(`getAlarmClockOccurrences ${messages.REQUEST}`)
+    let xmlRequestBody = this.ips.AlarmClockOccurrence(IPS.Methods.ENUMERATE)
+    const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
+    if (enumResponse == null) {
+      logger.error(`getAlarmClockOccurrences failed. Reason: ${messages.ENUMERATION_RESPONSE_NULL}`)
+      return null
+    }
+    xmlRequestBody = this.ips.AlarmClockOccurrence(IPS.Methods.PULL, enumResponse.Envelope.Body.EnumerateResponse.EnumerationContext)
+    const pullResponse = await this.ciraHandler.Pull<IPS.Models.AlarmClockOccurrence>(this.ciraSocket, xmlRequestBody)
+    logger.silly(`getAlarmClockOccurrences ${messages.COMPLETE}`)
+    return pullResponse.Envelope
+  }
+
+  async deleteAlarmClockOccurrence (selector: Selector): Promise<any> {
+    logger.silly(`deleteAlarmClockOccurrence ${messages.DELETE}`)
+    const xmlRequestBody = this.ips.AlarmClockOccurrence(IPS.Methods.DELETE, null, selector)
+    const deleteResponse = await this.ciraHandler.Delete(this.ciraSocket, xmlRequestBody)
+    if (deleteResponse == null) {
+      logger.error(`deleteAlarmClockOccurrences failed. Reason: ${messages.DELETE_RESPONSE_NULL}`)
+      return null
+    }
+    logger.silly(`deleteAlarmClockOccurrences ${messages.COMPLETE}`)
+    return deleteResponse.Envelope
   }
 }

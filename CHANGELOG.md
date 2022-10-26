@@ -1,6 +1,136 @@
+<a name="2.5.0"></a>
 
-<a name="2.2.0"></a>
-## [2.2.0] - 2022-03-18
+## [2.5.0] - 2022-10-05
+### Build
+- **deps:** bump pg from 8.7.3 to 8.8.0 (#1b2df8c) 
+- **deps:** bump [@open](https://github.com/open)-amt-cloud-toolkit/wsman-messages (#609cd0f) 
+- **deps:** bump express-validator from 6.14.1 to 6.14.2 (#086b241) 
+- **deps:** bump consul from 0.40.0 to 1.0.1 (#52f4620) 
+- **deps:** bump ws from 8.8.0 to 8.8.1 (#aefda40) 
+- **deps:** bump [@open](https://github.com/open)-amt-cloud-toolkit/wsman-messages (#270b540) 
+- **deps:** bump winston from 3.8.1 to 3.8.2 (#600bfbd) 
+- **deps:** bump winston from 3.7.2 to 3.8.1 (#4e628d9) 
+- **deps-dev:** bump typescript from 4.7.4 to 4.8.2 (#9628eed) 
+- **deps-dev:** bump typescript from 4.8.2 to 4.8.3 (#3c45a32) 
+- **deps-dev:** bump [@types](https://github.com/types)/node-forge from 1.0.2 to 1.0.4 (#c7f481b) 
+- **deps-dev:** bump jest-junit from 14.0.0 to 14.0.1 (#b2d3526) 
+- **deps-dev:** bump [@types](https://github.com/types)/node-forge from 1.0.4 to 1.0.5 (#6edd9c3) 
+- **deps-dev:** bump [@types](https://github.com/types)/express from 4.17.13 to 4.17.14 (#6b15de8) 
+- **deps-dev:** bump eslint-plugin-license-header from 0.4.0 to 0.6.0 (#6293f2e) 
+- **deps-dev:** bump jest-junit from 13.2.0 to 14.0.0 (#871190a) 
+- **deps-dev:** bump typescript from 4.7.3 to 4.7.4 (#77f588e) 
+- **deps-dev:** bump ts-node from 10.8.1 to 10.9.1 (#4a12038) 
+
+### Docs
+- updates changelog to v2.5.0 (#c741676) 
+
+### Feat
+- adding AMT Alarm Clock APIs to MPS (#05be999) 
+
+### Fix
+- updated wsman-messages to 2.4.0 (#8213ecb) 
+- log CIRA channel open failure at 'error' rather than 'silly' level (#0777d33) 
+- powerAction and powerCapabilites now transpile without errors (#2ed5337) 
+- **mps:** tls cipher selection ([#634](https://github.com/open-amt-cloud-toolkit/mps/issues/634)) (#54b0c5e) 
+
+
+<a name="v2.4.0"></a>
+
+## [v2.4.0] - 2022-07-07
+### Build
+- **deps:** bump ws from 8.7.0 to 8.8.0 (#dbc8f13) 
+- **deps:** bump express-validator from 6.14.0 to 6.14.1 (#d3a78e3) 
+- **deps:** bump [@open](https://github.com/open)-amt-cloud-toolkit/wsman-messages (#49e90ee) 
+- **deps:** bump ws from 8.6.0 to 8.7.0 (#a86b29d) 
+- **deps:** bump got from 11.8.3 to 11.8.5 ([#618](https://github.com/open-amt-cloud-toolkit/mps/issues/618)) (#0ad4afc) 
+- **deps:** bump [@open](https://github.com/open)-amt-cloud-toolkit/wsman-messages (#632f6e1) 
+- **deps-dev:** bump typescript from 4.6.4 to 4.7.2 (#7bb7e65) 
+- **deps-dev:** bump ts-node from 10.7.0 to 10.8.0 (#1d522d2) 
+- **deps-dev:** bump ts-node from 10.8.0 to 10.8.1 (#67b549c) 
+- **deps-dev:** bump typescript from 4.7.2 to 4.7.3 (#ea1c12b) 
+
+### Chore
+- update changelog for 2.4 and update package.json (#a894513) 
+
+### Ci
+- rename test file output (#cfc2143) 
+- remove node 12 and add 18 for build (#fbb918c) 
+- **codeql:** upgrade codeql to v2 (#56d18db) 
+- **jest:** upload junit results as built artifact (#6c24f6a) 
+- **lint:** enforce consistent copyright and license across all code files (#28e7b22) 
+- **postman:** upload postman results as build artifact (#ab79fab) 
+
+### Feat
+- **api:** to get short lived bearer token for direction sessions ([#612](https://github.com/open-amt-cloud-toolkit/mps/issues/612)) (#32c5652) 
+- **auth:** Added a User Auth configuration setting to disable/enable MPS auth (#897e9f2) 
+
+### Fix
+- **Security:** variable to set minimum TLS version ([#611](https://github.com/open-amt-cloud-toolkit/mps/issues/611)) (#4657e06) 
+
+### Test
+- **db:** refactor initialization for unit tests (#274b31e) 
+- **postman:** automated mps (#cc63b5f) 
+
+
+<a name="v2.3.2"></a>
+
+## [v2.3.2] - 2022-06-15
+### Fix
+- **dependencies:** resolve peer dependencies for eslint (#abe8e9c) 
+
+
+<a name="v2.3.1"></a>
+
+## [v2.3.1] - 2022-05-11
+### Fix
+- **devices:** query parameters now work as expected (#150ac31) 
+
+
+<a name="v2.3.0"></a>
+
+## [v2.3.0] - 2022-05-11
+### Build
+- bump version to v2.3.0 (#0f8daab) 
+- **dep:** adds support for wsman-messages 2.3.1 (#5a80dd8) 
+- **deps:** bump winston from 3.7.1 to 3.7.2 (#f217c87) 
+- **deps:** bump minimist from 1.2.5 to 1.2.6 (#9c17ab6) 
+- **deps:** bump express from 4.17.3 to 4.18.0 (#52cfb30) 
+- **deps:** bump winston from 3.6.0 to 3.7.1 (#ef43f4d) 
+- **deps:** bump node-forge from 1.3.0 to 1.3.1 (#c117d26) 
+- **deps:** bump ws from 8.5.0 to 8.6.0 (#d1c2c66) 
+- **deps:** bump express from 4.18.0 to 4.18.1 (#7d79041) 
+- **deps:** bump node-forge from 1.2.1 to 1.3.0 (#759acd0) 
+- **deps-dev:** bump jest-junit from 13.0.0 to 13.1.0 (#511be1b) 
+- **deps-dev:** bump [@types](https://github.com/types)/node-forge from 1.0.1 to 1.0.2 (#6289229) 
+- **deps-dev:** bump jest-junit from 13.1.0 to 13.2.0 (#18aa98d) 
+- **deps-dev:** bump typescript from 4.6.2 to 4.6.3 (#386f59d) 
+- **deps-dev:** bump typescript from 4.6.3 to 4.6.4 (#7c5ac1a) 
+- **deps-dev:** bump ts-jest from 27.1.3 to 27.1.4 (#9906ff6) 
+- **deps-dev:** bump eslint-plugin-import from 2.25.4 to 2.26.0 (#1e74ca8) 
+
+### Ci
+- **lint:** adds semantic checks to PRs (#8433d8a) 
+
+### Docs
+- update changelog for v2.3.0 (#824a75b) 
+
+### Feat
+- **API:** Adds hostname query parameter to getDevices (#d67cc3d) 
+- **redirection:** adds mqtt start and stop events for redirection ([#573](https://github.com/open-amt-cloud-toolkit/mps/issues/573)) (#e51906e) 
+- **ws:** prevents multiple KVM/SOL session attempts ([#587](https://github.com/open-amt-cloud-toolkit/mps/issues/587)) (#8051abb) 
+
+### Fix
+- **dockerfile:** set user as non-root (#4808186) 
+- **nonce:** set nonce to 8 character hexadecimal (#2135830) 
+
+### Refactor
+- **healthcheck:** improves testability and code coverage (#02ff45f) 
+- **mps:** Input validation checks in APFProcessor for max size ([#597](https://github.com/open-amt-cloud-toolkit/mps/issues/597)) (#82e3efd) 
+
+
+<a name="v2.2.0"></a>
+
+## [v2.2.0] - 2022-03-18
 ### Build
 - **deps:** bump node-forge from 0.10.0 to 1.0.0 (#6ad11a6) 
 - **deps:** bump ws from 8.2.3 to 8.3.0 (#b88178e) 
@@ -70,7 +200,7 @@
 - **workflow:** optimize node CI (#a1d482f) 
 
 ### Docs
-- update changelog for release (#eab3618) 
+- update changelog for release (#997f184) 
 - **swagger:** removes swagger from source control (#4d3833f) 
 
 ### Feat
@@ -134,8 +264,9 @@
 - **utils:** Adding parseEnvValue unit test (#2eda6a7) 
 
 
-<a name="2.1.0"></a>
-## [2.1.0] - 2021-11-08
+<a name="v2.1.0"></a>
+
+## [v2.1.0] - 2021-11-08
 ### Build
 - **dep:** update jest to 27.2.1 (#491c247) 
 - **deps:** bump express-validator from 6.12.2 to 6.13.0 (#8bab749) 
@@ -176,6 +307,7 @@
 ### Docs
 - adds issue template (#2373ba3) 
 - add contributing guidelines (#c0673e9) 
+- **changelog:** update changelog (#220587c) 
 - **github:** add pull request template (#01051ae) 
 
 ### Feat
@@ -194,6 +326,7 @@
 
 
 <a name="v2.0.1"></a>
+
 ## [v2.0.1] - 2021-09-22
 ### Build
 - **deps:** bump tmpl from 1.0.4 to 1.0.5 (#323fa74) 
@@ -204,6 +337,7 @@
 
 
 <a name="v2.0.0"></a>
+
 ## [v2.0.0] - 2021-09-15
 ### Build
 - update version to v2.0.0 (#d49ef8c) 
@@ -248,6 +382,7 @@
 
 
 <a name="v1.5.0"></a>
+
 ## [v1.5.0] - 2021-08-12
 ### Build
 - fix tsconfig.json (#f11a145) 
@@ -322,6 +457,7 @@
 
 
 <a name="v1.4.0"></a>
+
 ## [v1.4.0] - 2021-06-23
 ### Build
 - add snyk config (#3f447ab) 
@@ -403,6 +539,7 @@ JWT is now required for KVM/SOL connections
 
 
 <a name="v1.3.0"></a>
+
 ## [v1.3.0] - 2021-05-06
 ### Build
 - bump package.json version to 1.3.0 (#c250cf5) 
@@ -463,6 +600,7 @@ Auth is now stateless, db and vault required
 
 
 <a name="v1.2.0"></a>
+
 ## [v1.2.0] - 2021-04-02
 ### Build
 - **dep:** force lodash to latest (#3d0f781) 
@@ -549,6 +687,7 @@ Auth is now stateless, db and vault required
 
 
 <a name="v1.1.0"></a>
+
 ## [v1.1.0] - 2021-02-11
 ### Build
 - **deps:** update jest to 26.6.0 (#2760ece) 
@@ -598,6 +737,7 @@ Auth is now stateless, db and vault required
 
 
 <a name="v1.0.0"></a>
+
 ## v1.0.0 - 2020-11-20
 ### Build
 - add condition for master to publish docs (#71d6eca) 
@@ -622,14 +762,3 @@ Auth is now stateless, db and vault required
 ### Refactor
 - **docker:** remove build pre-build step (#14a7848) 
 - **docker:** optimize dockerfile (#51cfb0e) 
-
-
-[Unreleased]: https://github.com/open-amt-cloud-toolkit/mps/compare/2.1.0...HEAD
-[2.1.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v2.0.1...2.1.0
-[v2.0.1]: https://github.com/open-amt-cloud-toolkit/mps/compare/v2.0.0...v2.0.1
-[v2.0.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v1.5.0...v2.0.0
-[v1.5.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v1.4.0...v1.5.0
-[v1.4.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v1.3.0...v1.4.0
-[v1.3.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v1.2.0...v1.3.0
-[v1.2.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v1.1.0...v1.2.0
-[v1.1.0]: https://github.com/open-amt-cloud-toolkit/mps/compare/v1.0.0...v1.1.0

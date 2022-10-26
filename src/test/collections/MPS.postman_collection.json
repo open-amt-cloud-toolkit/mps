@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "ec1483e3-180d-4c5e-9bd4-63f0fef67877",
+		"_postman_id": "31c51100-7ef7-49fd-833f-d2b9630ca11d",
 		"name": "MPS",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20544419"
 	},
 	"item": [
 		{
@@ -641,6 +642,52 @@
 					"response": []
 				},
 				{
+					"name": "Device redirection token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJZCI6IiIsImlzcyI6IjlFbVJKVGJJaUliNGJJZVNzbWdjV0lqclI2SHlFVHFjIiwiZXhwIjoxNjUyNTU3MTYwfQ.ZkmzU-uWPMQbCRiSllCWyM7_QxvKMgIdhxxEkyipIVc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/authorize/redirection/d12428be-9fa1-4226-9784-54b2038beab6",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"authorize",
+								"redirection",
+								"d12428be-9fa1-4226-9784-54b2038beab6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "DISTINCT tags",
 					"event": [
 						{
@@ -734,7 +781,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{protocol}}://{{host}}/api/v1/devices?$tags=acm",
+							"raw": "{{protocol}}://{{host}}/api/v1/devices?tags=acm",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
@@ -746,7 +793,7 @@
 							],
 							"query": [
 								{
-									"key": "$tags",
+									"key": "tags",
 									"value": "acm"
 								}
 							]
@@ -755,7 +802,63 @@
 					"response": []
 				},
 				{
-					"name": "All Devices by hostname",
+					"name": "All Devices by status (Connected)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Should bring all devices with tag acm\", function () {\r",
+									"   var jsonData = pm.response.json();\r",
+									"   pm.expect(jsonData.length).to.eql(0);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices?status=1",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All Devices by status (Disconnected)",
 					"event": [
 						{
 							"listen": "test",
@@ -770,7 +873,7 @@
 									"   pm.expect(jsonData[0].guid).to.eql(\"143e4567-e89b-12d3-a456-426614174000\");\r",
 									"   pm.expect(jsonData[0].hostname).to.eql(\"hostname\");\r",
 									"   pm.expect(jsonData[0].tags.length).to.eql(1);\r",
-									"    pm.expect(jsonData[0].tags[0]).to.eql(\"acm\");\r",
+									"   pm.expect(jsonData[0].tags[0]).to.eql(\"acm\");\r",
 									"   pm.expect(jsonData[0].mpsInstance).to.eql(null);\r",
 									"   pm.expect(jsonData[0].connectionStatus).to.eql(false);\r",
 									"});"
@@ -795,7 +898,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{protocol}}://{{host}}/api/v1/devices?$tags=acm",
+							"raw": "{{protocol}}://{{host}}/api/v1/devices?status=0",
 							"protocol": "{{protocol}}",
 							"host": [
 								"{{host}}"
@@ -807,8 +910,69 @@
 							],
 							"query": [
 								{
-									"key": "$tags",
-									"value": "acm"
+									"key": "status",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All Devices by hostname",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Should bring all devices with tag acm\", function () {\r",
+									"   var jsonData = pm.response.json();\r",
+									"   pm.expect(jsonData[0].guid).to.eql(\"143e4567-e89b-12d3-a456-426614174000\");\r",
+									"   pm.expect(jsonData[0].hostname).to.eql(\"hostname\");\r",
+									"   pm.expect(jsonData[0].tags.length).to.eql(1);\r",
+									"   pm.expect(jsonData[0].tags[0]).to.eql(\"acm\");\r",
+									"   pm.expect(jsonData[0].mpsInstance).to.eql(null);\r",
+									"   pm.expect(jsonData[0].connectionStatus).to.eql(false);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices?hostname=hostname",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices"
+							],
+							"query": [
+								{
+									"key": "hostname",
+									"value": "hostname"
 								}
 							]
 						}
@@ -894,6 +1058,7 @@
 									"pm.test(\"Result length should be 0\", function () {\r",
 									"   var jsonData = pm.response.json();\r",
 									"   pm.expect(jsonData.length).to.eql(2);\r",
+									"   pm.expect(jsonData.totalCount).to.be.undefined;\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -1809,10 +1974,10 @@
 			]
 		},
 		{
-			"name": "Login",
+			"name": "Authorize",
 			"item": [
 				{
-					"name": "Authorize",
+					"name": "Login",
 					"event": [
 						{
 							"listen": "test",
@@ -1860,7 +2025,7 @@
 					"response": []
 				},
 				{
-					"name": "Authorize without username",
+					"name": "Login without username",
 					"event": [
 						{
 							"listen": "test",
@@ -1910,7 +2075,7 @@
 					"response": []
 				},
 				{
-					"name": "Authorize without password",
+					"name": "Login without password",
 					"event": [
 						{
 							"listen": "test",
@@ -1954,6 +2119,48 @@
 								"api",
 								"v1",
 								"authorize"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Device redirection token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"request should fail without username\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.errors[0].msg).to.be.eql(\"Invalid value\");\r",
+									"    pm.expect(jsonData.errors[0].param).to.be.eql(\"guid\");\r",
+									"    pm.expect(jsonData.errors[0].location).to.be.eql(\"params\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/authorize/redirection/1",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"authorize",
+								"redirection",
+								"1"
 							]
 						}
 					},
@@ -2009,10 +2216,64 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Get Version",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {    \r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Version request should succeed\", function () {\r",
+							"    var result = pm.response.json();\r",
+							"    pm.expect(result.serviceVersion).to.exist\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJZCI6IiIsImlzcyI6IjlFbVJKVGJJaUliNGJJZVNzbWdjV0lqclI2SHlFVHFjIiwiZGV2aWNlSWQiOiIqIiwiZXhwIjoxNjUzMDAwMDgyfQ.loR4N1Kff6YfE_w5gNYC35EqP_s4Lqncp7wwDOWhFhw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{protocol}}://{{host}}/api/v1/version",
+					"protocol": "{{protocol}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"version"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"auth": {
-		"type": "bearer"
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "",
+				"type": "string"
+			}
+		]
 	},
 	"event": [
 		{

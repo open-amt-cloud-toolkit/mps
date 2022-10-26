@@ -1,3 +1,8 @@
+/*********************************************************************
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
+
 import { CIRASocket } from '../models/models'
 import APFProcessor from './APFProcessor'
 import { CIRAChannel } from './CIRAChannel'

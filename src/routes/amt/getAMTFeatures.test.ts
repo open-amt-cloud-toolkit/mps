@@ -1,7 +1,8 @@
 /*********************************************************************
- * Copyright (c) Intel Corporation 2021
+ * Copyright (c) Intel Corporation 2022
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
+
 import { CIRAHandler } from '../../amt/CIRAHandler'
 import { DeviceAction } from '../../amt/DeviceAction'
 import { HttpHandler } from '../../amt/HttpHandler'

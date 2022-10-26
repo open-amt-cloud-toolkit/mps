@@ -1,3 +1,8 @@
+/*********************************************************************
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
+
 import { CIM, Common } from '@open-amt-cloud-toolkit/wsman-messages'
 import { connectionParams, HttpHandler } from './HttpHandler'
 

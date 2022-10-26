@@ -1,3 +1,8 @@
+/*********************************************************************
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
+
 import { configType } from '../../models/Config'
 
 // Parsing configuration
@@ -11,6 +16,7 @@ export const config: configType = {
   generate_certificates: true,
   web_admin_user: '',
   web_admin_password: '',
+  web_auth_enabled: true,
   vault_address: 'http://localhost:8200',
   vault_token: 'myroot',
   mqtt_address: '',
@@ -56,5 +62,6 @@ export const config: configType = {
   tls_cert_ca: '',
   web_tls_cert: '',
   web_tls_cert_key: '',
-  web_tls_cert_ca: ''
+  web_tls_cert_ca: '',
+  redirection_expiration_time: 5
 }

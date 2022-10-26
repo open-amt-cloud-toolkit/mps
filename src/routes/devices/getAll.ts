@@ -1,26 +1,33 @@
 /*********************************************************************
- * Copyright (c) Intel Corporation 2021
+ * Copyright (c) Intel Corporation 2022
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
+
 import { Device } from '../../models/models'
 import { logger, messages } from '../../logging'
 import { DataWithCount } from '../../models/Config'
+import { Request, Response } from 'express'
 
-export async function getAllDevices (req, res): Promise<void> {
-  const count = req.query.$count
+export async function getAllDevices (req: Request, res: Response): Promise<void> {
+  const count: boolean = req.query.$count as any // converted in validator
   try {
     let list: Device[] = []
 
-    if (req.query.tags != null) {
-      const tags = req.query.tags.split(',')
-      list = await req.db.devices.getByTags(tags, req.query.method, req.query.$top, req.query.$skip)
+    if (req.query.hostname != null) {
+      list = await req.db.devices.getByHostname(req.query.hostname as string)
+    } else if (req.query.tags != null) {
+      const tags = (req.query.tags as string).split(',')
+      list = await req.db.devices.getByTags(tags, req.query.method as string, req.query.$top as any, req.query.$skip as any)
     } else {
-      list = await req.db.devices.get(req.query.$top, req.query.$skip)
+      list = await req.db.devices.get(req.query.$top as any, req.query.$skip as any)
     }
     if (req.query.status != null) {
-      list = list.filter(x => x.connectionStatus === req.query.status)
+      list = list.filter(x => {
+        const convertedStatus = x.connectionStatus ? 1 : 0
+        return convertedStatus === req.query.status as any
+      })
     }
-    if (count != null && (count === true || count === 1)) {
+    if (count != null && count) {
       const count: number = await req.db.devices.getCount()
       const dataWithCount: DataWithCount = {
         data: list,

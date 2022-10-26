@@ -20,7 +20,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x, 17.x]
+        node-version: [14.x, 16.x, 18.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -45,3 +45,10 @@ jobs:
     - uses: codecov/codecov-action@v1.0.14
       name: Upload Coverage Results
       if: ${{ matrix.node-version == '16.x' }}
+    - name: Rename test file
+      run: mv junit.xml mps-unit.xml
+    - name: Upload JEST Results
+      uses: actions/upload-artifact@v3
+      with:
+        name: mps-unit
+        path: mps-unit.xml
