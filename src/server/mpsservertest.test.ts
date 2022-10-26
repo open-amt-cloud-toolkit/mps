@@ -38,6 +38,9 @@ describe('MPS Server', function () {
       getById: async (guid) => { return device as Device },
       getByTags: async (tags) => { return [device] as Device[] },
       getByHostname: async (hostname) => { return [device] as Device[] },
+      getConnectedDevices: async (tenantId?) => {
+        return 0
+      },
       clearInstanceStatus: async () => {},
       delete: async (guid) => { return true },
       insert: async (device) => { return device },

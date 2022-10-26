@@ -30,19 +30,19 @@ afterEach(() => {
 
 describe('stats', () => {
   it('should get stats when a device exists', async () => {
-    const devices = [{
-      connectionStatus: true
-    }]
+    const allCount = 20
+    const connectedCount = 10
     const req = {
       db: {
         devices: {
-          get: jest.fn().mockReturnValue(devices)
+          getConnectedDevices: jest.fn().mockReturnValue(connectedCount),
+          getCount: jest.fn().mockReturnValue(allCount)
         }
       }
     }
     await stats(req as any, res as any)
-    const expectedTotalCount = devices.length
-    const expectedConnectedCount = devices.filter(device => device.connectionStatus).length
+    const expectedTotalCount = allCount
+    const expectedConnectedCount = connectedCount
     const expectedDisconnectedCount = Math.max(expectedTotalCount - expectedConnectedCount, 0)
     const expectedJson = {
       totalCount: expectedTotalCount,
@@ -56,7 +56,8 @@ describe('stats', () => {
     const req = {
       db: {
         devices: {
-          get: jest.fn().mockReturnValue(null)
+          getConnectedDevices: jest.fn().mockReturnValue(0),
+          getCount: jest.fn().mockReturnValue(0)
         }
       }
     }
