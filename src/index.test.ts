@@ -5,8 +5,8 @@
 
 import * as indexFile from './index'
 import { logger } from './logging'
+import VaultSecretManagerService from './secrets/vault'
 import { Environment } from './utils/Environment'
-import { SecretManagerService } from './utils/SecretManagerService'
 
 describe('Index', () => {
   describe('loadConfig', () => {
@@ -99,7 +99,7 @@ describe('Index', () => {
   })
 
   describe('setupSignalHandling', () => {
-    let secretManagerService: SecretManagerService = null
+    let secretManagerService: VaultSecretManagerService = null
     let config
 
     beforeEach(() => {
@@ -156,7 +156,7 @@ describe('Index', () => {
         }
       }
       Environment.Config = config
-      secretManagerService = new SecretManagerService(logger)
+      secretManagerService = new VaultSecretManagerService(logger)
       jest.spyOn(secretManagerService.gotClient, 'get').mockImplementation(() => {
         return {
           json: jest.fn(() => {
