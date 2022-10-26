@@ -21,6 +21,7 @@ export const config: configType = {
   vault_token: 'myroot',
   mqtt_address: '',
   secrets_path: 'secret/data/',
+  secrets_provider: 'vault',
   cert_format: 'file',
   jwt_secret: 'supersecret',
   jwt_issuer: '9EmRJTbIiIb4bIeSsmgcWIjrR6HyETqc',

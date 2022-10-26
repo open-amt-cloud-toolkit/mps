@@ -27,10 +27,8 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
     let redir = amtRedirectionResponse.AMT_RedirectionService.ListenerEnabled
     let sol = (amtRedirectionResponse.AMT_RedirectionService.EnabledState & Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled) !== 0
     let ider = (amtRedirectionResponse.AMT_RedirectionService.EnabledState & Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Other) !== 0
-    let kvm = ((kvmRedirectionResponse.CIM_KVMRedirectionSAP.EnabledState === Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.EnabledButOffline &&
-      kvmRedirectionResponse.CIM_KVMRedirectionSAP.RequestedState === Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled) ||
-      kvmRedirectionResponse.CIM_KVMRedirectionSAP.EnabledState === Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled ||
-      kvmRedirectionResponse.CIM_KVMRedirectionSAP.EnabledState === Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.EnabledButOffline)
+    let kvm = (kvmRedirectionResponse.CIM_KVMRedirectionSAP.EnabledState === Common.Models.CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.Enabled ||
+      kvmRedirectionResponse.CIM_KVMRedirectionSAP.EnabledState === Common.Models.CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.EnabledButOffline)
 
     if (payload.enableSOL !== sol) {
       sol = payload.enableSOL

@@ -13,6 +13,7 @@ export interface configType {
   web_port: number
   generate_certificates: boolean
   secrets_path?: string
+  secrets_provider: string
   data_path?: string
   cert_path: string
   cert_format: string
