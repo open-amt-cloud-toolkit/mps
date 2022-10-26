@@ -1,3 +1,8 @@
+/*********************************************************************
+ * Copyright (c) Intel Corporation 2022
+ * SPDX-License-Identifier: Apache-2.0
+ **********************************************************************/
+
 import { ILogger } from '../interfaces/ILogger'
 import { ISecretManagerService } from '../interfaces/ISecretManagerService'
 import { Environment } from '../utils/Environment'
