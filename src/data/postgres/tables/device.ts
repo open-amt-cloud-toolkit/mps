@@ -22,7 +22,7 @@ export class DeviceTable implements IDeviceTable {
     FROM devices
     WHERE tenantid = $1`, [tenantId])
     let count = 0
-    if (result != null) {
+    if (result != null && result.rows.length > 0) {
       count = Number(result.rows[0]?.total_count)
     }
     return count
@@ -47,6 +47,22 @@ export class DeviceTable implements IDeviceTable {
     ORDER BY guid 
     LIMIT $1 OFFSET $2`, [top, skip, tenantId])
     return results.rows
+  }
+
+  /**
+   * @description Get all devices from DB
+   * @returns {Device[]} returns an array of objects
+   */
+  async getConnectedDevices (tenantId: string = ''): Promise<number> {
+    const result = await this.db.query<{connected_count: number}>(`
+      SELECT count(*) OVER() AS connected_count 
+      FROM devices
+      WHERE tenantid = $1 and connectionstatus = true`, [tenantId])
+    let count = 0
+    if (result != null && result.rows.length > 0) {
+      count = Number(result.rows[0]?.connected_count)
+    }
+    return count
   }
 
   /**

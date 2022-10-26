@@ -44,6 +44,7 @@ export enum messages {
   DEVICE_DISCONNECTED_SUCCESS = 'Device CIRA connection disconnected',
   DEVICE_GET_EXCEPTION = 'Exception during Device Get request',
   DEVICE_GET_ALL_EXCEPTION = 'Exception during Device Get All request',
+  DEVICE_GET_STATES_EXCEPTION = 'Exception during Device Get Stats request',
   DEVICE_TAGS_EXCEPTION = 'Exception during Device Get Tags request',
   DEVICE_UPDATE_FAILED = 'Device update failed',
   ENUMERATION_RESPONSE_NULL = 'Failed to get Enumeration Response',

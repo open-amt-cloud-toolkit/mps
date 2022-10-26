@@ -111,6 +111,28 @@ describe('device tests', () => {
     WHERE guid = $1 and tenantid = $2`, ['4c4c4544-004b-4210-8033-b6c04f504633', ''])
   })
 
+  test('should get count of connected devices when exists', async () => {
+    querySpy.mockResolvedValueOnce({ rows: [{ connected_count: 10 }], command: '', fields: null, rowCount: 0, oid: 0 })
+    const connectedCount = await deviceTable.getConnectedDevices()
+    expect(querySpy).toBeCalledWith(`
+      SELECT count(*) OVER() AS connected_count 
+      FROM devices
+      WHERE tenantid = $1 and connectionstatus = true`, [''])
+    expect(querySpy).toBeCalledTimes(1)
+    expect(connectedCount).toBe(10)
+  })
+
+  test('should get ZERO connected devices when non connected', async () => {
+    querySpy.mockResolvedValueOnce({ rows: [], command: '', fields: null, rowCount: 0, oid: 0 })
+    const connectedCount = await deviceTable.getConnectedDevices()
+    expect(querySpy).toBeCalledWith(`
+      SELECT count(*) OVER() AS connected_count 
+      FROM devices
+      WHERE tenantid = $1 and connectionstatus = true`, [''])
+    expect(querySpy).toBeCalledTimes(1)
+    expect(connectedCount).toBe(0)
+  })
+
   test('should get a device by guid when exist', async () => {
     const device = {
       guid: '4c4c4544-004b-4210-8033-b6c04f504633',
