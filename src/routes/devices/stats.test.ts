@@ -7,6 +7,7 @@ import { stats } from './stats'
 
 let res: Express.Response
 let jsonSpy: jest.SpyInstance
+let resSpy: jest.SpyInstance
 
 beforeEach(() => {
   res = {
@@ -21,6 +22,7 @@ beforeEach(() => {
     }
   }
   jsonSpy = jest.spyOn(res as any, 'json')
+  resSpy = jest.spyOn(res as any, 'status')
 })
 
 afterEach(() => {
@@ -51,7 +53,19 @@ describe('stats', () => {
     }
     expect(jsonSpy).toBeCalledWith(expectedJson)
   })
+  it('should return 500 when error', async () => {
+    const req = {
+      db: {
+        devices: {
+          getConnectedDevices: jest.fn().mockRejectedValue(new Error()),
+          getCount: jest.fn().mockRejectedValue(new Error())
+        }
+      }
+    }
+    await stats(req as any, res as any)
 
+    expect(resSpy).toHaveBeenCalledWith(500)
+  })
   it('should get stats even when no device exists', async () => {
     const req = {
       db: {
