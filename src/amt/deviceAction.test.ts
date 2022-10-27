@@ -36,7 +36,7 @@ import { CIRAHandler } from './CIRAHandler'
 import { DeviceAction } from './DeviceAction'
 import { HttpHandler } from './HttpHandler'
 import { Selector } from '@open-amt-cloud-toolkit/wsman-messages/WSMan'
-import { AlarmClockOccurrence } from '@open-amt-cloud-toolkit/wsman-messages/ips/models'
+import { Models } from '@open-amt-cloud-toolkit/wsman-messages/ips/models'
 
 describe('Device Action Tests', () => {
   let enumerateSpy: jest.SpyInstance
@@ -334,13 +334,13 @@ describe('Device Action Tests', () => {
       expect(result).toBe(null)
     })
 
-    const fakeAlarm: AlarmClockOccurrence = {
+    const fakeAlarm: Models.AlarmClockOccurrence = {
       DeleteOnCompletion: true,
       ElementName: 'Instance Name',
       InstanceID: 'Instance',
       StartTime: new Date('2022-12-31T23:59:00Z')
     }
-    it('should create an alarm occurence', async () => {
+    it('should create an alarm occurrence', async () => {
       getSpy.mockResolvedValueOnce(addAlarmClockOccurrenceResponse)
 
       const result = await device.addAlarmClockOccurrence(fakeAlarm)

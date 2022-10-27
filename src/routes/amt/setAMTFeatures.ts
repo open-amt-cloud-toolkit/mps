@@ -56,7 +56,7 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
     }
 
     if (isRedirectionChanged) {
-      amtRedirectionResponse.AMT_RedirectionService.EnabledState = 32768 + ((ider ? 1 : 0) + (sol ? 2 : 0))
+      amtRedirectionResponse.AMT_RedirectionService.EnabledState = (32768 + ((ider ? 1 : 0) + (sol ? 2 : 0))) as AMT.Types.RedirectionService.EnabledState
       amtRedirectionResponse.AMT_RedirectionService.ListenerEnabled = redir
       await setRedirectionService(req.deviceAction, amtRedirectionResponse, kvm, payload.guid)
     }
@@ -80,7 +80,7 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
 export async function setRedirectionService (device: DeviceAction, amtRedirResponse: AMT.Models.RedirectionResponse, kvm: boolean, guid: string): Promise<void> {
   // TODO: check statuses
   // for SOL and IDER
-  await device.setRedirectionService(amtRedirResponse.AMT_RedirectionService.EnabledState)
+  await device.setRedirectionService(amtRedirResponse.AMT_RedirectionService.EnabledState as AMT.Types.RedirectionService.RequestedState)
   // for kvm
   await device.setKvmRedirectionSap(kvm ? Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled : Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Disabled)
 
