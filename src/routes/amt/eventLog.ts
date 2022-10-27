@@ -86,7 +86,7 @@ function parseEventLogs (response: any): EventLog[] {
         log.EventType = eventRecord[6]
         log.EventOffset = eventRecord[7]
         log.EventSourceType = eventRecord[8]
-        log.EventSeverity = eventRecord[9]
+        log.EventSeverity = eventRecord[9] as AMT.Types.EVENT_DATA.EventSeverity
         log.SensorNumber = eventRecord[10]
         log.Entity = eventRecord[11]
         log.EntityInstance = eventRecord[12]

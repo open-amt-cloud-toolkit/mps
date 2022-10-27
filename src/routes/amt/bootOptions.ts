@@ -8,7 +8,7 @@ import { logger, messages } from '../../logging'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { AMTStatusCodes } from '../../utils/constants'
-import { AMT } from '@open-amt-cloud-toolkit/wsman-messages'
+import { AMT, CIM } from '@open-amt-cloud-toolkit/wsman-messages'
 
 export async function bootOptions (req: Request, res: Response): Promise<void> {
   try {
@@ -55,9 +55,6 @@ export function setBootData (action: number, useSOL: boolean, r: AMT.Models.Boot
   r.UseSafeMode = false
   r.UserPasswordBypass = false
   r.SecureErase = false
-  // if (r.SecureErase) {
-  //   r.SecureErase = action === 104 && amtPowerBootCapabilities.SecureErase === true
-  // }
   return r
 }
 
@@ -73,21 +70,13 @@ export function setBootSource (action: number): string {
   return bootSource
 }
 
-// Change BootOrder
-export function determinePowerAction (action: number): number {
-  if (action === 100 || action === 201 || action === 203 || action === 300 || action === 401) {
-    action = 2
-  } // Power up
+export function determinePowerAction (action: number): CIM.Types.PowerManagementService.PowerState {
+  let powerState: CIM.Types.PowerManagementService.PowerState = 2
   if (action === 101 || action === 200 || action === 202 || action === 301 || action === 400) {
-    action = 10
+    powerState = 10
   } // Reset
 
-  // TODO: Advanced power actions
-  // if (action === 104) action = 10 // Reset with Remote Secure Erase
-  // if (action == 999) action = AvdPowerDlg.Action;
-  // console.log('RequestPowerStateChange:' + action);
-
-  return action
+  return powerState
 }
 
 function AMTStatusToString (code: number): string {
@@ -95,18 +84,3 @@ function AMTStatusToString (code: number): string {
     return AMTStatusCodes[code]
   } else return 'UNKNOWN_ERROR'
 }
-
-// Request Power Change
-// export function powerStateChange (uuid: string, action: number, req: Request, res: Response): void {
-//   req.amtStack.RequestPowerStateChange(action, async (stack, name, response, status) => {
-//     stack.wsman.comm.socket.sendchannelclose()
-//     if (status === 200) {
-//       // log.info(`Power state change request successful for guid : ${uuid}`);
-//       MqttProvider.publishEvent('success', ['AMT_BootSettingData'], 'Sent Power Action ' + action, uuid)
-//       res.status(200).json(response).end()
-//     } else {
-//       log.error(`Power state change request failed for guid : ${uuid}`)
-//       res.status(status).json(ErrorResponse(status, 'PowerStateChange request failed.')).end()
-//     }
-//   })
-// }

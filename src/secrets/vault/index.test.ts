@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { VaultSecretManagerService } from './'
+import { VaultSecretManagerService } from '.'
 import { logger } from '../../logging'
 import { config } from '../../test/helper/config'
 import { Environment } from '../../utils/Environment'
