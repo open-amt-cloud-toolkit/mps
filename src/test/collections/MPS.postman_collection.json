@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "8f7b0cd5-fb98-49d2-af45-968ba340cc26",
+		"_postman_id": "0badc986-1dc2-497f-8fb3-ddc94c96461d",
 		"name": "MPS",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2243498"
 	},
 	"item": [
 		{
@@ -1964,6 +1965,48 @@
 								"v1",
 								"amt",
 								"version",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deactivate device",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Device should not be found\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eq(\"Device not found/connected. Please connect again using CIRA.\")\r",
+									"    pm.expect(jsonData.errorDescription).to.eq(\"guid : 1\")\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/amt/deactivate/1",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"amt",
+								"deactivate",
 								"1"
 							]
 						}

@@ -28,6 +28,7 @@ describe('WsRedirect tests', () => {
       getSecretFromKey: async (path: string, key: string) => { return 'P@ssw0rd' },
       getSecretAtPath: async (path: string) => { return {} as any },
       getAMTCredentials: async (path: string) => { return ['admin', 'P@ssw0rd'] },
+      deleteSecretAtPath: async (path: string) => { },
       health: async () => { return {} }
     }
     resumeSpy = jest.spyOn(mockWebSocket._socket, 'resume').mockReturnValue(null)

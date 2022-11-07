@@ -392,4 +392,12 @@ export class DeviceAction {
     logger.silly(`deleteAlarmClockOccurrences ${messages.COMPLETE}`)
     return deleteResponse.Envelope
   }
+
+  async unprovisionDevice (): Promise<Common.Models.Envelope<any>> {
+    logger.debug('Unprovisioning message to AMT')
+    const xmlRequestBody = this.amt.SetupAndConfigurationService(AMT.Methods.UNPROVISION, null, 2)
+    // will there be one?
+    const unprovisionResponse = await this.ciraHandler.Send(this.ciraSocket, xmlRequestBody)
+    return unprovisionResponse.Envelope
+  }
 }
