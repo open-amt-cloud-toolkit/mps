@@ -1,3 +1,34 @@
+<a name="2.6.0"></a>
+## [2.6.0] - 2022-11-07
+### Build
+- update version to v2.6.0 (#085d43e) 
+- **deps:** bump ws from 8.10.0 to 8.11.0 (#2ed9280) 
+- **deps:** bump [@open](https://github.com/open)-amt-cloud-toolkit/wsman-messages (#90b4ef4) 
+- **deps:** bump [@open](https://github.com/open)-amt-cloud-toolkit/wsman-messages (#2fb4322) 
+- **deps:** bump [@open](https://github.com/open)-amt-cloud-toolkit/wsman-messages (#d5fae80) 
+- **deps:** bump ws from 8.9.0 to 8.10.0 (#a469e6a) 
+- **deps:** bump express from 4.18.1 to 4.18.2 (#4f8f6fe) 
+- **deps:** bump consul from 1.0.1 to 1.1.0 (#b8b22a5) 
+- **deps:** bump ws from 8.8.1 to 8.9.0 (#3921321) 
+- **deps-dev:** bump typescript from 4.8.3 to 4.8.4 (#d581dc1) 
+- **deps-dev:** bump [@types](https://github.com/types)/node-forge from 1.0.5 to 1.3.0 (#c661620) 
+- **docker:** change base image to use bullseye-slim instead of buster-slim (#91bfbf3) 
+
+### Feat
+- **api:** add endpoint to unprovision devices ([#720](https://github.com/open-amt-cloud-toolkit/mps/issues/720)) (#6cab674) 
+- **serviceVersion:** adds version api endpoint (#02d064f) 
+
+### Fix
+- **amt features:** corrected CIM_KVMRedirection enum comparison (#1b9c864) 
+- **api:** remove hard limit of 25 from stats route (#a54e10e) 
+
+### Refactor
+- **mps:** made secret manager hot swappable ([#709](https://github.com/open-amt-cloud-toolkit/mps/issues/709)) (#bc74c2c) 
+
+### Test
+- enhance unit test coverage (#6d11f42) 
+
+
 <a name="2.5.0"></a>
 
 ## [2.5.0] - 2022-10-05
