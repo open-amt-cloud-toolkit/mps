@@ -4,22 +4,20 @@
  **********************************************************************/
 
 import { Request, Response } from 'express'
-import { DEFAULT_SKIP, DEFAULT_TOP } from '../../utils/constants'
+import { logger } from '../../logging/logger'
+import { messages } from '../../logging/messages'
 
 export async function stats (req: Request, res: Response): Promise<void> {
-  const devices = await req.db.devices.get(DEFAULT_TOP, DEFAULT_SKIP)
-  let connectedCount = 0
-  let totalCount = 0
-  if (devices != null) {
-    totalCount = devices.length
+  try {
+    const connectedCount = await req.db.devices.getConnectedDevices()
+    const totalCount = await req.db.devices.getCount()
+    res.json({
+      totalCount,
+      connectedCount,
+      disconnectedCount: Math.max(totalCount - connectedCount, 0)
+    })
+  } catch (err) {
+    logger.error(`${messages.DEVICE_GET_STATES_EXCEPTION}: ${err}`)
+    res.status(500).end()
   }
-  if (totalCount !== 0) {
-    connectedCount = devices.filter(device => device.connectionStatus).length
-  }
-
-  res.json({
-    totalCount,
-    connectedCount,
-    disconnectedCount: Math.max(totalCount - connectedCount, 0)
-  })
 }

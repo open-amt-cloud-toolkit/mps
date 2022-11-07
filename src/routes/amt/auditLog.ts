@@ -9,7 +9,7 @@ import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { atob } from 'atob'
 import Common from '../../utils/common'
-import { AmtAuditStringTable, RealmNames } from '../../utils/constants'
+import { AMTAuditStringTable, RealmNames } from '../../utils/constants'
 import { Common as WsmanMessagesCommon } from '@open-amt-cloud-toolkit/wsman-messages'
 
 export async function auditLog (req: Request, res: Response): Promise<void> {
@@ -62,9 +62,9 @@ export function convertToAuditLogResult (readRecordsOutput: WsmanMessagesCommon.
 
     auditLogRecord.AuditAppID = Common.ReadShort(decodedEventRecord, 0)
     auditLogRecord.EventID = Common.ReadShort(decodedEventRecord, 2)
-    auditLogRecord.AuditApp = AmtAuditStringTable[auditLogRecord.AuditAppID]
+    auditLogRecord.AuditApp = AMTAuditStringTable[auditLogRecord.AuditAppID]
     auditLogRecord.InitiatorType = decodedEventRecord.charCodeAt(4)
-    auditLogRecord.Event = AmtAuditStringTable[(auditLogRecord.AuditAppID * 100) + auditLogRecord.EventID]
+    auditLogRecord.Event = AMTAuditStringTable[(auditLogRecord.AuditAppID * 100) + auditLogRecord.EventID]
 
     if (!auditLogRecord.Event) auditLogRecord.Event = '#' + auditLogRecord.EventID
 

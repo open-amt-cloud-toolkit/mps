@@ -7,6 +7,7 @@ import { stats } from './stats'
 
 let res: Express.Response
 let jsonSpy: jest.SpyInstance
+let resSpy: jest.SpyInstance
 
 beforeEach(() => {
   res = {
@@ -21,6 +22,7 @@ beforeEach(() => {
     }
   }
   jsonSpy = jest.spyOn(res as any, 'json')
+  resSpy = jest.spyOn(res as any, 'status')
 })
 
 afterEach(() => {
@@ -30,19 +32,19 @@ afterEach(() => {
 
 describe('stats', () => {
   it('should get stats when a device exists', async () => {
-    const devices = [{
-      connectionStatus: true
-    }]
+    const allCount = 20
+    const connectedCount = 10
     const req = {
       db: {
         devices: {
-          get: jest.fn().mockReturnValue(devices)
+          getConnectedDevices: jest.fn().mockReturnValue(connectedCount),
+          getCount: jest.fn().mockReturnValue(allCount)
         }
       }
     }
     await stats(req as any, res as any)
-    const expectedTotalCount = devices.length
-    const expectedConnectedCount = devices.filter(device => device.connectionStatus).length
+    const expectedTotalCount = allCount
+    const expectedConnectedCount = connectedCount
     const expectedDisconnectedCount = Math.max(expectedTotalCount - expectedConnectedCount, 0)
     const expectedJson = {
       totalCount: expectedTotalCount,
@@ -51,12 +53,25 @@ describe('stats', () => {
     }
     expect(jsonSpy).toBeCalledWith(expectedJson)
   })
+  it('should return 500 when error', async () => {
+    const req = {
+      db: {
+        devices: {
+          getConnectedDevices: jest.fn().mockRejectedValue(new Error()),
+          getCount: jest.fn().mockRejectedValue(new Error())
+        }
+      }
+    }
+    await stats(req as any, res as any)
 
+    expect(resSpy).toHaveBeenCalledWith(500)
+  })
   it('should get stats even when no device exists', async () => {
     const req = {
       db: {
         devices: {
-          get: jest.fn().mockReturnValue(null)
+          getConnectedDevices: jest.fn().mockReturnValue(0),
+          getCount: jest.fn().mockReturnValue(0)
         }
       }
     }
