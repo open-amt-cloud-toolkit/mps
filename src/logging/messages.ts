@@ -162,6 +162,7 @@ export enum messages {
   TLS_CONFIGURATION_MPS_TLS_CONFIGURATION_EXCEPTION = 'Exception in mpsTLSConfiguration',
   TLS_CONFIGURATION_DIRECT_TLS_CONFIG_DOES_NOT_EXIST = 'direct_tls config file does not exist',
   TLS_CONFIGURATION_DIRECT_TLS_CONFIGURATION_EXCEPTION = 'Exception in directTLSConfiguration',
+  UNPROVISION_EXCEPTION = 'Exception during unprovision request',
   USER_CONSENT_CANCEL_FAILED = 'User Consent Cancel failed',
   USER_CONSENT_CANCEL_EXCEPTION = 'Exception during User Consent Cancel',
   USER_CONSENT_REQUEST_FAILED = 'User Consent Request failed',

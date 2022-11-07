@@ -81,6 +81,16 @@ export class VaultSecretManagerService implements ISecretManagerService {
     return certs
   }
 
+  async deleteSecretAtPath (path: string): Promise<void> {
+    // to permanently delete the key, we use metadata path
+    const basePath = Environment.Config.secrets_path.replace('/data/', '/metadata/')
+    this.logger.verbose(`Deleting data from vault:${path}`)
+    await this.gotClient.delete(`${path}`, {
+      prefixUrl: `${Environment.Config.vault_address}/v1/${basePath}`
+    }).json()
+    this.logger.debug(`Successfully Deleted data from vault: ${path}`)
+  }
+
   async health (): Promise<any> {
     const rspJson: any = await this.gotClient.get('sys/health', {
       prefixUrl: `${Environment.Config.vault_address}/v1/`
