@@ -1040,3 +1040,15 @@ export const addAlarmClockOccurrenceQuotaLimitResponse = {
     }
   }
 }
+
+export const deactivateResponse = {
+  success:
+  {
+    status: 'SUCCESS'
+  },
+  notFound:
+  {
+    error: 'Device not found/connected. Please connect again using CIRA.',
+    errorDescription: 'guid : 1'
+  }
+}

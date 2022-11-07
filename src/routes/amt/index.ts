@@ -29,6 +29,7 @@ import { cancel } from './userConsent/cancel'
 import { request } from './userConsent/request'
 import { send } from './userConsent/send'
 import { validator as userConsentValidator } from './userConsent/validator'
+import { deactivate } from './deactivate'
 
 const amtRouter: Router = Router()
 
@@ -43,6 +44,7 @@ amtRouter.get('/power/state/:guid', ciraMiddleware, powerState)
 amtRouter.get('/features/:guid', ciraMiddleware, getAMTFeatures)
 amtRouter.post('/features/:guid', amtFeaturesValidator(), validateMiddleware, ciraMiddleware, setAMTFeatures)
 amtRouter.get('/version/:guid', ciraMiddleware, version)
+amtRouter.delete('/deactivate/:guid', ciraMiddleware, deactivate)
 
 amtRouter.get('/userConsentCode/cancel/:guid', ciraMiddleware, cancel)
 amtRouter.get('/userConsentCode/:guid', ciraMiddleware, request)
