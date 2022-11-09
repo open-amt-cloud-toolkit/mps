@@ -17,6 +17,7 @@ import { SecretManagerCreatorFactory } from './factories/SecretManagerCreatorFac
 import { IDB } from './interfaces/IDb'
 import { WebServer } from './server/webserver'
 import { MPSServer } from './server/mpsserver'
+import { POSTGRES_RESPONSE_CODES } from './data/postgres'
 
 export async function main (): Promise<void> {
   try {
@@ -30,20 +31,11 @@ export async function main (): Promise<void> {
     const config: configType = rc('mps')
     Environment.Config = loadConfig(config)
 
-    // DB initialization
-    const newDB = new DbCreatorFactory()
-    const db = await newDB.getDb()
-
+    const db = await initializeDB()
     await setupSignalHandling(db)
-
-    // Secret store initialization
-    const newSecrets = new SecretManagerCreatorFactory()
-    const secrets = await newSecrets.getSecretManager(logger)
-
+    const secrets = await initializeSecrets()
     const certs = await loadCertificates(secrets)
-    // MQTT Connection - Creates a static connection to be access across MPS
-    const mqtt: MqttProvider = new MqttProvider()
-    mqtt.connectBroker()
+    await initializeMqtt()
 
     const mpsServer = new MPSServer(certs, db, secrets)
     const webServer = new WebServer(secrets, certs)
@@ -73,6 +65,39 @@ export function loadConfig (config: any): configType {
   logger.silly(`Updated config... ${JSON.stringify(config, null, 2)}`)
   return config
 }
+
+export async function initializeDB (): Promise<IDB> {
+  const factory = new DbCreatorFactory()
+  const db = await factory.getDb()
+  if (typeof (db as any).waitForStartup === 'function') {
+    await (db as any).waitForStartup().catch(err => {
+      logger.error('failed initializing database: ', err)
+      process.exit(1)
+    })
+  }
+  return db
+}
+
+export async function initializeSecrets (): Promise<ISecretManagerService> {
+  const factory = new SecretManagerCreatorFactory()
+  const secrets = await factory.getSecretManager(logger)
+  // wait for vault to be up and ready before dealing with certificates
+  if (typeof (secrets as any).waitForStartup === 'function') {
+    await (secrets as any).waitForStartup().catch(err => {
+      logger.error('failed initializing secrets: ', err)
+      process.exit(1)
+    })
+  }
+  return secrets
+}
+
+// Creates a static connection to be accessed across MPS
+export async function initializeMqtt (): Promise<MqttProvider> {
+  const mqtt: MqttProvider = new MqttProvider()
+  mqtt.connectBroker()
+  return mqtt
+}
+
 async function setupSignalHandling (db: IDB): Promise<void> {
   // Cleans the DB before exit when it listens to the signals
   const signals = ['SIGINT', 'exit', 'uncaughtException', 'SIGTERM', 'SIGHUP']

@@ -97,5 +97,20 @@ export class VaultSecretManagerService implements ISecretManagerService {
     }).json()
     return rspJson
   }
+
+  async waitForStartup (): Promise<any> {
+    const backoffLimit = Environment.Config.startup_backoff_limit || (1000 * 60)
+    const rsp: any = await this.gotClient.get('auth/token/lookup-self', {
+      prefixUrl: `${Environment.Config.vault_address}/v1/`,
+      retry: {
+        limit: Environment.Config.startup_retry_limit || 40,
+        calculateDelay: (retryObj) => {
+          this.logger.silly(`vault wait for startup retry: ${retryObj.attemptCount}`)
+          return Math.min(retryObj.computedValue, backoffLimit)
+        }
+      }
+    }).json()
+    return rsp
+  }
 }
 export default VaultSecretManagerService

@@ -38,6 +38,8 @@ export interface configType {
   instance_name: string
   redirection_expiration_time: number
   web_auth_enabled: boolean
+  startup_retry_limit?: number
+  startup_backoff_limit?: number
 }
 
 export interface certificatesType {

@@ -7,6 +7,8 @@ import * as indexFile from './index'
 import { logger } from './logging'
 import VaultSecretManagerService from './secrets/vault'
 import { Environment } from './utils/Environment'
+import { SecretManagerCreatorFactory } from './factories/SecretManagerCreatorFactory'
+import { DbCreatorFactory } from './factories/DbCreatorFactory'
 
 describe('Index', () => {
   describe('loadConfig', () => {
@@ -98,7 +100,7 @@ describe('Index', () => {
     })
   })
 
-  describe('setupSignalHandling', () => {
+  describe('loadCertificates', () => {
     let secretManagerService: VaultSecretManagerService = null
     let config
 
@@ -165,9 +167,90 @@ describe('Index', () => {
         } as any
       })
     })
-    it('should pass with config', async () => {
+    it('should pass with mps_tls_config.requestCert', async () => {
       const result = await indexFile.loadCertificates(secretManagerService)
       expect(result.mps_tls_config.requestCert).toEqual(true)
+    })
+  })
+
+  describe('initialize database', () => {
+    let config
+    let mockExit
+    let db
+
+    beforeEach(async () => {
+      jest.clearAllMocks()
+      config = {
+        secrets_provider: 'vault',
+        vault_address: 'http://bad.test.url:8200',
+        vault_token: 'myroot',
+        secrets_path: 'secret/data/',
+        db_provider: 'postgres',
+        connection_string: 'postgresql://<USERNAME>:<PASSWORD>@localhost:5432/mpsdb?sslmode=no-verify',
+        startup_retry_limit: 5,
+        startup_backoff_limit: 100
+      }
+      Environment.Config = config
+      db = await new DbCreatorFactory().getDb()
+      mockExit = jest.spyOn(process, 'exit').mockImplementation((number) => { throw new Error('process.exit: ' + number) })
+    })
+    it('should succeed', async () => {
+      // for testing, just returning without any errors is all
+      const dbQuery = jest.spyOn(db, 'query')
+      dbQuery.mockResolvedValueOnce({ rows: [0], command: 'SELECT', fields: null, rowCount: 0, oid: 0 })
+      const returned = await indexFile.initializeDB()
+      expect(returned).not.toBeNull()
+    })
+    // it('should exit secret manager service error', async () => {
+    //   jest.spyOn(vault.gotClient, 'get').mockImplementation(() => {
+    //     throw new Error('failed connecting')
+    //   })
+    //   await expect(indexFile.initializeSecrets())
+    //     .rejects
+    //     .toThrow(/process.exit/)
+    //   expect(mockExit).toHaveBeenCalledWith(1)
+    // })
+  })
+
+  describe('initialize secrets', () => {
+    let config
+    let mockExit
+    let vault
+
+    beforeEach(async () => {
+      jest.clearAllMocks()
+      config = {
+        secrets_provider: 'vault',
+        vault_address: 'http://bad.test.url:8200',
+        vault_token: 'myroot',
+        secrets_path: 'secret/data/',
+        startup_retry_limit: 5,
+        startup_backoff_limit: 100
+      }
+      Environment.Config = config
+      vault = await new SecretManagerCreatorFactory().getSecretManager(logger) as VaultSecretManagerService
+      mockExit = jest.spyOn(process, 'exit').mockImplementation((number) => { throw new Error('process.exit: ' + number) })
+    })
+    it('should succeed', async () => {
+      // for testing, just returning without any errors is all
+      jest.spyOn(vault.gotClient, 'get').mockImplementation(() => {
+        return {
+          json: jest.fn(() => {
+            return {}
+          })
+        } as any
+      })
+      const returned = await indexFile.initializeSecrets()
+      expect(returned).not.toBeNull()
+    })
+    it('should exit on secret manager service error', async () => {
+      jest.spyOn(vault.gotClient, 'get').mockImplementation(() => {
+        throw new Error('failed connecting')
+      })
+      await expect(indexFile.initializeSecrets())
+        .rejects
+        .toThrow(/process.exit/)
+      expect(mockExit).toHaveBeenCalledWith(1)
     })
   })
 })
