@@ -39,7 +39,7 @@ export interface configType {
   redirection_expiration_time: number
   web_auth_enabled: boolean
   startup_retry_limit?: number
-  startup_backoff_limit?: number
+  startup_max_backoff_millis?: number
 }
 
 export interface certificatesType {

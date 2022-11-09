@@ -99,14 +99,14 @@ export class VaultSecretManagerService implements ISecretManagerService {
   }
 
   async waitForStartup (): Promise<any> {
-    const backoffLimit = Environment.Config.startup_backoff_limit || (1000 * 60)
+    const maxBackoff = Environment.Config.startup_max_backoff_millis || (1000 * 60)
     const rsp: any = await this.gotClient.get('auth/token/lookup-self', {
       prefixUrl: `${Environment.Config.vault_address}/v1/`,
       retry: {
         limit: Environment.Config.startup_retry_limit || 40,
         calculateDelay: (retryObj) => {
-          this.logger.silly(`vault wait for startup retry: ${retryObj.attemptCount}`)
-          return Math.min(retryObj.computedValue, backoffLimit)
+          this.logger.verbose(`Vault wait for startup[${retryObj.attemptCount}] ${retryObj.error.code}: ${retryObj.error.message}`)
+          return Math.min(retryObj.computedValue, maxBackoff)
         }
       }
     }).json()

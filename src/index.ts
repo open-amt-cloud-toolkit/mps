@@ -17,7 +17,6 @@ import { SecretManagerCreatorFactory } from './factories/SecretManagerCreatorFac
 import { IDB } from './interfaces/IDb'
 import { WebServer } from './server/webserver'
 import { MPSServer } from './server/mpsserver'
-import { POSTGRES_RESPONSE_CODES } from './data/postgres'
 
 export async function main (): Promise<void> {
   try {

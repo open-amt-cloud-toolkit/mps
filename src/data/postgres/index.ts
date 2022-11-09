@@ -12,6 +12,8 @@ import { IDB } from '../../interfaces/IDb'
 import { IDeviceTable } from '../../interfaces/IDeviceTable'
 import { logger, messages } from '../../logging'
 import { DeviceTable } from './tables/device'
+import { backOff } from 'exponential-backoff'
+import { Environment } from '../../utils/Environment'
 
 export class PostgresDb implements IDB {
   pool: Pool
@@ -32,20 +34,18 @@ export class PostgresDb implements IDB {
   }
 
   async waitForStartup (): Promise<any> {
-    try {
-      await this.pool.query('SELECT NOW()')
-    } catch (err) {
-      if (this.isErrCodeTransient(err.code)) {
-        logger.info(`should have repeated transient error: ${err.code}`)
-      } else {
-        logger.info(`got a postgresql error: ${err.code}`)
+    await backOff(async () => await this.pool.query('SELECT 1'), {
+      maxDelay: Environment.Config.startup_max_backoff_millis || (1000 * 60),
+      numOfAttempts: Environment.Config.startup_retry_limit || 40,
+      retry: (e: any, attemptNumber: number) => {
+        logger.verbose(`PostgresDb wait for startup[${attemptNumber}] ${e.code || e.message || e}`)
+        return this.shouldRetryOnErr(e.code)
       }
-      throw new Error(err.message || err)
-    }
+    })
   }
 
   // supports retry logic which is why null and non-postgresql codes retur true
-  isErrCodeTransient (errCode: any): boolean {
+  shouldRetryOnErr (errCode: any): boolean {
     if (errCode === null) { return true }
     if (typeof errCode !== 'string' && !(errCode instanceof String)) { return true }
     if (errCode.length !== 5) { return true }

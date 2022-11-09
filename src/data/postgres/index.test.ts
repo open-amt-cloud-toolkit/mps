@@ -5,7 +5,8 @@
 
 import { QueryResult } from 'pg'
 import PostgresDb, { POSTGRES_RESPONSE_CODES } from '.'
-import exp from 'constants'
+import { Environment } from '../../utils/Environment'
+import { config } from '../../test/helper/config'
 
 const db: PostgresDb = new PostgresDb('postgresql://postgresadmin:admin123@localhost:5432/mpsdb?sslmode=no-verify')
 describe('Postgres', () => {
@@ -47,33 +48,44 @@ describe('Postgres', () => {
   })
 
   test('should succeed waiting for startup', async () => {
+    Environment.Config = config
+    Environment.Config.startup_retry_limit = 5
+    Environment.Config.startup_max_backoff_millis = 50
     const qr: QueryResult = { rows: [0], command: 'SELECT', fields: null, rowCount: 0, oid: 0 }
-    const dbQuery = jest.spyOn(db.pool, 'query').mockImplementation(async () => {
-      return qr
-    })
+    db.pool.query = jest.fn()
+      .mockRejectedValueOnce(new Error('test error'))
+      .mockRejectedValueOnce(255)
+      .mockRejectedValueOnce({ code: 'ECONNREFUSED' })
+      .mockRejectedValueOnce({ code: '08006' })
+      .mockResolvedValue(qr)
+    const dbQuery = jest.spyOn(db.pool, 'query')
     await db.waitForStartup()
-    expect(dbQuery).toBeCalledWith('SELECT NOW()')
     expect(dbQuery).toHaveBeenCalled()
   })
 
   test('should fail waiting for startup', async () => {
-    jest.spyOn(db.pool, 'query').mockImplementation(() => {
-      const err: any = {
-        code: '08006',
-        message: 'connection_failure'
-      }
-      throw err
-    })
-    await expect(db.waitForStartup())
-      .rejects
-      .toThrow()
+    Environment.Config = config
+    Environment.Config.startup_retry_limit = 3
+    Environment.Config.startup_max_backoff_millis = 50
+    db.pool.query = jest.fn().mockRejectedValue({ code: 'ECONNREFUSED' })
+      .mockRejectedValueOnce({ code: 'ECONNREFUSED' })
+      .mockRejectedValueOnce({ code: 'ECONNREFUSED' })
+      .mockRejectedValueOnce({ code: 'ECONNREFUSED' })
+      .mockRejectedValueOnce({ code: 'ECONNREFUSED' })
+    let caughtOne = false
+    try {
+      await db.waitForStartup()
+    } catch (e) {
+      caughtOne = true
+    }
+    expect(caughtOne).toBeTruthy()
   })
 
   test('should pass checking transient error codes', () => {
-    expect(db.isErrCodeTransient(null)).toBeTruthy()
-    expect(db.isErrCodeTransient(3)).toBeTruthy()
-    expect(db.isErrCodeTransient('ABCDEF123')).toBeTruthy()
-    expect(db.isErrCodeTransient('57P05')).toBeTruthy()
-    expect(db.isErrCodeTransient('21000')).toBeFalsy()
+    expect(db.shouldRetryOnErr(null)).toBeTruthy()
+    expect(db.shouldRetryOnErr(3)).toBeTruthy()
+    expect(db.shouldRetryOnErr('ABCDEF123')).toBeTruthy()
+    expect(db.shouldRetryOnErr('57P05')).toBeTruthy()
+    expect(db.shouldRetryOnErr('21000')).toBeFalsy()
   })
 })
