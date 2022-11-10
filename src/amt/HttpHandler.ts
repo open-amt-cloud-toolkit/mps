@@ -6,7 +6,7 @@
 import { logger, messages } from '../logging'
 import { createHash } from 'crypto'
 import * as xml2js from 'xml2js'
-import { Common } from '@open-amt-cloud-toolkit/wsman-messages'
+import { DigestChallenge } from '@open-amt-cloud-toolkit/wsman-messages/models/common'
 
 export class connectionParams {
   port: number
@@ -16,7 +16,7 @@ export class connectionParams {
   nonce?: string
   nonceCounter?: number
   consoleNonce?: string
-  digestChallenge?: Common.Models.DigestChallenge
+  digestChallenge?: DigestChallenge
 }
 
 export class HttpHandler {
@@ -92,14 +92,18 @@ export class HttpHandler {
     return `Digest ${paramNames.reduce((s1, ii) => `${s1},${ii}="${params[ii]}"`, '').substring(1)}`
   }
 
-  parseAuthenticateResponseHeader = (value: string): Common.Models.DigestChallenge => {
-    const params = value.replace('Digest realm', 'realm').split(',')
-    const challengeParams = params.reduce((obj: any, s: string) => {
-      const parts = s.split('=')
-      obj[parts[0].trim()] = parts[1].replace(/"/g, '')
-      return obj
-    }, {})
-    return challengeParams
+  parseAuthenticateResponseHeader = (value: string): DigestChallenge => {
+    const params = value.replace('Digest realm', 'realm').split(/([^=,]*)=("[^"]*"|[^,"]*)/)
+    const obj: DigestChallenge = {}
+    for (let idx = 0; idx < params.length; idx = idx + 3) {
+      if (params[idx + 1] != null) {
+        obj[params[idx + 1].trim()] = params[idx + 2].replace(/"/g, '')
+      }
+    }
+    if (obj.qop != null) {
+      obj.qop = 'auth'
+    }
+    return obj
   }
 
   parseXML (xmlBody: string): any {
