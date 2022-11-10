@@ -28,8 +28,7 @@ export async function main (): Promise<void> {
       }, {})
     // build config object
     const config: configType = rc('mps')
-    Environment.Config = loadConfig(config)
-
+    Environment.Config = validateConfig(config)
     const db = await initializeDB()
     await setupSignalHandling(db)
     const secrets = await initializeSecrets()
@@ -47,8 +46,7 @@ export async function main (): Promise<void> {
   }
 }
 
-export function loadConfig (config: any): configType {
-  // To merge ENV variables. consider after lower-casing ENV since our config keys are lowercase
+export function validateConfig (config: configType): configType {
   if (config.web_auth_enabled) {
     if (!config.web_admin_password || !config.web_admin_user) {
       logger.error('If auth enabled is set to true, Web admin username and password are mandatory. Make sure to set values for these variables.')
@@ -59,7 +57,6 @@ export function loadConfig (config: any): configType {
     logger.error('jwt secret is mandatory.')
     process.exit(1)
   }
-
   config.instance_name = config.instance_name === '{{.Task.Name}}' ? 'mps' : config.instance_name
   logger.silly(`Updated config... ${JSON.stringify(config, null, 2)}`)
   return config

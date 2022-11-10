@@ -91,6 +91,19 @@ test('should throw an exception and return null if given path does not exist', a
   expect(gotFailSpy).toHaveBeenCalledWith('does/not/exist')
 })
 
+test('should delete a a secrete', async () => {
+  const msg = { message: 'success' }
+  jest.spyOn(secretManagerService.gotClient, 'delete').mockImplementation(() => {
+    return {
+      json: jest.fn(() => {
+        return msg
+      })
+    } as any
+  })
+  const result = await secretManagerService.deleteSecretAtPath('does/not/matter')
+  expect(result).toEqual(undefined)
+})
+
 test('should create a secret', async () => {
   const gotPostSpy = jest.spyOn(secretManagerService.gotClient, 'post').mockResolvedValue(null)
   const result = await secretManagerService.writeSecretWithObject('test', secretCert)

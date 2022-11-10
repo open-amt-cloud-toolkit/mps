@@ -68,10 +68,6 @@ describe('Postgres', () => {
     Environment.Config.startup_retry_limit = 3
     Environment.Config.startup_max_backoff_millis = 50
     db.pool.query = jest.fn().mockRejectedValue({ code: 'ECONNREFUSED' })
-      .mockRejectedValueOnce({ code: 'ECONNREFUSED' })
-      .mockRejectedValueOnce({ code: 'ECONNREFUSED' })
-      .mockRejectedValueOnce({ code: 'ECONNREFUSED' })
-      .mockRejectedValueOnce({ code: 'ECONNREFUSED' })
     let caughtOne = false
     try {
       await db.waitForStartup()

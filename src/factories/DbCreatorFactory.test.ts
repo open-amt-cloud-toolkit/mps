@@ -3,33 +3,23 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import PostgresDb from '../data/postgres'
 import { Environment } from '../utils/Environment'
 import { DbCreatorFactory } from './DbCreatorFactory'
+import { config } from '../test/helper/config'
+import { IDB } from '../interfaces/IDb'
 
-describe('', () => {
-  let dbCreator: DbCreatorFactory
-  beforeEach(() => {
-    jest.clearAllMocks()
-    dbCreator = new DbCreatorFactory()
-    Environment.Config = {
-      db_provider: 'postgres',
-      connection_string: ''
-    } as any
-  })
-  it('should pass with default connection string', async () => {
-    Environment.Config.connection_string = 'postgresql://<USERNAME>:<PASSWORD>@localhost:5432/mpsdb?sslmode=no-verify'
-    DbCreatorFactory.instance = null
-    const response = await dbCreator.getDb()
-    const provider = await import(`../data/${Environment.Config.db_provider}`)
-    // eslint-disable-next-line new-cap
-    const expected = new provider.default(Environment.Config.connection_string)
-    expect(typeof response).toEqual(typeof expected)
-  })
-  it('should pass returning an instance of IDB', async () => {
-    Environment.Config.connection_string = 'postgresql://<USERNAME>:<PASSWORD>@localhost:5432/mpsdb?sslmode=no-verify'
-    DbCreatorFactory.instance = new PostgresDb(Environment.Config.connection_string)
-    const response = await dbCreator.getDb()
-    expect(typeof response).toEqual(typeof DbCreatorFactory.instance)
-  })
+it('should pass with default test configuration', async () => {
+  Environment.Config = config
+  const factory = new DbCreatorFactory()
+  const db1 = await factory.getDb()
+  expect(db1).not.toBeNull()
+  const db2 = await factory.getDb()
+  expect(db2).not.toBeNull()
+  const { default: Provider }: { default: new () => IDB } =
+        await import(`../data/${Environment.Config.db_provider}`)
+  const db3 = new Provider()
+  expect(db3).not.toBeNull()
+
+  expect(db1).toEqual(db2)
+  expect(db1).not.toEqual(db3)
 })

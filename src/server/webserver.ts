@@ -36,12 +36,14 @@ export class WebServer {
   certs: certificatesType
   // to unit test code
   jws: jws = jws
+  dbFactory: DbCreatorFactory
 
   constructor (secrets: ISecretManagerService, certs: certificatesType) {
     try {
       this.secrets = secrets
       this.certs = certs
       this.app = express()
+      this.dbFactory = new DbCreatorFactory()
 
       const options: WebSocket.ServerOptions = {
         noServer: true,
@@ -104,8 +106,7 @@ export class WebServer {
   }
 
   async useAPIv1 (req: Request, res: Response, next: NextFunction): Promise<void> {
-    const newDB = new DbCreatorFactory()
-    req.db = await newDB.getDb()
+    req.db = await this.dbFactory.getDb()
     req.secrets = this.secrets
     req.certs = this.certs
     next()
