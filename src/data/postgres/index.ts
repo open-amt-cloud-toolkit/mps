@@ -7,7 +7,7 @@
   Code pattern used to make connections and queries.
   Pattern referred from https://node-postgres.com/guides/project-structure
 */
-import { Pool, QueryResult } from 'pg'
+import { DatabaseError, Pool, QueryResult } from 'pg'
 import { IDB } from '../../interfaces/IDb'
 import { IDeviceTable } from '../../interfaces/IDeviceTable'
 import { logger, messages } from '../../logging'
@@ -16,16 +16,26 @@ import { backOff } from 'exponential-backoff'
 import { Environment } from '../../utils/Environment'
 
 export class PostgresDb implements IDB {
+  static readonly errPoolEndedMsg = 'db connection pool has ended'
+  static readonly errPoolEndedCode = 'XXXXX'
   pool: Pool
   devices: IDeviceTable
   constructor (connectionString: string) {
     this.pool = new Pool({
       connectionString: connectionString
     })
+    this.pool.on('error', (err) => {
+      logger.error('An idle db client has experienced an error', err.stack)
+    })
     this.devices = new DeviceTable(this)
   }
 
   async query<T> (text: string, params?: any): Promise<QueryResult<T>> {
+    if (this.pool === null) {
+      const e = new DatabaseError(PostgresDb.errPoolEndedMsg, 0, 'error')
+      e.code = PostgresDb.errPoolEndedCode
+      throw e
+    }
     const start = Date.now()
     const res = await this.pool.query(text, params)
     const duration = Date.now() - start
@@ -34,7 +44,7 @@ export class PostgresDb implements IDB {
   }
 
   async waitForStartup (): Promise<any> {
-    await backOff(async () => await this.pool.query('SELECT 1'), {
+    await backOff(async () => await this.query('SELECT 1'), {
       maxDelay: Environment.Config.startup_max_backoff_millis || (1000 * 60),
       numOfAttempts: Environment.Config.startup_retry_limit || 40,
       retry: (e: any, attemptNumber: number) => {
@@ -42,6 +52,14 @@ export class PostgresDb implements IDB {
         return this.shouldRetryOnErr(e.code)
       }
     })
+  }
+
+  async shutdown (): Promise<void> {
+    if (this.pool != null) {
+      await this.devices.clearInstanceStatus(Environment.Config.instance_name)
+      await this.pool.end()
+      this.pool = null
+    }
   }
 
   // supports retry logic which is why null and non-postgresql codes retur true
@@ -65,6 +83,7 @@ export class PostgresDb implements IDB {
       case '57P04': // database_dropped
       case '57P05': // idle_session_timeout
         return true
+      case PostgresDb.errPoolEndedCode:
       default:
         return false
     }

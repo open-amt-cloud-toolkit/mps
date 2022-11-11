@@ -18,6 +18,9 @@ import { IDB } from './interfaces/IDb'
 import { WebServer } from './server/webserver'
 import { MPSServer } from './server/mpsserver'
 
+let mpsServer: MPSServer
+let webServer: WebServer
+
 export async function main (): Promise<void> {
   try {
     // To merge ENV variables. consider after lower-casing ENV since our config keys are lowercase
@@ -29,14 +32,15 @@ export async function main (): Promise<void> {
     // build config object
     const config: configType = rc('mps')
     Environment.Config = validateConfig(config)
+    await setupSignalHandling()
+
     const db = await initializeDB()
-    await setupSignalHandling(db)
     const secrets = await initializeSecrets()
     const certs = await loadCertificates(secrets)
     await initializeMqtt()
 
-    const mpsServer = new MPSServer(certs, db, secrets)
-    const webServer = new WebServer(secrets, certs)
+    mpsServer = new MPSServer(certs, db, secrets)
+    webServer = new WebServer(secrets, certs)
 
     mpsServer.listen()
     webServer.listen()
@@ -94,19 +98,33 @@ export async function initializeMqtt (): Promise<MqttProvider> {
   return mqtt
 }
 
-async function setupSignalHandling (db: IDB): Promise<void> {
-  // Cleans the DB before exit when it listens to the signals
+// guard for preventing recursive shutdowns
+// when errors occur during the shutdown itself
+let shuttingDown: boolean
+
+async function setupSignalHandling (): Promise<void> {
+  shuttingDown = false
   const signals = ['SIGINT', 'exit', 'uncaughtException', 'SIGTERM', 'SIGHUP']
   signals.forEach((signal) => {
-    process.on(signal, async () => {
-      logger.debug('signal received :', signal)
-      await db.devices.clearInstanceStatus(Environment.Config.instance_name)
-      MqttProvider.endBroker()
-      if (signal !== 'exit') {
-        setTimeout(() => process.exit(), 1000)
-      }
-    })
+    process.on(signal, shutdown)
   })
+}
+
+export async function shutdown (signal): Promise<void> {
+  logger.debug(`signal received: ${signal} already shutting down: ${shuttingDown}`)
+  if (shuttingDown) { return }
+  shuttingDown = true
+  // IMPORTANT: setup the exit BEFORE cleaning up
+  // specifically mitigates bug/error-path in postgresql library 'pg'
+  // https://github.com/brianc/node-postgres/issues/1927
+  // If db password is empty, causes the shutdown path to hang
+  // SASL generates unhandled exception and query promises don't resolve/reject.
+  // to reproduce, set the db password to empty string
+  if (signal !== 'exit') {
+    setTimeout(() => process.exit(), 3000)
+  }
+  MqttProvider.endBroker()
+  await DbCreatorFactory.shutdown()
 }
 
 export async function loadCertificates (secrets: ISecretManagerService): Promise<certificatesType> {

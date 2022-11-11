@@ -10,19 +10,25 @@ import { Environment } from './utils/Environment'
 import { SecretManagerCreatorFactory } from './factories/SecretManagerCreatorFactory'
 import { DbCreatorFactory } from './factories/DbCreatorFactory'
 import { config } from './test/helper/config'
+import { MqttProvider } from './utils/MqttProvider'
 
 describe('Index', () => {
   let testCfg
+  let mockExit
   beforeEach(() => {
     process.env.NODE_ENV = 'test'
     testCfg = JSON.parse(JSON.stringify(config))
+    mockExit = jest.spyOn(process, 'exit')
+      .mockImplementation((number) => {
+        throw new Error('process.exit: ' + number)
+      })
   })
   afterEach(() => {
     jest.clearAllMocks()
     jest.restoreAllMocks()
     jest.resetAllMocks()
   })
-  describe('initialize config', () => {
+  describe('validateConfig', () => {
     it('should pass with config', () => {
       testCfg.web_auth_enabled = true
       testCfg.web_admin_user = 'test-web-admin-user'
@@ -35,8 +41,6 @@ describe('Index', () => {
       testCfg.web_admin_user = 'test-web-admin-user'
       testCfg.web_admin_password = 'test-web-admin-password'
       testCfg.jwt_secret = ''
-      const mockExit = jest.spyOn(process, 'exit')
-        .mockImplementation((number) => { throw new Error('process.exit: ' + number) })
       expect(() => {
         indexFile.validateConfig(testCfg)
       }).toThrow()
@@ -47,8 +51,6 @@ describe('Index', () => {
       testCfg.web_admin_user = 'admin'
       testCfg.web_admin_password = ''
       testCfg.jwt_secret = 'secret'
-      const mockExit = jest.spyOn(process, 'exit')
-        .mockImplementation((number) => { throw new Error('process.exit: ' + number) })
       expect(() => {
         indexFile.validateConfig(testCfg)
       }).toThrow()
@@ -75,7 +77,7 @@ describe('Index', () => {
     })
   })
 
-  describe('initialize database', () => {
+  describe('initializeDB', () => {
     let db
     beforeEach(async () => {
       testCfg.startup_retry_limit = 5
@@ -98,7 +100,9 @@ describe('Index', () => {
     })
     it('should exit on error', async () => {
       const mockExit = jest.spyOn(process, 'exit')
-      mockExit.mockImplementation((number) => { throw new Error('process.exit: ' + number) })
+      mockExit.mockImplementation((number) => {
+        throw new Error('process.exit: ' + number)
+      })
       db.pool.query = jest.fn().mockRejectedValue({ code: 'ECONNREFUSED' })
       await expect(indexFile.initializeDB())
         .rejects
@@ -107,7 +111,7 @@ describe('Index', () => {
     })
   })
 
-  describe('initialize secrets', () => {
+  describe('initializeSecrets', () => {
     let vault
     beforeEach(async () => {
       testCfg.startup_retry_limit = 5
@@ -128,7 +132,9 @@ describe('Index', () => {
       expect(returned).not.toBeNull()
     })
     it('should exit on error', async () => {
-      const mockExit = jest.spyOn(process, 'exit').mockImplementation((number) => { throw new Error('process.exit: ' + number) })
+      const mockExit = jest.spyOn(process, 'exit').mockImplementation((number) => {
+        throw new Error('process.exit: ' + number)
+      })
       jest.spyOn(vault.gotClient, 'get').mockImplementation(() => {
         throw new Error('failed connecting')
       })
@@ -139,11 +145,23 @@ describe('Index', () => {
     })
   })
 
-  describe('initialize mqtt', () => {
+  describe('initializeMqtt', () => {
     it('should pass', () => {
       Environment.Config = testCfg
       const mqttProvider = indexFile.initializeMqtt()
       expect(mqttProvider).not.toBeNull()
+    })
+  })
+
+  describe('shutdown', () => {
+    it('should shutdown using process exit', async () => {
+      jest.useFakeTimers()
+      const mockExit = jest.spyOn(process, 'exit').mockImplementation()
+      jest.spyOn(DbCreatorFactory, 'shutdown').mockImplementation(async () => await Promise.resolve())
+      jest.spyOn(MqttProvider, 'endBroker').mockImplementation(async () => await Promise.resolve())
+      await indexFile.shutdown('SIGINT')
+      jest.runOnlyPendingTimers()
+      expect(mockExit).toHaveBeenCalled()
     })
   })
 })

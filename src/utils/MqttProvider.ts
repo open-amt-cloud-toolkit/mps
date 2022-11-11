@@ -79,7 +79,7 @@ export class MqttProvider {
   static endBroker (): void {
     if (!MqttProvider.instance?.turnedOn) return
 
-    MqttProvider.instance.client = MqttProvider.instance.client.end()
+    MqttProvider.instance.client.end()
     logger.info(messages.MQTT_CLIENT_CLOSED)
   }
 }

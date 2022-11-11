@@ -8,10 +8,14 @@ import PostgresDb, { POSTGRES_RESPONSE_CODES } from '.'
 import { Environment } from '../../utils/Environment'
 import { config } from '../../test/helper/config'
 
-const db: PostgresDb = new PostgresDb('postgresql://postgresadmin:admin123@localhost:5432/mpsdb?sslmode=no-verify')
 describe('Postgres', () => {
-  afterEach(() => {
-    jest.clearAllMocks()
+  let db: PostgresDb
+  beforeEach(() => {
+    jest.restoreAllMocks()
+    Environment.Config = JSON.parse(JSON.stringify(config))
+    Environment.Config.startup_retry_limit = 5
+    Environment.Config.startup_max_backoff_millis = 50
+    db = new PostgresDb(Environment.Config.connection_string)
   })
 
   test('should return result when query executes', async () => {
@@ -48,9 +52,6 @@ describe('Postgres', () => {
   })
 
   test('should succeed waiting for startup', async () => {
-    Environment.Config = config
-    Environment.Config.startup_retry_limit = 5
-    Environment.Config.startup_max_backoff_millis = 50
     const qr: QueryResult = { rows: [0], command: 'SELECT', fields: null, rowCount: 0, oid: 0 }
     db.pool.query = jest.fn()
       .mockRejectedValueOnce(new Error('test error'))
@@ -64,9 +65,6 @@ describe('Postgres', () => {
   })
 
   test('should fail waiting for startup', async () => {
-    Environment.Config = config
-    Environment.Config.startup_retry_limit = 3
-    Environment.Config.startup_max_backoff_millis = 50
     db.pool.query = jest.fn().mockRejectedValue({ code: 'ECONNREFUSED' })
     let caughtOne = false
     try {
@@ -77,11 +75,30 @@ describe('Postgres', () => {
     expect(caughtOne).toBeTruthy()
   })
 
+  test('should be graceful after shutdown', async () => {
+    const qr: QueryResult = { rows: [0], command: 'SELECT', fields: null, rowCount: 0, oid: 0 }
+    db.pool.query = jest.fn().mockResolvedValue(qr)
+    db.pool.end = jest.fn().mockResolvedValue(undefined)
+    await db.shutdown()
+    expect(db.pool).toBeNull()
+    let caughtErr = null
+    try {
+      await db.waitForStartup()
+    } catch (e) {
+      caughtErr = e
+    }
+    expect(caughtErr).not.toBeNull()
+    expect(caughtErr?.code).toEqual(PostgresDb.errPoolEndedCode)
+    expect(caughtErr?.message).toEqual(PostgresDb.errPoolEndedMsg)
+  })
+
   test('should pass checking transient error codes', () => {
     expect(db.shouldRetryOnErr(null)).toBeTruthy()
     expect(db.shouldRetryOnErr(3)).toBeTruthy()
     expect(db.shouldRetryOnErr('ABCDEF123')).toBeTruthy()
     expect(db.shouldRetryOnErr('57P05')).toBeTruthy()
     expect(db.shouldRetryOnErr('21000')).toBeFalsy()
+    // our own generic error
+    expect(db.shouldRetryOnErr(PostgresDb.errPoolEndedCode)).toBeFalsy()
   })
 })

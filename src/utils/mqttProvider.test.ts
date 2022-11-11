@@ -8,10 +8,13 @@ import { Environment } from './Environment'
 import { config } from '../test/helper/config'
 import mqtt1 from 'mqtt'
 
+beforeEach(() => {
+  Environment.Config = JSON.parse(JSON.stringify(config))
+})
+
 describe('MQTT Turned ON Tests', () => {
   beforeEach(() => {
-    Environment.Config = config
-    config.mqtt_address = 'mqtt://127.0.0.1:8883'
+    Environment.Config.mqtt_address = 'mqtt://127.0.0.1:8883'
     MqttProvider.instance = new MqttProvider()
   })
 
@@ -73,39 +76,46 @@ describe('MQTT Turned ON Tests', () => {
   })
 
   it('Should close client when promted', async () => {
-    MqttProvider.instance.client = {
-      connected: true
+    const client = {
+      connected: true,
+      end: function () {
+        this.connected = false
+      }
     } as any
-    MqttProvider.instance.client = {
-      end: () => { return {} as any }
-    } as any
-    const spy = jest.spyOn(MqttProvider.instance.client, 'end').mockImplementation(() => {
-      return {
-        connected: false
-      } as any
-    })
+    MqttProvider.instance.client = client
     MqttProvider.instance.turnedOn = true
-
     MqttProvider.endBroker()
-    expect(spy).toHaveBeenCalled()
     expect(MqttProvider.instance.client.connected).toBe(false)
   })
 })
 
 describe('MQTT Turned OFF Tests', () => {
+  let client
   beforeEach(() => {
+    client = {
+      connected: false,
+      publish: function (topic, message, callback) { return {} as any },
+      end: function () {
+        this.connected = false
+      }
+    } as any
+    Environment.Config.mqtt_address = ''
     MqttProvider.instance = new MqttProvider()
+    expect(MqttProvider.instance.turnedOn).toBeFalsy()
+    MqttProvider.instance.client = client
   })
 
-  it('Should NOT Send an event message when turned off', async () => {
-    MqttProvider.instance.client = {
-      publish: (topic, message, callback) => { return {} as any }
-    } as any
-    const spy = jest.spyOn(MqttProvider.instance.client, 'publish').mockImplementation((topic, message, callback) => {
-      return {} as any
-    })
-    MqttProvider.instance.turnedOn = false
+  it('Should NOT Send an event message', async () => {
+    const spy = jest.spyOn(client, 'publish')
     MqttProvider.publishEvent('success', ['testMethod'], 'Test Message')
+    expect(spy).not.toHaveBeenCalled()
+  })
+  it('Should early exit the end()', async () => {
+    const spy = jest.spyOn(client, 'end')
+    MqttProvider.endBroker()
+    expect(spy).not.toHaveBeenCalled()
+    MqttProvider.instance = null
+    MqttProvider.endBroker()
     expect(spy).not.toHaveBeenCalled()
   })
 })
