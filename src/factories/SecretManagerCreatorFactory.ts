@@ -8,7 +8,7 @@ import { ISecretManagerService } from '../interfaces/ISecretManagerService'
 import { Environment } from '../utils/Environment'
 
 export class SecretManagerCreatorFactory {
-  static instance: ISecretManagerService
+  private static instance: ISecretManagerService
 
   async getSecretManager (logger: ILogger): Promise<ISecretManagerService> {
     if (SecretManagerCreatorFactory.instance == null) {
