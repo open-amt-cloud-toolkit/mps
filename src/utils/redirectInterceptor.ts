@@ -178,12 +178,13 @@ export class RedirectInterceptor {
         // We have everything we need to authenticate
         const nc = this.ws.authCNonceCount
         this.ws.authCNonceCount++
-        const digest = Common.ComputeDigesthash(this.args.user, this.args.pass, this.amt.digestRealm, 'POST', authurl, this.amt.digestQOP, this.amt.digestNonce, nc.toString(), this.ws.authCNonce)
+        const nonceCount = nc.toString(16).padStart(8, '0')
+        const digest = Common.ComputeDigesthash(this.args.user, this.args.pass, this.amt.digestRealm, 'POST', authurl, this.amt.digestQOP, this.amt.digestNonce, nonceCount, this.ws.authCNonce)
 
         // Replace this authentication digest with a server created one
         // We have everything we need to authenticate
         let r = String.fromCharCode(0x13, 0x00, 0x00, 0x00, 0x04)
-        r += Common.IntToStrX(this.args.user.length + this.amt.digestRealm.length + this.amt.digestNonce.length + authurl.length + this.ws.authCNonce.length + nc.toString().length + digest.length + this.amt.digestQOP.length + 8)
+        r += Common.IntToStrX(this.args.user.length + this.amt.digestRealm.length + this.amt.digestNonce.length + authurl.length + this.ws.authCNonce.length + nonceCount.length + digest.length + this.amt.digestQOP.length + 8)
         r += String.fromCharCode(this.args.user.length) // Username Length
         r += this.args.user // Username
         r += String.fromCharCode(this.amt.digestRealm.length) // Realm Length
@@ -194,8 +195,8 @@ export class RedirectInterceptor {
         r += authurl // Authentication URL
         r += String.fromCharCode(this.ws.authCNonce.length) // CNonce Length
         r += this.ws.authCNonce // CNonce
-        r += String.fromCharCode(nc.toString().length) // NonceCount Length
-        r += nc.toString() // NonceCount
+        r += String.fromCharCode(nonceCount.length) // NonceCount Length
+        r += nonceCount // NonceCount
         r += String.fromCharCode(digest.length) // Response Length
         r += digest // Response
         r += String.fromCharCode(this.amt.digestQOP.length) // QOP Length
