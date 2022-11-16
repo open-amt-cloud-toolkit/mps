@@ -21,7 +21,7 @@ const ciraMiddleware = async (req: Request, res: Response, next): Promise<void> 
     // req.amtStack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
     // (req as any).httpHandler = new HttpHandler(cred[0], cred[1])
 
-    const ciraHandler = new CIRAHandler(device.httpHandler, device.username, device.password)
+    const ciraHandler = new CIRAHandler(device.httpHandler, device.username, device.password, device.limiter)
     req.deviceAction = new DeviceAction(ciraHandler, device.ciraSocket)
     next()
   } else {
