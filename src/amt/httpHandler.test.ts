@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { CIM, Common } from '@open-amt-cloud-toolkit/wsman-messages'
+import { CIM } from '@open-amt-cloud-toolkit/wsman-messages'
+import { DigestChallenge } from '@open-amt-cloud-toolkit/wsman-messages/models/common'
 import { connectionParams, HttpHandler } from './HttpHandler'
 
 const httpHandler = new HttpHandler()
@@ -18,17 +19,65 @@ it('should throw an error and return null when it parse invalid xml', async () =
   const result = httpHandler.parseXML(xml)
   expect(result).toBe(null)
 })
-it('should parse authentication response header', async () => {
+it('should parse authentication response header with 1 comma in value', async () => {
   const digestChallenge = {
     realm: 'Digest:56ABC7BE224EF620C69EB88F01071DC8',
     nonce: 'fVNueyEAAAAAAAAAcO8WqJ8s+WdyFUIY',
     stale: 'false',
     qop: 'auth'
   }
-  const value: string = 'Digest realm="Digest:56ABC7BE224EF620C69EB88F01071DC8", nonce="fVNueyEAAAAAAAAAcO8WqJ8s+WdyFUIY",stale="false",qop="auth"'
-  const result: Common.Models.DigestChallenge = httpHandler.parseAuthenticateResponseHeader(value)
+  const value: string = 'Digest realm="Digest:56ABC7BE224EF620C69EB88F01071DC8", nonce="fVNueyEAAAAAAAAAcO8WqJ8s+WdyFUIY",stale="false",qop="auth-int, auth"'
+  const result: DigestChallenge = httpHandler.parseAuthenticateResponseHeader(value)
   expect(JSON.stringify(result)).toBe(JSON.stringify(digestChallenge))
 })
+
+it('should parse authentication response header with 2 commas in value', async () => {
+  const digestChallenge = {
+    realm: 'Digest:56ABC7BE224EF620C69EB88F01071DC8',
+    nonce: 'fVNueyEAAAAAAAAAcO8WqJ8s+WdyFUIY',
+    stale: 'false',
+    qop: 'auth'
+  }
+  const value: string = 'Digest realm="Digest:56ABC7BE224EF620C69EB88F01071DC8", nonce="fVNueyEAAAAAAAAAcO8WqJ8s+WdyFUIY",stale="false",qop="auth-int, auth, hot-mess"'
+  const result: DigestChallenge = httpHandler.parseAuthenticateResponseHeader(value)
+  expect(JSON.stringify(result)).toBe(JSON.stringify(digestChallenge))
+})
+it('should parse authentication response header with no value', async () => {
+  const digestChallenge = {
+    realm: 'Digest:56ABC7BE224EF620C69EB88F01071DC8',
+    nonce: 'fVNueyEAAAAAAAAAcO8WqJ8s+WdyFUIY',
+    stale: 'false',
+    qop: 'auth'
+  }
+  const value: string = 'Digest realm="Digest:56ABC7BE224EF620C69EB88F01071DC8", nonce="fVNueyEAAAAAAAAAcO8WqJ8s+WdyFUIY",stale="false",qop=""'
+  const result: DigestChallenge = httpHandler.parseAuthenticateResponseHeader(value)
+  expect(JSON.stringify(result)).toBe(JSON.stringify(digestChallenge))
+})
+
+it('should parse authentication response header with rogue comma', async () => {
+  const digestChallenge = {
+    realm: 'Digest:56ABC7BE224EF620C69EB88F01071DC8',
+    nonce: 'fVNueyEAAAAAAAAAcO8WqJ8s+WdyFUIY',
+    stale: 'false',
+    qop: 'auth'
+  }
+  const value: string = 'Digest realm="Digest:56ABC7BE224EF620C69EB88F01071DC8", nonce="fVNueyEAAAAAAAAAcO8WqJ8s+WdyFUIY",stale="false",qop="auth",'
+  const result: DigestChallenge = httpHandler.parseAuthenticateResponseHeader(value)
+  expect(JSON.stringify(result)).toBe(JSON.stringify(digestChallenge))
+})
+
+it('should parse authentication response header with rogue double comma', async () => {
+  const digestChallenge = {
+    realm: 'Digest:56ABC7BE224EF620C69EB88F01071DC8',
+    nonce: 'fVNueyEAAAAAAAAAcO8WqJ8s+WdyFUIY',
+    stale: 'false',
+    qop: 'auth'
+  }
+  const value: string = 'Digest realm="Digest:56ABC7BE224EF620C69EB88F01071DC8", nonce="fVNueyEAAAAAAAAAcO8WqJ8s+WdyFUIY",stale="false",,qop="auth",'
+  const result: DigestChallenge = httpHandler.parseAuthenticateResponseHeader(value)
+  expect(JSON.stringify(result)).toBe(JSON.stringify(digestChallenge))
+})
+
 it('should return a WSMan request', async () => {
   const cim = new CIM.Messages()
   const xmlRequestBody = cim.ServiceAvailableToElement(CIM.Methods.ENUMERATE, '1')
