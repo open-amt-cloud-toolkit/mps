@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
+import { Buffer } from 'node:buffer'
 import Common from '../utils/common'
 import { logger } from '../logging'
 import APFProcessor, { APFProtocol } from './APFProcessor'
@@ -259,9 +260,7 @@ describe('APFProcessor Tests', () => {
 
     it('should return 9 if sending entire pending buffer', () => {
       const fakeCiraChannel: CIRAChannel = {
-        sendBuffer: {
-          length: 1000
-        },
+        sendBuffer: Buffer.alloc(1000),
         sendcredits: 1000,
         socket: {
           write: jest.fn()
@@ -287,7 +286,7 @@ describe('APFProcessor Tests', () => {
 
     it('should return 9 if sending partial pending buffer', () => {
       const fakeCiraChannel: CIRAChannel = {
-        sendBuffer: 'my fake buffer',
+        sendBuffer: Buffer.from('my fake buffer'),
         sendcredits: 5,
         socket: {
           write: jest.fn()
@@ -461,7 +460,7 @@ describe('APFProcessor Tests', () => {
       const length = 17
       const data = ''
       fakeCiraChannel.closing = 0
-      fakeCiraChannel.sendBuffer = 'fake buffer'
+      fakeCiraChannel.sendBuffer = Buffer.from('fake buffer')
       fakeCiraChannel.onStateChange = new EventEmitter()
       const result = APFProcessor.channelOpenConfirmation(fakeCiraSocket, length, data)
       expect(result).toEqual(17)
@@ -475,7 +474,7 @@ describe('APFProcessor Tests', () => {
       const data = ''
       const readIntSpy = jest.spyOn(Common, 'ReadInt').mockReturnValue(1)
       fakeCiraChannel.closing = 0
-      fakeCiraChannel.sendBuffer = 'fake buffer'
+      fakeCiraChannel.sendBuffer = Buffer.from('fake buffer')
       fakeCiraChannel.onStateChange = new EventEmitter()
       const result = APFProcessor.channelOpenConfirmation(fakeCiraSocket, length, data)
       expect(result).toEqual(17)
@@ -1139,13 +1138,16 @@ describe('APFProcessor Tests', () => {
     })
 
     it('should SendChannelData', () => {
-      APFProcessor.SendChannelData(fakeCiraSocket, channelid, data)
-      const dataExpected =
+      writeSpy = jest.spyOn(fakeCiraSocket, 'write')
+      APFProcessor.SendChannelData(fakeCiraSocket, channelid, Buffer.from(data))
+      const dataExpected = Buffer.from(
         String.fromCharCode(APFProtocol.CHANNEL_DATA) +
-        Common.IntToStr(channelid) +
-        Common.IntToStr(data.length) +
-        data
-      expect(writeSpy).toHaveBeenCalledWith(fakeCiraSocket, dataExpected)
+          Common.IntToStr(channelid) +
+          Common.IntToStr(data.length) +
+          data,
+        'binary'
+      )
+      expect(writeSpy).toHaveBeenCalledWith(dataExpected)
     })
 
     it('should SendChannelWindowAdjust', () => {

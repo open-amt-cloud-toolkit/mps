@@ -109,7 +109,27 @@ it('should return a WSMan request', async () => {
     password: 'P@ssw0rd'
   }
   const result = httpHandler.wrapIt(params, xmlRequestBody)
-  expect(result).toContain('Authorization')
+  expect(result.toString()).toContain('Authorization')
+})
+it('should properly encode UTF8 characters', async () => {
+  // À is codepoint 0x00C0, [0xC3, 0x80] when UTF8 encoded...
+  const xmlRequestBody = '<tag>FooÀbar</tag>'
+  const digestChallenge = {
+    realm: 'Digest:56ABC7BE224EF620C69EB88F01071DC8',
+    nonce: 'fVNueyEAAAAAAAAAcO8WqJ8s+WdyFUIY',
+    stale: 'false',
+    qop: 'auth'
+  }
+  const params: connectionParams = {
+    guid: '4c4c4544-004b-4210-8033-b6c04f504633',
+    port: 16992,
+    digestChallenge: digestChallenge,
+    username: 'admin',
+    password: 'P@ssw0rd'
+  }
+  const result: Buffer = httpHandler.wrapIt(params, xmlRequestBody)
+  expect(result.toString('binary')).toContain('<tag>Foo' + String.fromCharCode(0xC3, 0x80) + 'bar</tag>')
+  expect(result.toString('binary')).toContain('\r\nContent-Length: 19\r\n')
 })
 it('should return a null when no xml is passed to wrap a WSMan request', async () => {
   const digestChallenge = {
