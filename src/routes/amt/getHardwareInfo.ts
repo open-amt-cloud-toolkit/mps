@@ -85,7 +85,7 @@ export function formatResponse (response: any): any {
     },
     CIM_PhysicalMemory: {
       responses: Array.isArray(response.CIM_PhysicalMemory?.Body?.PullResponse?.Items?.CIM_PhysicalMemory) ? response.CIM_PhysicalMemory?.Body?.PullResponse?.Items?.CIM_PhysicalMemory : [response.CIM_PhysicalMemory?.Body?.PullResponse?.Items?.CIM_PhysicalMemory],
-      status: response.CIM_Processor?.Body?.PullResponse?.Items?.CIM_Processor ? 200 : 400
+      status: response.CIM_PhysicalMemory?.Body?.PullResponse?.Items?.CIM_PhysicalMemory ? 200 : 400
     },
     CIM_MediaAccessDevice: {
       responses: Array.isArray(response.CIM_MediaAccessDevice?.Body?.PullResponse?.Items?.CIM_MediaAccessDevice) ? response.CIM_MediaAccessDevice?.Body?.PullResponse?.Items?.CIM_MediaAccessDevice : [response.CIM_MediaAccessDevice?.Body?.PullResponse?.Items?.CIM_MediaAccessDevice],

@@ -780,10 +780,11 @@ test('handleAuthenticateSession DIGEST with user, pass and digestRealm', () => {
 
   const authurl = '/RedirectionService'
   const nc = ws.authCNonceCount
+  const ncs = nc.toString(16).padStart(8, '0')
   const digest = 'digest'
 
   let r = String.fromCharCode(0x13, 0x00, 0x00, 0x00, 0x04)
-  r += Common.IntToStrX(args.user.length + amt.digestRealm.length + amt.digestNonce.length + authurl.length + ws.authCNonce.length + nc.toString().length + digest.length + amt.digestQOP.length + 8)
+  r += Common.IntToStrX(args.user.length + amt.digestRealm.length + amt.digestNonce.length + authurl.length + ws.authCNonce.length + ncs.length + digest.length + amt.digestQOP.length + 8)
   r += String.fromCharCode(args.user.length) // Username Length
   r += args.user // Username
   r += String.fromCharCode(amt.digestRealm.length) // Realm Length
@@ -794,8 +795,8 @@ test('handleAuthenticateSession DIGEST with user, pass and digestRealm', () => {
   r += authurl // Authentication URL
   r += String.fromCharCode(ws.authCNonce.length) // CNonce Length
   r += ws.authCNonce // CNonce
-  r += String.fromCharCode(nc.toString().length) // NonceCount Length
-  r += nc.toString() // NonceCount
+  r += String.fromCharCode(ncs.length) // NonceCount Length
+  r += ncs // NonceCount // NonceCount
   r += String.fromCharCode(digest.length) // Response Length
   r += digest // Response
   r += String.fromCharCode(amt.digestQOP.length) // QOP Length

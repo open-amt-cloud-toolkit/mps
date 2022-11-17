@@ -35,6 +35,7 @@
   "dependencies": {
     "@open-amt-cloud-toolkit/wsman-messages": "^3.0.4",
     "atob": "^2.1.2",
+    "bottleneck": "^2.19.5",
     "consul": "^1.1.0",
     "cors": "^2.8.5",
     "exponential-backoff": "^3.1.0",
