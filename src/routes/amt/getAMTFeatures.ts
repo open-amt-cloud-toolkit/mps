@@ -46,6 +46,7 @@ export function processAmtRedirectionResponse (amtRedirection: AMT.Models.Redire
 }
 
 export function processKvmRedirectionResponse (kvmRedirection: CIM.Models.KVMRedirectionSAP): boolean {
+  if (kvmRedirection == null) return false
   const kvm = (kvmRedirection.EnabledState === Common.Models.CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.Enabled ||
                kvmRedirection.EnabledState === Common.Models.CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.EnabledButOffline)
   return kvm
