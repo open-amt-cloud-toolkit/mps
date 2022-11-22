@@ -1,22 +1,21 @@
 name: "Semantic Pull Request"
 
 on:
-  pull_request_target:
-    types:
-      - opened
-      - edited
-      - synchronize
+  pull_request:
+    types: ['opened', 'edited', 'reopened', 'synchronize']
 jobs:
   main:
     name: Validate PR and Commits
     runs-on: ubuntu-latest
     steps:
-      - uses: amannn/action-semantic-pull-request@v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - uses: wagoid/commitlint-github-action@v4
         with:
           configFile: .github/commitlint.config.js
+      - name: Install Dependencies
+        run: npm install @commitlint/config-conventional
+      - uses: JulienKode/pull-request-name-linter-action@v0.5.0
+        with:
+          configuration-path: ./.github/commitlint.config.js
