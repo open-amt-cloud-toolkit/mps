@@ -19,6 +19,15 @@ export class connectionParams {
   digestChallenge?: DigestChallenge
 }
 
+function myParseNumbers (value: string, name: string): any {
+  if (name === 'ElementName' || name === 'InstanceID') {
+    if (value.length > 1 && value.charAt(0) === '0') {
+      return value
+    }
+  }
+  return xml2js.processors.parseNumbers(value, name)
+}
+
 export class HttpHandler {
   digestChallenge: any
   authResolve: any
@@ -30,7 +39,7 @@ export class HttpHandler {
   parser: any
   constructor () {
     this.stripPrefix = xml2js.processors.stripPrefix
-    this.parser = new xml2js.Parser({ ignoreAttrs: true, mergeAttrs: false, explicitArray: false, tagNameProcessors: [this.stripPrefix], valueProcessors: [xml2js.processors.parseNumbers, xml2js.processors.parseBooleans] })
+    this.parser = new xml2js.Parser({ ignoreAttrs: true, mergeAttrs: false, explicitArray: false, tagNameProcessors: [this.stripPrefix], valueProcessors: [myParseNumbers, xml2js.processors.parseBooleans] })
   }
 
   wrapIt (connectionParams: connectionParams, data: string): string {
