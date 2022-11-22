@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with: 
           fetch-depth: 0
       - run: docker run -v $PWD:/workdir quay.io/git-chglog/git-chglog --next-tag $(node --eval="process.stdout.write(require('./package.json').version)") --output CHANGELOG.md  
