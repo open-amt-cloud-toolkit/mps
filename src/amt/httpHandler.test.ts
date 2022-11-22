@@ -19,6 +19,20 @@ it('should throw an error and return null when it parse invalid xml', async () =
   const result = httpHandler.parseXML(xml)
   expect(result).toBe(null)
 })
+it('should preserve leading zeros in ElementName and InstanceID', async () => {
+  const xml: string = '<?xml version="1.0" encoding="UTF-8"?><a:Envelope xmlns:a="http://www.w3.org/2003/05/soap-envelope" xmlns:b="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:c="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns:d="http://schemas.xmlsoap.org/ws/2005/02/trust" xmlns:e="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:f="http://schemas.dmtf.org/wbem/wsman/1/cimbinding.xsd" xmlns:g="http://schemas.xmlsoap.org/ws/2004/09/enumeration" xmlns:h="http://intel.com/wbem/wscim/1/ips-schema/1/IPS_AlarmClockOccurrence" xmlns:i="http://schemas.dmtf.org/wbem/wscim/1/common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a:Header><b:To>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</b:To><b:RelatesTo>1</b:RelatesTo><b:Action a:mustUnderstand="true">http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse</b:Action><b:MessageID>uuid:00000000-8086-8086-8086-0000000022AF</b:MessageID><c:ResourceURI>http://intel.com/wbem/wscim/1/ips-schema/1/IPS_AlarmClockOccurrence</c:ResourceURI></a:Header><a:Body><g:PullResponse><g:Items><h:IPS_AlarmClockOccurrence><h:DeleteOnCompletion>true</h:DeleteOnCompletion><h:ElementName>01</h:ElementName><h:InstanceID>01</h:InstanceID><h:StartTime><i:Datetime>2022-11-30T18:51:00Z</i:Datetime></h:StartTime></h:IPS_AlarmClockOccurrence></g:Items><g:EndOfSequence></g:EndOfSequence></g:PullResponse></a:Body></a:Envelope>'
+  const result = httpHandler.parseXML(xml)
+  const expected = {
+    DeleteOnCompletion: true,
+    ElementName: '01',
+    InstanceID: '01',
+    StartTime: {
+      Datetime: '2022-11-30T18:51:00Z'
+    }
+  }
+  expect(result?.Envelope?.Body?.PullResponse?.Items?.IPS_AlarmClockOccurrence).toEqual(expected)
+})
+
 it('should parse authentication response header with 1 comma in value', async () => {
   const digestChallenge = {
     realm: 'Digest:56ABC7BE224EF620C69EB88F01071DC8',
