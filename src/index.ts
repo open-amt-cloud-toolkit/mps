@@ -17,6 +17,7 @@ import { SecretManagerCreatorFactory } from './factories/SecretManagerCreatorFac
 import { IDB } from './interfaces/IDb'
 import { WebServer } from './server/webserver'
 import { MPSServer } from './server/mpsserver'
+import { backOff } from 'exponential-backoff'
 
 export async function main (): Promise<void> {
   try {
@@ -33,12 +34,17 @@ export async function main (): Promise<void> {
     // DB initialization
     const newDB = new DbCreatorFactory()
     const db = await newDB.getDb()
+    // wait for db to be ready
+    await waitForDB(db)
 
     await setupSignalHandling(db)
 
     // Secret store initialization
     const newSecrets = new SecretManagerCreatorFactory()
     const secrets = await newSecrets.getSecretManager(logger)
+
+    // wait for secret provider to be ready
+    await waitForSecretProvider(secrets)
 
     const certs = await loadCertificates(secrets)
     // MQTT Connection - Creates a static connection to be access across MPS
@@ -54,6 +60,24 @@ export async function main (): Promise<void> {
     logger.error('Error starting MPS microservice. Check server logs.')
     logger.error(error)
   }
+}
+
+export async function waitForDB (db: IDB): Promise<any> {
+  return await backOff(async () => await db.query('SELECT 1'), {
+    retry: (e: any, attemptNumber: number) => {
+      logger.info(`waiting for db[${attemptNumber}] ${e.code || e.message || e}`)
+      return true
+    }
+  })
+}
+
+export async function waitForSecretProvider (secrets: ISecretManagerService): Promise<any> {
+  return await backOff(async () => await secrets.health(), {
+    retry: (e: any, attemptNumber: number) => {
+      logger.info(`waiting for secret provider[${attemptNumber}] ${e.code || e.message || e}`)
+      return true
+    }
+  })
 }
 
 export function loadConfig (config: any): configType {
