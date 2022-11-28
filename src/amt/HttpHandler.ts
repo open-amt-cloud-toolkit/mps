@@ -19,6 +19,15 @@ export class connectionParams {
   digestChallenge?: DigestChallenge
 }
 
+function myParseNumbers (value: string, name: string): any {
+  if (name === 'ElementName' || name === 'InstanceID') {
+    if (value.length > 1 && value.charAt(0) === '0') {
+      return value
+    }
+  }
+  return xml2js.processors.parseNumbers(value, name)
+}
+
 export class HttpHandler {
   digestChallenge: any
   authResolve: any
@@ -30,10 +39,10 @@ export class HttpHandler {
   parser: any
   constructor () {
     this.stripPrefix = xml2js.processors.stripPrefix
-    this.parser = new xml2js.Parser({ ignoreAttrs: true, mergeAttrs: false, explicitArray: false, tagNameProcessors: [this.stripPrefix], valueProcessors: [xml2js.processors.parseNumbers, xml2js.processors.parseBooleans] })
+    this.parser = new xml2js.Parser({ ignoreAttrs: true, mergeAttrs: false, explicitArray: false, tagNameProcessors: [this.stripPrefix], valueProcessors: [myParseNumbers, xml2js.processors.parseBooleans] })
   }
 
-  wrapIt (connectionParams: connectionParams, data: string): string {
+  wrapIt (connectionParams: connectionParams, data: string): Buffer {
     try {
       const url = '/wsman'
       const action = 'POST'
@@ -62,6 +71,7 @@ export class HttpHandler {
         })
         message += `Authorization: ${authorizationRequestHeader}\r\n`
       }
+      /*
       // Use Chunked-Encoding
       message += Buffer.from([
         `Host: ${connectionParams.guid}:${connectionParams.port}`,
@@ -73,6 +83,15 @@ export class HttpHandler {
         '\r\n'
       ].join('\r\n'), 'utf8')
       return message
+      */
+      const dataBuffer = Buffer.from(data, 'utf8')
+      message += `Host: ${connectionParams.guid}:${connectionParams.port}\r\nContent-Length: ${dataBuffer.length}\r\n\r\n`
+      const buffer = Buffer.concat([Buffer.from(message, 'utf8'), dataBuffer])
+      if (dataBuffer.length !== data.length) {
+        logger.silly(`wrapIt data length mismatch: Buffer.length = ${dataBuffer.length}, string.length = ${data.length}`)
+        logger.silly(buffer.toString('utf8'))
+      }
+      return buffer
     } catch (err) {
       logger.error(`${messages.CREATE_HASH_STRING_FAILED}:`, err.message)
       return null
@@ -108,7 +127,8 @@ export class HttpHandler {
 
   parseXML (xmlBody: string): any {
     let wsmanResponse: string
-    this.parser.parseString(xmlBody, (err, result) => {
+    const xmlDecoded: string = Buffer.from(xmlBody, 'binary').toString('utf8')
+    this.parser.parseString(xmlDecoded, (err, result) => {
       if (err) {
         logger.error(`${messages.XML_PARSE_FAILED}:`, err)
         wsmanResponse = null
