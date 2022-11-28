@@ -81,7 +81,13 @@ export class WebServer {
   appUseCall (req: Request, res: Response, next: NextFunction): void {
     res.on('finish', this.afterResponse.bind(this, req, res))
     res.on('close', this.afterResponse.bind(this, req, res))
+    req.on('aborted', this.onAborted.bind(this, req, res))
     next()
+  }
+
+  onAborted (req: Request, res: Response): void {
+    logger.debug(`Request aborted: ${req.url ?? 'undefined'}`)
+    this.afterResponse(req, res)
   }
 
   afterResponse (req: Request, res: Response): void {
@@ -91,6 +97,7 @@ export class WebServer {
     }
     res.removeListener('finish', this.afterResponse)
     res.removeListener('close', this.afterResponse)
+    req.removeListener('aborted', this.onAborted)
     // actions after response
   }
 
