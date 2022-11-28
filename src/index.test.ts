@@ -4,9 +4,12 @@
  **********************************************************************/
 
 import * as indexFile from './index'
+import * as exponentialBackoff from 'exponential-backoff'
 import { logger } from './logging'
 import VaultSecretManagerService from './secrets/vault'
 import { Environment } from './utils/Environment'
+import { IDB } from './interfaces/IDb'
+import { ISecretManagerService } from './interfaces/ISecretManagerService'
 
 describe('Index', () => {
   describe('loadConfig', () => {
@@ -169,5 +172,33 @@ describe('Index', () => {
       const result = await indexFile.loadCertificates(secretManagerService)
       expect(result.mps_tls_config.requestCert).toEqual(true)
     })
+  })
+
+  it('should wait for db', async () => {
+    const backOffSpy = jest.spyOn(exponentialBackoff, 'backOff')
+    let shouldBeOk = false
+    const dbMock: IDB = {
+      query: jest.fn(() => {
+        if (shouldBeOk) return null
+        shouldBeOk = true
+        throw new Error('error')
+      })
+    } as any
+    await indexFile.waitForDB(dbMock)
+    expect(backOffSpy).toHaveBeenCalled()
+  })
+
+  it('should wait for secret provider', async () => {
+    const backOffSpy = jest.spyOn(exponentialBackoff, 'backOff')
+    let shouldBeOk = false
+    const secretMock: ISecretManagerService = {
+      health: jest.fn(() => {
+        if (shouldBeOk) return null
+        shouldBeOk = true
+        throw new Error('error')
+      })
+    } as any
+    await indexFile.waitForSecretProvider(secretMock)
+    expect(backOffSpy).toHaveBeenCalled()
   })
 })
