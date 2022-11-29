@@ -197,6 +197,7 @@ describe('APFProcessor Tests', () => {
     it('should return 9 + LengthOfData if cirachannel is null', () => {
       const fakeCiraSocket = {
         tag: {
+          activetunnels: 0,
           channels: []
         }
       }
@@ -223,6 +224,7 @@ describe('APFProcessor Tests', () => {
       } as any
       const fakeCiraSocket: CIRASocket = {
         tag: {
+          activetunnels: 1,
           channels: [null, fakeCiraChannel]
         }
       } as any
@@ -248,6 +250,7 @@ describe('APFProcessor Tests', () => {
     it('should return 9 if cirachannel is null', () => {
       const fakeCiraSocket: CIRASocket = {
         tag: {
+          activetunnels: 0,
           channels: [null, null]
         }
       } as any
@@ -269,6 +272,7 @@ describe('APFProcessor Tests', () => {
       } as any
       const fakeCiraSocket: CIRASocket = {
         tag: {
+          activetunnels: 1,
           channels: [fakeCiraChannel]
         }
       } as any
@@ -296,6 +300,7 @@ describe('APFProcessor Tests', () => {
       } as any
       const fakeCiraSocket: CIRASocket = {
         tag: {
+          activetunnels: 1,
           channels: [fakeCiraChannel]
         }
       } as any
@@ -323,6 +328,7 @@ describe('APFProcessor Tests', () => {
     it('should return 5 if cirachannel is null', () => {
       const fakeCiraSocket: CIRASocket = {
         tag: {
+          activetunnels: 0,
           channels: [null, null]
         }
       } as any
@@ -344,6 +350,7 @@ describe('APFProcessor Tests', () => {
       } as any
       const fakeCiraSocket: CIRASocket = {
         tag: {
+          activetunnels: 1,
           channels: [null, fakeCiraChannel]
         }
       } as any
@@ -352,13 +359,14 @@ describe('APFProcessor Tests', () => {
       const result = APFProcessor.channelClose(fakeCiraSocket, 5, '')
       expect(result).toEqual(5)
       expect(readIntSpy).toHaveBeenCalled()
-      expect(sendChannelCloseSpy).toHaveBeenCalled()
+      expect(sendChannelCloseSpy).toHaveBeenCalledWith(fakeCiraChannel)
     })
   })
 
   describe('channelOpenFailure() tests', () => {
     const fakeCiraSocket: CIRASocket = {
       tag: {
+        activetunnels: 0,
         channels: []
       }
     } as any
@@ -387,6 +395,7 @@ describe('APFProcessor Tests', () => {
       } as any
       const fakeCiraSocket: CIRASocket = {
         tag: {
+          activetunnels: 0,
           channels: [null, fakeCiraChannel]
         }
       } as any
@@ -413,6 +422,7 @@ describe('APFProcessor Tests', () => {
       } as any
       fakeCiraSocket = {
         tag: {
+          activetunnels: 1,
           channels: [null, fakeCiraChannel]
         }
       } as any
@@ -430,6 +440,7 @@ describe('APFProcessor Tests', () => {
     it('should return 17 if cirachannel is null', () => {
       const fakeCiraSocket: CIRASocket = {
         tag: {
+          activetunnels: 0,
           channels: []
         }
       } as any
@@ -600,6 +611,7 @@ describe('APFProcessor Tests', () => {
     } as any
     const fakeCiraSocket: CIRASocket = {
       tag: {
+        activetunnels: 1,
         channels: [null, fakeCiraChannel]
       }
     } as any
@@ -1132,7 +1144,11 @@ describe('APFProcessor Tests', () => {
     })
 
     it('should SendChannelClose', () => {
-      APFProcessor.SendChannelClose(fakeCiraSocket, channelid)
+      const fakeCiraChannel: CIRAChannel = {
+        socket: fakeCiraSocket,
+        amtchannelid: channelid
+      } as any
+      APFProcessor.SendChannelClose(fakeCiraChannel)
       const dataExpected = String.fromCharCode(APFProtocol.CHANNEL_CLOSE) + Common.IntToStr(channelid)
       expect(writeSpy).toHaveBeenCalledWith(fakeCiraSocket, dataExpected)
     })

@@ -172,7 +172,7 @@ const APFProcessor = {
       logger.error(`${messages.CHANNEL_CLOSE_NO_CHANNEL_ID} ${RecipientChannel}`)
       return 5
     }
-    APFProcessor.SendChannelClose(cirachannel.socket, cirachannel.amtchannelid)
+    APFProcessor.SendChannelClose(cirachannel)
     socket.tag.activetunnels--
     if (cirachannel.state > 0) {
       cirachannel.state = 0
@@ -219,7 +219,7 @@ const APFProcessor = {
     logger.silly(`${messages.MPS_CHANNEL_OPEN_CONFIRMATION}, ${recipientChannel.toString()}, ${senderChannel.toString()}, ${windowSize.toString()}`)
     if (cirachannel.closing === 1) {
       // Close this channel
-      APFProcessor.SendChannelClose(cirachannel.socket, cirachannel.amtchannelid)
+      APFProcessor.SendChannelClose(cirachannel)
     } else {
       cirachannel.state = 2
       // Send any pending data
@@ -509,9 +509,15 @@ const APFProcessor = {
     )
   },
 
-  SendChannelClose: (socket: CIRASocket, channelid): void => {
-    logger.silly(`${messages.MPS_SEND_CHANNEL_CLOSE}, ${channelid}`)
-    APFProcessor.Write(socket, String.fromCharCode(APFProtocol.CHANNEL_CLOSE) + Common.IntToStr(channelid))
+  SendChannelClose: (cirachannel: CIRAChannel): void => {
+    if (!cirachannel.closeSent) {
+      cirachannel.closeSent = true
+      logger.silly(`${messages.MPS_SEND_CHANNEL_CLOSE}, ${cirachannel.amtchannelid}`)
+      APFProcessor.Write(
+        cirachannel.socket,
+        String.fromCharCode(APFProtocol.CHANNEL_CLOSE) + Common.IntToStr(cirachannel.amtchannelid)
+      )
+    }
   },
 
   SendPendingData: (cirachannel: CIRAChannel): void => {
