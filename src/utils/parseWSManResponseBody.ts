@@ -7,6 +7,8 @@ import { HttpZResponseModel } from 'http-z'
 
 export function parseBody (message: HttpZResponseModel): string {
   let xmlBody: string = ''
+  // 'Bad' requests to some devices return no body (issue #661) - prevent exceptions below
+  if (message.bodySize === 0) return ''
   // parse the body until its length is greater than 5, because body ends with '0\r\n\r\n'
   while (message.body.text.length > 5) {
     const chunkLength = message.body.text.indexOf('\r\n')

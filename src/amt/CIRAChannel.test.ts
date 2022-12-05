@@ -58,7 +58,7 @@ describe('CIRA Channel', () => {
     ciraChannel.amtchannelid = 44
     const sendChannelSpy = jest.spyOn(APFProcessor, 'SendChannelClose').mockImplementation(() => {})
     const state = ciraChannel.CloseChannel()
-    expect(sendChannelSpy).toHaveBeenCalledWith(socket, 44)
+    expect(sendChannelSpy).toHaveBeenCalledWith(ciraChannel)
     expect(state).toBe(0)
   })
   it('should write data to channel', async () => {
@@ -83,9 +83,27 @@ describe('CIRA Channel', () => {
     expect(sendChannelSpy).toHaveBeenCalledTimes(1)
     expect(ciraChannel.sendcredits).toBe(0)
   })
+  it('should write binary data to channel', async () => {
+    // Tests both the binary data path and appending to the sendBuffer.
+    // There are enough send credits for the initial sendBuffer only,
+    // so the string written should appear in sendBuffer.
+    ciraChannel.state = 2
+    ciraChannel.sendcredits = 10
+    ciraChannel.sendBuffer = Buffer.alloc(10)
+    const data = String.fromCharCode(1, 2, 3, 4, 0xC0, 5)
+    const sendChannelSpy = jest.spyOn(APFProcessor, 'SendChannelData').mockImplementation(() => {})
+
+    const writePromise = ciraChannel.writeData(data, null)
+    const responseData = await writePromise
+
+    expect(responseData).toEqual(null)
+    expect(sendChannelSpy).toHaveBeenCalledTimes(1)
+    expect(ciraChannel.sendcredits).toBe(0)
+    expect(ciraChannel.sendBuffer).toEqual(Buffer.from(data, 'binary'))
+  })
   it('should resolve if data does not contain messageId', async () => {
     ciraChannel.state = 2
-    ciraChannel.sendcredits = 116
+    ciraChannel.sendcredits = 97
     const data = 'KVMR'
     const params: connectionParams = {
       guid: '4c4c4544-004b-4210-8033-b6c04f504633',

@@ -48,7 +48,7 @@ describe('Check parseWSManResponseBody', () => {
     expect(response).toEqual(generalSettings)
   })
 
-  it('Should fail and return null when a message does not contain \r\n', async () => {
+  it('Should fail and return an empty response when a message does not contain \r\n', async () => {
     const xmlResponse: HttpZResponseModel = {
       protocolVersion: 'HTTP/1.1',
       statusCode: 200,
@@ -75,6 +75,35 @@ describe('Check parseWSManResponseBody', () => {
         text: '<?xml version="1.0" encoding="UTF-8"?><a:Envelope xmlns:a="http://www.w3.org/2003/05/soap-envelope" xmlns:b="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:c="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns:d="http://schemas.xmlsoap.org/ws/2005/02/trust" xmlns:e="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:f="http://schemas.dmtf.org/wbem/wsman/1/cimbinding.xsd" xmlns:g="http://intel.com/wbem/wscim/1/amt-schema/1/AMT_GeneralSettings" xmlns:xsi="http://www.w3.org/2001/XMLSchema-ins'
       }
     }
+    const response = parseBody(xmlResponse)
+    expect(response).toBe('')
+  })
+
+  it('Should fail and return an empty response when there is no message body', async () => {
+    // See issue #661; this response is documented there.
+    const xmlResponse: HttpZResponseModel = {
+      protocolVersion: 'HTTP/1.1',
+      statusCode: 400,
+      statusMessage: 'Bad Request',
+      headersSize: 143,
+      bodySize: 0,
+      headers: [
+        {
+          name: 'Date',
+          value: 'Mon, 1 Aug 2022 18:54:20 GMT'
+        },
+        {
+          name: 'Server',
+          value: 'Intel(R) Active Management Technology 15.0.41.2142'
+        },
+        {
+          name: 'Content-Length',
+          value: '0'
+        }
+      ],
+      body: null
+    }
+    delete xmlResponse.body // Yes, really!  It's not there in this case.
     const response = parseBody(xmlResponse)
     expect(response).toBe('')
   })

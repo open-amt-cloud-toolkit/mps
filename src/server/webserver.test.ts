@@ -210,7 +210,8 @@ describe('webserver tests', () => {
           ciraHandler: {
             channel: 2
           }
-        }
+        },
+        on: jest.fn()
       }
       const res: Express.Response = {
         on: jest.fn()
@@ -231,14 +232,22 @@ describe('webserver tests', () => {
               CloseChannel: jest.fn()
             }
           }
-        }
+        },
+        on: jest.fn(),
+        removeListener: jest.fn()
       }
       const res: Express.Response = {
         removeListener: jest.fn()
       }
       const afterResponseSpy = jest.spyOn(web, 'afterResponse')
+      const closeChannelSpy = jest.spyOn((req as any).deviceAction.ciraHandler.channel, 'CloseChannel')
+      const reqRemoveListenerSpy = jest.spyOn(req as any, 'removeListener')
+      const resRemoveListenerSpy = jest.spyOn(res as any, 'removeListener')
       web.afterResponse(req as any, res as any)
       expect(afterResponseSpy).toHaveBeenCalledTimes(1)
+      expect(closeChannelSpy).toHaveBeenCalledTimes(1)
+      expect(reqRemoveListenerSpy).toHaveBeenCalledTimes(1)
+      expect(resRemoveListenerSpy).toHaveBeenCalledTimes(2)
     })
     it('test afterResponse with undefined channel', () => {
       const req: Express.Request = {
@@ -246,7 +255,9 @@ describe('webserver tests', () => {
           ciraHandler: {
             channel: null
           }
-        }
+        },
+        on: jest.fn(),
+        removeListener: jest.fn()
       }
       const res: Express.Response = {
         removeListener: jest.fn()
@@ -254,6 +265,23 @@ describe('webserver tests', () => {
       const afterResponseSpy = jest.spyOn(web, 'afterResponse')
       web.afterResponse(req as any, res as any)
       expect(afterResponseSpy).toHaveBeenCalledTimes(2)
+    })
+    it('test onAborted calls afterResponse', () => {
+      const req: Express.Request = {
+        deviceAction: {
+          ciraHandler: {
+            channel: null
+          }
+        },
+        on: jest.fn(),
+        removeListener: jest.fn()
+      }
+      const res: Express.Response = {
+        removeListener: jest.fn()
+      }
+      const afterResponseSpy = jest.spyOn(web, 'afterResponse')
+      web.onAborted(req as any, res as any)
+      expect(afterResponseSpy).toHaveBeenCalledTimes(3)
     })
   })
 

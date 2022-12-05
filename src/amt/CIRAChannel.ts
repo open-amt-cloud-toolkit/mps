@@ -4,24 +4,27 @@
  **********************************************************************/
 
 // import httpZ, { HttpZResponseModel } from 'http-z'
+import { Buffer } from 'node:buffer'
 import { CIRASocket } from '../models/models'
 import APFProcessor from './APFProcessor'
 import { connectionParams, HttpHandler } from './HttpHandler'
 import { EventEmitter } from 'stream'
 import httpZ, { HttpZResponseModel } from 'http-z'
 import { parseBody } from '../utils/parseWSManResponseBody'
+import { logger } from '../logging'
 
 export class CIRAChannel {
   targetport: number
   channelid: number
   socket: CIRASocket
   state: number
+  closeSent: boolean
   sendcredits: number
   amtpendingcredits: number
   amtCiraWindow: number
   ciraWindow: number
   write?: (data: string) => Promise<string>
-  sendBuffer?: string = null
+  sendBuffer?: Buffer = null
   amtchannelid?: number
   closing?: number
   onStateChange?: EventEmitter // (state: number) => void
@@ -36,6 +39,7 @@ export class CIRAChannel {
     this.channelid = socket.tag.nextchannelid++
     this.socket = socket
     this.state = 1
+    this.closeSent = false
     this.sendcredits = 0
     this.amtpendingcredits = 0
     this.amtCiraWindow = 0
@@ -58,7 +62,7 @@ export class CIRAChannel {
             this.resolve(this.rawChunkedData)
           }
         } catch (err) {
-          console.error(err)
+          logger.error(JSON.stringify(err, null, '\t'))
           this.resolve(this.rawChunkedData)
         }
         this.rawChunkedData = ''
@@ -83,34 +87,21 @@ export class CIRAChannel {
       } else {
         this.resolve = resolve
       }
-      let wsmanRequest: any = data
+      if (this.state === 0) return reject(new Error('Closed'))// return false
+      let wsmanRequest: Buffer
       if (params != null) { // this is an API Call
         wsmanRequest = this.httpHandler.wrapIt(params, data)
+      } else {
+        wsmanRequest = Buffer.from(data, 'binary')
       }
-      if (this.state === 0) return reject(new Error('Closed'))// return false
-      if (this.state === 1 || this.sendcredits === 0 || this.sendBuffer != null) {
-        if (this.sendBuffer == null) {
-          this.sendBuffer = wsmanRequest
-        } else {
-          this.sendBuffer += wsmanRequest
-        }
-        if (messageId == null) {
-          return resolve(null)
-        } else { return }
+      if (this.sendBuffer == null) {
+        this.sendBuffer = wsmanRequest
+      } else {
+        this.sendBuffer = Buffer.concat([this.sendBuffer, wsmanRequest])
       }
-      // Compute how much data we can send
-      if (wsmanRequest?.length <= this.sendcredits) {
-      // Send the entire message
-        APFProcessor.SendChannelData(this.socket, this.amtchannelid, wsmanRequest)
-        this.sendcredits -= wsmanRequest.length
-        if (messageId == null) {
-          return resolve(null)
-        } else { return }
+      if (this.state !== 1 && this.sendcredits !== 0) {
+        APFProcessor.SendPendingData(this)
       }
-      // Send a part of the message
-      this.sendBuffer = wsmanRequest.substring(this.sendcredits)
-      APFProcessor.SendChannelData(this.socket, this.amtchannelid, wsmanRequest.substring(0, this.sendcredits))
-      this.sendcredits = 0
       if (messageId == null) {
         resolve(null)
       }
@@ -126,7 +117,7 @@ export class CIRAChannel {
     }
     this.state = 0
     this.closing = 1
-    APFProcessor.SendChannelClose(this.socket, this.amtchannelid)
+    APFProcessor.SendChannelClose(this)
     return this.state
   }
 }
