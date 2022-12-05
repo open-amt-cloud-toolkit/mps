@@ -16,6 +16,8 @@ export interface Device {
   mpsusername: string
   tags: string[]
   tenantId: string
+  friendlyName: string
+  dnsSuffix: string
 }
 export interface Credentials {
   [key: string]: AMTCredential

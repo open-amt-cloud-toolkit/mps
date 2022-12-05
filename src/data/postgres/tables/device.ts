@@ -41,7 +41,9 @@ export class DeviceTable implements IDeviceTable {
       mpsinstance as "mpsInstance",
       connectionstatus as "connectionStatus",
       mpsusername as "mpsusername",
-      tenantid as "tenantId"
+      tenantid as "tenantId",
+      friendlyname as "friendlyName",
+      dnssuffix as "dnsSuffix"
     FROM devices
     WHERE tenantid = $3 
     ORDER BY guid 
@@ -79,7 +81,9 @@ export class DeviceTable implements IDeviceTable {
       mpsinstance as "mpsInstance",
       connectionstatus as "connectionStatus",
       mpsusername as "mpsusername",
-      tenantid as "tenantId"
+      tenantid as "tenantId",
+      friendlyname as "friendlyName",
+      dnssuffix as "dnsSuffix"
     FROM devices 
     WHERE guid = $1 and tenantid = $2`, [id, tenantId])
 
@@ -95,7 +99,9 @@ export class DeviceTable implements IDeviceTable {
       mpsinstance as "mpsInstance",
       connectionstatus as "connectionStatus",
       mpsusername as "mpsusername",
-      tenantid as "tenantId"
+      tenantid as "tenantId",
+      friendlyname as "friendlyName",
+      dnssuffix as "dnsSuffix"
     FROM devices 
     WHERE hostname = $1 and tenantid = $2`, [hostname, tenantId])
 
@@ -113,7 +119,9 @@ export class DeviceTable implements IDeviceTable {
         mpsinstance as "mpsInstance",
         connectionstatus as "connectionStatus",
         mpsusername as "mpsusername",
-        tenantid as "tenantId" 
+        tenantid as "tenantId",
+        friendlyname as "friendlyName",
+        dnssuffix as "dnsSuffix"
       FROM devices 
       WHERE tags @> $1 and tenantId = $4
       ORDER BY guid 
@@ -127,7 +135,9 @@ export class DeviceTable implements IDeviceTable {
         mpsinstance as "mpsInstance",
         connectionstatus as "connectionStatus",
         mpsusername as "mpsusername",
-        tenantid as "tenantId" 
+        tenantid as "tenantId",
+        friendlyname as "friendlyName",
+        dnssuffix as "dnsSuffix"
       FROM devices 
       WHERE tags && $1 and tenantId = $4
       ORDER BY guid 
@@ -154,8 +164,8 @@ export class DeviceTable implements IDeviceTable {
   async insert (device: Device): Promise<Device> {
     try {
       const results = await this.db.query(`
-      INSERT INTO devices(guid, hostname, tags, mpsinstance, connectionstatus, mpsusername, tenantid) 
-      values($1, $2, ARRAY(SELECT json_array_elements_text($3)), $4, $5, $6, $7)`,
+      INSERT INTO devices(guid, hostname, tags, mpsinstance, connectionstatus, mpsusername, tenantid, friendlyname, dnssuffix) 
+      values($1, $2, ARRAY(SELECT json_array_elements_text($3)), $4, $5, $6, $7, $8, $9)`,
       [
         device.guid,
         device.hostname,
@@ -163,7 +173,9 @@ export class DeviceTable implements IDeviceTable {
         device.mpsInstance,
         device.connectionStatus,
         device.mpsusername,
-        device.tenantId
+        device.tenantId,
+        device.friendlyName,
+        device.dnsSuffix
       ])
       if (results.rowCount > 0) {
         return await this.getById(device.guid)
@@ -187,7 +199,7 @@ export class DeviceTable implements IDeviceTable {
     try {
       const results = await this.db.query(`
       UPDATE devices 
-      SET tags=$2, hostname=$3, mpsinstance=$4, connectionstatus=$5, mpsusername=$6 
+      SET tags=$2, hostname=$3, mpsinstance=$4, connectionstatus=$5, mpsusername=$6, friendlyname=$8, dnssuffix=$9
       WHERE guid=$1 and tenantid = $7`,
       [
         device.guid,
@@ -196,7 +208,9 @@ export class DeviceTable implements IDeviceTable {
         device.mpsInstance,
         device.connectionStatus,
         device.mpsusername,
-        device.tenantId
+        device.tenantId,
+        device.friendlyName,
+        device.dnsSuffix
       ])
       if (results.rowCount > 0) {
         return await this.getById(device.guid)
