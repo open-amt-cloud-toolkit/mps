@@ -58,7 +58,7 @@ describe('CIRA Channel', () => {
     ciraChannel.amtchannelid = 44
     const sendChannelSpy = jest.spyOn(APFProcessor, 'SendChannelClose').mockImplementation(() => {})
     const state = ciraChannel.CloseChannel()
-    expect(sendChannelSpy).toHaveBeenCalledWith(socket, 44)
+    expect(sendChannelSpy).toHaveBeenCalledWith(ciraChannel)
     expect(state).toBe(0)
   })
   it('should write data to channel', async () => {

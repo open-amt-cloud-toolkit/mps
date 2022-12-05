@@ -11,12 +11,14 @@ import { connectionParams, HttpHandler } from './HttpHandler'
 import { EventEmitter } from 'stream'
 import httpZ, { HttpZResponseModel } from 'http-z'
 import { parseBody } from '../utils/parseWSManResponseBody'
+import { logger } from '../logging'
 
 export class CIRAChannel {
   targetport: number
   channelid: number
   socket: CIRASocket
   state: number
+  closeSent: boolean
   sendcredits: number
   amtpendingcredits: number
   amtCiraWindow: number
@@ -37,6 +39,7 @@ export class CIRAChannel {
     this.channelid = socket.tag.nextchannelid++
     this.socket = socket
     this.state = 1
+    this.closeSent = false
     this.sendcredits = 0
     this.amtpendingcredits = 0
     this.amtCiraWindow = 0
@@ -59,7 +62,7 @@ export class CIRAChannel {
             this.resolve(this.rawChunkedData)
           }
         } catch (err) {
-          console.error(err)
+          logger.error(JSON.stringify(err, null, '\t'))
           this.resolve(this.rawChunkedData)
         }
         this.rawChunkedData = ''
@@ -114,7 +117,7 @@ export class CIRAChannel {
     }
     this.state = 0
     this.closing = 1
-    APFProcessor.SendChannelClose(this.socket, this.amtchannelid)
+    APFProcessor.SendChannelClose(this)
     return this.state
   }
 }
