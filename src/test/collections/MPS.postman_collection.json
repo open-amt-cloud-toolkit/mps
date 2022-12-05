@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "31c51100-7ef7-49fd-833f-d2b9630ca11d",
+		"_postman_id": "3652ffda-a98a-4a45-998c-0f488c141768",
 		"name": "MPS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "20544419"
+		"_exporter_id": "2229705"
 	},
 	"item": [
 		{
@@ -537,7 +537,7 @@
 					"response": []
 				},
 				{
-					"name": "Update Device tags",
+					"name": "Update Device",
 					"event": [
 						{
 							"listen": "test",
@@ -553,12 +553,10 @@
 									"    pm.expect(jsonData.tags.length).to.be.equal(1)  \r",
 									"    pm.expect(jsonData.mpsInstance).to.be.equal(null)\r",
 									"    pm.expect(jsonData.connectionStatus).to.be.equal(false)\r",
-									"})\r",
-									"pm.test(\"Expect tag value to be acm\",function(){\r",
-									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData.tags.length).to.be.equal(1)  \r",
+									"    pm.expect(jsonData.dnsSuffix).to.be.equal(\"os.suffix.com\")\r",
 									"    pm.expect(jsonData.tags[0]).to.be.equal(\"acm\")\r",
-									"})"
+									"})\r",
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -569,7 +567,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n        \"guid\": \"143e4567-e89b-12d3-a456-426614174000\",\r\n        \"hostname\": \"hostname\",\r\n        \"tags\": [\"acm\"]\r\n    }",
+							"raw": "{\r\n        \"guid\": \"143e4567-e89b-12d3-a456-426614174000\",\r\n        \"hostname\": \"hostname\",\r\n        \"dnsSuffix\": \"os.suffix.com\",\r\n        \"tags\": [\"acm\"]\r\n    }",
 							"options": {
 								"raw": {
 									"language": "json"

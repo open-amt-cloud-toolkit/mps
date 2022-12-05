@@ -39,12 +39,16 @@ describe('create', () => {
     const mpsusernameFromRequest = 'itproadmin'
     const tenantIdFromRequest = 'tenantxyz'
     const guidFromRequest = '00000000-0000-0000-0000-000000000000'
+    const friendlyNameFromRequest = 'host1'
+    const dnsSuffixFromRequest = 'dns1'
     const expectedUpdateResultFromDb = {
       hostname: hostnameFromRequest,
       tags: tagsFromRequest,
       connectionStatus: true,
       mpsusername: mpsusernameFromRequest,
-      tenantId: tenantIdFromRequest
+      tenantId: tenantIdFromRequest,
+      friendlyName: friendlyNameFromRequest,
+      dnsSuffix: dnsSuffixFromRequest
     }
     const req = {
       body: {
@@ -52,7 +56,9 @@ describe('create', () => {
         hostname: hostnameFromRequest,
         tags: tagsFromRequest,
         mpsusername: mpsusernameFromRequest,
-        tenantId: tenantIdFromRequest
+        tenantId: tenantIdFromRequest,
+        friendlyname: friendlyNameFromRequest,
+        dnssuffix: dnsSuffixFromRequest
       },
       db: {
         devices: {
@@ -74,17 +80,23 @@ describe('create', () => {
     const mpsusernameFromDb = 'itproadmin'
     const tenantIdFromDb = ''
     const guidFromRequest = '00000000-0000-0000-0000-000000000000'
+    const friendlyNameFromRequest = 'host2'
+    const dnsSuffixFromRequest = 'dns2'
     const deviceFromMockDb = {
       hostname: hostnameFromDb,
       tags: tagsFromDb,
-      mpsusername: mpsusernameFromDb
+      mpsusername: mpsusernameFromDb,
+      friendlyName: friendlyNameFromRequest,
+      dnsSuffix: dnsSuffixFromRequest
     } as any
     const expectedUpdateResultFromDb = {
       hostname: hostnameFromDb,
       tags: tagsFromDb,
       connectionStatus: false,
       mpsusername: mpsusernameFromDb,
-      tenantId: tenantIdFromDb
+      tenantId: tenantIdFromDb,
+      friendlyName: friendlyNameFromRequest,
+      dnsSuffix: dnsSuffixFromRequest
     }
     const req = {
       body: {
@@ -92,7 +104,9 @@ describe('create', () => {
         hostname: null,
         tags: null,
         mpsusername: null,
-        tenantId: null
+        tenantId: null,
+        friendlyname: friendlyNameFromRequest,
+        dnssuffix: dnsSuffixFromRequest
       },
       db: {
         devices: {
@@ -115,6 +129,8 @@ describe('create', () => {
     const mpsusernameFromRequest = 'itproadmin'
     const tenantIdFromRequest = 'tenantxyz'
     const guidFromRequest = '00000000-0000-0000-0000-000000000000'
+    const friendlyNameFromRequest = null
+    const dnsSuffixFromRequest = null
     const expectedInsertResultFromDb = {
       connectionStatus: false,
       guid: guidFromRequest,
@@ -122,7 +138,9 @@ describe('create', () => {
       tags: tagsFromRequest,
       mpsusername: mpsusernameFromRequest,
       mpsInstance: null,
-      tenantId: tenantIdFromRequest
+      tenantId: tenantIdFromRequest,
+      friendlyName: friendlyNameFromRequest,
+      dnsSuffix: dnsSuffixFromRequest
     }
     const req = {
       body: {
@@ -130,7 +148,9 @@ describe('create', () => {
         hostname: hostnameFromRequest,
         tags: tagsFromRequest,
         mpsusername: mpsusernameFromRequest,
-        tenantId: tenantIdFromRequest
+        tenantId: tenantIdFromRequest,
+        friendlyName: friendlyNameFromRequest,
+        dnsSuffix: dnsSuffixFromRequest
       },
       db: {
         devices: {
@@ -152,6 +172,8 @@ describe('create', () => {
     const tagsFromRequest = null
     const mpsusernameFromRequest = 'itproadmin'
     const tenantIdFromRequest = null
+    const friendlyNameFromRequest = null
+    const dnsSuffixFromRequest = null
     const guidFromRequest = '00000000-0000-0000-0000-000000000000'
     const expectedInsertResultFromDb = {
       connectionStatus: false,
@@ -160,7 +182,9 @@ describe('create', () => {
       tags: null,
       mpsusername: mpsusernameFromRequest,
       mpsInstance: null,
-      tenantId: ''
+      tenantId: '',
+      friendlyName: friendlyNameFromRequest,
+      dnsSuffix: dnsSuffixFromRequest
     }
     const req = {
       body: {
@@ -168,7 +192,9 @@ describe('create', () => {
         hostname: hostnameFromRequest,
         tags: tagsFromRequest,
         mpsusername: mpsusernameFromRequest,
-        tenantId: tenantIdFromRequest
+        tenantId: tenantIdFromRequest,
+        friendlyName: friendlyNameFromRequest,
+        dnsSuffix: dnsSuffixFromRequest
       },
       db: {
         devices: {
