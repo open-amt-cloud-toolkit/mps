@@ -1,3 +1,39 @@
+
+<a name="2.7.0"></a>
+## [2.7.0] - 2022-12-08
+### Build
+- update to v2.7.0, update changelog (#2821bb9) 
+- **deps-dev:** bump typescript from 4.8.4 to 4.9.3 ([#730](https://github.com/open-amt-cloud-toolkit/mps/issues/730)) (#803d9bd) 
+- **deps-dev:** bump jest-junit from 14.0.1 to 15.0.0 (#8a24331) 
+- **deps-dev:** bump [@types](https://github.com/types)/node-forge from 1.3.0 to 1.3.1 (#249317a) 
+
+### Ci
+- add manual dispatch (#9fb95a7) 
+- rename license-header to header (#06bc73e) 
+- update checkout to v3, update semantic pr checks ([#737](https://github.com/open-amt-cloud-toolkit/mps/issues/737)) (#7e6fc40) 
+- add azure boards sync (#26ed7db) 
+- add projects sync to mps (#fcc823d) 
+- **gh-actions:** add scopes ([#739](https://github.com/open-amt-cloud-toolkit/mps/issues/739)) (#2be2aed) 
+
+### Feat
+- **db:** maintenance sync hostname information (#fe29627) 
+- **health:** add waits for db and vault to be available to respond to request (#8a5d5a3) 
+
+### Fix
+- issue [#741](https://github.com/open-amt-cloud-toolkit/mps/issues/741) - don't send CHANNEL_CLOSE more than once (#488a615) 
+- issue [#743](https://github.com/open-amt-cloud-toolkit/mps/issues/743) - close channel on Request 'aborted' event (#c29d80d) 
+- issue [#729](https://github.com/open-amt-cloud-toolkit/mps/issues/729) and use Buffer rather than string for CIRAChannel's sendBuffer (#de565d1) 
+- issue 668 - ensure CIM_KVMRedirectionSAP is present before using it (#fd974f8) 
+- issue [#661](https://github.com/open-amt-cloud-toolkit/mps/issues/661) - don't try to access a zero length body ([#734](https://github.com/open-amt-cloud-toolkit/mps/issues/734)) (#98c6a3f) 
+- InstanceID and ElementName shouldn't be treated as numeric if they have a leading zero (#fc56834) 
+- **api:** getHardwareInfo pulls correct status for CIM_PhysicalMemory ([#731](https://github.com/open-amt-cloud-toolkit/mps/issues/731)) (#38b1759) 
+- **auth:** handle qop="auth-int, auth" header ([#722](https://github.com/open-amt-cloud-toolkit/mps/issues/722)) (#42d8fb3) 
+- **db:** ensures dbInstance is a singleton ([#727](https://github.com/open-amt-cloud-toolkit/mps/issues/727)) (#04096be) 
+- **redirection:** ensure nonce is used correctly ([#728](https://github.com/open-amt-cloud-toolkit/mps/issues/728)) (#76a7c80) 
+
+### Refactor
+- **cira:** increases stability of calls to a device (#551a540) 
+
 <a name="2.6.0"></a>
 ## [2.6.0] - 2022-11-07
 ### Build
