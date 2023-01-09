@@ -6,12 +6,10 @@
 import { createSpyObj } from '../test/helper/jest'
 import validateMiddleware from './validate'
 jest.mock('express-validator', () => ({
-  validationResult: jest.fn().mockImplementation((shouldHaveErrors) => {
-    return {
-      isEmpty: jest.fn().mockReturnValue(!shouldHaveErrors),
-      array: jest.fn()
-    }
-  })
+  validationResult: jest.fn().mockImplementation((shouldHaveErrors) => ({
+    isEmpty: jest.fn().mockReturnValue(!shouldHaveErrors),
+    array: jest.fn()
+  }))
 }))
 
 describe('Validate Middleware', () => {

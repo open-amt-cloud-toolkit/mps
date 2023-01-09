@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "strictNullChecks": false,
         "outDir": "./dist",
         "sourceMap": true,
         "moduleResolution": "node",

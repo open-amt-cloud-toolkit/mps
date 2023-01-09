@@ -18,7 +18,7 @@ export class PostgresDb implements IDB {
   devices: IDeviceTable
   constructor (connectionString: string) {
     this.pool = new Pool({
-      connectionString: connectionString
+      connectionString
     })
     this.devices = new DeviceTable(this)
   }

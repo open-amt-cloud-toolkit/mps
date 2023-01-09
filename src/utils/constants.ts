@@ -145,7 +145,7 @@ export const AMTStatusCodes = {
 export const DefaultTop = 25
 export const DefaultSkip = 0
 
-export const SystemEntityTypes: {[key: number]: string} = {
+export const SystemEntityTypes: Record<number, string> = {
   0: 'Unspecified',
   1: 'Other',
   2: 'Unknown',
@@ -201,7 +201,7 @@ export const SystemEntityTypes: {[key: number]: string} = {
   52: 'Processor front side bus'
 }
 
-export const SystemFirmwareError: {[key: number]: string} = {
+export const SystemFirmwareError: Record<number, string> = {
   0: 'Unspecified.',
   1: 'No system memory is physically installed in the system.',
   2: 'No usable system memory, all installed memory has experienced an unrecoverable failure.',
@@ -218,7 +218,7 @@ export const SystemFirmwareError: {[key: number]: string} = {
   13: 'CPU speed matching failure'
 }
 
-export const SystemFirmwareProgress: {[key: number]: string} = {
+export const SystemFirmwareProgress: Record<number, string> = {
   0: 'Unspecified.',
   1: 'Memory initialization.',
   2: 'Starting hard-disk initialization and test',
@@ -247,7 +247,7 @@ export const SystemFirmwareProgress: {[key: number]: string} = {
   25: 'Primary processor initialization'
 }
 
-export const WatchdogCurrentStates: {[key: number]: string} = {
+export const WatchdogCurrentStates: Record<number, string> = {
   1: 'Not Started',
   2: 'Stopped',
   4: 'Running',

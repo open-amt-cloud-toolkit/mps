@@ -97,7 +97,7 @@ export class Certificates {
     }])
     cert.sign(keys.privateKey, forge.md.sha384.create())
 
-    return { cert: cert, key: keys.privateKey }
+    return { cert, key: keys.privateKey }
   }
 
   IssueWebServerCertificate = (rootcert, addThumbPrintToName: boolean, commonName: string, country: string, organization: string, extKeyUsage, strong: boolean): any => {
@@ -157,6 +157,6 @@ export class Certificates {
     cert.setExtensions(extensions)
     cert.sign(rootcert.key, forge.md.sha384.create())
 
-    return { cert: cert, key: keys.privateKey }
+    return { cert, key: keys.privateKey }
   }
 }

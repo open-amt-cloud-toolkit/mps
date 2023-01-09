@@ -18,7 +18,7 @@ describe('Boot Options', () => {
   let forceBootModeSpy: jest.SpyInstance
   let changeBootOrderSpy: jest.SpyInstance
   let sendPowerActionSpy: jest.SpyInstance
-  let bootSettingData: AMT.Models.BootSettingData|any
+  let bootSettingData: AMT.Models.BootSettingData | any
   beforeEach(() => {
     const handler = new CIRAHandler(new HttpHandler(), 'admin', 'P@ssw0rd')
     const device = new DeviceAction(handler, null)

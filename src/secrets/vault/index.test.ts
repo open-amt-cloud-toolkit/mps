@@ -42,13 +42,9 @@ const secretCert = {
 
 beforeEach(() => {
   secretManagerService = new VaultSecretManagerService(logger)
-  gotSpy = jest.spyOn(secretManagerService.gotClient, 'get').mockImplementation(() => {
-    return {
-      json: jest.fn(() => {
-        return secretCreds
-      })
-    } as any
-  })
+  gotSpy = jest.spyOn(secretManagerService.gotClient, 'get').mockImplementation(() => ({
+    json: jest.fn(() => secretCreds)
+  } as any))
 })
 
 afterEach(() => {
@@ -147,13 +143,9 @@ test('should get health of vault', async () => {
     cluster_name: 'vault-cluster-426a5cd4',
     cluster_id: '3f02d0f2-4048-cdcd-7e4d-7d2905c52995'
   }
-  const gothealthSpy = jest.spyOn(secretManagerService.gotClient, 'get').mockImplementation(() => {
-    return {
-      json: jest.fn(() => {
-        return data
-      })
-    } as any
-  })
+  const gothealthSpy = jest.spyOn(secretManagerService.gotClient, 'get').mockImplementation(() => ({
+    json: jest.fn(() => data)
+  } as any))
   const result = await secretManagerService.health()
   expect(result).toEqual(data)
   expect(gothealthSpy).toHaveBeenCalledWith('sys/health', { prefixUrl: `${Environment.Config.vault_address}/v1/` })

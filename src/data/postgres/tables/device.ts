@@ -17,7 +17,7 @@ export class DeviceTable implements IDeviceTable {
   }
 
   async getCount (tenantId: string = ''): Promise<number> {
-    const result = await this.db.query<{total_count: number}>(`
+    const result = await this.db.query<{ total_count: number }>(`
     SELECT count(*) OVER() AS total_count 
     FROM devices
     WHERE tenantid = $1`, [tenantId])
@@ -56,7 +56,7 @@ export class DeviceTable implements IDeviceTable {
    * @returns {Device[]} returns an array of objects
    */
   async getConnectedDevices (tenantId: string = ''): Promise<number> {
-    const result = await this.db.query<{connected_count: number}>(`
+    const result = await this.db.query<{ connected_count: number }>(`
       SELECT count(*) OVER() AS connected_count 
       FROM devices
       WHERE tenantid = $1 and connectionstatus = true`, [tenantId])
@@ -147,13 +147,11 @@ export class DeviceTable implements IDeviceTable {
   }
 
   async getDistinctTags (tenantId: string = ''): Promise<string[]> {
-    const results = await this.db.query<{tag: string}>(`
+    const results = await this.db.query<{ tag: string }>(`
     SELECT DISTINCT unnest(tags) as tag 
     FROM Devices
     WHERE tenantid = $1`, [tenantId])
-    return results.rows.map(p => {
-      return p.tag
-    })
+    return results.rows.map(p => p.tag)
   }
 
   /**

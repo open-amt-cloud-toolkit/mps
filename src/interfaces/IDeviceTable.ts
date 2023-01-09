@@ -11,5 +11,5 @@ export interface IDeviceTable extends ITable<Device> {
   getDistinctTags: (tenantId?: string) => Promise<String[]>
   getByTags: (tags: string[], method: string, top: number, skip: number, tenantId?: string) => Promise<Device[]>
   getByHostname: (hostname: string, tenantId?: string) => Promise<Device[]>
-  clearInstanceStatus: (mpsInstance: string, tenantId?: string) => void
+  clearInstanceStatus: (mpsInstance: string, tenantId?: string) => Promise<boolean>
 }
