@@ -27,7 +27,7 @@ export async function version (req: Request, res: Response): Promise<void> {
 
 // matches version 2.x API for Open AMT
 export async function getVersion (guid: string, req: Request): Promise<any> {
-  const response: {[key: string]: any} = {}
+  const response: Record<string, any> = {}
   response.CIM_SoftwareIdentity = await req.deviceAction.getSoftwareIdentity()
   response.AMT_SetupAndConfigurationService = await req.deviceAction.getSetupAndConfigurationService()
   if (Object.values(response).some(item => item == null)) {

@@ -11,15 +11,9 @@ let resSpy: jest.SpyInstance
 
 beforeEach(() => {
   res = {
-    status: () => {
-      return res
-    },
-    json: () => {
-      return res
-    },
-    end: () => {
-      return res
-    }
+    status: () => res,
+    json: () => res,
+    end: () => res
   }
   jsonSpy = jest.spyOn(res as any, 'json')
   resSpy = jest.spyOn(res as any, 'status')

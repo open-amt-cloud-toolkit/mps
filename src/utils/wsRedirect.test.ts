@@ -25,11 +25,11 @@ describe('WsRedirect tests', () => {
   let wsRedirect: WsRedirect
   beforeEach(() => {
     const secretManagerService = {
-      getSecretFromKey: async (path: string, key: string) => { return 'P@ssw0rd' },
-      getSecretAtPath: async (path: string) => { return {} as any },
-      getAMTCredentials: async (path: string) => { return ['admin', 'P@ssw0rd'] },
+      getSecretFromKey: async (path: string, key: string) => 'P@ssw0rd',
+      getSecretAtPath: async (path: string) => ({} as any),
+      getAMTCredentials: async (path: string) => ['admin', 'P@ssw0rd'],
       deleteSecretAtPath: async (path: string) => { },
-      health: async () => { return {} }
+      health: async () => ({})
     }
     resumeSpy = jest.spyOn(mockWebSocket._socket, 'resume').mockReturnValue(null)
     pauseSpy = jest.spyOn(mockWebSocket._socket, 'pause').mockReturnValue(null)

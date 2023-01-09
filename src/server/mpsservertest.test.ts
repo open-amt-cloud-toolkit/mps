@@ -32,19 +32,17 @@ describe('MPS Server', function () {
     jest.setTimeout(60000)
     const device = { mpsusername: 'admin' }
     devicesMock = {
-      get: async () => { return [] as Device[] },
-      getCount: async () => { return 0 },
-      getDistinctTags: async () => { return ['tag'] },
-      getById: async (guid) => { return device as Device },
-      getByTags: async (tags) => { return [device] as Device[] },
-      getByHostname: async (hostname) => { return [device] as Device[] },
-      getConnectedDevices: async (tenantId?) => {
-        return 0
-      },
-      clearInstanceStatus: async () => {},
-      delete: async (guid) => { return true },
-      insert: async (device) => { return device },
-      update: async () => { return device as Device }
+      get: async () => [] as Device[],
+      getCount: async () => 0,
+      getDistinctTags: async () => ['tag'],
+      getById: async (guid) => device as Device,
+      getByTags: async (tags) => [device] as Device[],
+      getByHostname: async (hostname) => [device] as Device[],
+      getConnectedDevices: async (tenantId?) => 0,
+      clearInstanceStatus: async () => true,
+      delete: async (guid) => true,
+      insert: async (device) => device,
+      update: async () => device as Device
     }
 
     db = {
@@ -54,10 +52,10 @@ describe('MPS Server', function () {
       }
     }
     secrets = {
-      getSecretFromKey: async (path: string, key: string) => { return 'P@ssw0rd' },
-      getSecretAtPath: async (path: string) => { return {} as any },
-      getAMTCredentials: async (path: string) => { return ['admin', 'P@ssw0rd'] },
-      health: async () => { return {} },
+      getSecretFromKey: async (path: string, key: string) => 'P@ssw0rd',
+      getSecretAtPath: async (path: string) => ({} as any),
+      getAMTCredentials: async (path: string) => ['admin', 'P@ssw0rd'],
+      health: async () => ({}),
       deleteSecretAtPath: async (path: string) => { }
     }
     certs = {

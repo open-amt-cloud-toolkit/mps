@@ -5,6 +5,7 @@
         "jest": true
     },
     "extends": [
+        "eslint:recommended",
         "standard-with-typescript"
     ],
     "ignorePatterns": [
@@ -27,10 +28,13 @@
             "warn",
             "./header.js"
         ],
+        "arrow-body-style": 2,
+        "object-shorthand": 2,
         "@typescript-eslint/strict-boolean-expressions": 0,
         "@typescript-eslint/restrict-template-expressions": 0,
         "@typescript-eslint/no-dynamic-delete": 0,
         "@typescript-eslint/restrict-plus-operands": 0,
-        "@typescript-eslint/no-misused-promises": 0
+        "@typescript-eslint/no-misused-promises": 0,
+        "@typescript-eslint/prefer-nullish-coalescing": 0
     }
 }

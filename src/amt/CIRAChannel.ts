@@ -87,7 +87,7 @@ export class CIRAChannel {
       } else {
         this.resolve = resolve
       }
-      if (this.state === 0) return reject(new Error('Closed'))// return false
+      if (this.state === 0) { reject(new Error('Closed')); return }// return false
       let wsmanRequest: Buffer
       if (params != null) { // this is an API Call
         wsmanRequest = this.httpHandler.wrapIt(params, data)

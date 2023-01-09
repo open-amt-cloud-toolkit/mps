@@ -26,11 +26,11 @@ export async function getAMTFeatures (req: Request, res: Response): Promise<void
     const userConsent = Object.keys(UserConsentOptions).find(key => UserConsentOptions[key] === value)
 
     MqttProvider.publishEvent('success', ['AMT_GetFeatures'], messages.AMT_FEATURES_GET_SUCCESS, guid)
-    res.status(200).json({ userConsent: userConsent, redirection: redir, KVM: kvm, SOL: sol, IDER: ider, optInState: optInState }).end()
+    res.status(200).json({ userConsent, redirection: redir, KVM: kvm, SOL: sol, IDER: ider, optInState }).end()
   } catch (error) {
     logger.error(`${messages.AMT_FEATURES_EXCEPTION}: ${error}`)
     if (error instanceof MPSValidationError) {
-      res.status(error.status || 400).json(ErrorResponse(error.status || 400, error.message))
+      res.status(error.status ?? 400).json(ErrorResponse(error.status ?? 400, error.message))
     } else {
       MqttProvider.publishEvent('fail', ['AMT_GetFeatures'], messages.INTERNAL_SERVICE_ERROR)
       res.status(500).json(ErrorResponse(500, messages.AMT_FEATURES_EXCEPTION))
@@ -38,7 +38,7 @@ export async function getAMTFeatures (req: Request, res: Response): Promise<void
   }
 }
 
-export function processAmtRedirectionResponse (amtRedirection: AMT.Models.RedirectionService): {redir: boolean, sol: boolean, ider: boolean} {
+export function processAmtRedirectionResponse (amtRedirection: AMT.Models.RedirectionService): { redir: boolean, sol: boolean, ider: boolean } {
   const redir = amtRedirection.ListenerEnabled
   const sol = (amtRedirection.EnabledState & Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled) !== 0
   const ider = (amtRedirection.EnabledState & Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Other) !== 0
@@ -52,7 +52,7 @@ export function processKvmRedirectionResponse (kvmRedirection: CIM.Models.KVMRed
   return kvm
 }
 
-export function processOptServiceResponse (optService: IPS.Models.OptInService): {value: number, optInState: number} {
+export function processOptServiceResponse (optService: IPS.Models.OptInService): { value: number, optInState: number } {
   const value = optService.OptInRequired
   const optInState = optService.OptInState
   return { value, optInState }

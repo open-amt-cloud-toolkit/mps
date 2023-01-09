@@ -21,7 +21,7 @@ let exitSpy: jest.SpyInstance
 
 beforeEach(() => {
   errorSpy = jest.spyOn(logger, 'error')
-  exitSpy = jest.spyOn(process, 'exit').mockImplementation((code: number) => { return null as never })
+  exitSpy = jest.spyOn(process, 'exit').mockImplementation((code: number) => null as never)
   existsSyncSpy = jest.spyOn(fs, 'existsSync')
   readFileSyncSpy = jest.spyOn(fs, 'readFileSync')
   jsonParseSpy = jest.spyOn(JSON, 'parse')
