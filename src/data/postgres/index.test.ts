@@ -21,9 +21,7 @@ describe('Postgres', () => {
 
   test('should return result when pool query executes', async () => {
     const qr: QueryResult = { rows: [0], command: 'SELECT', fields: null, rowCount: 0, oid: 0 }
-    const dbQuery = jest.spyOn(db.pool, 'query').mockImplementation(async () => {
-      return qr
-    })
+    const dbQuery = jest.spyOn(db.pool, 'query').mockImplementation(async () => qr)
     const result = await db.query('SELECT * FROM devices', null)
     expect(result.rowCount).toBe(0)
     expect(dbQuery).toBeCalledWith('SELECT * FROM devices', null)

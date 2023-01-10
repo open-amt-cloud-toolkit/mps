@@ -4,9 +4,7 @@
  **********************************************************************/
 
 import { check } from 'express-validator'
-export const validator = (): any => {
-  return [
-    check('consentCode')
-      .isNumeric()
-  ]
-}
+export const validator = (): any => [
+  check('consentCode')
+    .isNumeric()
+]

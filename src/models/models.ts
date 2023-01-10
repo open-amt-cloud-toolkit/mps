@@ -19,9 +19,7 @@ export interface Device {
   friendlyName: string
   dnsSuffix: string
 }
-export interface Credentials {
-  [key: string]: AMTCredential
-}
+export type Credentials = Record<string, AMTCredential>
 export interface AMTCredential {
   name: string
   mpsuser: string
@@ -38,7 +36,7 @@ export interface OpenAMTEvent {
   timestamp: number
 }
 
-export interface CIRASocket extends TLSSocket{
+export interface CIRASocket extends TLSSocket {
   tag?: {
     id: string
     first: boolean
@@ -49,7 +47,7 @@ export interface CIRASocket extends TLSSocket{
     socket: Socket
     host: string
     nextchannelid: number
-    channels: {[key: string]: CIRAChannel}
+    channels: Record<string, CIRAChannel>
     nextsourceport: number
     nodeid: string
     SystemId?: string // same as nodeid?
@@ -62,35 +60,35 @@ export interface HealthCheck {
   db: HealthCheckStatus
   secretStore: HealthCheckStatus
 }
-export interface HealthCheckStatus{
+export interface HealthCheckStatus {
   name: string
   status: any
 }
 
-export interface WebSocketExt extends WebSocket{
+export interface WebSocketExt extends WebSocket {
   _socket: Socket
   forwardclient?: any
   interceptor: Interceptor
 }
 
-export interface Interceptor{
+export interface Interceptor {
   processAmtData: (data: any) => any
   processBrowserData: (data: any) => any
 }
 
-export enum AmtMode{
+export enum AmtMode {
   HEADER = 0,
   LENGTHBODY = 1,
   CHUNKEDBODY = 2,
   UNTILCLOSE = 3
 }
 
-export enum ConnectionType{
+export enum ConnectionType {
   AMT = 0,
   WS = 1
 }
 
-export interface Connection{
+export interface Connection {
   type: ConnectionType
   mode: AmtMode
   acc: string
@@ -106,14 +104,14 @@ export interface Connection{
   digestQOP?: string
 }
 
-export interface Args{
+export interface Args {
   host?: string
   port?: number
   user: string
   pass: string
 }
 
-export interface DeviceSecrets{
+export interface DeviceSecrets {
   AMT_PASSWORD: string
   MEBX_PASSWORD?: string
   MPS_PASSWORD?: string

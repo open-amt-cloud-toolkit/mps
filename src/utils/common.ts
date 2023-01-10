@@ -5,40 +5,19 @@
 
 import { createHash, randomBytes } from 'crypto'
 const Common = {
-  ReadShort: (v: string, p: number): number => {
-    return (v.charCodeAt(p) << 8) + v.charCodeAt(p + 1)
-  },
-  ReadShortX: (v: string, p: number): number => {
-    return (v.charCodeAt(p + 1) << 8) + v.charCodeAt(p)
-  },
-  ReadInt: (v: string, p: number): number => {
-    return (v.charCodeAt(p) * 0x1000000) + (v.charCodeAt(p + 1) << 16) + (v.charCodeAt(p + 2) << 8) + v.charCodeAt(p + 3)
-  }, // We use "*0x1000000" instead
-  ReadIntX: (v: string, p: number): number => {
-    return (v.charCodeAt(p + 3) * 0x1000000) + (v.charCodeAt(p + 2) << 16) + (v.charCodeAt(p + 1) << 8) + v.charCodeAt(p)
-  },
-  ReadBufferIntX: (v: Buffer, p: number): number => {
-    return (v[p + 3] * 0x1000000) + (v[p + 2] << 16) + (v[p + 1] << 8) + v[p]
-  },
-  ShortToStr: (v: number): string => {
-    return String.fromCharCode((v >> 8) & 0xFF, v & 0xFF)
-  },
-  ShortToStrX: (v: number): string => {
-    return String.fromCharCode(v & 0xFF, (v >> 8) & 0xFF)
-  },
-  IntToStr: (v: number): string => {
-    return String.fromCharCode((v >> 24) & 0xFF, (v >> 16) & 0xFF, (v >> 8) & 0xFF, v & 0xFF)
-  },
-  IntToStrX: (v: number): string => {
-    return String.fromCharCode(v & 0xFF, (v >> 8) & 0xFF, (v >> 16) & 0xFF, (v >> 24) & 0xFF)
-  },
-  MakeToArray: (v: any): any[] => {
+  ReadShort: (v: string, p: number): number => (v.charCodeAt(p) << 8) + v.charCodeAt(p + 1),
+  ReadShortX: (v: string, p: number): number => (v.charCodeAt(p + 1) << 8) + v.charCodeAt(p),
+  ReadInt: (v: string, p: number): number => (v.charCodeAt(p) * 0x1000000) + (v.charCodeAt(p + 1) << 16) + (v.charCodeAt(p + 2) << 8) + v.charCodeAt(p + 3), // We use "*0x1000000" instead
+  ReadIntX: (v: string, p: number): number => (v.charCodeAt(p + 3) * 0x1000000) + (v.charCodeAt(p + 2) << 16) + (v.charCodeAt(p + 1) << 8) + v.charCodeAt(p),
+  ReadBufferIntX: (v: Buffer, p: number): number => (v[p + 3] * 0x1000000) + (v[p + 2] << 16) + (v[p + 1] << 8) + v[p],
+  ShortToStr: (v: number): string => String.fromCharCode((v >> 8) & 0xFF, v & 0xFF),
+  ShortToStrX: (v: number): string => String.fromCharCode(v & 0xFF, (v >> 8) & 0xFF),
+  IntToStr: (v: number): string => String.fromCharCode((v >> 24) & 0xFF, (v >> 16) & 0xFF, (v >> 8) & 0xFF, v & 0xFF),
+  IntToStrX: (v: number): string => String.fromCharCode(v & 0xFF, (v >> 8) & 0xFF, (v >> 16) & 0xFF, (v >> 24) & 0xFF),
+  MakeToArray: (v: any): any[] =>
     // if (!v || v == null || typeof v === 'object') { return v as any } if things go wonky, put this back
-    return [v]
-  },
-  Clone: (v: any) => {
-    return JSON.parse(JSON.stringify(v))
-  },
+    [v],
+  Clone: (v: any) => JSON.parse(JSON.stringify(v)),
   Rstr2hex: (input: string): string => {
     let r = ''
     for (let i = 0; i < input.length; i++) {
@@ -57,9 +36,7 @@ const Common = {
   },
 
   // Convert decimal to hex
-  Char2hex: (i: number): string => {
-    return (i + 0x100).toString(16).substr(-2).toUpperCase()
-  },
+  Char2hex: (i: number): string => (i + 0x100).toString(16).substr(-2).toUpperCase(),
 
   // Compute the MD5 digest hash for a set of values
   ComputeDigesthash: (username: string, password: string, realm: string, method: string, path: string, qop: string, nonce: string, nc: string, cnonce: string): string => {

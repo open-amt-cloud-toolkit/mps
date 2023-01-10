@@ -326,10 +326,10 @@ export class DeviceAction {
   async getEventLog (): Promise<Common.Models.Envelope<AMT.Models.MessageLog>> {
     logger.silly(`getEventLog ${messages.REQUEST}`)
     let xmlRequestBody = this.amt.MessageLog(AMT.Methods.POSITION_TO_FIRST_RECORD)
-    const response = await this.ciraHandler.Get<{PositionToFirstRecord_OUTPUT: {
+    const response = await this.ciraHandler.Get<{ PositionToFirstRecord_OUTPUT: {
       IterationIdentifier: string
       ReturnValue: string
-    }}>(this.ciraSocket, xmlRequestBody)
+    } }>(this.ciraSocket, xmlRequestBody)
     if (response == null) {
       logger.error(`failed to get position to first record of AMT_MessageLog. Reason: ${messages.RESPONSE_NULL}`)
       return null

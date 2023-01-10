@@ -22,11 +22,11 @@ describe('webserver tests', () => {
   beforeAll(async function () {
     jest.setTimeout(60000)
     secrets = {
-      getSecretFromKey: async (path: string, key: string) => { return 'P@ssw0rd' },
-      getSecretAtPath: async (path: string) => { return {} as any },
-      getAMTCredentials: async (path: string) => { return ['admin', 'P@ssw0rd'] },
+      getSecretFromKey: async (path: string, key: string) => 'P@ssw0rd',
+      getSecretAtPath: async (path: string) => ({} as any),
+      getAMTCredentials: async (path: string) => ['admin', 'P@ssw0rd'],
       deleteSecretAtPath: async (path: string) => { },
-      health: async () => { return {} }
+      health: async () => ({})
     }
     certs = {
       mps_tls_config: {} as any,

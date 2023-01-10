@@ -595,9 +595,8 @@ const APFProcessor = {
     socket.write(Buffer.from(data, 'binary'))
   },
 
-  guidToStr: (g): string => {
-    return (
-      g.substring(6, 8) +
+  guidToStr: (g): string => (
+    g.substring(6, 8) +
       g.substring(4, 6) +
       g.substring(2, 4) +
       g.substring(0, 2) +
@@ -611,8 +610,7 @@ const APFProcessor = {
       g.substring(16, 20) +
       '-' +
       g.substring(20)
-    )
-  }
+  )
 }
 
 export default APFProcessor

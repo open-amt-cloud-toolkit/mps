@@ -160,13 +160,9 @@ describe('Index', () => {
       }
       Environment.Config = config
       secretManagerService = new VaultSecretManagerService(logger)
-      jest.spyOn(secretManagerService.gotClient, 'get').mockImplementation(() => {
-        return {
-          json: jest.fn(() => {
-            return null
-          })
-        } as any
-      })
+      jest.spyOn(secretManagerService.gotClient, 'get').mockImplementation(() => ({
+        json: jest.fn(() => null)
+      } as any))
     })
     it('should pass with config', async () => {
       const result = await indexFile.loadCertificates(secretManagerService)

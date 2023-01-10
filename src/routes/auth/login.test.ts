@@ -25,12 +25,10 @@ describe('Check login', () => {
     resSpy.status.mockReturnThis()
     resSpy.json.mockReturnThis()
     resSpy.send.mockReturnThis()
-    jest.spyOn(val, 'validationResult').mockImplementation(() => {
-      return {
-        isEmpty: jest.fn().mockReturnValue(true),
-        array: jest.fn().mockReturnValue([{ test: 'error' }])
-      } as any
-    })
+    jest.spyOn(val, 'validationResult').mockImplementation(() => ({
+      isEmpty: jest.fn().mockReturnValue(true),
+      array: jest.fn().mockReturnValue([{ test: 'error' }])
+    } as any))
     Environment.Config = {
       web_admin_user: 'admin',
       web_admin_password: 'Passw0rd',
@@ -123,12 +121,10 @@ describe('Check login', () => {
     expect(resSpy.status).toHaveBeenCalledWith(401)
   })
   it('should fail with incorrect req', async () => {
-    jest.spyOn(val, 'validationResult').mockImplementation(() => {
-      return {
-        isEmpty: jest.fn().mockReturnValue(false),
-        array: jest.fn().mockReturnValue([{ test: 'error' }])
-      } as any
-    })
+    jest.spyOn(val, 'validationResult').mockImplementation(() => ({
+      isEmpty: jest.fn().mockReturnValue(false),
+      array: jest.fn().mockReturnValue([{ test: 'error' }])
+    } as any))
     await login(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(400)
   })

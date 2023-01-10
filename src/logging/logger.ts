@@ -7,12 +7,10 @@ import * as winston from 'winston'
 import { ILogger } from '../interfaces/ILogger'
 
 const { combine, timestamp, printf } = winston.format
-const myFormat = printf(info => {
-  return `${info.timestamp as string} ${info.level}: ${info.message}`
-})
+const myFormat = printf(info => `${info.timestamp as string} ${info.level}: ${info.message}`)
 
 export const logger: ILogger = winston.createLogger({
-  level: process.env.MPS_LOG_LEVEL || 'info',
+  level: process.env.MPS_LOG_LEVEL ?? 'info',
   format: combine(timestamp(), myFormat),
   transports: [
     new winston.transports.Console()
