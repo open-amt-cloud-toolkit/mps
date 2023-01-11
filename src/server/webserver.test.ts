@@ -139,6 +139,13 @@ describe('webserver tests', () => {
     })
   })
 
+  describe('middleware', () => {
+    it('should load custom middleware', async () => {
+      const result = await web.loadCustomMiddleware()
+      expect(result.length).toBe(1)
+    })
+  })
+
   describe('listen', () => {
     it('should listen on port 3000', () => {
       const listenSpy = jest.spyOn(web.server, 'listen')

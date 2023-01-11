@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { atob } from 'atob'
-import auditLog = require('./auditLog')
+import * as auditLog from './auditLog'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { createSpyObj } from '../../test/helper/jest'
 import { DeviceAction } from '../../amt/DeviceAction'
