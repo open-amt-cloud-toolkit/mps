@@ -1,6 +1,6 @@
 # Management Presence Server
 
-[![Known Vulnerabilities](https://snyk.io/test/github/open-amt-cloud-toolkit/mps/badge.svg?targetFile=package.json)](https://snyk.io/test/github/open-amt-cloud-toolkit/mps?targetFile=package.json) ![Node.js CI](https://github.com/open-amt-cloud-toolkit/mps/workflows/Node.js%20CI/badge.svg) ![codecov.io](https://codecov.io/github/open-amt-cloud-toolkit/mps/coverage.svg?branch=main)
+[![Known Vulnerabilities](https://snyk.io/test/github/open-amt-cloud-toolkit/mps/badge.svg?targetFile=package.json)](https://snyk.io/test/github/open-amt-cloud-toolkit/mps?targetFile=package.json) ![Node.js CI](https://github.com/open-amt-cloud-toolkit/mps/workflows/Node.js%20CI/badge.svg) ![codecov.io](https://codecov.io/github/open-amt-cloud-toolkit/mps/coverage.svg?branch=main) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/open-amt-cloud-toolkit/mps/badge)](https://api.securityscorecards.dev/projects/github.com/open-amt-cloud-toolkit/mps)
 
 > Disclaimer: Production viable releases are tagged and listed under 'Releases'.  All other check-ins should be considered 'in-development' and should not be used in production
 
