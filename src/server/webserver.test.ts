@@ -11,16 +11,22 @@ import { Environment } from '../utils/Environment'
 import { IncomingMessage } from 'http'
 import { Socket } from 'net'
 import { devices } from './mpsserver'
-
 Environment.Config = config
 
 let certs: certificatesType
 let secrets: ISecretManagerService
 let web: WebServer
+jest.mock('fs', () => ({
+  existsSync: jest.fn(() => true),
+  lstatSync: jest.fn(() => ({ isDirectory: () => true })),
+  readdirSync: jest.fn(() => ['example.js'] as any)
+}))
+jest.mock('../middleware/custom/example', () => function (req, res, next) {})
 
 describe('webserver tests', () => {
   beforeAll(async function () {
     jest.setTimeout(60000)
+
     secrets = {
       getSecretFromKey: async (path: string, key: string) => 'P@ssw0rd',
       getSecretAtPath: async (path: string) => ({} as any),
