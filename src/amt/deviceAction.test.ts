@@ -241,7 +241,7 @@ describe('Device Action Tests', () => {
       expect(result).toEqual({})
     })
     it('should put redirection service', async () => {
-      getSpy.mockResolvedValue({ Envelope: { Body: {} } })
+      sendSpy.mockResolvedValue({ Envelope: { Body: {} } })
       const result = await device.putRedirectionService({} as any)
       expect(result).toEqual({})
     })
