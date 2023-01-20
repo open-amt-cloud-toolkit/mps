@@ -74,7 +74,7 @@ describe('Boot Options', () => {
     await bootOptions(req, resSpy)
     expect(getBootOptionsSpy).toHaveBeenCalled()
     expect(setBootConfigurationSpy).toHaveBeenCalled()
-    expect(forceBootModeSpy).toHaveBeenCalledWith('Force PXE Boot')
+    expect(forceBootModeSpy).toHaveBeenCalledWith('Intel(r) AMT: Force PXE Boot')
     expect(changeBootOrderSpy).toHaveBeenCalled()
     expect(sendPowerActionSpy).toHaveBeenCalledWith(10)
     expect(resSpy.status).toHaveBeenCalledWith(200)
@@ -146,21 +146,13 @@ describe('Boot Options', () => {
     const result = setBootSource(402)
     expect(result).toBeUndefined()
   })
-  it('Should set bootSource when 300', () => {
-    const result = setBootSource(300)
-    expect(result).toBe('Force Diagnostic Boot')
-  })
-  it('Should set bootSource when 301', () => {
-    const result = setBootSource(301)
-    expect(result).toBe('Force Diagnostic Boot')
-  })
   it('Should set bootSource when 400', () => {
     const result = setBootSource(400)
-    expect(result).toBe('Force PXE Boot')
+    expect(result).toBe('Intel(r) AMT: Force PXE Boot')
   })
   it('Should set bootSource when 401', () => {
     const result = setBootSource(401)
-    expect(result).toBe('Force PXE Boot')
+    expect(result).toBe('Intel(r) AMT: Force PXE Boot')
   })
   it('Should determine power action when 100', () => {
     const result = determinePowerAction(100)

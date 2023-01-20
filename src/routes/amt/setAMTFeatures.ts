@@ -85,7 +85,7 @@ export async function setRedirectionService (device: DeviceAction, amtRedirRespo
   // for kvm
   await device.setKvmRedirectionSap(kvm ? Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled : Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Disabled)
 
-  await device.putRedirectionService(amtRedirResponse)
+  await device.putRedirectionService(amtRedirResponse.AMT_RedirectionService)
 }
 
 export async function setUserConsent (device: DeviceAction, optServiceRes: IPS.Models.OptInServiceResponse, guid: string): Promise<void> {
