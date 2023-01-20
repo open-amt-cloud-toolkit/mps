@@ -88,16 +88,19 @@ export class WebServer {
   }
 
   async loadCustomMiddleware (): Promise<RequestHandler[]> {
-    const pathToCustomMiddleware = './src/middleware/custom'
+    const pathToCustomMiddleware = path.join(__dirname, '../middleware/custom')
     const middleware: RequestHandler[] = []
     const doesExist = existsSync(pathToCustomMiddleware)
     const isDirectory = lstatSync(pathToCustomMiddleware).isDirectory()
     if (doesExist && isDirectory) {
       const files = readdirSync(pathToCustomMiddleware)
       for (const file of files) {
-        const customMiddleware = await import(path.join('../middleware/custom/', file.substring(0, file.lastIndexOf('.'))))
-        if (customMiddleware?.default != null) {
-          middleware.push(customMiddleware.default)
+        if (path.extname(file) === '.js') {
+          const customMiddleware = await import(path.join(pathToCustomMiddleware, file.substring(0, file.lastIndexOf('.'))))
+          logger.info('Loading custom middleware: ' + file)
+          if (customMiddleware?.default != null) {
+            middleware.push(customMiddleware.default)
+          }
         }
       }
     }
