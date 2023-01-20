@@ -58,15 +58,15 @@ export function setBootData (action: number, useSOL: boolean, r: AMT.Models.Boot
   return r
 }
 
-export function setBootSource (action: number): string {
-  let bootSource
-  if (action === 300 || action === 301) {
-    bootSource = 'Force Diagnostic Boot'
-  }
-  if (action === 400 || action === 401) {
-    bootSource = 'Force PXE Boot'
-  }
+const enum BootSources {
+  IDER_CD_ROM = 'Intel(r) AMT: Force CD/DVD Boot',
+  PXE = 'Intel(r) AMT: Force PXE Boot'
+}
 
+export function setBootSource (action: number): CIM.Types.BootConfigSetting.InstanceID {
+  let bootSource
+  if (action === 202 || action === 203) bootSource = BootSources.IDER_CD_ROM
+  if (action === 400 || action === 401) bootSource = BootSources.PXE
   return bootSource
 }
 

@@ -94,7 +94,7 @@ it('should parse authentication response header with rogue double comma', async 
 
 it('should return a WSMan request', async () => {
   const cim = new CIM.Messages()
-  const xmlRequestBody = cim.ServiceAvailableToElement(CIM.Methods.ENUMERATE, '1')
+  const xmlRequestBody = cim.ServiceAvailableToElement.Enumerate()
   const digestChallenge = {
     realm: 'Digest:56ABC7BE224EF620C69EB88F01071DC8',
     nonce: 'fVNueyEAAAAAAAAAcO8WqJ8s+WdyFUIY',
@@ -150,7 +150,7 @@ it('should return a null when no xml is passed to wrap a WSMan request', async (
 })
 it('should throw and expection and return a null when connection params are not passed to wrap a WSMan request', async () => {
   const cim = new CIM.Messages()
-  const xmlRequestBody = cim.ServiceAvailableToElement(CIM.Methods.ENUMERATE, '1')
+  const xmlRequestBody = cim.ServiceAvailableToElement.Enumerate()
   const result = httpHandler.wrapIt(null, xmlRequestBody)
   expect(result).toBe(null)
 })
