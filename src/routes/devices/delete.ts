@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Request, Response } from 'express'
+import { type Request, type Response } from 'express'
 import { logger, messages } from '../../logging'
 
 export async function deleteDevice (req: Request, res: Response): Promise<void> {

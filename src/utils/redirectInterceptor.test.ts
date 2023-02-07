@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { AmtMode, Args, Connection, ConnectionType } from '../models/models'
+import { AmtMode, type Args, type Connection, ConnectionType } from '../models/models'
 import { config } from '../test/helper/config'
 import Common from './common'
 import { Environment } from './Environment'

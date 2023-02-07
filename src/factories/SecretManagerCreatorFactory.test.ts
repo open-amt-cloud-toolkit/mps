@@ -7,8 +7,8 @@ import { logger } from '../logging'
 import { Environment } from '../utils/Environment'
 import { SecretManagerCreatorFactory } from './SecretManagerCreatorFactory'
 import { config } from '../test/helper/config'
-import { ILogger } from '../interfaces/ILogger'
-import { ISecretManagerService } from '../interfaces/ISecretManagerService'
+import { type ILogger } from '../interfaces/ILogger'
+import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
 
 describe('Secret Manager Factory', () => {
   it('should pass with default test configuration', async () => {

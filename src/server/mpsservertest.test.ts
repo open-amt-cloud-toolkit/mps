@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { certificatesType } from '../models/Config'
+import { type certificatesType } from '../models/Config'
 import { devices, MPSServer } from './mpsserver'
-import { ISecretManagerService } from '../interfaces/ISecretManagerService'
-import { Device } from '../models/models'
-import { IDeviceTable } from '../interfaces/IDeviceTable'
-import { IDB } from '../interfaces/IDb'
+import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
+import { type Device } from '../models/models'
+import { type IDeviceTable } from '../interfaces/IDeviceTable'
+import { type IDB } from '../interfaces/IDb'
 import { Environment } from '../utils/Environment'
 import { logger } from '../logging'
 import APFProcessor from '../amt/APFProcessor'

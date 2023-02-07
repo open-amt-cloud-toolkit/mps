@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Request, Response } from 'express'
+import { type Request, type Response } from 'express'
 import { POSTGRES_RESPONSE_CODES } from '../../data/postgres'
-import { HealthCheck } from '../../models/models'
+import { type HealthCheck } from '../../models/models'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { Environment } from '../../utils/Environment'
 import { logger, messages } from '../../logging'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { VaultResponseCodes } from '../../utils/constants'
-import { ISecretManagerService } from '../../interfaces/ISecretManagerService'
-import { IDB } from '../../interfaces/IDb'
+import { type ISecretManagerService } from '../../interfaces/ISecretManagerService'
+import { type IDB } from '../../interfaces/IDb'
 
 export async function getHealthCheck (req: Request, res: Response): Promise<void> {
   try {

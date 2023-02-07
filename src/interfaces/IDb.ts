@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { IDeviceTable } from './IDeviceTable'
+import { type IDeviceTable } from './IDeviceTable'
 
 export interface IDB {
   devices: IDeviceTable

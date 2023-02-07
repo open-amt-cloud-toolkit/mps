@@ -9,13 +9,13 @@
 * @version v0.2.0c
 */
 
-import { Socket } from 'net'
+import { type Socket } from 'net'
 
-import express, { NextFunction, Request, RequestHandler, Response } from 'express'
-import { createServer, IncomingMessage, Server } from 'http'
+import express, { type NextFunction, type Request, type RequestHandler, type Response } from 'express'
+import { createServer, type IncomingMessage, type Server } from 'http'
 import * as parser from 'body-parser'
 import jws from 'jws'
-import { certificatesType } from '../models/Config'
+import { type certificatesType } from '../models/Config'
 import { ErrorResponse } from '../utils/amtHelper'
 import { logger, messages } from '../logging'
 import routes from '../routes'
@@ -25,7 +25,7 @@ import cors from 'cors'
 import { lstatSync, existsSync, readdirSync } from 'fs'
 import { DbCreatorFactory } from '../factories/DbCreatorFactory'
 import { Environment } from '../utils/Environment'
-import { ISecretManagerService } from '../interfaces/ISecretManagerService'
+import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
 import { WsRedirect } from '../utils/wsRedirect'
 import { devices } from './mpsserver'
 import path from 'path'

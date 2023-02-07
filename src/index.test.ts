@@ -8,8 +8,8 @@ import * as exponentialBackoff from 'exponential-backoff'
 import { logger } from './logging'
 import VaultSecretManagerService from './secrets/vault'
 import { Environment } from './utils/Environment'
-import { IDB } from './interfaces/IDb'
-import { ISecretManagerService } from './interfaces/ISecretManagerService'
+import { type IDB } from './interfaces/IDb'
+import { type ISecretManagerService } from './interfaces/ISecretManagerService'
 
 describe('Index', () => {
   describe('loadConfig', () => {

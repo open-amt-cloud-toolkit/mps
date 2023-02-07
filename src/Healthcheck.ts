@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { request } from 'http'
-import { RequestOptions } from 'https'
+import { type RequestOptions } from 'https'
 
 const options: RequestOptions = {
   host: 'localhost',

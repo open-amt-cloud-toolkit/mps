@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { ILogger } from '../interfaces/ILogger'
-import { ISecretManagerService } from '../interfaces/ISecretManagerService'
+import { type ILogger } from '../interfaces/ILogger'
+import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
 import { Environment } from '../utils/Environment'
 
 export class SecretManagerCreatorFactory {

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { CIRASocket } from '../models/models'
+import { type CIRASocket } from '../models/models'
 import {
   alarmClockOccurrences,
   addAlarmClockOccurrenceResponse,
@@ -35,9 +35,9 @@ import {
 import { CIRAHandler } from './CIRAHandler'
 import { DeviceAction } from './DeviceAction'
 import { HttpHandler } from './HttpHandler'
-import { Selector } from '@open-amt-cloud-toolkit/wsman-messages/WSMan'
-import { Models } from '@open-amt-cloud-toolkit/wsman-messages/ips/models'
-import { AMT, CIM } from '@open-amt-cloud-toolkit/wsman-messages'
+import { type Selector } from '@open-amt-cloud-toolkit/wsman-messages/WSMan'
+import { type Models } from '@open-amt-cloud-toolkit/wsman-messages/ips/models'
+import { type AMT, type CIM } from '@open-amt-cloud-toolkit/wsman-messages'
 
 describe('Device Action Tests', () => {
   let enumerateSpy: jest.SpyInstance

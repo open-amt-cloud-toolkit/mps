@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { certificatesType } from '../models/Config'
-import { ISecretManagerService } from '../interfaces/ISecretManagerService'
+import { type certificatesType } from '../models/Config'
+import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
 import { config } from '../test/helper/config'
 import { WebServer } from './webserver'
 import { Environment } from '../utils/Environment'

@@ -6,8 +6,8 @@
 import { Buffer } from 'node:buffer'
 import { logger, messages } from '../logging'
 import Common from '../utils/common'
-import { CIRASocket } from '../models/models'
-import { CIRAChannel } from './CIRAChannel'
+import { type CIRASocket } from '../models/models'
+import { type CIRAChannel } from './CIRAChannel'
 import { EventEmitter } from 'stream'
 const KEEPALIVE_INTERVAL = 30 // 30 seconds is typical keepalive interval for AMT CIRA connection
 
@@ -404,7 +404,7 @@ const APFProcessor = {
     return 93
   },
 
-  keepAliveReply: (length: Number): number => {
+  keepAliveReply: (length: number): number => {
     if (length < 5) return 0
     logger.silly(messages.MPS_KEEPALIVE_REPLY)
     return 5

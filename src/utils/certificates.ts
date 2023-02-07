@@ -12,7 +12,7 @@
 */
 
 import { logger, messages } from '../logging'
-import { certificatesType, mpsConfigType, webConfigType, certAndKeyType } from '../models/Config'
+import { type certificatesType, type mpsConfigType, type webConfigType, type certAndKeyType } from '../models/Config'
 import forge from 'node-forge'
 
 export class Certificates {

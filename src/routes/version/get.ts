@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { ServiceVersion } from '../../utils/constants'
-import { Request, Response } from 'express'
+import { type Request, type Response } from 'express'
 
 export function getVersion (req: Request, res: Response): void {
   const response = {

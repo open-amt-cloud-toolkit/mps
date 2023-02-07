@@ -6,7 +6,7 @@
 import { logger, messages } from '../logging'
 import { createHash } from 'crypto'
 import * as xml2js from 'xml2js'
-import { DigestChallenge } from '@open-amt-cloud-toolkit/wsman-messages/models/common'
+import { type DigestChallenge } from '@open-amt-cloud-toolkit/wsman-messages/models/common'
 
 export class connectionParams {
   port: number
