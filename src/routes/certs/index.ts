@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { logger, messages } from '../../logging'
-import { Request, Response } from 'express'
+import { type Request, type Response } from 'express'
 import { ErrorResponse } from '../../utils/amtHelper'
 
 export async function mpsrootcert (req: Request, res: Response): Promise<void> {

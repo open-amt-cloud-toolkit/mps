@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Request, Response } from 'express'
+import { type Request, type Response } from 'express'
 import { validationResult } from 'express-validator'
 
 const validateMiddleware = async (req: Request, res: Response, next): Promise<void> => {

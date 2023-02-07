@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { DeviceAction } from './amt/DeviceAction'
-import { IDB } from './interfaces/IDb'
-import { ISecretManagerService } from './interfaces/ISecretManagerService'
-import { certificatesType } from './models/Config'
+import { type DeviceAction } from './amt/DeviceAction'
+import { type IDB } from './interfaces/IDb'
+import { type ISecretManagerService } from './interfaces/ISecretManagerService'
+import { type certificatesType } from './models/Config'
 
 declare module 'express' {
   export interface Request {

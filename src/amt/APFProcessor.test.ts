@@ -7,8 +7,8 @@ import { Buffer } from 'node:buffer'
 import Common from '../utils/common'
 import { logger } from '../logging'
 import APFProcessor, { APFProtocol } from './APFProcessor'
-import { CIRASocket } from '../models/models'
-import { CIRAChannel } from './CIRAChannel'
+import { type CIRASocket } from '../models/models'
+import { type CIRAChannel } from './CIRAChannel'
 import { EventEmitter } from 'stream'
 
 describe('APFProcessor Tests', () => {

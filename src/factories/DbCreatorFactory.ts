@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { IDB } from '../interfaces/IDb'
+import { type IDB } from '../interfaces/IDb'
 import { Environment } from '../utils/Environment'
 
 export class DbCreatorFactory {

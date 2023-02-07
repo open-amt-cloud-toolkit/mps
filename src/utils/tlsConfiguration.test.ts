@@ -7,7 +7,7 @@ import tlsConfiguration from './tlsConfiguration'
 import path from 'path'
 import fs from 'fs'
 import { logger } from '../logging'
-import { mpsConfigType, webConfigType, directConfigType } from '../models/Config'
+import { type mpsConfigType, type webConfigType, type directConfigType } from '../models/Config'
 import { constants } from 'crypto'
 
 const web = tlsConfiguration.web

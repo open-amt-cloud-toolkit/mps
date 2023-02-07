@@ -4,8 +4,8 @@
  **********************************************************************/
 
 import { CIM } from '@open-amt-cloud-toolkit/wsman-messages'
-import { DigestChallenge } from '@open-amt-cloud-toolkit/wsman-messages/models/common'
-import { connectionParams, HttpHandler } from './HttpHandler'
+import { type DigestChallenge } from '@open-amt-cloud-toolkit/wsman-messages/models/common'
+import { type connectionParams, HttpHandler } from './HttpHandler'
 
 const httpHandler = new HttpHandler()
 

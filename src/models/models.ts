@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Socket } from 'net'
-import { DetailedPeerCertificate, TLSSocket } from 'tls'
-import { CIRAChannel } from '../amt/CIRAChannel'
-import WebSocket from 'ws'
+import { type Socket } from 'net'
+import { type DetailedPeerCertificate, type TLSSocket } from 'tls'
+import { type CIRAChannel } from '../amt/CIRAChannel'
+import type WebSocket from 'ws'
 
 export interface Device {
   connectionStatus: boolean
@@ -51,8 +51,8 @@ export interface CIRASocket extends TLSSocket {
     nextsourceport: number
     nodeid: string
     SystemId?: string // same as nodeid?
-    MajorVersion?: Number
-    MinorVersion?: Number
+    MajorVersion?: number
+    MinorVersion?: number
     certauth?: string
   }
 }

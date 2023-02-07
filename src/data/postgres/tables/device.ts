@@ -4,9 +4,9 @@
  **********************************************************************/
 
 import { logger, messages } from '../../../logging'
-import { PostgresDb } from '..'
-import { IDeviceTable } from '../../../interfaces/IDeviceTable'
-import { Device } from '../../../models/models'
+import { type PostgresDb } from '..'
+import { type IDeviceTable } from '../../../interfaces/IDeviceTable'
+import { type Device } from '../../../models/models'
 import { MPSValidationError } from '../../../utils/MPSValidationError'
 import { DefaultSkip, DefaultTop } from '../../../utils/constants'
 

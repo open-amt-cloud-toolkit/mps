@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Device } from '../../models/models'
+import { type Device } from '../../models/models'
 import { logger, messages } from '../../logging'
-import { DataWithCount } from '../../models/Config'
-import { Request, Response } from 'express'
+import { type DataWithCount } from '../../models/Config'
+import { type Request, type Response } from 'express'
 
 export async function getAllDevices (req: Request, res: Response): Promise<void> {
   const count: boolean = req.query.$count as any // converted in validator

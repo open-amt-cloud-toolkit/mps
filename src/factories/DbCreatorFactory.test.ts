@@ -6,7 +6,7 @@
 import { Environment } from '../utils/Environment'
 import { DbCreatorFactory } from './DbCreatorFactory'
 import { config } from '../test/helper/config'
-import { IDB } from '../interfaces/IDb'
+import { type IDB } from '../interfaces/IDb'
 
 describe('DB Creator Factory', () => {
   it('should pass with default test configuration', async () => {

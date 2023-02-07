@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { DeviceTable } from './device'
-import { Device } from '../../../models/models'
+import { type Device } from '../../../models/models'
 import PostgresDb from '..'
 import { MPSValidationError } from '../../../utils/MPSValidationError'
 

@@ -5,7 +5,7 @@
 
 import { logger, messages } from '../../logging'
 import { MPSValidationError } from '../../utils/MPSValidationError'
-import { Request, Response } from 'express'
+import { type Request, type Response } from 'express'
 
 export async function updateDevice (req: Request, res: Response): Promise<void> {
   const guid: string = req.body.guid

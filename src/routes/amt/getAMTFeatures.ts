@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Response, Request } from 'express'
+import { type Response, type Request } from 'express'
 import { logger, messages } from '../../logging'
 import { UserConsentOptions } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MPSValidationError } from '../../utils/MPSValidationError'
 import { MqttProvider } from '../../utils/MqttProvider'
-import { AMT, CIM, IPS, Common } from '@open-amt-cloud-toolkit/wsman-messages'
+import { type AMT, type CIM, type IPS, Common } from '@open-amt-cloud-toolkit/wsman-messages'
 
 export async function getAMTFeatures (req: Request, res: Response): Promise<void> {
   try {

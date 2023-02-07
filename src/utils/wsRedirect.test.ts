@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { WsRedirect } from './wsRedirect'
-import { queryParams } from '../models/Config'
+import { type queryParams } from '../models/Config'
 import { RedirectInterceptor } from './redirectInterceptor'
 import { devices } from '../server/mpsserver'
 import { ConnectedDevice } from '../amt/ConnectedDevice'

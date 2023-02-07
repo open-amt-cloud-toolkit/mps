@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import Bottleneck from 'bottleneck'
-import { CIRASocket } from '../models/models'
+import { type CIRASocket } from '../models/models'
 import { HttpHandler } from './HttpHandler'
 
 export class ConnectedDevice {

@@ -5,11 +5,11 @@
 
 // import httpZ, { HttpZResponseModel } from 'http-z'
 import { Buffer } from 'node:buffer'
-import { CIRASocket } from '../models/models'
+import { type CIRASocket } from '../models/models'
 import APFProcessor from './APFProcessor'
-import { connectionParams, HttpHandler } from './HttpHandler'
+import { type connectionParams, type HttpHandler } from './HttpHandler'
 import { EventEmitter } from 'stream'
-import httpZ, { HttpZResponseModel } from 'http-z'
+import httpZ, { type HttpZResponseModel } from 'http-z'
 import { parseBody } from '../utils/parseWSManResponseBody'
 import { logger } from '../logging'
 

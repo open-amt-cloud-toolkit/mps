@@ -4,11 +4,11 @@
  **********************************************************************/
 
 import { logger, messages } from '../logging'
-import { CIRAHandler } from './CIRAHandler'
-import { AMT, CIM, IPS, Common } from '@open-amt-cloud-toolkit/wsman-messages'
-import { Selector } from '@open-amt-cloud-toolkit/wsman-messages/WSMan'
-import { CIRASocket } from '../models/models'
-import { Types } from '@open-amt-cloud-toolkit/wsman-messages/cim'
+import { type CIRAHandler } from './CIRAHandler'
+import { AMT, CIM, IPS, type Common } from '@open-amt-cloud-toolkit/wsman-messages'
+import { type Selector } from '@open-amt-cloud-toolkit/wsman-messages/WSMan'
+import { type CIRASocket } from '../models/models'
+import { type Types } from '@open-amt-cloud-toolkit/wsman-messages/cim'
 
 export class DeviceAction {
   ciraHandler: CIRAHandler

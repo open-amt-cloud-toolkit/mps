@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { logger, messages } from '../../logging'
-import { Request, Response } from 'express'
+import { type Request, type Response } from 'express'
 
 export async function getDevice (req: Request, res: Response): Promise<void> {
   try {

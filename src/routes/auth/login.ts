@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { validationResult } from 'express-validator'
-import { Request, Response } from 'express'
+import { type Request, type Response } from 'express'
 import { logger } from '../../logging/logger'
 import { Environment } from '../../utils/Environment'
 import { messages } from '../../logging'

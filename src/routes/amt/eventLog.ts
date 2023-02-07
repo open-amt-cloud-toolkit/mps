@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Response, Request } from 'express'
+import { type Response, type Request } from 'express'
 import { logger, messages } from '../../logging'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { SystemEntityTypes, SystemFirmwareError, SystemFirmwareProgress, WatchdogCurrentStates } from '../../utils/constants'
 import Common from '../../utils/common'
-import { AMT } from '@open-amt-cloud-toolkit/wsman-messages'
+import { type AMT } from '@open-amt-cloud-toolkit/wsman-messages'
 
 export async function eventLog (req: Request, res: Response): Promise<void> {
   try {

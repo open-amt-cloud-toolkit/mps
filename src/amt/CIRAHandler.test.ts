@@ -5,8 +5,8 @@
 
 // import { CIRASocket } from '../models/models'
 // import { card, computerSystemPackage, enumerateResponseCIMSoftwareIdentity } from '../test/helper/wsmanResponses'
-import { HttpZResponseModel } from 'http-z'
-import { CIRASocket } from '../models/models'
+import { type HttpZResponseModel } from 'http-z'
+import { type CIRASocket } from '../models/models'
 import { computerSystemPackage } from '../test/helper/wsmanResponses'
 import { parseBody } from '../utils/parseWSManResponseBody'
 import APFProcessor from './APFProcessor'
