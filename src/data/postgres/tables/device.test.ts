@@ -102,8 +102,7 @@ describe('device tests', () => {
     const device: Device = await deviceTable.getById('4c4c4544-004b-4210-8033-b6c04f504633')
     expect(device).toBe(null)
     expect(querySpy).toBeCalledTimes(1)
-    expect(querySpy).toBeCalledWith(`
-    SELECT
+    expect(querySpy).toBeCalledWith(`SELECT
       guid as "guid",
       hostname as "hostname",
       tags as "tags",
@@ -113,8 +112,8 @@ describe('device tests', () => {
       tenantid as "tenantId",
       friendlyname as "friendlyName",
       dnssuffix as "dnsSuffix"
-    FROM devices 
-    WHERE guid = $1 and tenantid = $2`, ['4c4c4544-004b-4210-8033-b6c04f504633', ''])
+      FROM devices 
+      WHERE guid = $1`, ['4c4c4544-004b-4210-8033-b6c04f504633'])
   })
 
   test('should get count of connected devices when exists', async () => {
@@ -153,17 +152,16 @@ describe('device tests', () => {
     const result: Device = await deviceTable.getById('4c4c4544-004b-4210-8033-b6c04f504633', 'tenantId')
     expect(result).toBe(device)
     expect(querySpy).toBeCalledTimes(1)
-    expect(querySpy).toBeCalledWith(`
-    SELECT
-      guid as "guid",
-      hostname as "hostname",
-      tags as "tags",
-      mpsinstance as "mpsInstance",
-      connectionstatus as "connectionStatus",
-      mpsusername as "mpsusername",
-      tenantid as "tenantId",
-      friendlyname as "friendlyName",
-      dnssuffix as "dnsSuffix"
+    expect(querySpy).toBeCalledWith(`SELECT
+    guid as "guid",
+    hostname as "hostname",
+    tags as "tags",
+    mpsinstance as "mpsInstance",
+    connectionstatus as "connectionStatus",
+    mpsusername as "mpsusername",
+    tenantid as "tenantId",
+    friendlyname as "friendlyName",
+    dnssuffix as "dnsSuffix"
     FROM devices 
     WHERE guid = $1 and tenantid = $2`, ['4c4c4544-004b-4210-8033-b6c04f504633', 'tenantId'])
   })

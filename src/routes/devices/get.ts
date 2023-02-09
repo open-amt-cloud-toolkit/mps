@@ -8,9 +8,18 @@ import { type Request, type Response } from 'express'
 
 export async function getDevice (req: Request, res: Response): Promise<void> {
   try {
-    const results = await req.db.devices.getById(req.params.guid)
-    if (results != null) {
-      res.status(200).json(results).end()
+    let tenantId = req.tenantId
+    const tentantIdInQuery = req.query?.tenantId
+    if ((tenantId == null || tenantId === '') && (tentantIdInQuery != null || tentantIdInQuery !== '')) {
+      tenantId = tentantIdInQuery as string
+    }
+    const result = await req.db.devices.getById(req.params.guid)
+    if (result != null) {
+      if (result.tenantId === tenantId) {
+        res.status(200).json(result).end()
+      } else {
+        res.status(204).end()
+      }
     } else {
       res.status(404).end()
     }

@@ -14,5 +14,6 @@ declare module 'express' {
     certs: certificatesType
     db: IDB
     deviceAction: DeviceAction
+    tenantId: string
   }
 }

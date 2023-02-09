@@ -9,8 +9,8 @@ import { messages } from '../../logging/messages'
 
 export async function stats (req: Request, res: Response): Promise<void> {
   try {
-    const connectedCount = await req.db.devices.getConnectedDevices()
-    const totalCount = await req.db.devices.getCount()
+    const connectedCount = await req.db.devices.getConnectedDevices(req.tenantId)
+    const totalCount = await req.db.devices.getCount(req.tenantId)
     res.json({
       totalCount,
       connectedCount,

@@ -72,9 +72,22 @@ export class DeviceTable implements IDeviceTable {
    * @param {string} guid
    * @returns {Device} Device object
    */
-  async getById (id: string, tenantId: string = ''): Promise<Device> {
-    const results = await this.db.query<Device>(`
-    SELECT
+  async getById (id: string, tenantId?: string): Promise<Device> {
+    let query = `SELECT
+    guid as "guid",
+    hostname as "hostname",
+    tags as "tags",
+    mpsinstance as "mpsInstance",
+    connectionstatus as "connectionStatus",
+    mpsusername as "mpsusername",
+    tenantid as "tenantId",
+    friendlyname as "friendlyName",
+    dnssuffix as "dnsSuffix"
+    FROM devices 
+    WHERE guid = $1 and tenantid = $2`
+    let params = [id, tenantId]
+    if (tenantId == null) {
+      query = `SELECT
       guid as "guid",
       hostname as "hostname",
       tags as "tags",
@@ -84,9 +97,11 @@ export class DeviceTable implements IDeviceTable {
       tenantid as "tenantId",
       friendlyname as "friendlyName",
       dnssuffix as "dnsSuffix"
-    FROM devices 
-    WHERE guid = $1 and tenantid = $2`, [id, tenantId])
-
+      FROM devices 
+      WHERE guid = $1`
+      params = [id]
+    }
+    const results = await this.db.query<Device>(query, params)
     return results.rowCount > 0 ? results.rows[0] : null
   }
 

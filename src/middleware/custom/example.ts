@@ -16,6 +16,12 @@ exports = module.exports = function (req, res, next) {
 
   // For setting the tenantId use req.tenantId
   // req.tenantId = req.headers['x-tenant-id-token']
+  // Be sure to reject requests that do not have access to the tenant
+  //   if (req.tenantId === <resource's>.tenantId) {
+  //     next()
+  //   } else {
+  //     res.send(401).end()
+  //   }
 
   // ensure next is called when appropriate, or return an error code using res
   next()

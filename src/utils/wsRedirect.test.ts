@@ -45,7 +45,7 @@ describe('WsRedirect tests', () => {
         url: `https://iotg.com?tls=0&host=${fakeGuid}`
 
       }
-      devices[fakeGuid] = new ConnectedDevice(null, 'admin', 'P@ssw0rd')
+      devices[fakeGuid] = new ConnectedDevice(null, 'admin', 'P@ssw0rd', '')
 
       const setNormalTCPSpy = jest.spyOn(wsRedirect, 'setNormalTCP').mockReturnValue()
       const publishEventSpy = jest.spyOn(MqttProvider, 'publishEvent')

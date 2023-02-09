@@ -14,12 +14,12 @@ export async function getAllDevices (req: Request, res: Response): Promise<void>
     let list: Device[] = []
 
     if (req.query.hostname != null) {
-      list = await req.db.devices.getByHostname(req.query.hostname as string)
+      list = await req.db.devices.getByHostname(req.query.hostname as string, req.tenantId)
     } else if (req.query.tags != null) {
       const tags = (req.query.tags as string).split(',')
-      list = await req.db.devices.getByTags(tags, req.query.method as string, req.query.$top as any, req.query.$skip as any)
+      list = await req.db.devices.getByTags(tags, req.query.method as string, req.query.$top as any, req.query.$skip as any, req.tenantId)
     } else {
-      list = await req.db.devices.get(req.query.$top as any, req.query.$skip as any)
+      list = await req.db.devices.get(req.query.$top as any, req.query.$skip as any, req.tenantId)
     }
     if (req.query.status != null) {
       list = list.filter(x => {
@@ -28,7 +28,7 @@ export async function getAllDevices (req: Request, res: Response): Promise<void>
       })
     }
     if (count != null && count) {
-      const count: number = await req.db.devices.getCount()
+      const count: number = await req.db.devices.getCount(req.tenantId)
       const dataWithCount: DataWithCount = {
         data: list,
         totalCount: count
