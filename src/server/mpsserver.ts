@@ -108,7 +108,7 @@ export class MPSServer {
         logger.debug(`${messages.MPS_CIRA_AUTHENTICATION_SUCCESS} for: ${username}`)
         const cred = await this.secrets.getAMTCredentials(socket.tag.SystemId)
 
-        devices[socket.tag.SystemId] = new ConnectedDevice(socket, cred[0], cred[1])
+        devices[socket.tag.SystemId] = new ConnectedDevice(socket, cred[0], cred[1], device.tenantId)
         this.events.emit('connected', socket.tag.SystemId)
         await this.handleDeviceConnect(socket.tag.SystemId)
         APFProcessor.SendUserAuthSuccess(socket) // Notify the auth success on the CIRA connection

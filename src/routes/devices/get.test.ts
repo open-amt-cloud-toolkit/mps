@@ -24,8 +24,12 @@ beforeEach(() => {
 
 describe('guid get', () => {
   const req = {
+    tenantId: 'tenantxyz',
     params: {
       guid: '00000000-0000-0000-0000-000000000000'
+    },
+    query: {
+      tenantId: ''
     },
     db: {
       devices: {
@@ -35,11 +39,26 @@ describe('guid get', () => {
   } as any
   const logSpy = jest.spyOn(logger, 'error')
 
-  it('should set status to 200 and get result if device exists in DB', async () => {
-    req.db.devices.getById = jest.fn().mockReturnValue({})
+  it('should set status to 200 and get result if device exists in DB with tenant', async () => {
+    req.db.devices.getById = jest.fn().mockReturnValue({
+      guid: '00000000-0000-0000-0000-000000000000',
+      hostname: 'hostname',
+      tags: [],
+      mpsusername: 'admin',
+      tenantId: 'tenantxyz'
+    })
     await getDevice(req, res as any)
     expect(req.db.devices.getById).toHaveBeenCalledWith(req.params.guid)
     expect(statusSpy).toHaveBeenCalledWith(200)
+    expect(jsonSpy).not.toHaveBeenCalledWith(null)
+    expect(endSpy).toHaveBeenCalled()
+  })
+
+  it('should set status to 204 and get result if device exists in DB', async () => {
+    req.db.devices.getById = jest.fn().mockReturnValue({})
+    await getDevice(req, res as any)
+    expect(req.db.devices.getById).toHaveBeenCalledWith(req.params.guid)
+    expect(statusSpy).toHaveBeenCalledWith(204)
     expect(jsonSpy).not.toHaveBeenCalledWith(null)
     expect(endSpy).toHaveBeenCalled()
   })
@@ -63,5 +82,23 @@ describe('guid get', () => {
     expect(jsonSpy).not.toHaveBeenCalled()
     expect(endSpy).toHaveBeenCalled()
     expect(logSpy).toHaveBeenCalled()
+  })
+
+  it('should set status to 204 and get tenantId from req.query', async () => {
+    req.tenantId = ''
+    req.query.tenantId = 'test'
+
+    req.db.devices.getById = jest.fn().mockReturnValue({
+      guid: '00000000-0000-0000-0000-000000000000',
+      hostname: 'hostname',
+      tags: [],
+      mpsusername: 'admin',
+      tenantId: 'tenantxyz'
+    })
+    await getDevice(req, res as any)
+    expect(req.db.devices.getById).toHaveBeenCalledWith(req.params.guid)
+    expect(statusSpy).toHaveBeenCalledWith(204)
+    expect(jsonSpy).not.toHaveBeenCalledWith(null)
+    expect(endSpy).toHaveBeenCalled()
   })
 })

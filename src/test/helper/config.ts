@@ -29,6 +29,8 @@ export const config: configType = {
   db_provider: 'postgres',
   connection_string: 'postgresql://<USERNAME>:<PASSWORD>@localhost:5432/mpsdb?sslmode=no-verify',
   instance_name: 'localhost',
+  jwt_token_header: '',
+  jwt_tenant_property: '',
   mps_tls_config: {
     key: '../private/mpsserver-cert-private.key',
     cert: '../private/mpsserver-cert-public.crt',
