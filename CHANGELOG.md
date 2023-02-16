@@ -1,3 +1,57 @@
+<a name="2.8.0"></a>
+## [2.8.0] - 2023-02-16
+### Build
+- **deps:** bump express-validator from 6.14.2 to 6.14.3 ([#789](https://github.com/open-amt-cloud-toolkit/mps/issues/789)) (#aa595af) 
+- **deps:** bump got from 11.8.5 to 11.8.6 (#eae4263) 
+- **deps:** bump [@open](https://github.com/open)-amt-cloud-toolkit/wsman-messages (#7d41361) 
+- **deps:** bump [@open](https://github.com/open)-amt-cloud-toolkit/wsman-messages (#04f3266) 
+- **deps:** bump consul from 1.1.0 to 1.2.0 (#b153615) 
+- **deps:** bump json5 from 1.0.1 to 1.0.2 (#2b84f5a) 
+- **deps:** bump http-cache-semantics from 4.1.0 to 4.1.1 ([#802](https://github.com/open-amt-cloud-toolkit/mps/issues/802)) (#14892e5) 
+- **deps:** bump ws from 8.11.0 to 8.12.0 (#08791e2) 
+- **deps:** update wsman-messages from 3.2.0 to 5.0.0 ([#776](https://github.com/open-amt-cloud-toolkit/mps/issues/776)) (#70687e9) 
+- **deps:** bump pg from 8.8.0 to 8.9.0 ([#795](https://github.com/open-amt-cloud-toolkit/mps/issues/795)) (#d26cb2b) 
+- **deps-dev:** bump eslint-config-standard-with-typescript from 26.0.0 to 34.0.0 ([#801](https://github.com/open-amt-cloud-toolkit/mps/issues/801)) (#1952a7c) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin (#ce53f9b) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.48.2 to 5.49.0 (#994f2f1) 
+- **deps-dev:** bump typescript from 4.9.4 to 4.9.5 ([#797](https://github.com/open-amt-cloud-toolkit/mps/issues/797)) (#ecc0dca) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.48.1 to 5.48.2 (#bb484f7) 
+- **deps-dev:** bump eslint-plugin-import from 2.26.0 to 2.27.5 (#40e4f6a) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin (#c49c541) 
+- **deps-dev:** bump eslint from 8.31.0 to 8.32.0 (#8220d85) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.48.0 to 5.48.1 (#52b2621) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin ([#800](https://github.com/open-amt-cloud-toolkit/mps/issues/800)) (#4dcf1c9) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin (#7f385f3) 
+- **deps-dev:** bump [@types](https://github.com/types)/ws from 8.5.3 to 8.5.4 (#d695d5a) 
+- **deps-dev:** bump [@types](https://github.com/types)/express from 4.17.15 to 4.17.17 ([#803](https://github.com/open-amt-cloud-toolkit/mps/issues/803)) (#386a654) 
+- **deps-dev:** bump [@types](https://github.com/types)/pg from 8.6.5 to 8.6.6 (#99d3290) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 18.11.16 to 18.11.18 (#86bb332) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 18.11.15 to 18.11.16 (#04eff5c) 
+- **deps-dev:** bump eslint from 8.32.0 to 8.33.0 ([#798](https://github.com/open-amt-cloud-toolkit/mps/issues/798)) (#e668df2) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 18.11.12 to 18.11.15 (#4b2cc6c) 
+- **deps-dev:** bump [@types](https://github.com/types)/express from 4.17.14 to 4.17.15 (#4c7d154) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 18.11.18 to 18.13.0 ([#807](https://github.com/open-amt-cloud-toolkit/mps/issues/807)) (#8a410ff) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.49.0 to 5.51.0 ([#806](https://github.com/open-amt-cloud-toolkit/mps/issues/806)) (#ff01169) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin ([#804](https://github.com/open-amt-cloud-toolkit/mps/issues/804)) (#945fa60) 
+- **deps-dev:** bump typescript from 4.9.3 to 4.9.4 (#85f0e6c) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 16.18.4 to 18.11.12 (#625ddf7) 
+
+### Ci
+- fix changelog build (#1642f5a) 
+- add ossf action (#fc48fbb) 
+
+### Docs
+- add ossf badge to readme (#1c6ddaa) 
+
+### Feat
+- **api:** enhance multitenancy support ([#747](https://github.com/open-amt-cloud-toolkit/mps/issues/747)) (#ae25c87) 
+- **api:** add support for custom middleware (#11746a7) 
+
+### Fix
+- **api:** ensure middleware is loaded from correct directory (#2870b9c) 
+
+### Refactor
+- upgrade lint dependencies and add recommended rules (#88a14f4) 
 
 <a name="2.7.0"></a>
 ## [2.7.0] - 2022-12-08
