@@ -148,5 +148,5 @@ test('should get health of vault', async () => {
   } as any))
   const result = await secretManagerService.health()
   expect(result).toEqual(data)
-  expect(gothealthSpy).toHaveBeenCalledWith('sys/health', { prefixUrl: `${Environment.Config.vault_address}/v1/` })
+  expect(gothealthSpy).toHaveBeenCalledWith('sys/health?standbyok=true', { prefixUrl: `${Environment.Config.vault_address}/v1/` })
 })

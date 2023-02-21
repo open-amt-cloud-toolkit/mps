@@ -74,7 +74,7 @@ export async function waitForDB (db: IDB): Promise<any> {
 export async function waitForSecretProvider (secrets: ISecretManagerService): Promise<any> {
   return await backOff(async () => await secrets.health(), {
     retry: (e: any, attemptNumber: number) => {
-      logger.info(`waiting for secret provider[${attemptNumber}] ${e.code || e.message || e}`)
+      logger.info(`waiting for secret provider[${attemptNumber}] ${e.message || e.code || e}`)
       return true
     }
   })
