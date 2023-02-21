@@ -92,7 +92,7 @@ export class VaultSecretManagerService implements ISecretManagerService {
   }
 
   async health (): Promise<any> {
-    const rspJson: any = await this.gotClient.get('sys/health', {
+    const rspJson: any = await this.gotClient.get('sys/health?standbyok=true', {
       prefixUrl: `${Environment.Config.vault_address}/v1/`
     }).json()
     return rspJson
