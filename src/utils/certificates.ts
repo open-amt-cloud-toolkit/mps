@@ -12,7 +12,7 @@
 */
 
 import { logger, messages } from '../logging'
-import { certificatesType, mpsConfigType, webConfigType, certAndKeyType } from '../models/Config'
+import { type certificatesType, type mpsConfigType, type webConfigType, type certAndKeyType } from '../models/Config'
 import forge from 'node-forge'
 
 export class Certificates {
@@ -97,7 +97,7 @@ export class Certificates {
     }])
     cert.sign(keys.privateKey, forge.md.sha384.create())
 
-    return { cert: cert, key: keys.privateKey }
+    return { cert, key: keys.privateKey }
   }
 
   IssueWebServerCertificate = (rootcert, addThumbPrintToName: boolean, commonName: string, country: string, organization: string, extKeyUsage, strong: boolean): any => {
@@ -157,6 +157,6 @@ export class Certificates {
     cert.setExtensions(extensions)
     cert.sign(rootcert.key, forge.md.sha384.create())
 
-    return { cert: cert, key: keys.privateKey }
+    return { cert, key: keys.privateKey }
   }
 }

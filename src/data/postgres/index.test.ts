@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { QueryResult } from 'pg'
+import { type QueryResult } from 'pg'
 import PostgresDb, { POSTGRES_RESPONSE_CODES } from '.'
 
 const db: PostgresDb = new PostgresDb('postgresql://postgresadmin:admin123@localhost:5432/mpsdb?sslmode=no-verify')
@@ -21,9 +21,7 @@ describe('Postgres', () => {
 
   test('should return result when pool query executes', async () => {
     const qr: QueryResult = { rows: [0], command: 'SELECT', fields: null, rowCount: 0, oid: 0 }
-    const dbQuery = jest.spyOn(db.pool, 'query').mockImplementation(async () => {
-      return qr
-    })
+    const dbQuery = jest.spyOn(db.pool, 'query').mockImplementation(async () => qr)
     const result = await db.query('SELECT * FROM devices', null)
     expect(result.rowCount).toBe(0)
     expect(dbQuery).toBeCalledWith('SELECT * FROM devices', null)

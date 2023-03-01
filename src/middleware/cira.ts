@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Request, Response } from 'express'
+import { type Request, type Response } from 'express'
 import { CIRAHandler } from '../amt/CIRAHandler'
 import { DeviceAction } from '../amt/DeviceAction'
 import { devices } from '../server/mpsserver'

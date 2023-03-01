@@ -9,24 +9,26 @@
 * @version v0.2.0c
 */
 
-import { Socket } from 'net'
+import { type Socket } from 'net'
 
-import express, { NextFunction, Request, Response } from 'express'
-import { createServer, IncomingMessage, Server } from 'http'
+import express, { type NextFunction, type Request, type RequestHandler, type Response } from 'express'
+import { createServer, type IncomingMessage, type Server } from 'http'
 import * as parser from 'body-parser'
 import jws from 'jws'
-import { certificatesType } from '../models/Config'
+import { type certificatesType } from '../models/Config'
 import { ErrorResponse } from '../utils/amtHelper'
 import { logger, messages } from '../logging'
 import routes from '../routes'
 import WebSocket from 'ws'
 import { URL } from 'url'
 import cors from 'cors'
+import { lstatSync, existsSync, readdirSync } from 'fs'
 import { DbCreatorFactory } from '../factories/DbCreatorFactory'
 import { Environment } from '../utils/Environment'
-import { ISecretManagerService } from '../interfaces/ISecretManagerService'
+import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
 import { WsRedirect } from '../utils/wsRedirect'
 import { devices } from './mpsserver'
+import path from 'path'
 
 export class WebServer {
   app: express.Express
@@ -56,10 +58,17 @@ export class WebServer {
       // Handles the Bad JSON exceptions
       this.app.use(parser.json(), this.appUseJsonParser.bind(this))
       this.app.use(this.appUseCall.bind(this))
+
       // Relay websocket. KVM & SOL use this websocket.
       this.relayWSS.on('connection', this.relayConnection.bind(this))
 
-      this.app.use('/api/v1', this.useAPIv1.bind(this), routes)
+      this.loadCustomMiddleware().then(customMiddleware => {
+        this.app.use('/api/v1', this.useAPIv1.bind(this), customMiddleware, routes)
+      }).catch(err => {
+        logger.error('Error loading custom middleware')
+        logger.error(err)
+        process.exit(0)
+      })
 
       // Handle upgrade on websocket
       this.server.on('upgrade', this.handleUpgrade.bind(this))
@@ -76,6 +85,27 @@ export class WebServer {
       logger.debug(messages.APP_USE_JSON_PARSER_ERROR)
     }
     next()
+  }
+
+  async loadCustomMiddleware (): Promise<RequestHandler[]> {
+    const pathToCustomMiddleware = path.join(__dirname, '../middleware/custom')
+    const middleware: RequestHandler[] = []
+    const doesExist = existsSync(pathToCustomMiddleware)
+    const isDirectory = lstatSync(pathToCustomMiddleware).isDirectory()
+    if (doesExist && isDirectory) {
+      const files = readdirSync(pathToCustomMiddleware)
+      for (const file of files) {
+        if (path.extname(file) === '.js') {
+          const customMiddleware = await import(path.join(pathToCustomMiddleware, file.substring(0, file.lastIndexOf('.'))))
+          logger.info('Loading custom middleware: ' + file)
+          if (customMiddleware?.default != null) {
+            middleware.push(customMiddleware.default)
+          }
+        }
+      }
+    }
+
+    return middleware
   }
 
   appUseCall (req: Request, res: Response, next: NextFunction): void {
@@ -112,6 +142,8 @@ export class WebServer {
 
   async useAPIv1 (req: Request, res: Response, next: NextFunction): Promise<void> {
     const newDB = new DbCreatorFactory()
+    console.log(req.headers)
+
     req.db = await newDB.getDb()
     req.secrets = this.secrets
     req.certs = this.certs

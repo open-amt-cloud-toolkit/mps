@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Response, Request } from 'express'
+import { type Response, type Request } from 'express'
 import { logger, messages } from '../../logging'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
-import { DeviceAction } from '../../amt/DeviceAction'
+import { type DeviceAction } from '../../amt/DeviceAction'
 
 export async function hardwareInfo (req: Request, res: Response): Promise<void> {
   try {
@@ -32,7 +32,7 @@ export async function hardwareInfo (req: Request, res: Response): Promise<void> 
 }
 
 export async function get (device: DeviceAction, guid: string): Promise<any> {
-  const response: {[key: string]: any} = {}
+  const response: Record<string, any> = {}
   response.CIM_ComputerSystemPackage = await device.getComputerSystemPackage()
   response.CIM_Chassis = await device.getChassis()
   response.CIM_Card = await device.getCard()

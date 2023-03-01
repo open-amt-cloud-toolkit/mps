@@ -4,11 +4,11 @@
  **********************************************************************/
 
 import { request } from 'http'
-import { RequestOptions } from 'https'
+import { type RequestOptions } from 'https'
 
 const options: RequestOptions = {
   host: 'localhost',
-  port: process.env.MPSWEBPORT || 3000,
+  port: process.env.MPSWEBPORT ?? 3000,
   timeout: 2000,
   path: '/api/v1/health'
 }

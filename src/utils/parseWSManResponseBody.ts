@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { HttpZResponseModel } from 'http-z'
+import { type HttpZResponseModel } from 'http-z'
 
 export function parseBody (message: HttpZResponseModel): string {
   let xmlBody: string = ''

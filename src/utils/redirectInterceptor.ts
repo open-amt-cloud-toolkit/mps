@@ -3,34 +3,34 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Args, Connection, ConnectionType } from '../models/models'
+import { type Args, type Connection, ConnectionType } from '../models/models'
 import Common from './common'
 
 export enum RedirectCommands {
-  StartRedirectionSession= 0x10,
-  StartRedirectionSessionReply= 0x11,
-  EndRedirectionSession= 0x12,
-  AuthenticateSession= 0x13,
-  AuthenticateSessionReply= 0x14
+  StartRedirectionSession = 0x10,
+  StartRedirectionSessionReply = 0x11,
+  EndRedirectionSession = 0x12,
+  AuthenticateSession = 0x13,
+  AuthenticateSessionReply = 0x14
 }
 export enum StartRedirectionSessionReplyStatus {
-  SUCCESS= 0,
-  TYPE_UNKNOWN= 1,
-  BUSY= 2,
-  UNSUPPORTED= 3,
-  ERROR= 0xFF
+  SUCCESS = 0,
+  TYPE_UNKNOWN = 1,
+  BUSY = 2,
+  UNSUPPORTED = 3,
+  ERROR = 0xFF
 }
 export enum AuthenticationStatus {
-  SUCCESS= 0,
-  FALIURE= 1,
-  NOTSUPPORTED= 2
+  SUCCESS = 0,
+  FALIURE = 1,
+  NOTSUPPORTED = 2
 }
 export enum AuthenticationType {
-  QUERY= 0,
-  USERPASS= 1,
-  KERBEROS= 2,
-  BADDIGEST= 3,
-  DIGEST= 4
+  QUERY = 0,
+  USERPASS = 1,
+  KERBEROS = 2,
+  BADDIGEST = 3,
+  DIGEST = 4
 }
 
 export class RedirectInterceptor {

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { CIRASocket } from '../models/models'
+import { type CIRASocket } from '../models/models'
 import {
   alarmClockOccurrences,
   addAlarmClockOccurrenceResponse,
@@ -35,8 +35,9 @@ import {
 import { CIRAHandler } from './CIRAHandler'
 import { DeviceAction } from './DeviceAction'
 import { HttpHandler } from './HttpHandler'
-import { Selector } from '@open-amt-cloud-toolkit/wsman-messages/WSMan'
-import { Models } from '@open-amt-cloud-toolkit/wsman-messages/ips/models'
+import { type Selector } from '@open-amt-cloud-toolkit/wsman-messages/WSMan'
+import { type Models } from '@open-amt-cloud-toolkit/wsman-messages/ips/models'
+import { type AMT, type CIM } from '@open-amt-cloud-toolkit/wsman-messages'
 
 describe('Device Action Tests', () => {
   let enumerateSpy: jest.SpyInstance
@@ -97,13 +98,40 @@ describe('Device Action Tests', () => {
     })
     it('should changeBootOrder', async () => {
       sendSpy.mockResolvedValue({})
-      const result = await device.changeBootOrder('')
+      const bootSourceSetting: CIM.Types.BootConfigSetting.InstanceID = 'Intel(r) AMT: Force PXE Boot'
+      const result = await device.changeBootOrder(bootSourceSetting)
+      expect(sendSpy).toHaveBeenCalled()
+      expect(result).toEqual({})
+    })
+    it('should getBootSettingSource', async () => {
+      sendSpy.mockResolvedValue({})
+      const result = await device.getBootSettingSource()
       expect(sendSpy).toHaveBeenCalled()
       expect(result).toEqual({})
     })
     it('should setBootConfiguration', async () => {
       sendSpy.mockResolvedValue({ Envelope: { Body: {} } })
-      const result = await device.setBootConfiguration({})
+      const bootSettingData: AMT.Models.BootSettingData = {
+        ElementName: 'test',
+        BIOSPause: false,
+        BIOSSetup: false,
+        BootMediaIndex: 0,
+        ConfigurationDataReset: false,
+        FirmwareVerbosity: 0,
+        ForcedProgressEvents: false,
+        IDERBootDevice: 0,
+        LockKeyboard: false,
+        LockPowerButton: false,
+        LockResetButton: false,
+        LockSleepButton: false,
+        ReflashBIOS: false,
+        SecureErase: false,
+        UseIDER: false,
+        UserPasswordBypass: false,
+        UseSafeMode: false,
+        UseSOL: false
+      }
+      const result = await device.setBootConfiguration(bootSettingData)
       expect(sendSpy).toHaveBeenCalled()
       expect(result).toEqual({})
     })
@@ -192,15 +220,35 @@ describe('Device Action Tests', () => {
       const result = await device.getIpsOptInService()
       expect(result).toEqual({})
     })
+    it('should put IPS Opt In Service', async () => {
+      getSpy.mockResolvedValue({ Envelope: { Body: {} } })
+      const result = await device.putIpsOptInService({} as any)
+      expect(result).toEqual({})
+    })
     it('should get kvm', async () => {
       getSpy.mockResolvedValueOnce({ Envelope: { Body: {} } })
       const result = await device.getKvmRedirectionSap()
       expect(result).toEqual({})
     })
+    it('should set kvm', async () => {
+      sendSpy.mockResolvedValueOnce({ Envelope: { Body: { RequestStateChange_OUTPUT: { ReturnValue: 0 } } } })
+      const result = await device.setKvmRedirectionSap(6)
+      expect(result).toEqual({ RequestStateChange_OUTPUT: { ReturnValue: 0 } })
+    })
     it('should get redirection service', async () => {
       getSpy.mockResolvedValueOnce({ Envelope: { Body: {} } })
       const result = await device.getRedirectionService()
       expect(result).toEqual({})
+    })
+    it('should put redirection service', async () => {
+      sendSpy.mockResolvedValue({ Envelope: { Body: {} } })
+      const result = await device.putRedirectionService({} as any)
+      expect(result).toEqual({})
+    })
+    it('should set redirection service state', async () => {
+      sendSpy.mockResolvedValue({ Envelope: { Body: { RequestStateChange_OUTPUT: { ReturnValue: 0 } } } })
+      const result = await device.setRedirectionService(32768)
+      expect(result).toEqual({ RequestStateChange_OUTPUT: { ReturnValue: 0 } })
     })
     it('should get KVM redirection SAP', async () => {
       getSpy.mockResolvedValueOnce({ Envelope: { Body: {} } })
@@ -350,6 +398,13 @@ describe('Device Action Tests', () => {
       getSpy.mockResolvedValueOnce(null)
       const result = await device.addAlarmClockOccurrence(fakeAlarm)
       expect(result).toBe(null)
+    })
+  })
+  describe('unprovision', () => {
+    it('should return 0 when unprovision is run', async () => {
+      sendSpy.mockResolvedValue({ Envelope: { Body: { ReturnValue: 0 } } })
+      const result = await device.unprovisionDevice()
+      expect(result).toEqual({ Body: { ReturnValue: 0 } })
     })
   })
 })

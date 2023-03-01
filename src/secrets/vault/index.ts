@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { ISecretManagerService } from '../../interfaces/ISecretManagerService'
-import { certificatesType } from '../../models/Config'
-import got, { Got } from 'got'
+import { type ISecretManagerService } from '../../interfaces/ISecretManagerService'
+import { type certificatesType } from '../../models/Config'
+import got, { type Got } from 'got'
 import { Environment } from '../../utils/Environment'
-import { DeviceSecrets } from '../../models/models'
-import { ILogger } from '../../interfaces/ILogger'
+import { type DeviceSecrets } from '../../models/models'
+import { type ILogger } from '../../interfaces/ILogger'
 import { messages } from '../../logging'
 
 export class VaultSecretManagerService implements ISecretManagerService {
@@ -92,7 +92,7 @@ export class VaultSecretManagerService implements ISecretManagerService {
   }
 
   async health (): Promise<any> {
-    const rspJson: any = await this.gotClient.get('sys/health', {
+    const rspJson: any = await this.gotClient.get('sys/health?standbyok=true', {
       prefixUrl: `${Environment.Config.vault_address}/v1/`
     }).json()
     return rspJson

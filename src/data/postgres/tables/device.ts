@@ -4,9 +4,9 @@
  **********************************************************************/
 
 import { logger, messages } from '../../../logging'
-import { PostgresDb } from '..'
-import { IDeviceTable } from '../../../interfaces/IDeviceTable'
-import { Device } from '../../../models/models'
+import { type PostgresDb } from '..'
+import { type IDeviceTable } from '../../../interfaces/IDeviceTable'
+import { type Device } from '../../../models/models'
 import { MPSValidationError } from '../../../utils/MPSValidationError'
 import { DefaultSkip, DefaultTop } from '../../../utils/constants'
 
@@ -17,7 +17,7 @@ export class DeviceTable implements IDeviceTable {
   }
 
   async getCount (tenantId: string = ''): Promise<number> {
-    const result = await this.db.query<{total_count: number}>(`
+    const result = await this.db.query<{ total_count: number }>(`
     SELECT count(*) OVER() AS total_count 
     FROM devices
     WHERE tenantid = $1`, [tenantId])
@@ -56,7 +56,7 @@ export class DeviceTable implements IDeviceTable {
    * @returns {Device[]} returns an array of objects
    */
   async getConnectedDevices (tenantId: string = ''): Promise<number> {
-    const result = await this.db.query<{connected_count: number}>(`
+    const result = await this.db.query<{ connected_count: number }>(`
       SELECT count(*) OVER() AS connected_count 
       FROM devices
       WHERE tenantid = $1 and connectionstatus = true`, [tenantId])
@@ -72,9 +72,22 @@ export class DeviceTable implements IDeviceTable {
    * @param {string} guid
    * @returns {Device} Device object
    */
-  async getById (id: string, tenantId: string = ''): Promise<Device> {
-    const results = await this.db.query<Device>(`
-    SELECT
+  async getById (id: string, tenantId?: string): Promise<Device> {
+    let query = `SELECT
+    guid as "guid",
+    hostname as "hostname",
+    tags as "tags",
+    mpsinstance as "mpsInstance",
+    connectionstatus as "connectionStatus",
+    mpsusername as "mpsusername",
+    tenantid as "tenantId",
+    friendlyname as "friendlyName",
+    dnssuffix as "dnsSuffix"
+    FROM devices 
+    WHERE guid = $1 and tenantid = $2`
+    let params = [id, tenantId]
+    if (tenantId == null) {
+      query = `SELECT
       guid as "guid",
       hostname as "hostname",
       tags as "tags",
@@ -84,9 +97,11 @@ export class DeviceTable implements IDeviceTable {
       tenantid as "tenantId",
       friendlyname as "friendlyName",
       dnssuffix as "dnsSuffix"
-    FROM devices 
-    WHERE guid = $1 and tenantid = $2`, [id, tenantId])
-
+      FROM devices 
+      WHERE guid = $1`
+      params = [id]
+    }
+    const results = await this.db.query<Device>(query, params)
     return results.rowCount > 0 ? results.rows[0] : null
   }
 
@@ -147,13 +162,11 @@ export class DeviceTable implements IDeviceTable {
   }
 
   async getDistinctTags (tenantId: string = ''): Promise<string[]> {
-    const results = await this.db.query<{tag: string}>(`
+    const results = await this.db.query<{ tag: string }>(`
     SELECT DISTINCT unnest(tags) as tag 
     FROM Devices
     WHERE tenantid = $1`, [tenantId])
-    return results.rows.map(p => {
-      return p.tag
-    })
+    return results.rows.map(p => p.tag)
   }
 
   /**

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { configType } from '../models/Config'
+import { type configType } from '../models/Config'
 
 const Environment = {
   Config: null as configType

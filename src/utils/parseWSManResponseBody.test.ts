@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { HttpZResponseModel } from 'http-z'
+import { type HttpZResponseModel } from 'http-z'
 import { parseBody } from './parseWSManResponseBody'
 
 describe('Check parseWSManResponseBody', () => {

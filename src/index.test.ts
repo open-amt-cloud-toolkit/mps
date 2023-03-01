@@ -8,8 +8,8 @@ import * as exponentialBackoff from 'exponential-backoff'
 import { logger } from './logging'
 import VaultSecretManagerService from './secrets/vault'
 import { Environment } from './utils/Environment'
-import { IDB } from './interfaces/IDb'
-import { ISecretManagerService } from './interfaces/ISecretManagerService'
+import { type IDB } from './interfaces/IDb'
+import { type ISecretManagerService } from './interfaces/ISecretManagerService'
 
 describe('Index', () => {
   describe('loadConfig', () => {
@@ -160,13 +160,9 @@ describe('Index', () => {
       }
       Environment.Config = config
       secretManagerService = new VaultSecretManagerService(logger)
-      jest.spyOn(secretManagerService.gotClient, 'get').mockImplementation(() => {
-        return {
-          json: jest.fn(() => {
-            return null
-          })
-        } as any
-      })
+      jest.spyOn(secretManagerService.gotClient, 'get').mockImplementation(() => ({
+        json: jest.fn(() => null)
+      } as any))
     })
     it('should pass with config', async () => {
       const result = await indexFile.loadCertificates(secretManagerService)

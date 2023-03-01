@@ -362,18 +362,9 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Expect to return device info\",function(){\r",
-									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData.guid).to.be.equal(\"143e4567-e89b-12d3-a456-426614174000\")\r",
-									"    pm.expect(jsonData.hostname).to.be.equal(\"hostname\")\r",
-									"    pm.expect(jsonData.tags.length).to.be.equal(0)  \r",
-									"    pm.expect(jsonData.mpsInstance).to.be.equal(null)\r",
-									"    pm.expect(jsonData.connectionStatus).to.be.equal(false)\r",
-									"})"
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r"
 								],
 								"type": "text/javascript"
 							}

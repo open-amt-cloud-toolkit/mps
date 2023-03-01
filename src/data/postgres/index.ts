@@ -7,9 +7,9 @@
   Code pattern used to make connections and queries.
   Pattern referred from https://node-postgres.com/guides/project-structure
 */
-import { Pool, QueryResult } from 'pg'
-import { IDB } from '../../interfaces/IDb'
-import { IDeviceTable } from '../../interfaces/IDeviceTable'
+import { Pool, type QueryResult } from 'pg'
+import { type IDB } from '../../interfaces/IDb'
+import { type IDeviceTable } from '../../interfaces/IDeviceTable'
 import { logger, messages } from '../../logging'
 import { DeviceTable } from './tables/device'
 
@@ -18,7 +18,7 @@ export class PostgresDb implements IDB {
   devices: IDeviceTable
   constructor (connectionString: string) {
     this.pool = new Pool({
-      connectionString: connectionString
+      connectionString
     })
     this.devices = new DeviceTable(this)
   }

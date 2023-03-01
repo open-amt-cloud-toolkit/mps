@@ -38,6 +38,8 @@ export interface configType {
   instance_name: string
   redirection_expiration_time: number
   web_auth_enabled: boolean
+  jwt_token_header: string
+  jwt_tenant_property: string
 }
 
 export interface certificatesType {

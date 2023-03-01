@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { CIRASocket } from '../models/models'
+import { type CIRASocket } from '../models/models'
 import APFProcessor from './APFProcessor'
-import { connectionParams, HttpHandler } from './HttpHandler'
-import httpZ, { HttpZResponseModel } from 'http-z'
+import { type connectionParams, type HttpHandler } from './HttpHandler'
+import httpZ, { type HttpZResponseModel } from 'http-z'
 import { AMTPort } from '../utils/constants'
-import { Common } from '@open-amt-cloud-toolkit/wsman-messages'
+import { type Common } from '@open-amt-cloud-toolkit/wsman-messages'
 import { CIRAChannel } from './CIRAChannel'
 import { parseBody } from '../utils/parseWSManResponseBody'
 import Bottleneck from 'bottleneck'

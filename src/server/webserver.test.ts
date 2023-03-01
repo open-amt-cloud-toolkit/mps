@@ -3,30 +3,36 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { certificatesType } from '../models/Config'
-import { ISecretManagerService } from '../interfaces/ISecretManagerService'
+import { type certificatesType } from '../models/Config'
+import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
 import { config } from '../test/helper/config'
 import { WebServer } from './webserver'
 import { Environment } from '../utils/Environment'
 import { IncomingMessage } from 'http'
 import { Socket } from 'net'
 import { devices } from './mpsserver'
-
 Environment.Config = config
 
 let certs: certificatesType
 let secrets: ISecretManagerService
 let web: WebServer
+jest.mock('fs', () => ({
+  existsSync: jest.fn(() => true),
+  lstatSync: jest.fn(() => ({ isDirectory: () => true })),
+  readdirSync: jest.fn(() => ['example.js'] as any)
+}))
+jest.mock('../middleware/custom/example', () => function (req, res, next) {})
 
 describe('webserver tests', () => {
   beforeAll(async function () {
     jest.setTimeout(60000)
+
     secrets = {
-      getSecretFromKey: async (path: string, key: string) => { return 'P@ssw0rd' },
-      getSecretAtPath: async (path: string) => { return {} as any },
-      getAMTCredentials: async (path: string) => { return ['admin', 'P@ssw0rd'] },
+      getSecretFromKey: async (path: string, key: string) => 'P@ssw0rd',
+      getSecretAtPath: async (path: string) => ({} as any),
+      getAMTCredentials: async (path: string) => ['admin', 'P@ssw0rd'],
       deleteSecretAtPath: async (path: string) => { },
-      health: async () => { return {} }
+      health: async () => ({})
     }
     certs = {
       mps_tls_config: {} as any,
@@ -136,6 +142,13 @@ describe('webserver tests', () => {
       const handleUpgradeSpy = jest.spyOn(web.relayWSS, 'handleUpgrade')
       web.handleUpgrade(request, socket, head)
       expect(handleUpgradeSpy).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('middleware', () => {
+    it('should load custom middleware', async () => {
+      const result = await web.loadCustomMiddleware()
+      expect(result.length).toBe(1)
     })
   })
 

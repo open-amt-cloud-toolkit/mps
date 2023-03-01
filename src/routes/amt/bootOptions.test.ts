@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { AMT } from '@open-amt-cloud-toolkit/wsman-messages'
+import { type AMT } from '@open-amt-cloud-toolkit/wsman-messages'
 import { CIRAHandler } from '../../amt/CIRAHandler'
 import { DeviceAction } from '../../amt/DeviceAction'
 import { HttpHandler } from '../../amt/HttpHandler'
@@ -18,7 +18,7 @@ describe('Boot Options', () => {
   let forceBootModeSpy: jest.SpyInstance
   let changeBootOrderSpy: jest.SpyInstance
   let sendPowerActionSpy: jest.SpyInstance
-  let bootSettingData: AMT.Models.BootSettingData|any
+  let bootSettingData: AMT.Models.BootSettingData | any
   beforeEach(() => {
     const handler = new CIRAHandler(new HttpHandler(), 'admin', 'P@ssw0rd')
     const device = new DeviceAction(handler, null)
@@ -74,7 +74,7 @@ describe('Boot Options', () => {
     await bootOptions(req, resSpy)
     expect(getBootOptionsSpy).toHaveBeenCalled()
     expect(setBootConfigurationSpy).toHaveBeenCalled()
-    expect(forceBootModeSpy).toHaveBeenCalledWith('Force PXE Boot')
+    expect(forceBootModeSpy).toHaveBeenCalledWith('Intel(r) AMT: Force PXE Boot')
     expect(changeBootOrderSpy).toHaveBeenCalled()
     expect(sendPowerActionSpy).toHaveBeenCalledWith(10)
     expect(resSpy.status).toHaveBeenCalledWith(200)
@@ -146,21 +146,13 @@ describe('Boot Options', () => {
     const result = setBootSource(402)
     expect(result).toBeUndefined()
   })
-  it('Should set bootSource when 300', () => {
-    const result = setBootSource(300)
-    expect(result).toBe('Force Diagnostic Boot')
-  })
-  it('Should set bootSource when 301', () => {
-    const result = setBootSource(301)
-    expect(result).toBe('Force Diagnostic Boot')
-  })
   it('Should set bootSource when 400', () => {
     const result = setBootSource(400)
-    expect(result).toBe('Force PXE Boot')
+    expect(result).toBe('Intel(r) AMT: Force PXE Boot')
   })
   it('Should set bootSource when 401', () => {
     const result = setBootSource(401)
-    expect(result).toBe('Force PXE Boot')
+    expect(result).toBe('Intel(r) AMT: Force PXE Boot')
   })
   it('Should determine power action when 100', () => {
     const result = determinePowerAction(100)

@@ -5,8 +5,8 @@
 
 // import { CIRASocket } from '../models/models'
 // import { card, computerSystemPackage, enumerateResponseCIMSoftwareIdentity } from '../test/helper/wsmanResponses'
-import { HttpZResponseModel } from 'http-z'
-import { CIRASocket } from '../models/models'
+import { type HttpZResponseModel } from 'http-z'
+import { type CIRASocket } from '../models/models'
 import { computerSystemPackage } from '../test/helper/wsmanResponses'
 import { parseBody } from '../utils/parseWSManResponseBody'
 import APFProcessor from './APFProcessor'
@@ -58,9 +58,7 @@ describe('CIRA Handler', () => {
 
   it('Should execute request when channel closed and auth challenge', async () => {
     ciraHandler.channel = {
-      write: async () => {
-        return 'response'
-      },
+      write: async () => 'response',
       CloseChannel: () => {
         // a hack to simulate that auth has completed
         ciraHandler.httpHandler.authResolve()
@@ -91,9 +89,7 @@ describe('CIRA Handler', () => {
 
   it('Should execute request when channel open and auth exists', async () => {
     ciraHandler.channel = {
-      write: async () => {
-        return 'response'
-      }
+      write: async () => 'response'
     } as any
     const handleResultSpy = jest.spyOn(ciraHandler, 'handleResult').mockReturnValue({ data: 'data' })
     const connectSpy = jest.spyOn(ciraHandler, 'Connect')

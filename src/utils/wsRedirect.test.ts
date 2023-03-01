@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { WsRedirect } from './wsRedirect'
-import { queryParams } from '../models/Config'
+import { type queryParams } from '../models/Config'
 import { RedirectInterceptor } from './redirectInterceptor'
 import { devices } from '../server/mpsserver'
 import { ConnectedDevice } from '../amt/ConnectedDevice'
@@ -25,11 +25,11 @@ describe('WsRedirect tests', () => {
   let wsRedirect: WsRedirect
   beforeEach(() => {
     const secretManagerService = {
-      getSecretFromKey: async (path: string, key: string) => { return 'P@ssw0rd' },
-      getSecretAtPath: async (path: string) => { return {} as any },
-      getAMTCredentials: async (path: string) => { return ['admin', 'P@ssw0rd'] },
+      getSecretFromKey: async (path: string, key: string) => 'P@ssw0rd',
+      getSecretAtPath: async (path: string) => ({} as any),
+      getAMTCredentials: async (path: string) => ['admin', 'P@ssw0rd'],
       deleteSecretAtPath: async (path: string) => { },
-      health: async () => { return {} }
+      health: async () => ({})
     }
     resumeSpy = jest.spyOn(mockWebSocket._socket, 'resume').mockReturnValue(null)
     pauseSpy = jest.spyOn(mockWebSocket._socket, 'pause').mockReturnValue(null)
@@ -45,7 +45,7 @@ describe('WsRedirect tests', () => {
         url: `https://iotg.com?tls=0&host=${fakeGuid}`
 
       }
-      devices[fakeGuid] = new ConnectedDevice(null, 'admin', 'P@ssw0rd')
+      devices[fakeGuid] = new ConnectedDevice(null, 'admin', 'P@ssw0rd', '')
 
       const setNormalTCPSpy = jest.spyOn(wsRedirect, 'setNormalTCP').mockReturnValue()
       const publishEventSpy = jest.spyOn(MqttProvider, 'publishEvent')

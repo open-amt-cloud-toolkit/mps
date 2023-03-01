@@ -4,14 +4,14 @@
  **********************************************************************/
 
 import { logger, messages } from '../logging'
-import { IncomingMessage } from 'http'
-import { queryParams } from '../models/Config'
+import { type IncomingMessage } from 'http'
+import { type queryParams } from '../models/Config'
 import { devices } from '../server/mpsserver'
-import { ISecretManagerService } from '../interfaces/ISecretManagerService'
+import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
 import { RedirectInterceptor } from './redirectInterceptor'
-import WebSocket from 'ws'
+import type WebSocket from 'ws'
 import { CIRAHandler } from '../amt/CIRAHandler'
-import { CIRAChannel } from '../amt/CIRAChannel'
+import { type CIRAChannel } from '../amt/CIRAChannel'
 import { MqttProvider } from './MqttProvider'
 
 export class WsRedirect {

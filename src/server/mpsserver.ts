@@ -21,21 +21,21 @@
 
 import { logger, messages } from '../logging'
 import { Environment } from '../utils/Environment'
-import { Server } from 'net'
-import { createServer as tlsCreateServer, TLSSocket } from 'tls'
+import { type Server } from 'net'
+import { createServer as tlsCreateServer, type TLSSocket } from 'tls'
 import { randomBytes } from 'crypto'
 import APFProcessor from '../amt/APFProcessor'
-import { CIRASocket, Device } from '../models/models'
-import { certificatesType } from '../models/Config'
+import { type CIRASocket, type Device } from '../models/models'
+import { type certificatesType } from '../models/Config'
 import { EventEmitter } from 'stream'
-import { IDB } from '../interfaces/IDb'
-import { ISecretManagerService } from '../interfaces/ISecretManagerService'
+import { type IDB } from '../interfaces/IDb'
+import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
 import { ConnectedDevice } from '../amt/ConnectedDevice'
 import { MqttProvider } from '../utils/MqttProvider'
 // 90 seconds max idle time, higher than the typical KEEP-ALIVE period of 60 seconds
 const MAX_IDLE = 90000
 
-const devices: {[key: string]: ConnectedDevice} = {}
+const devices: Record<string, ConnectedDevice> = {}
 
 export { devices }
 export class MPSServer {
@@ -108,7 +108,7 @@ export class MPSServer {
         logger.debug(`${messages.MPS_CIRA_AUTHENTICATION_SUCCESS} for: ${username}`)
         const cred = await this.secrets.getAMTCredentials(socket.tag.SystemId)
 
-        devices[socket.tag.SystemId] = new ConnectedDevice(socket, cred[0], cred[1])
+        devices[socket.tag.SystemId] = new ConnectedDevice(socket, cred[0], cred[1], device.tenantId)
         this.events.emit('connected', socket.tag.SystemId)
         await this.handleDeviceConnect(socket.tag.SystemId)
         APFProcessor.SendUserAuthSuccess(socket) // Notify the auth success on the CIRA connection
@@ -124,7 +124,7 @@ export class MPSServer {
 
   onTLSConnection = (socket: TLSSocket): void => {
     logger.debug(messages.MPS_NEW_TLS_CONNECTION); // New TLS connection detected
-    (socket as CIRASocket).tag = { id: randomBytes(16).toString('hex'), first: true, clientCert: socket.getPeerCertificate(true), accumulator: '', activetunnels: 0, boundPorts: [], socket: socket, host: null, nextchannelid: 4, channels: {}, nextsourceport: 0, nodeid: null }
+    (socket as CIRASocket).tag = { id: randomBytes(16).toString('hex'), first: true, clientCert: socket.getPeerCertificate(true), accumulator: '', activetunnels: 0, boundPorts: [], socket, host: null, nextchannelid: 4, channels: {}, nextsourceport: 0, nodeid: null }
     this.addHandlers(socket as CIRASocket)
   }
 

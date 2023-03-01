@@ -4,9 +4,9 @@
  **********************************************************************/
 
 import url from 'url'
-import { eventType, OpenAMTEvent } from '../models/models'
+import { type eventType, type OpenAMTEvent } from '../models/models'
 import { logger, messages } from '../logging'
-import { MqttClient, connect } from 'mqtt'
+import { type MqttClient, connect } from 'mqtt'
 import { Environment } from './Environment'
 // Provides functions to abstract the interactions
 // with mqtt broker
@@ -53,10 +53,10 @@ export class MqttProvider {
     if (!MqttProvider.instance?.turnedOn) return
 
     const event: OpenAMTEvent = {
-      type: type,
-      message: message,
-      methods: methods,
-      guid: guid,
+      type,
+      message,
+      methods,
+      guid,
       timestamp: Date.now()
     }
 

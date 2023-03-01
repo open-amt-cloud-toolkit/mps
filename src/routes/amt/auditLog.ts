@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Response, Request } from 'express'
+import { type Response, type Request } from 'express'
 import { logger, messages } from '../../logging'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { atob } from 'atob'
 import Common from '../../utils/common'
 import { AMTAuditStringTable, RealmNames } from '../../utils/constants'
-import { Common as WsmanMessagesCommon } from '@open-amt-cloud-toolkit/wsman-messages'
+import { type Common as WsmanMessagesCommon } from '@open-amt-cloud-toolkit/wsman-messages'
 
 export async function auditLog (req: Request, res: Response): Promise<void> {
   try {

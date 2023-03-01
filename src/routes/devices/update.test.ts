@@ -14,15 +14,9 @@ let endSpy: jest.SpyInstance
 
 beforeEach(() => {
   res = {
-    status: () => {
-      return res
-    },
-    json: () => {
-      return res
-    },
-    end: () => {
-      return res
-    }
+    status: () => res,
+    json: () => res,
+    end: () => res
   }
   statusSpy = jest.spyOn(res as any, 'status')
   jsonSpy = jest.spyOn(res as any, 'json')
@@ -46,7 +40,7 @@ describe('update', () => {
         }
       },
       body: {
-        guid: guid
+        guid
       }
     }
     await updateDevice(req as any, res as any)
@@ -66,7 +60,7 @@ describe('update', () => {
         }
       },
       body: {
-        guid: guid
+        guid
       }
     }
     const expectedDevice = { ...device, ...req.body }
@@ -91,7 +85,7 @@ describe('update', () => {
         }
       },
       body: {
-        guid: guid
+        guid
       }
     }
     await updateDevice(req as any, res as any)
@@ -111,7 +105,7 @@ describe('update', () => {
         }
       },
       body: {
-        guid: guid
+        guid
       }
     }
     await updateDevice(req as any, res as any)

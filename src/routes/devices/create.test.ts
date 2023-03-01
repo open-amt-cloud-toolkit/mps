@@ -14,15 +14,9 @@ let endSpy: jest.SpyInstance
 
 beforeEach(() => {
   res = {
-    status: () => {
-      return res
-    },
-    json: () => {
-      return res
-    },
-    end: () => {
-      return res
-    }
+    status: () => res,
+    json: () => res,
+    end: () => res
   }
   statusSpy = jest.spyOn(res as any, 'status')
   endSpy = jest.spyOn(res as any, 'end')
@@ -68,7 +62,7 @@ describe('create', () => {
       }
     } as any
     await insertDevice(req, res as any)
-    expect(req.db.devices.getById).toHaveBeenCalledWith(guidFromRequest)
+    expect(req.db.devices.getById).toHaveBeenCalledWith(guidFromRequest, tenantIdFromRequest)
     expect(statusSpy).toHaveBeenCalledWith(200)
     expect(jsonSpy).toHaveBeenCalledWith(expectedUpdateResultFromDb)
     expect(req.db.devices.update).toHaveBeenCalledWith(expectedUpdateResultFromDb)
@@ -116,7 +110,7 @@ describe('create', () => {
       }
     } as any
     await insertDevice(req, res as any)
-    expect(req.db.devices.getById).toHaveBeenCalledWith(guidFromRequest)
+    expect(req.db.devices.getById).toHaveBeenCalledWith(guidFromRequest, null)
     expect(statusSpy).toHaveBeenCalledWith(200)
     expect(jsonSpy).toHaveBeenCalledWith(expectedUpdateResultFromDb)
     expect(req.db.devices.update).toHaveBeenCalledWith(expectedUpdateResultFromDb)
@@ -160,7 +154,7 @@ describe('create', () => {
       }
     } as any
     await insertDevice(req, res as any)
-    expect(req.db.devices.getById).toHaveBeenCalledWith(guidFromRequest)
+    expect(req.db.devices.getById).toHaveBeenCalledWith(guidFromRequest, tenantIdFromRequest)
     expect(statusSpy).toHaveBeenCalledWith(201)
     expect(jsonSpy).toHaveBeenCalledWith(expectedInsertResultFromDb)
     expect(req.db.devices.insert).toHaveBeenCalledWith(expectedInsertResultFromDb)
@@ -204,7 +198,7 @@ describe('create', () => {
       }
     } as any
     await insertDevice(req, res as any)
-    expect(req.db.devices.getById).toHaveBeenCalledWith(guidFromRequest)
+    expect(req.db.devices.getById).toHaveBeenCalledWith(guidFromRequest, null)
     expect(statusSpy).toHaveBeenCalledWith(201)
     expect(jsonSpy).toHaveBeenCalledWith(expectedInsertResultFromDb)
     expect(req.db.devices.insert).toHaveBeenCalledWith(expectedInsertResultFromDb)

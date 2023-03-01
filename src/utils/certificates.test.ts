@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { Certificates } from './certificates'
-import { certificatesType } from '../models/Config'
+import { type certificatesType } from '../models/Config'
 import forge from 'node-forge'
 
 let certificates: Certificates

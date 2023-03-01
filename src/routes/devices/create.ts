@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Device } from '../../models/models'
+import { type Device } from '../../models/models'
 import { logger, messages } from '../../logging'
 import { MPSValidationError } from '../../utils/MPSValidationError'
-import { Request, Response } from 'express'
+import { type Request, type Response } from 'express'
 
 export async function insertDevice (req: Request, res: Response): Promise<void> {
   let device: Device
   try {
-    device = await req.db.devices.getById(req.body.guid)
+    device = await req.db.devices.getById(req.body.guid, req.body.tenantId)
     if (device != null) {
       device.hostname = req.body.hostname ?? device.hostname
       device.tags = req.body.tags ?? device.tags
