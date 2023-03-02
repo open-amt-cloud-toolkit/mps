@@ -1,3 +1,32 @@
+<a name="2.8.1"></a>
+## [2.8.1] - 2023-03-03
+### Build
+- update to v2.8.1, update changelog (#d66c4b1) 
+- updated Node to 18 ([#815](https://github.com/open-amt-cloud-toolkit/mps/issues/815)) (#19f6b91) 
+- **deps:** bump exponential-backoff from 3.1.0 to 3.1.1 (#0fc033b) 
+- **deps:** bump ws from 8.12.0 to 8.12.1 ([#809](https://github.com/open-amt-cloud-toolkit/mps/issues/809)) (#d11821c) 
+- **deps:** bump express-validator from 6.14.3 to 6.15.0 ([#814](https://github.com/open-amt-cloud-toolkit/mps/issues/814)) (#9f7d7b6) 
+- **deps:** bump [@open](https://github.com/open)-amt-cloud-toolkit/wsman-messages (#21a2b80) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 18.14.2 to 18.14.4 (#5803827) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.52.0 to 5.53.0 (#13a52c5) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 18.14.0 to 18.14.1 ([#822](https://github.com/open-amt-cloud-toolkit/mps/issues/822)) (#6a3b9e8) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 18.14.1 to 18.14.2 (#c2da1a4) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 18.13.0 to 18.14.0 (#607fc8a) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin ([#818](https://github.com/open-amt-cloud-toolkit/mps/issues/818)) (#af9da31) 
+- **deps-dev:** bump eslint from 8.34.0 to 8.35.0 (#9bff6db) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.53.0 to 5.54.0 (#e48de73) 
+- **deps-dev:** bump eslint from 8.33.0 to 8.34.0 ([#808](https://github.com/open-amt-cloud-toolkit/mps/issues/808)) (#27b7dce) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin ([#810](https://github.com/open-amt-cloud-toolkit/mps/issues/810)) (#02f3121) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin (#09bcf1a) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.51.0 to 5.52.0 ([#811](https://github.com/open-amt-cloud-toolkit/mps/issues/811)) (#31d9ec0) 
+
+### Docs
+- add discord info ([#830](https://github.com/open-amt-cloud-toolkit/mps/issues/830)) (#52e5535) 
+
+### Fix
+- upated IsecretManagerService ([#829](https://github.com/open-amt-cloud-toolkit/mps/issues/829)) (#702e678) 
+- **health:** fix vault health check failure when in HA mode (#835a2db) 
+
 <a name="2.8.0"></a>
 ## [2.8.0] - 2023-02-16
 ### Build
