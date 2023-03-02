@@ -1,6 +1,6 @@
 # Management Presence Server
 
-[![Known Vulnerabilities](https://snyk.io/test/github/open-amt-cloud-toolkit/mps/badge.svg?targetFile=package.json)](https://snyk.io/test/github/open-amt-cloud-toolkit/mps?targetFile=package.json) ![Node.js CI](https://github.com/open-amt-cloud-toolkit/mps/workflows/Node.js%20CI/badge.svg) ![codecov.io](https://codecov.io/github/open-amt-cloud-toolkit/mps/coverage.svg?branch=main) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/open-amt-cloud-toolkit/mps/badge)](https://api.securityscorecards.dev/projects/github.com/open-amt-cloud-toolkit/mps)
+[![Known Vulnerabilities](https://snyk.io/test/github/open-amt-cloud-toolkit/mps/badge.svg?targetFile=package.json)](https://snyk.io/test/github/open-amt-cloud-toolkit/mps?targetFile=package.json) ![Node.js CI](https://github.com/open-amt-cloud-toolkit/mps/workflows/Node.js%20CI/badge.svg) ![codecov.io](https://codecov.io/github/open-amt-cloud-toolkit/mps/coverage.svg?branch=main) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/open-amt-cloud-toolkit/mps/badge)](https://api.securityscorecards.dev/projects/github.com/open-amt-cloud-toolkit/mps) [![Discord Shield](https://discordapp.com/api/guilds/1063200098680582154/widget.png?style=shield)](https://discord.gg/yrcMp2kDWh)
 
 > Disclaimer: Production viable releases are tagged and listed under 'Releases'.  All other check-ins should be considered 'in-development' and should not be used in production
 
@@ -8,7 +8,7 @@ The Management Presence Server (MPS) enables remote edge management of Intel vPr
 
 <br><br>
 
-**For detailed documentation** about Getting Started with MPS or other features of the Open AMT Cloud Toolkit, see the [docs](https://open-amt-cloud-toolkit.github.io/docs).
+**For detailed documentation** about Getting Started or other features of the Open AMT Cloud Toolkit, see the [docs](https://open-amt-cloud-toolkit.github.io/docs).
 
 <br>
 
@@ -16,7 +16,7 @@ The Management Presence Server (MPS) enables remote edge management of Intel vPr
 
 To succesfully deploy MPS, the following software must be installed on your development system:
 
-- [Node.js* LTS 12.x.x or newer](https://nodejs.org/en/)
+- [Node.js* LTS 18.x.x or newer](https://nodejs.org/en/)
 - [git](https://git-scm.com/downloads)
 
 
@@ -65,8 +65,6 @@ To deploy the MPS on a local development system:
     Intel(R) AMT server running on localhost:4433.
     ```
 
-For detailed documentation about MPS, see the [docs](https://open-amt-cloud-toolkit.github.io/docs)
-
 <br>
     
 ## Using Kong
@@ -83,3 +81,16 @@ jwt_secrets:
     secret: myStrongSecret
 ```
 
+<br>
+
+## Additional Resources
+
+- For detailed documentation and Getting Started, [visit the docs site](https://open-amt-cloud-toolkit.github.io/docs).
+
+- Looking to contribute? [Find more information here about contribution guidelines and practices](.\CONTRIBUTING.md).
+
+- Find a bug? Or have ideas for new features? [Open a new Issue](https://github.com/open-amt-cloud-toolkit/mps/issues).
+
+- Need additional support or want to get the latest news and events about Open AMT? Connect with the team directly through Discord.
+
+    [![Discord Banner 1](https://discordapp.com/api/guilds/1063200098680582154/widget.png?style=banner2)](https://discord.gg/yrcMp2kDWh)
