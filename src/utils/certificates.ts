@@ -14,9 +14,10 @@
 import { logger, messages } from '../logging'
 import { type certificatesType, type mpsConfigType, type webConfigType, type certAndKeyType } from '../models/Config'
 import forge from 'node-forge'
+import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
 
 export class Certificates {
-  constructor (private readonly config: any, private readonly secrets: any) {
+  constructor (private readonly config: any, private readonly secrets: ISecretManagerService) {
     this.config = config
     this.secrets = secrets
   }

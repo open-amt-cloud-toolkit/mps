@@ -6,6 +6,7 @@
 import { Certificates } from './certificates'
 import { type certificatesType } from '../models/Config'
 import forge from 'node-forge'
+import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
 
 let certificates: Certificates
 let certificatesTls12: Certificates
@@ -32,7 +33,12 @@ const configtls12 = {
     minVersion: 'TLSv1.2'
   }
 }
-const secrets = {
+const secrets: ISecretManagerService = {
+  getSecretFromKey: () => undefined,
+  getSecretAtPath: () => undefined,
+  getAMTCredentials: () => undefined,
+  deleteSecretAtPath: () => undefined,
+  health: () => undefined,
   getMPSCerts: () => undefined,
   writeSecretWithObject: async () => undefined
 }
