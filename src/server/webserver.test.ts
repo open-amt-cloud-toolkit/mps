@@ -31,6 +31,8 @@ describe('webserver tests', () => {
       getSecretFromKey: async (path: string, key: string) => 'P@ssw0rd',
       getSecretAtPath: async (path: string) => ({} as any),
       getAMTCredentials: async (path: string) => ['admin', 'P@ssw0rd'],
+      getMPSCerts: async () => ({} as any),
+      writeSecretWithObject: async (path: string, data: any) => false,
       deleteSecretAtPath: async (path: string) => { },
       health: async () => ({})
     }
