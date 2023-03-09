@@ -95,7 +95,7 @@ export class WebServer {
     if (doesExist && isDirectory) {
       const files = readdirSync(pathToCustomMiddleware)
       for (const file of files) {
-        if (path.extname(file) === '.js') {
+        if (path.extname(file) === '.js' && !file.endsWith('test.js')) {
           const customMiddleware = await import(path.join(pathToCustomMiddleware, file.substring(0, file.lastIndexOf('.'))))
           logger.info('Loading custom middleware: ' + file)
           if (customMiddleware?.default != null) {
