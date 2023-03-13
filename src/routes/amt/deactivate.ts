@@ -14,7 +14,7 @@ export async function deactivate (req: Request, res: Response): Promise<void> {
 
     const result = await req.deviceAction.unprovisionDevice()
     if (result.Body?.Unprovision_OUTPUT?.ReturnValue === 0) {
-      await req.db.devices.delete(guid)
+      await req.db.devices.delete(guid, req.tenantId)
       await req.secrets.deleteSecretAtPath(`devices/${guid}`)
       res.status(200).json({ status: 'SUCCESS' })
     } else {
