@@ -1,3 +1,38 @@
+<a name="2.8.2"></a>
+## [2.8.2] - 2023-04-05
+### Build
+- update package.json to v2.8.2 (#7cd642b) 
+- **deps:** bump [@open](https://github.com/open)-amt-cloud-toolkit/wsman-messages ([#858](https://github.com/open-amt-cloud-toolkit/mps/issues/858)) (#de1889b) 
+- **deps:** bump pg from 8.9.0 to 8.10.0 ([#835](https://github.com/open-amt-cloud-toolkit/mps/issues/835)) (#1b3bb7c) 
+- **deps:** bump ws from 8.12.1 to 8.13.0 ([#839](https://github.com/open-amt-cloud-toolkit/mps/issues/839)) (#0449193) 
+- **deps:** bump [@open](https://github.com/open)-amt-cloud-toolkit/wsman-messages (#474b0f5) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.55.0 to 5.56.0 (#fb34d5d) 
+- **deps-dev:** bump eslint from 8.36.0 to 8.37.0 (#57d21bf) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.56.0 to 5.57.0 ([#857](https://github.com/open-amt-cloud-toolkit/mps/issues/857)) (#82f2312) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 18.15.7 to 18.15.10 ([#856](https://github.com/open-amt-cloud-toolkit/mps/issues/856)) (#b99b745) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin ([#855](https://github.com/open-amt-cloud-toolkit/mps/issues/855)) (#a472ed3) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 18.15.6 to 18.15.7 ([#853](https://github.com/open-amt-cloud-toolkit/mps/issues/853)) (#5202f87) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 18.15.5 to 18.15.6 ([#852](https://github.com/open-amt-cloud-toolkit/mps/issues/852)) (#b7fbddf) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 18.15.3 to 18.15.5 (#40e5e8b) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 18.15.10 to 18.15.11 (#bbbc045) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin (#e870d36) 
+- **deps-dev:** bump [@types](https://github.com/types)/node-forge from 1.3.1 to 1.3.2 ([#863](https://github.com/open-amt-cloud-toolkit/mps/issues/863)) (#4ace390) 
+- **deps-dev:** bump eslint-config-standard-with-typescript (#7bd9b31) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 18.15.0 to 18.15.3 (#05511b3) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.54.1 to 5.55.0 ([#844](https://github.com/open-amt-cloud-toolkit/mps/issues/844)) (#e9950e9) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin ([#842](https://github.com/open-amt-cloud-toolkit/mps/issues/842)) (#d34006c) 
+- **deps-dev:** bump eslint from 8.35.0 to 8.36.0 ([#840](https://github.com/open-amt-cloud-toolkit/mps/issues/840)) (#99f7b37) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.57.0 to 5.57.1 ([#862](https://github.com/open-amt-cloud-toolkit/mps/issues/862)) (#47aa9e5) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 18.14.6 to 18.15.0 ([#838](https://github.com/open-amt-cloud-toolkit/mps/issues/838)) (#0f0fcdd) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 18.14.4 to 18.14.6 ([#833](https://github.com/open-amt-cloud-toolkit/mps/issues/833)) (#2f7a828) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin ([#834](https://github.com/open-amt-cloud-toolkit/mps/issues/834)) (#68647d3) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin ([#861](https://github.com/open-amt-cloud-toolkit/mps/issues/861)) (#d48d9e8) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.54.0 to 5.54.1 ([#836](https://github.com/open-amt-cloud-toolkit/mps/issues/836)) (#ae0173d) 
+
+### Fix
+- add missing tenantid in deactivate call ([#841](https://github.com/open-amt-cloud-toolkit/mps/issues/841)) (#7724a60) 
+- exclude test.js files from custom middleware (#fb5e1f2) 
+
 <a name="2.8.1"></a>
 ## [2.8.1] - 2023-03-03
 ### Build
