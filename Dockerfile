@@ -9,7 +9,7 @@ FROM ${BASE} as builder
 LABEL license='SPDX-License-Identifier: Apache-2.0' \
       copyright='Copyright (c) Intel Corporation 2021'
 
-WORKDIR /mps-microservice
+WORKDIR /mps
 
 EXPOSE 4433
 EXPOSE 3000
@@ -19,7 +19,7 @@ COPY package*.json ./
 # Install dependencies
 RUN npm ci --unsafe-perm
 
-COPY tsconfig.json ./
+COPY tsconfig.json tsconfig.build.json ./
 COPY src ./src/
 COPY agent ./agent/
 COPY .mpsrc ./
@@ -28,6 +28,20 @@ COPY .mpsrc ./
 RUN npm run build
 RUN npm prune --production
 
-USER node
+FROM alpine:latest
 
-CMD [ "node", "./dist/index.js" ]
+RUN addgroup -g 1000 node && adduser -u 1000 -G node -s /bin/sh -D node 
+RUN apk update && apk add nodejs && rm -rf /var/cache/apk/*
+
+COPY --from=builder  /mps/dist /mps/dist
+COPY --from=builder  /mps/.mpsrc /.mpsrc
+COPY --from=builder  /mps/node_modules /mps/node_modules
+COPY --from=builder  /mps/package.json /mps/package.json
+# set the user to non-root
+USER node
+# Default Ports Used
+EXPOSE 8080
+EXPOSE 8081
+EXPOSE 8082
+
+CMD ["node", "/mps/dist/index.js"]
