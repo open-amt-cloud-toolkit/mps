@@ -26,8 +26,8 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "build": "tsc",
-    "compile": "tsc",
+    "build": "tsc --project tsconfig.build.json",
+    "compile": "tsc --project tsconfig.build.json",
     "lint": "eslint . --ext .ts",
     "start": "npm run build && node ./dist/index.js",
     "test": "jest --detectOpenHandles --forceExit --coverage"

@@ -2,12 +2,13 @@
     "compilerOptions": {
         "strictNullChecks": false,
         "outDir": "./dist",
-        "sourceMap": true,
         "moduleResolution": "node",
-        "esModuleInterop": true,
         "module": "commonjs",
         "allowJs": true,
         "target": "es2019",
+        "sourceMap": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
         "typeRoots": [
             "node_modules/@types",
             "src/custom.d.ts",
@@ -15,5 +16,8 @@
     },
     "include": [
         "./src/**/*"
+    ],
+    "type": [
+        "@types/node"
     ]
 }
