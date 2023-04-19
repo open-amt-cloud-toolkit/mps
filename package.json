@@ -71,7 +71,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
     "jest": "27.5.1",
-    "jest-junit": "^15.0.0",
+    "jest-junit": "^16.0.0",
     "jest-transform-stub": "^2.0.0",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.9.1",
