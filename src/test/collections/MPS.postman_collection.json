@@ -221,7 +221,7 @@
 									"    var jsonData = pm.response.json();\r",
 									"    pm.expect(jsonData.errors[0].value).to.be.equal(\"143e4567-e89b-12d3-a456-426614174\")\r",
 									"    pm.expect(jsonData.errors[0].msg).to.be.equal(\"Invalid value\")\r",
-									"    pm.expect(jsonData.errors[0].param).to.be.equal(\"guid\")  \r",
+									"    pm.expect(jsonData.errors[0].path).to.be.equal(\"guid\")  \r",
 									"    pm.expect(jsonData.errors[0].location).to.be.equal(\"body\")\r",
 									"})"
 								],
@@ -270,7 +270,7 @@
 									"    var jsonData = pm.response.json();\r",
 									"    pm.expect(jsonData.errors[0].value).to.be.equal(\"test\")\r",
 									"    pm.expect(jsonData.errors[0].msg).to.be.equal(\"tags should be an array of strings\")\r",
-									"    pm.expect(jsonData.errors[0].param).to.be.equal(\"tags\")  \r",
+									"    pm.expect(jsonData.errors[0].path).to.be.equal(\"tags\")  \r",
 									"    pm.expect(jsonData.errors[0].location).to.be.equal(\"body\")\r",
 									"})"
 								],
@@ -403,7 +403,7 @@
 									"    var jsonData = pm.response.json();\r",
 									"    pm.expect(jsonData.errors[0].value).to.be.equal(\"143e4567-e89b-12d3-a456-426614174\")\r",
 									"    pm.expect(jsonData.errors[0].msg).to.be.equal(\"Invalid value\")\r",
-									"    pm.expect(jsonData.errors[0].param).to.be.equal(\"guid\")  \r",
+									"    pm.expect(jsonData.errors[0].path).to.be.equal(\"guid\")  \r",
 									"    pm.expect(jsonData.errors[0].location).to.be.equal(\"params\")\r",
 									"})"
 								],
@@ -1112,7 +1112,7 @@
 									"    var jsonData = pm.response.json();\r",
 									"    pm.expect(jsonData.errors[0].value).to.be.equal(\"143e4567-e89b-12d3-a456-426614174\")\r",
 									"    pm.expect(jsonData.errors[0].msg).to.be.equal(\"Invalid value\")\r",
-									"    pm.expect(jsonData.errors[0].param).to.be.equal(\"guid\")  \r",
+									"    pm.expect(jsonData.errors[0].path).to.be.equal(\"guid\")  \r",
 									"    pm.expect(jsonData.errors[0].location).to.be.equal(\"params\")\r",
 									"});"
 								],
@@ -2069,7 +2069,7 @@
 									"pm.test(\"request should fail without username\", function () {\r",
 									"    var jsonData = pm.response.json();\r",
 									"    pm.expect(jsonData.errors[0].msg).to.be.eql(\"User name is required\");\r",
-									"    pm.expect(jsonData.errors[0].param).to.be.eql(\"username\");\r",
+									"    pm.expect(jsonData.errors[0].path).to.be.eql(\"username\");\r",
 									"    pm.expect(jsonData.errors[0].location).to.be.eql(\"body\");\r",
 									"});\r",
 									""
@@ -2119,7 +2119,7 @@
 									"pm.test(\"request should fail without password\", function () {\r",
 									"    var jsonData = pm.response.json();\r",
 									"    pm.expect(jsonData.errors[0].msg).to.be.eql(\"Password is required\");\r",
-									"    pm.expect(jsonData.errors[0].param).to.be.eql(\"password\");\r",
+									"    pm.expect(jsonData.errors[0].path).to.be.eql(\"password\");\r",
 									"    pm.expect(jsonData.errors[0].location).to.be.eql(\"body\");\r",
 									"});\r",
 									""
@@ -2169,7 +2169,7 @@
 									"pm.test(\"request should fail without username\", function () {\r",
 									"    var jsonData = pm.response.json();\r",
 									"    pm.expect(jsonData.errors[0].msg).to.be.eql(\"Invalid value\");\r",
-									"    pm.expect(jsonData.errors[0].param).to.be.eql(\"guid\");\r",
+									"    pm.expect(jsonData.errors[0].path).to.be.eql(\"guid\");\r",
 									"    pm.expect(jsonData.errors[0].location).to.be.eql(\"params\");\r",
 									"});"
 								],
