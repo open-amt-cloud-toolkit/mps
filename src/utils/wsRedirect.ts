@@ -119,6 +119,7 @@ export class WsRedirect {
       if (state === 0) {
         try {
           logger.debug(messages.REDIRECT_CLOSING_WEB_SOCKET)
+          devices[params.host].kvmConnect = false // Indicate no current KVM session on the device
           this.websocketFromWeb.close()
         } catch (e) {
           logger.error(`${messages.REDIRECT_CLOSING_WEBSOCKET_EXCEPTION}: ${e}`)
