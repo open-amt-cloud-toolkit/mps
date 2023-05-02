@@ -16,7 +16,7 @@ export async function deleteDevice (req: Request, res: Response): Promise<void> 
     if (device == null) {
       res.status(404).json({ error: 'NOT FOUND', message: `Device ID ${req.params.guid} not found` }).end()
     } else {
-      const results = await req.db.devices.delete(req.params.guid, req.tenantId)
+      const results = await req.db.devices.delete(req.params.guid, tenantId)
       if (results) {
         res.status(204).end()
       }
