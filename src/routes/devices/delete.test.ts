@@ -36,7 +36,8 @@ const req = {
       delete: () => {},
       getById: () => {}
     }
-  }
+  },
+  tenantId: ''
 } as any
 
 describe('delete', () => {
