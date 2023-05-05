@@ -1,3 +1,38 @@
+<a name="2.8.3"></a>
+## [2.8.3] - 2023-05-05
+### Build
+- update changelog and version to v2.8.3 (#f21e1aa) 
+- **deps:** bump [@open](https://github.com/open)-amt-cloud-toolkit/wsman-messages ([#885](https://github.com/open-amt-cloud-toolkit/mps/issues/885)) (#73c605f) 
+- **deps:** bump [@open](https://github.com/open)-amt-cloud-toolkit/wsman-messages ([#871](https://github.com/open-amt-cloud-toolkit/mps/issues/871)) (#249b486) 
+- **deps:** bump xml2js from 0.4.23 to 0.5.0 (#b7eb3a1) 
+- **deps:** bump express-validator from 6.15.0 to 7.0.1 ([#876](https://github.com/open-amt-cloud-toolkit/mps/issues/876)) (#87788c8) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 18.15.12 to 18.15.13 ([#879](https://github.com/open-amt-cloud-toolkit/mps/issues/879)) (#31b9ccd) 
+- **deps-dev:** bump eslint from 8.38.0 to 8.39.0 ([#880](https://github.com/open-amt-cloud-toolkit/mps/issues/880)) (#3902d92) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin ([#882](https://github.com/open-amt-cloud-toolkit/mps/issues/882)) (#f7eea0e) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 18.15.13 to 18.16.1 ([#884](https://github.com/open-amt-cloud-toolkit/mps/issues/884)) (#74ddc8c) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.59.0 to 5.59.1 ([#881](https://github.com/open-amt-cloud-toolkit/mps/issues/881)) (#4c4d54d) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 18.16.1 to 18.16.2 ([#887](https://github.com/open-amt-cloud-toolkit/mps/issues/887)) (#c700ab3) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 18.16.2 to 18.16.3 ([#889](https://github.com/open-amt-cloud-toolkit/mps/issues/889)) (#fc71ae7) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 18.15.11 to 18.15.12 ([#878](https://github.com/open-amt-cloud-toolkit/mps/issues/878)) (#5a52fff) 
+- **deps-dev:** bump jest-junit from 15.0.0 to 16.0.0 ([#873](https://github.com/open-amt-cloud-toolkit/mps/issues/873)) (#8b5478a) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.58.0 to 5.59.0 ([#874](https://github.com/open-amt-cloud-toolkit/mps/issues/874)) (#a3d8f65) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin ([#875](https://github.com/open-amt-cloud-toolkit/mps/issues/875)) (#5a54d42) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin ([#890](https://github.com/open-amt-cloud-toolkit/mps/issues/890)) (#25d410c) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.59.1 to 5.59.2 ([#891](https://github.com/open-amt-cloud-toolkit/mps/issues/891)) (#1c35806) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin (#be84f69) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.57.1 to 5.58.0 (#96de3f7) 
+- **deps-dev:** bump eslint from 8.37.0 to 8.38.0 (#cd7a544) 
+- **docker:** ensure healthcheck remains in same location ([#872](https://github.com/open-amt-cloud-toolkit/mps/issues/872)) (#af9a9d9) 
+- **docker:** reduce docker image size and reduce vulnerability surface area (#83576e3) 
+
+### Ci
+- **deps:** bump codecov to 3.1.3 (#6f3b1ed) 
+
+### Fix
+- update kvmConnect property on CIRA connection close ([#888](https://github.com/open-amt-cloud-toolkit/mps/issues/888)) (#37307fe) 
+- Device deletion request from RPS ([#886](https://github.com/open-amt-cloud-toolkit/mps/issues/886)) (#dd483d6) 
+
+
 <a name="2.8.2"></a>
 ## [2.8.2] - 2023-04-05
 ### Build
