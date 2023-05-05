@@ -10,6 +10,7 @@ import { devices } from '../server/mpsserver'
 import { ConnectedDevice } from '../amt/ConnectedDevice'
 import { Socket } from 'net'
 import { MqttProvider } from './MqttProvider'
+import { EventEmitter } from 'stream'
 
 const fakeGuid = '00000000-0000-0000-0000-000000000000'
 
@@ -23,6 +24,7 @@ describe('WsRedirect tests', () => {
   let pauseSpy: jest.SpyInstance
   let resumeSpy: jest.SpyInstance
   let wsRedirect: WsRedirect
+
   beforeEach(() => {
     const secretManagerService = {
       getSecretFromKey: async (path: string, key: string) => 'P@ssw0rd',
@@ -45,7 +47,6 @@ describe('WsRedirect tests', () => {
 
       const mockIncomingMessage = {
         url: `https://iotg.com?tls=0&host=${fakeGuid}`
-
       }
       devices[fakeGuid] = new ConnectedDevice(null, 'admin', 'P@ssw0rd', '')
 
@@ -144,6 +145,34 @@ describe('WsRedirect tests', () => {
       wsRedirect.setNormalTCP(params)
       expect(setupCIRASpy).toHaveBeenCalled()
       expect(resumeSpy).toHaveBeenCalled()
+    })
+
+    it('should close websocket connection and set kvmConnect to false when cira state changes to 0', () => {
+      devices[fakeGuid] = new ConnectedDevice(null, 'admin', 'P@ssw0rd', '')
+      devices[fakeGuid].kvmConnect = true // Set kvmConnect to true
+      const params: queryParams = {
+        host: fakeGuid,
+        port: 16994
+      } as any
+      const mockCiraChannel = {
+        onData: jest.fn(),
+        onStateChange: new EventEmitter(),
+        send: jest.fn()
+      } as any
+      wsRedirect.ciraHandler = {
+        SetupCiraChannel: jest.fn()
+      } as any
+      const setupCIRASpy = jest.spyOn(wsRedirect.ciraHandler, 'SetupCiraChannel').mockReturnValue(mockCiraChannel)
+
+      wsRedirect.setNormalTCP(params)
+
+      const onClose = jest.fn()
+      wsRedirect.websocketFromWeb = { close: onClose } as any
+      wsRedirect.websocketFromDevice.onStateChange.emit('stateChange', 0) // Emit stateChange event
+
+      expect(setupCIRASpy).toHaveBeenCalled()
+      expect(onClose).toHaveBeenCalled()
+      expect(devices[fakeGuid].kvmConnect).toBe(false)
     })
   })
 })
