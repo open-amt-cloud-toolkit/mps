@@ -92,7 +92,7 @@ describe('Device Action Tests', () => {
   describe('boot', () => {
     it('should forceBootMode', async () => {
       sendSpy.mockResolvedValue(null)
-      const result = await device.forceBootMode('')
+      const result = await device.forceBootMode()
       expect(sendSpy).toHaveBeenCalled()
       expect(result).toBe(null)
     })
@@ -100,6 +100,12 @@ describe('Device Action Tests', () => {
       sendSpy.mockResolvedValue({})
       const bootSourceSetting: CIM.Types.BootConfigSetting.InstanceID = 'Intel(r) AMT: Force PXE Boot'
       const result = await device.changeBootOrder(bootSourceSetting)
+      expect(sendSpy).toHaveBeenCalled()
+      expect(result).toEqual({})
+    })
+    it('should revert changeBootOrder', async () => {
+      sendSpy.mockResolvedValue({})
+      const result = await device.changeBootOrder()
       expect(sendSpy).toHaveBeenCalled()
       expect(result).toEqual({})
     })
