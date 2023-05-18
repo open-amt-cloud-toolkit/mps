@@ -1,3 +1,25 @@
+<a name="2.8.4"></a>
+## [2.8.4] - 2023-05-18
+### Build
+- update changelog and version to v2.8.3 (#2900d0a) 
+- **deps:** bump pg from 8.10.0 to 8.11.0 (#8645f8f) 
+- **deps:** bump [@open](https://github.com/open)-amt-cloud-toolkit/wsman-messages (#4417572) 
+- **deps:** bump [@open](https://github.com/open)-amt-cloud-toolkit/wsman-messages (#8c01745) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.1.2 to 20.1.3 ([#904](https://github.com/open-amt-cloud-toolkit/mps/issues/904)) (#81c2012) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.1.3 to 20.1.5 (#15df302) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin (#94f257f) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.59.5 to 5.59.6 (#afba336) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.1.1 to 20.1.2 (#9def3b2) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.59.2 to 5.59.5 (#f38e829) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin (#39b1ff5) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.1.0 to 20.1.1 (#5cd85b5) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.1.5 to 20.1.7 (#4ff979f) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 18.16.3 to 20.1.0 ([#895](https://github.com/open-amt-cloud-toolkit/mps/issues/895)) (#2ef3f38) 
+- **deps-dev:** bump eslint from 8.39.0 to 8.40.0 ([#894](https://github.com/open-amt-cloud-toolkit/mps/issues/894)) (#158123b) 
+
+### Fix
+- changes to reset to PXE (#4da936b) 
+
 <a name="2.8.3"></a>
 ## [2.8.3] - 2023-05-05
 ### Build
