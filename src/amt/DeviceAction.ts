@@ -111,8 +111,9 @@ export class DeviceAction {
     return result.Envelope.Body
   }
 
-  async forceBootMode (bootSource: string = 'Intel(r) AMT: Boot Configuration 0', role: CIM.Types.BootService.Role = 1): Promise<number> {
+  async forceBootMode (role: CIM.Types.BootService.Role = 1): Promise<number> {
     logger.silly(`forceBootMode ${messages.REQUEST}`)
+    const bootSource: string = 'Intel(r) AMT: Boot Configuration 0'
     const xmlRequestBody = this.cim.BootService.SetBootConfigRole(bootSource, role)
     const result = await this.ciraHandler.Send(this.ciraSocket, xmlRequestBody)
     logger.silly(`forceBootMode ${messages.COMPLETE}`)
@@ -127,11 +128,14 @@ export class DeviceAction {
     return result
   }
 
-  async changeBootOrder (bootSource: Types.BootConfigSetting.InstanceID): Promise<any> {
+  async changeBootOrder (bootSource?: Types.BootConfigSetting.InstanceID): Promise<any> {
     logger.silly(`changeBootOrder ${messages.REQUEST}`)
-    // TODO: convert to string enum
-    // const bootChoice = `<Address xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing">http://schemas.xmlsoap.org/ws/2004/08/addressing</Address><ReferenceParameters xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing"><ResourceURI xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_BootSourceSetting</ResourceURI><SelectorSet xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"><Selector Name="InstanceID">Intel(r) AMT: ${bootSource}</Selector></SelectorSet></ReferenceParameters>`
-    const xmlRequestBody = this.cim.BootConfigSetting.ChangeBootOrder(bootSource)
+    let xmlRequestBody
+    if (bootSource == null) {
+      xmlRequestBody = this.cim.BootConfigSetting.ChangeBootOrder()
+    } else {
+      xmlRequestBody = this.cim.BootConfigSetting.ChangeBootOrder(bootSource)
+    }
     const result = await this.ciraHandler.Send(this.ciraSocket, xmlRequestBody)
     logger.silly(`changeBootOrder ${messages.COMPLETE}`)
     return result
