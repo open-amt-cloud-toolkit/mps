@@ -1,3 +1,14 @@
+<a name="2.9.0"></a>
+## [2.9.0] - 2023-05-23
+### Build
+- update changelog and version to v2.9.0 (#b862b22) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.2.1 to 20.2.3 ([#921](https://github.com/open-amt-cloud-toolkit/mps/issues/921)) (#7a50967) 
+- **deps-dev:** bump eslint from 8.40.0 to 8.41.0 (#508fad6) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.1.7 to 20.2.1 (#a750e82) 
+
+### Feat
+- added a query param to delete device from secrets (#3e8512a) 
+
 <a name="2.8.4"></a>
 ## [2.8.4] - 2023-05-18
 ### Build
