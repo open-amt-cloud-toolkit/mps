@@ -11,9 +11,9 @@ import { ConnectedDevice } from '../../amt/ConnectedDevice'
 
 export async function refreshDevice (req: Request, res: Response): Promise<void> {
   try {
-    const guid = req.body.guid
+    const guid = req.params.guid
     const device = devices[guid]
-    if (device) {
+    if (device != null) {
       const ciraSocket = device.ciraSocket
       const httpHandler = device.httpHandler
       const kvmConnect = device.kvmConnect

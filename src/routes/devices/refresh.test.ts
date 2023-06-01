@@ -24,7 +24,7 @@ describe('refresh tests', () => {
     jsonSpy = jest.spyOn(res as any, 'json')
 
     req = {
-      body: {
+      params: {
         guid: '00000000-0000-0000-0000-000000000000'
       },
       secrets: {
@@ -46,7 +46,7 @@ describe('refresh tests', () => {
   })
 
   it('should refresh device if it is connected', async () => {
-    const guid = req.body.guid
+    const guid = req.params.guid
     devices[guid] = {
       ciraSocket: {
         destroy: jest.fn()
@@ -62,7 +62,7 @@ describe('refresh tests', () => {
   })
 
   it('should set status to 404 if error occurs when device is not connected', async () => {
-    const guid = req.body.guid
+    const guid = req.params.guid
     devices[guid] = null
 
     await refreshDevice(req, res as any)
@@ -73,7 +73,7 @@ describe('refresh tests', () => {
       getAMTCredentials: async (path: string) => null
     }
 
-    const guid = req.body.guid
+    const guid = req.params.guid
     devices[guid] = {
       ciraSocket: {
         destroy: jest.fn()

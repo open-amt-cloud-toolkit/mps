@@ -26,7 +26,7 @@ deviceRouter.get('/tags', getDistinctTags)
 deviceRouter.get('/:guid', param('guid').isUUID(), validateMiddleware, getDevice)
 deviceRouter.post('/', validator(), validateMiddleware, insertDevice)
 deviceRouter.patch('/', validator(), validateMiddleware, updateDevice)
-deviceRouter.patch('/refresh', validator(), validateMiddleware, refreshDevice)
+deviceRouter.delete('/refresh/:guid', validator(), validateMiddleware, refreshDevice)
 deviceRouter.delete('/:guid', param('guid').isUUID(), query('isSecretToBeDeleted').optional().isBoolean(), validateMiddleware, deleteDevice)
 deviceRouter.delete('/disconnect/:guid', param('guid').isUUID(), validateMiddleware, ciraMiddleware, disconnect)
 export default deviceRouter
