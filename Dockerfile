@@ -31,7 +31,7 @@ RUN npm prune --production
 FROM alpine:latest
 
 RUN addgroup -g 1000 node && adduser -u 1000 -G node -s /bin/sh -D node 
-RUN apk update && apk add nodejs && rm -rf /var/cache/apk/*
+RUN apk update && apk upgrade --no-cache && apk add nodejs --no-cache
 
 COPY --from=builder  /mps/dist /mps/dist
 # for healthcheck backwards compatibility

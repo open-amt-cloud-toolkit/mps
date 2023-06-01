@@ -13,6 +13,7 @@ import { getDistinctTags } from './tags'
 import { insertDevice } from './create'
 import { updateDevice } from './update'
 import { deleteDevice } from './delete'
+import { refreshDevice } from './refresh'
 import { param, query } from 'express-validator'
 import validateMiddleware from '../../middleware/validate'
 import ciraMiddleware from '../../middleware/cira'
@@ -25,6 +26,7 @@ deviceRouter.get('/tags', getDistinctTags)
 deviceRouter.get('/:guid', param('guid').isUUID(), validateMiddleware, getDevice)
 deviceRouter.post('/', validator(), validateMiddleware, insertDevice)
 deviceRouter.patch('/', validator(), validateMiddleware, updateDevice)
+deviceRouter.patch('/refresh', validator(), validateMiddleware, refreshDevice)
 deviceRouter.delete('/:guid', param('guid').isUUID(), query('isSecretToBeDeleted').optional().isBoolean(), validateMiddleware, deleteDevice)
 deviceRouter.delete('/disconnect/:guid', param('guid').isUUID(), validateMiddleware, ciraMiddleware, disconnect)
 export default deviceRouter

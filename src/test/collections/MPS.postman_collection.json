@@ -1,9 +1,8 @@
 {
 	"info": {
-		"_postman_id": "d7912d3b-b84c-4110-8b19-6f1d93007fc2",
+		"_postman_id": "4c6b1c68-2370-4417-8315-d11b56173f08",
 		"name": "MPS",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "2243498"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
@@ -575,6 +574,50 @@
 								"api",
 								"v1",
 								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Disconnected Device",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Nonconnected device.\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"guid\": \"143e4567-e89b-12d3-a456-426614174001\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices/refresh",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices",
+								"refresh"
 							]
 						}
 					},
