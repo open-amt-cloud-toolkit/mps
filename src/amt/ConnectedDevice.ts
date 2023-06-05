@@ -14,14 +14,14 @@ export class ConnectedDevice {
   kvmConnect: boolean
   tenantId: string
 
-  constructor (ciraSocket: CIRASocket, readonly username: string, readonly password: string, tenantId: string) {
+  constructor (ciraSocket: CIRASocket, readonly username: string, readonly password: string, tenantId: string, httpHandler: HttpHandler = new HttpHandler(), kvmConnect: boolean = false, limiter: Bottleneck = new Bottleneck({
+    maxConcurrent: 3,
+    minTime: 250
+  })) {
     this.ciraSocket = ciraSocket
-    this.httpHandler = new HttpHandler()
-    this.kvmConnect = false
+    this.httpHandler = httpHandler
+    this.kvmConnect = kvmConnect
     this.tenantId = tenantId
-    this.limiter = new Bottleneck({
-      maxConcurrent: 3,
-      minTime: 250
-    })
+    this.limiter = limiter
   }
 }
