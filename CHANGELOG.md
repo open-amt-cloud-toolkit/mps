@@ -1,3 +1,25 @@
+<a name="2.9.1"></a>
+## [2.9.1] - 2023-06-06
+### Build
+- update version and changelog to v2.9.1 (#7f12af5) 
+- **deps:** bump xml2js from 0.5.0 to 0.6.0 ([#929](https://github.com/open-amt-cloud-toolkit/mps/issues/929)) (#b6f84e1) 
+- **deps:** bump winston from 3.8.2 to 3.9.0 (#7722c83) 
+- **deps-dev:** bump eslint-config-standard-with-typescript ([#937](https://github.com/open-amt-cloud-toolkit/mps/issues/937)) (#fc99172) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin (#f98758f) 
+- **deps-dev:** bump eslint-config-standard from 17.0.0 to 17.1.0 (#8d63aed) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.59.7 to 5.59.8 (#090580c) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.2.4 to 20.2.5 (#9fd936e) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.2.3 to 20.2.4 ([#928](https://github.com/open-amt-cloud-toolkit/mps/issues/928)) (#8c769bb) 
+- **deps-dev:** bump [@types](https://github.com/types)/pg from 8.6.6 to 8.10.1 (#a630ea4) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.59.6 to 5.59.7 ([#923](https://github.com/open-amt-cloud-toolkit/mps/issues/923)) (#7e07710) 
+- **docker:** ensure packages are up-to-date in alpine image (#2d7b9cf) 
+
+### Ci
+- add trivy container scan (#0524413) 
+
+### Fix
+- refresh amt pw after pw change ([#927](https://github.com/open-amt-cloud-toolkit/mps/issues/927)) (#ce8eee4) 
+
 <a name="2.9.0"></a>
 ## [2.9.0] - 2023-05-23
 ### Build
