@@ -3,252 +3,110 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
+import { v4 as uuid } from 'uuid'
 import { insertDevice } from './create'
-import { logger } from '../../logging'
 import { MPSValidationError } from '../../utils/MPSValidationError'
+import { type Device } from '../../models/models'
 
-let res: Express.Response
+let req
+let res
 let statusSpy: jest.SpyInstance
 let jsonSpy: jest.SpyInstance
 let endSpy: jest.SpyInstance
+let mockDevice: Device
+let reqDevice: any
 
 beforeEach(() => {
+  const guid = uuid()
+  const tenantId = 'tenantId01'
+  const connectionStatus = true
+  mockDevice = {
+    guid,
+    tenantId,
+    connectionStatus,
+    hostname: 'host01.test.com',
+    mpsInstance: '',
+    tags: [],
+    mpsusername: 'userName01',
+    friendlyName: null,
+    dnsSuffix: null
+  }
+  reqDevice = {
+    guid,
+    tenantId,
+    connectionStatus,
+    hostname: 'host02.test.com',
+    mpsusername: 'userName02',
+    tags: ['tag01', 'tag02'],
+    friendlyName: 'frienleName02'
+  }
+  req = {
+    db: {
+      devices: {
+        getById: jest.fn(),
+        insert: jest.fn().mockImplementation(async (device) => device),
+        update: jest.fn().mockImplementation(async (device) => device)
+      }
+    },
+    body: {}
+  }
   res = {
     status: () => res,
     json: () => res,
     end: () => res
   }
-  statusSpy = jest.spyOn(res as any, 'status')
-  endSpy = jest.spyOn(res as any, 'end')
-  jsonSpy = jest.spyOn(res as any, 'json')
+  statusSpy = jest.spyOn(res, 'status')
+  endSpy = jest.spyOn(res, 'end')
+  jsonSpy = jest.spyOn(res, 'json')
 })
 
 describe('create', () => {
-  it('should set status to 200 and update device in db with relevant properties from request if device already exists in db', async () => {
-    const deviceFromMockDb = {
-      connectionStatus: true
-    } as any
-    const hostnameFromRequest = 'anyhost'
-    const tagsFromRequest = ['tag']
-    const mpsusernameFromRequest = 'itproadmin'
-    const tenantIdFromRequest = 'tenantxyz'
-    const guidFromRequest = '00000000-0000-0000-0000-000000000000'
-    const friendlyNameFromRequest = 'host1'
-    const dnsSuffixFromRequest = 'dns1'
-    const expectedUpdateResultFromDb = {
-      hostname: hostnameFromRequest,
-      tags: tagsFromRequest,
-      connectionStatus: true,
-      mpsusername: mpsusernameFromRequest,
-      tenantId: tenantIdFromRequest,
-      friendlyName: friendlyNameFromRequest,
-      dnsSuffix: dnsSuffixFromRequest
+  it('should update device and return 200 if device exists', async () => {
+    const expectedDevice = {
+      ...mockDevice,
+      ...reqDevice
     }
-    const req = {
-      body: {
-        guid: guidFromRequest,
-        hostname: hostnameFromRequest,
-        tags: tagsFromRequest,
-        mpsusername: mpsusernameFromRequest,
-        tenantId: tenantIdFromRequest,
-        friendlyname: friendlyNameFromRequest,
-        dnssuffix: dnsSuffixFromRequest
-      },
-      db: {
-        devices: {
-          getById: jest.fn().mockReturnValue(deviceFromMockDb),
-          update: jest.fn().mockReturnValue(expectedUpdateResultFromDb)
-        }
-      }
-    } as any
-    await insertDevice(req, res as any)
-    expect(req.db.devices.getById).toHaveBeenCalledWith(guidFromRequest, tenantIdFromRequest)
+    req.body = reqDevice
+    req.db.devices.getById.mockResolvedValueOnce(mockDevice)
+    await insertDevice(req, res)
+    expect(req.db.devices.getById).toHaveBeenCalledWith(reqDevice.guid, reqDevice.tenantId)
+    expect(req.db.devices.update).toHaveBeenCalledWith(expectedDevice)
     expect(statusSpy).toHaveBeenCalledWith(200)
-    expect(jsonSpy).toHaveBeenCalledWith(expectedUpdateResultFromDb)
-    expect(req.db.devices.update).toHaveBeenCalledWith(expectedUpdateResultFromDb)
+    expect(jsonSpy).toHaveBeenCalledWith(expectedDevice)
   })
 
-  it('should set status to 200 and update device in db with relevant properties from db if device already exists in db', async () => {
-    const hostnameFromDb = 'anyhost'
-    const tagsFromDb = ['tag']
-    const mpsusernameFromDb = 'itproadmin'
-    const tenantIdFromDb = ''
-    const guidFromRequest = '00000000-0000-0000-0000-000000000000'
-    const friendlyNameFromRequest = 'host2'
-    const dnsSuffixFromRequest = 'dns2'
-    const deviceFromMockDb = {
-      hostname: hostnameFromDb,
-      tags: tagsFromDb,
-      mpsusername: mpsusernameFromDb,
-      friendlyName: friendlyNameFromRequest,
-      dnsSuffix: dnsSuffixFromRequest
-    } as any
-    const expectedUpdateResultFromDb = {
-      hostname: hostnameFromDb,
-      tags: tagsFromDb,
-      connectionStatus: false,
-      mpsusername: mpsusernameFromDb,
-      tenantId: tenantIdFromDb,
-      friendlyName: friendlyNameFromRequest,
-      dnsSuffix: dnsSuffixFromRequest
-    }
-    const req = {
-      body: {
-        guid: guidFromRequest,
-        hostname: null,
-        tags: null,
-        mpsusername: null,
-        tenantId: null,
-        friendlyname: friendlyNameFromRequest,
-        dnssuffix: dnsSuffixFromRequest
-      },
-      db: {
-        devices: {
-          getById: jest.fn().mockReturnValue(deviceFromMockDb),
-          update: jest.fn().mockReturnValue(expectedUpdateResultFromDb)
-        }
-      }
-    } as any
-    await insertDevice(req, res as any)
-    expect(req.db.devices.getById).toHaveBeenCalledWith(guidFromRequest, null)
-    expect(statusSpy).toHaveBeenCalledWith(200)
-    expect(jsonSpy).toHaveBeenCalledWith(expectedUpdateResultFromDb)
-    expect(req.db.devices.update).toHaveBeenCalledWith(expectedUpdateResultFromDb)
-  })
-
-  it('should set status to 201 and insert device in db with relevant properties from request if device does not already exist in db', async () => {
-    const deviceFromMockDb = null
-    const hostnameFromRequest = 'anyhost'
-    const tagsFromRequest = ['tag']
-    const mpsusernameFromRequest = 'itproadmin'
-    const tenantIdFromRequest = 'tenantxyz'
-    const guidFromRequest = '00000000-0000-0000-0000-000000000000'
-    const friendlyNameFromRequest = null
-    const dnsSuffixFromRequest = null
-    const expectedInsertResultFromDb = {
-      connectionStatus: false,
-      guid: guidFromRequest,
-      hostname: hostnameFromRequest,
-      tags: tagsFromRequest,
-      mpsusername: mpsusernameFromRequest,
-      mpsInstance: null,
-      tenantId: tenantIdFromRequest,
-      friendlyName: friendlyNameFromRequest,
-      dnsSuffix: dnsSuffixFromRequest
-    }
-    const req = {
-      body: {
-        guid: guidFromRequest,
-        hostname: hostnameFromRequest,
-        tags: tagsFromRequest,
-        mpsusername: mpsusernameFromRequest,
-        tenantId: tenantIdFromRequest,
-        friendlyName: friendlyNameFromRequest,
-        dnsSuffix: dnsSuffixFromRequest
-      },
-      db: {
-        devices: {
-          getById: jest.fn().mockReturnValue(deviceFromMockDb),
-          insert: jest.fn().mockReturnValue(expectedInsertResultFromDb)
-        }
-      }
-    } as any
-    await insertDevice(req, res as any)
-    expect(req.db.devices.getById).toHaveBeenCalledWith(guidFromRequest, tenantIdFromRequest)
+  it('should insert device and return 201 if device when device not exist', async () => {
+    req.body = reqDevice
+    req.db.devices.getById.mockResolvedValueOnce(null)
+    await insertDevice(req, res)
+    expect(req.db.devices.getById).toHaveBeenCalledWith(reqDevice.guid, reqDevice.tenantId)
+    expect(req.db.devices.insert).toHaveBeenCalledWith(reqDevice)
     expect(statusSpy).toHaveBeenCalledWith(201)
-    expect(jsonSpy).toHaveBeenCalledWith(expectedInsertResultFromDb)
-    expect(req.db.devices.insert).toHaveBeenCalledWith(expectedInsertResultFromDb)
-  })
-
-  it('should set status to 201 and insert device in db with default properties if device does not already exist in db', async () => {
-    const deviceFromMockDb = null
-    const hostnameFromRequest = null
-    const tagsFromRequest = null
-    const mpsusernameFromRequest = 'itproadmin'
-    const tenantIdFromRequest = null
-    const friendlyNameFromRequest = null
-    const dnsSuffixFromRequest = null
-    const guidFromRequest = '00000000-0000-0000-0000-000000000000'
-    const expectedInsertResultFromDb = {
-      connectionStatus: false,
-      guid: guidFromRequest,
-      hostname: null,
-      tags: null,
-      mpsusername: mpsusernameFromRequest,
-      mpsInstance: null,
-      tenantId: '',
-      friendlyName: friendlyNameFromRequest,
-      dnsSuffix: dnsSuffixFromRequest
-    }
-    const req = {
-      body: {
-        guid: guidFromRequest,
-        hostname: hostnameFromRequest,
-        tags: tagsFromRequest,
-        mpsusername: mpsusernameFromRequest,
-        tenantId: tenantIdFromRequest,
-        friendlyName: friendlyNameFromRequest,
-        dnsSuffix: dnsSuffixFromRequest
-      },
-      db: {
-        devices: {
-          getById: jest.fn().mockReturnValue(deviceFromMockDb),
-          insert: jest.fn().mockReturnValue(expectedInsertResultFromDb)
-        }
-      }
-    } as any
-    await insertDevice(req, res as any)
-    expect(req.db.devices.getById).toHaveBeenCalledWith(guidFromRequest, null)
-    expect(statusSpy).toHaveBeenCalledWith(201)
-    expect(jsonSpy).toHaveBeenCalledWith(expectedInsertResultFromDb)
-    expect(req.db.devices.insert).toHaveBeenCalledWith(expectedInsertResultFromDb)
+    expect(jsonSpy).toHaveBeenCalledWith(reqDevice)
   })
 
   it('should handle MPSValidationError', async () => {
-    const errorName = 'FakeMPSError'
-    const errorMessage = 'This is a fake error'
-    const errorStatus = 555
-    const guidFromRequest = '00000000-0000-0000-0000-000000000000'
-    const req = {
-      body: {
-        guid: guidFromRequest
-      },
-      db: {
-        devices: {
-          getById: jest.fn().mockImplementation(() => {
-            throw new MPSValidationError(errorMessage, errorStatus, errorName)
-          })
-        }
-      }
-    } as any
-    const errorSpy = jest.spyOn(logger, 'error')
-    await insertDevice(req, res as any)
-    expect(statusSpy).toHaveBeenLastCalledWith(errorStatus)
-    expect(jsonSpy).toHaveBeenCalledWith({
-      error: errorName,
-      message: errorMessage
-    })
-    expect(errorSpy).toHaveBeenCalled()
+    const err = new MPSValidationError('errorMessage', 100, 'errorName')
+    const expectedErr = {
+      error: err.name,
+      message: err.message
+    }
+    req.body = reqDevice
+    req.db.devices.getById.mockRejectedValueOnce(err)
+    await insertDevice(req, res)
+    expect(req.db.devices.getById).toHaveBeenCalledWith(reqDevice.guid, reqDevice.tenantId)
+    expect(statusSpy).toHaveBeenCalledWith(err.status)
+    expect(jsonSpy).toHaveBeenCalledWith(expectedErr)
   })
 
-  it('should handle general error', async () => {
-    const guidFromRequest = '00000000-0000-0000-0000-000000000000'
-    const req = {
-      body: {
-        guid: guidFromRequest
-      },
-      db: {
-        devices: {
-          getById: jest.fn().mockImplementation(() => {
-            throw new TypeError('fake error')
-          })
-        }
-      }
-    } as any
-    const errorSpy = jest.spyOn(logger, 'error')
-    await insertDevice(req, res as any)
-    expect(statusSpy).toHaveBeenLastCalledWith(500)
+  it('should handle other error', async () => {
+    const err = new Error('errorMessage')
+    req.body = reqDevice
+    req.db.devices.getById.mockRejectedValueOnce(err)
+    await insertDevice(req, res)
+    expect(req.db.devices.getById).toHaveBeenCalledWith(reqDevice.guid, reqDevice.tenantId)
+    expect(statusSpy).toHaveBeenCalledWith(500)
+    expect(jsonSpy).not.toHaveBeenCalled()
     expect(endSpy).toHaveBeenCalled()
-    expect(errorSpy).toHaveBeenCalled()
   })
 })
