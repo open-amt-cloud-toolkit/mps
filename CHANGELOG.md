@@ -1,3 +1,19 @@
+<a name="2.10.0"></a>
+## [2.10.0] - 2023-06-16
+### Build
+- update version and changelog to v2.10.0 (#b8a7dfa) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin ([#945](https://github.com/open-amt-cloud-toolkit/mps/issues/945)) (#2fe0d4d) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.59.9 to 5.59.11 ([#947](https://github.com/open-amt-cloud-toolkit/mps/issues/947)) (#3079d50) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.2.5 to 20.3.1 ([#950](https://github.com/open-amt-cloud-toolkit/mps/issues/950)) (#a2ac697) 
+- **deps-dev:** bump [@types](https://github.com/types)/pg from 8.10.1 to 8.10.2 ([#943](https://github.com/open-amt-cloud-toolkit/mps/issues/943)) (#64d8ff4) 
+- **deps-dev:** bump [@types](https://github.com/types)/ws from 8.5.4 to 8.5.5 ([#944](https://github.com/open-amt-cloud-toolkit/mps/issues/944)) (#64a13ef) 
+- **deps-dev:** bump eslint from 8.41.0 to 8.42.0 ([#941](https://github.com/open-amt-cloud-toolkit/mps/issues/941)) (#5ab731a) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin ([#940](https://github.com/open-amt-cloud-toolkit/mps/issues/940)) (#2bb79a1) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.59.8 to 5.59.9 ([#939](https://github.com/open-amt-cloud-toolkit/mps/issues/939)) (#775a829) 
+
+### Feat
+- support device friendly name ([#948](https://github.com/open-amt-cloud-toolkit/mps/issues/948)) (#7a41961) 
+
 <a name="2.9.1"></a>
 ## [2.9.1] - 2023-06-06
 ### Build
