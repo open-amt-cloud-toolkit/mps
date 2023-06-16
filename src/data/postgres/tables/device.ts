@@ -105,7 +105,7 @@ export class DeviceTable implements IDeviceTable {
     return results.rowCount > 0 ? results.rows[0] : null
   }
 
-  async getByHostname (hostname: string, tenantId: string = ''): Promise<Device[]> {
+  async getByColumn (columnName: string, queryValue: string, tenantId: string): Promise<Device[]> {
     const results = await this.db.query<Device>(`
     SELECT
       guid as "guid",
@@ -118,9 +118,17 @@ export class DeviceTable implements IDeviceTable {
       friendlyname as "friendlyName",
       dnssuffix as "dnsSuffix"
     FROM devices 
-    WHERE hostname = $1 and tenantid = $2`, [hostname, tenantId])
+    WHERE ${columnName} = $1 and tenantid = $2`, [queryValue, tenantId])
 
     return results.rowCount > 0 ? results.rows : []
+  }
+
+  async getByHostname (hostname: string, tenantId: string = ''): Promise<Device[]> {
+    return await this.getByColumn('hostname', hostname, tenantId)
+  }
+
+  async getByFriendlyName (friendlyName: string, tenantId: string = ''): Promise<Device[]> {
+    return await this.getByColumn('friendlyname', friendlyName, tenantId)
   }
 
   async getByTags (tags: string[], method: string, top: number = DefaultTop, skip: number = DefaultSkip, tenantId: string = ''): Promise<Device[]> {

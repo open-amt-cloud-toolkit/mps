@@ -215,6 +215,40 @@ describe('device tests', () => {
     WHERE hostname = $1 and tenantid = $2`, ['hostname', ''])
   })
 
+  test('should get a device by friendlyName when exist', async () => {
+    const device = {
+      guid: '4c4c4544-004b-4210-8033-b6c04f504633',
+      hostname: 'hostname',
+      friendlyName: 'friendlyName',
+      tags: null,
+      mpsInstance: 'localhost',
+      connectionStatus: false,
+      mpsusername: 'admin',
+      tenantId: null
+    }
+    querySpy.mockResolvedValueOnce({ rows: [device], command: '', fields: null, rowCount: 1, oid: 0 })
+    const result: Device[] = await deviceTable.getByFriendlyName(device.friendlyName, device.tenantId)
+    expect(result[0]).toBe(device)
+    expect(querySpy).toBeCalledTimes(1)
+  })
+
+  test('should get a device by friendlyName when exist and tennantId is not provided', async () => {
+    const device = {
+      guid: '4c4c4544-004b-4210-8033-b6c04f504633',
+      hostname: 'hostname',
+      friendlyName: 'friendlyName',
+      tags: null,
+      mpsInstance: 'localhost',
+      connectionStatus: false,
+      mpsusername: 'admin',
+      tenantId: null
+    }
+    querySpy.mockResolvedValueOnce({ rows: [device], command: '', fields: null, rowCount: 1, oid: 0 })
+    const result: Device[] = await deviceTable.getByFriendlyName(device.friendlyName)
+    expect(result[0]).toBe(device)
+    expect(querySpy).toBeCalledTimes(1)
+  })
+
   test('should get an empty array when no devices, AND method and default values', async () => {
     querySpy.mockResolvedValueOnce({ rows: [], command: '', fields: null, rowCount: 0, oid: 0 })
     const devices: Device[] = await deviceTable.getByTags(['acm', 'ccm'], 'AND')

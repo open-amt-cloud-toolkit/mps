@@ -8,6 +8,9 @@ import { check, query } from 'express-validator'
 export const validator = (): any => [
   check('guid')
     .isUUID(),
+  check('friendlyName')
+    .optional({ nullable: true })
+    .isString(),
   check('hostname')
     .optional({ nullable: true })
     .isString(),
