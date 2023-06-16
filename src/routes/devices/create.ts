@@ -13,28 +13,16 @@ export async function insertDevice (req: Request, res: Response): Promise<void> 
   try {
     device = await req.db.devices.getById(req.body.guid, req.body.tenantId)
     if (device != null) {
-      device.hostname = req.body.hostname ?? device.hostname
-      device.tags = req.body.tags ?? device.tags
-      device.connectionStatus = device.connectionStatus ?? false
-      device.mpsusername = req.body.mpsusername ?? device.mpsusername
-      device.tenantId = req.body.tenantId ?? ''
-      device.friendlyName = req.body.friendlyname ?? ''
-      device.dnsSuffix = req.body.dnssuffix ?? ''
+      device = { ...device, ...req.body }
       const results = await req.db.devices.update(device)
       res.status(200).json(results)
     } else {
-      device = {
+      const newEntry = {
+        tenantId: '',
         connectionStatus: false,
-        guid: req.body.guid,
-        hostname: req.body.hostname ?? null,
-        tags: req.body.tags ?? null,
-        mpsusername: req.body.mpsusername,
-        mpsInstance: null,
-        tenantId: req.body.tenantId ?? '',
-        friendlyName: null,
-        dnsSuffix: null
+        ...req.body
       }
-      const results = await req.db.devices.insert(device)
+      const results = await req.db.devices.insert(newEntry)
       res.status(201).json(results)
     }
   } catch (err) {

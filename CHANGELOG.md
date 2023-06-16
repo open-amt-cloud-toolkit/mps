@@ -1,3 +1,52 @@
+<a name="2.10.0"></a>
+## [2.10.0] - 2023-06-16
+### Build
+- update version and changelog to v2.10.0 (#b8a7dfa) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin ([#945](https://github.com/open-amt-cloud-toolkit/mps/issues/945)) (#2fe0d4d) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.59.9 to 5.59.11 ([#947](https://github.com/open-amt-cloud-toolkit/mps/issues/947)) (#3079d50) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.2.5 to 20.3.1 ([#950](https://github.com/open-amt-cloud-toolkit/mps/issues/950)) (#a2ac697) 
+- **deps-dev:** bump [@types](https://github.com/types)/pg from 8.10.1 to 8.10.2 ([#943](https://github.com/open-amt-cloud-toolkit/mps/issues/943)) (#64d8ff4) 
+- **deps-dev:** bump [@types](https://github.com/types)/ws from 8.5.4 to 8.5.5 ([#944](https://github.com/open-amt-cloud-toolkit/mps/issues/944)) (#64a13ef) 
+- **deps-dev:** bump eslint from 8.41.0 to 8.42.0 ([#941](https://github.com/open-amt-cloud-toolkit/mps/issues/941)) (#5ab731a) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin ([#940](https://github.com/open-amt-cloud-toolkit/mps/issues/940)) (#2bb79a1) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.59.8 to 5.59.9 ([#939](https://github.com/open-amt-cloud-toolkit/mps/issues/939)) (#775a829) 
+
+### Feat
+- support device friendly name ([#948](https://github.com/open-amt-cloud-toolkit/mps/issues/948)) (#7a41961) 
+
+<a name="2.9.1"></a>
+## [2.9.1] - 2023-06-06
+### Build
+- update version and changelog to v2.9.1 (#7f12af5) 
+- **deps:** bump xml2js from 0.5.0 to 0.6.0 ([#929](https://github.com/open-amt-cloud-toolkit/mps/issues/929)) (#b6f84e1) 
+- **deps:** bump winston from 3.8.2 to 3.9.0 (#7722c83) 
+- **deps-dev:** bump eslint-config-standard-with-typescript ([#937](https://github.com/open-amt-cloud-toolkit/mps/issues/937)) (#fc99172) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin (#f98758f) 
+- **deps-dev:** bump eslint-config-standard from 17.0.0 to 17.1.0 (#8d63aed) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.59.7 to 5.59.8 (#090580c) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.2.4 to 20.2.5 (#9fd936e) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.2.3 to 20.2.4 ([#928](https://github.com/open-amt-cloud-toolkit/mps/issues/928)) (#8c769bb) 
+- **deps-dev:** bump [@types](https://github.com/types)/pg from 8.6.6 to 8.10.1 (#a630ea4) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.59.6 to 5.59.7 ([#923](https://github.com/open-amt-cloud-toolkit/mps/issues/923)) (#7e07710) 
+- **docker:** ensure packages are up-to-date in alpine image (#2d7b9cf) 
+
+### Ci
+- add trivy container scan (#0524413) 
+
+### Fix
+- refresh amt pw after pw change ([#927](https://github.com/open-amt-cloud-toolkit/mps/issues/927)) (#ce8eee4) 
+
+<a name="2.9.0"></a>
+## [2.9.0] - 2023-05-23
+### Build
+- update changelog and version to v2.9.0 (#b862b22) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.2.1 to 20.2.3 ([#921](https://github.com/open-amt-cloud-toolkit/mps/issues/921)) (#7a50967) 
+- **deps-dev:** bump eslint from 8.40.0 to 8.41.0 (#508fad6) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.1.7 to 20.2.1 (#a750e82) 
+
+### Feat
+- added a query param to delete device from secrets (#3e8512a) 
+
 <a name="2.8.4"></a>
 ## [2.8.4] - 2023-05-18
 ### Build

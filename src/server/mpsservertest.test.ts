@@ -37,6 +37,7 @@ describe('MPS Server', function () {
       getDistinctTags: async () => ['tag'],
       getById: async (guid) => device as Device,
       getByTags: async (tags) => [device] as Device[],
+      getByFriendlyName: async (hostname) => [device] as Device[],
       getByHostname: async (hostname) => [device] as Device[],
       getConnectedDevices: async (tenantId?) => 0,
       clearInstanceStatus: async () => true,

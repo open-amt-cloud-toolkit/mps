@@ -1,9 +1,8 @@
 {
 	"info": {
-		"_postman_id": "d7912d3b-b84c-4110-8b19-6f1d93007fc2",
+		"_postman_id": "d3a69b77-4853-4301-9da1-051cfa39de91",
 		"name": "MPS",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "2243498"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
@@ -333,7 +332,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"guid\": \"143e4567-e89b-12d3-a456-426614174000\",\r\n    \"hostname\": \"hostname\",\r\n    \"tags\": [],\r\n    \"mpsusername\": \"admin\"\r\n}",
+							"raw": "{\r\n    \"guid\": \"143e4567-e89b-12d3-a456-426614174000\",\r\n    \"friendlyName\": \"friendlyName\",\r\n    \"hostname\": \"hostname\",\r\n    \"tags\": [],\r\n    \"mpsusername\": \"admin\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -575,6 +574,51 @@
 								"api",
 								"v1",
 								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Disconnected Device",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Nonconnected device.\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices/refresh/143e4567-e89b-12d3-a456-426614174001",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices",
+								"refresh",
+								"143e4567-e89b-12d3-a456-426614174001"
 							]
 						}
 					},
@@ -901,6 +945,67 @@
 								{
 									"key": "status",
 									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All Devices by friendlyName",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Should return one device with friendlyName friendlyName\", function () {\r",
+									"   var jsonData = pm.response.json();\r",
+									"   pm.expect(jsonData[0].guid).to.eql(\"143e4567-e89b-12d3-a456-426614174000\");\r",
+									"   pm.expect(jsonData[0].friendlyName).to.eql(\"friendlyName\");\r",
+									"   pm.expect(jsonData[0].tags.length).to.eql(1);\r",
+									"   pm.expect(jsonData[0].tags[0]).to.eql(\"acm\");\r",
+									"   pm.expect(jsonData[0].mpsInstance).to.eql(null);\r",
+									"   pm.expect(jsonData[0].connectionStatus).to.eql(false);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices?friendlyName=friendlyName",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices"
+							],
+							"query": [
+								{
+									"key": "friendlyName",
+									"value": "friendlyName"
 								}
 							]
 						}
