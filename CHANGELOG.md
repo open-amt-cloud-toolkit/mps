@@ -1,3 +1,19 @@
+<a name="2.10.1"></a>
+## [2.10.1] - 2023-06-21
+### Build
+- updates package.json and changelog to v2.10.1 (#bb2ce1a) 
+- automated versioning and publishing (#f5d139b) 
+- **deps-dev:** bump eslint from 8.42.0 to 8.43.0 ([#952](https://github.com/open-amt-cloud-toolkit/mps/issues/952)) (#1682d47) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 5.59.11 to 5.60.0 ([#953](https://github.com/open-amt-cloud-toolkit/mps/issues/953)) (#f00ca77) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin ([#954](https://github.com/open-amt-cloud-toolkit/mps/issues/954)) (#abec6e7) 
+
+### Ci
+- remove node 14 from build, adds node 20 (#20558db) 
+
+### Fix
+- mps audit logs now in order ([#949](https://github.com/open-amt-cloud-toolkit/mps/issues/949)) (#cc4fb04) 
+- default tenantId is now blank (#ffff3b4) 
+
 <a name="2.10.0"></a>
 ## [2.10.0] - 2023-06-16
 ### Build
