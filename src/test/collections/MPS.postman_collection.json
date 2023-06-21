@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "d3a69b77-4853-4301-9da1-051cfa39de91",
+		"_postman_id": "15cf4033-c0ee-4110-b174-7496089c62df",
 		"name": "MPS",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2229705"
 	},
 	"item": [
 		{
@@ -361,9 +362,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 204\", function () {\r",
-									"    pm.response.to.have.status(204);\r",
-									"});\r"
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -383,6 +385,47 @@
 								"v1",
 								"devices",
 								"143e4567-e89b-12d3-a456-426614174000"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Device by GUID for different tenant",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices/143e4567-e89b-12d3-a456-426614174000?tenantId=123",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices",
+								"143e4567-e89b-12d3-a456-426614174000"
+							],
+							"query": [
+								{
+									"key": "tenantId",
+									"value": "123"
+								}
 							]
 						}
 					},
