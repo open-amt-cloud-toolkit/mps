@@ -15,7 +15,8 @@ exports = module.exports = function (req, res, next) {
   // req.db.customProperty = req.headers['x-db-info']
 
   // For setting the tenantId use req.tenantId
-  // req.tenantId = req.headers['x-tenant-id-token']
+  // req.tenantId = req.headers['x-tenant-id-token'] // pull tenant id from header
+  req.tenantId = '' // default blank tenant
   // Be sure to reject requests that do not have access to the tenant
   //   if (req.tenantId === <resource's>.tenantId) {
   //     next()
