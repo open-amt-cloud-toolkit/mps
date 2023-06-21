@@ -16,12 +16,32 @@ export async function auditLog (req: Request, res: Response): Promise<void> {
   try {
     const queryParams = req.query
     const guid: string = req.params.guid
-    const startIndexAsNumber = Number(queryParams.startIndex)
-    const startIndex: number = startIndexAsNumber === 0 ? 1 : startIndexAsNumber
+
     MqttProvider.publishEvent('request', ['AMT_AuditLog'], 'Audit Log Requested', guid)
-    const getResponse = await req.deviceAction.getAuditLog(startIndex)
+    const startIndex = Number(queryParams.startIndex)
+    let getResponse = await req.deviceAction.getAuditLog(startIndex <= 0 ? 1 : startIndex)
+
+    // behavior for this route handler is to ALWAYS return newest records first
+    // but AMT returns oldest records first
+    // so if num total records is more than number returned, then need to adjust indexes
+    const output = getResponse.ReadRecords_OUTPUT
+    const totalRecordCount = Number(output.TotalRecordCount)
+    const recordsReturned = Number(output.RecordsReturned)
+    let adjustResultCount = 0
+    if (totalRecordCount > recordsReturned) {
+      let reversedIndex = totalRecordCount - startIndex - recordsReturned
+      if (reversedIndex < recordsReturned) {
+        adjustResultCount = recordsReturned
+        reversedIndex = 1
+      }
+      getResponse = await req.deviceAction.getAuditLog(reversedIndex)
+    }
 
     const result = convertToAuditLogResult(getResponse.ReadRecords_OUTPUT)
+    if (adjustResultCount > 0) {
+      // slice with negative returns from the back of the array
+      result.records = result.records.slice(-adjustResultCount)
+    }
     res.status(200).json(result).end()
   } catch (error) {
     logger.error(`${messages.AUDIT_LOG_EXCEPTION} : ${error}`)
@@ -89,7 +109,7 @@ export function convertToAuditLogResult (readRecordsOutput: WsmanMessagesCommon.
     auditLogRecord.Ex = decodedEventRecord.substring(ptr, ptr + exlen)
     auditLogRecord.ExStr = GetAuditLogExtendedDataString((auditLogRecord.AuditAppID * 100) + auditLogRecord.EventID, auditLogRecord.Ex)
 
-    auditLogResult.records.push(auditLogRecord)
+    auditLogResult.records.unshift(auditLogRecord)
   }
 
   return auditLogResult
