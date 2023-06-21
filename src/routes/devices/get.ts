@@ -10,7 +10,7 @@ export async function getDevice (req: Request, res: Response): Promise<void> {
   try {
     let tenantId = req.tenantId
     const tentantIdInQuery = req.query?.tenantId
-    if ((tenantId == null || tenantId === '') && (tentantIdInQuery != null || tentantIdInQuery !== '')) {
+    if ((tenantId == null || tenantId === '') && (tentantIdInQuery != null && tentantIdInQuery !== '')) {
       tenantId = tentantIdInQuery as string
     }
     const result = await req.db.devices.getById(req.params.guid)
