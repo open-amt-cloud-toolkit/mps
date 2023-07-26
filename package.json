@@ -50,7 +50,7 @@
     "rc": "^1.2.8",
     "winston": "^3.10.0",
     "ws": "^8.13.0",
-    "xml2js": "^0.6.0"
+    "xml2js": "^0.6.1"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.2",
