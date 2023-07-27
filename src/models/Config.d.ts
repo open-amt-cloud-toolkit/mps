@@ -40,6 +40,11 @@ export interface configType {
   web_auth_enabled: boolean
   jwt_token_header: string
   jwt_tenant_property: string
+  consul_enabled: boolean
+  consul_host: string
+  consul_port: string
+  consul_key_prefix: string
+
 }
 
 export interface certificatesType {

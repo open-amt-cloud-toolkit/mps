@@ -54,5 +54,9 @@
       "SSL_OP_NO_TLSv11"
     ]
   },
-  "redirection_expiration_time": "5"
+  "redirection_expiration_time": "5",
+  "consul_enabled": false,
+  "consul_host": "localhost",
+  "consul_port": "8500",
+  "consul_key_prefix": "MPS"
 }

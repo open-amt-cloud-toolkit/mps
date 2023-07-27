@@ -65,5 +65,10 @@ export const config: configType = {
   web_tls_cert: '',
   web_tls_cert_key: '',
   web_tls_cert_ca: '',
-  redirection_expiration_time: 5
+  redirection_expiration_time: 5,
+  consul_enabled: true,
+  consul_host: 'localhost',
+  consul_port: '8500',
+  consul_key_prefix: 'MPS'
+
 }

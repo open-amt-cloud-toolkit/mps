@@ -12,12 +12,14 @@ import rc from 'rc'
 import { Environment } from './utils/Environment'
 import { MqttProvider } from './utils/MqttProvider'
 import { type ISecretManagerService } from './interfaces/ISecretManagerService'
+import { type IServiceManager } from './interfaces/IServiceManager'
 import { DbCreatorFactory } from './factories/DbCreatorFactory'
 import { SecretManagerCreatorFactory } from './factories/SecretManagerCreatorFactory'
 import { type IDB } from './interfaces/IDb'
 import { WebServer } from './server/webserver'
 import { MPSServer } from './server/mpsserver'
 import { backOff } from 'exponential-backoff'
+import { ConsulService } from './consul/consul'
 
 export async function main (): Promise<void> {
   try {
@@ -30,6 +32,8 @@ export async function main (): Promise<void> {
     // build config object
     const config: configType = rc('mps')
     Environment.Config = loadConfig(config)
+
+    await setupServiceManager(config)
 
     // DB initialization
     const newDB = new DbCreatorFactory()
@@ -62,6 +66,35 @@ export async function main (): Promise<void> {
   }
 }
 
+export async function setupServiceManager (config: configType): Promise<void> {
+  if (config.consul_enabled) {
+    const consul: IServiceManager = new ConsulService(config.consul_host, config.consul_port)
+    try {
+      await waitForServiceConfig(consul, 'consul')
+      // Store or update configs
+      await processServiceConfigs(consul, config)
+    } catch (err) {
+      logger.error(`Unable to reach consul: ${err}  -  Exiting process.`)
+      process.exit(0)
+    }
+  }
+}
+
+export async function processServiceConfigs (consul: IServiceManager, config: configType): Promise<boolean> {
+  const prefix = Environment.Config.consul_key_prefix
+  try {
+    const consulValues = await consul.get(prefix)
+    if (consulValues == null) {
+      await consul.seed(prefix, config)
+    } else {
+      consul.process(consulValues)
+    }
+  } catch (err) {
+    return await Promise.reject(err)
+  }
+  return await Promise.resolve(true)
+}
+
 export async function waitForDB (db: IDB): Promise<any> {
   return await backOff(async () => await db.query('SELECT 1'), {
     retry: (e: any, attemptNumber: number) => {
@@ -75,6 +108,15 @@ export async function waitForSecretProvider (secrets: ISecretManagerService): Pr
   return await backOff(async () => await secrets.health(), {
     retry: (e: any, attemptNumber: number) => {
       logger.info(`waiting for secret provider[${attemptNumber}] ${e.message || e.code || e}`)
+      return true
+    }
+  })
+}
+
+export async function waitForServiceConfig (service: IServiceManager, serviceName: string): Promise<void> {
+  await backOff(async () => await service.health(serviceName), {
+    retry: (e: any, attemptNumber: number) => {
+      logger.info(`waiting for consul[${attemptNumber}] ${e.code || e.message || e}`)
       return true
     }
   })
@@ -97,6 +139,7 @@ export function loadConfig (config: any): configType {
   logger.silly(`Updated config... ${JSON.stringify(config, null, 2)}`)
   return config
 }
+
 async function setupSignalHandling (db: IDB): Promise<void> {
   // Cleans the DB before exit when it listens to the signals
   const signals = ['SIGINT', 'exit', 'uncaughtException', 'SIGTERM', 'SIGHUP']
