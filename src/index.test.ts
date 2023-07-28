@@ -4,17 +4,13 @@
  **********************************************************************/
 
 import * as indexFile from './index'
+import * as svcMngr from './consul/serviceManager'
 import * as exponentialBackoff from 'exponential-backoff'
 import { logger } from './logging'
 import VaultSecretManagerService from './secrets/vault'
 import { Environment } from './utils/Environment'
 import { type IDB } from './interfaces/IDb'
 import { type ISecretManagerService } from './interfaces/ISecretManagerService'
-import { type IServiceManager } from './interfaces/IServiceManager'
-import { ConsulService } from './consul/consul'
-
-const consul: IServiceManager = new ConsulService('consul', '8500')
-let componentName
 
 describe('Index', () => {
   describe('loadConfig', () => {
@@ -24,7 +20,7 @@ describe('Index', () => {
       jest.resetAllMocks()
     })
     let config
-    componentName = 'MPS'
+
     beforeEach(() => {
       process.env.NODE_ENV = 'test'
       config = {
@@ -84,26 +80,22 @@ describe('Index', () => {
       }
       Environment.Config = config
     })
-
-    it('should pass processServiceConfigs empty Consul', async () => {
-      consul.get = jest.fn(() => null)
-      consul.seed = jest.fn(async () => await Promise.resolve(true))
-      await indexFile.processServiceConfigs(consul, config)
-      expect(consul.get).toHaveBeenCalledWith(config.consul_key_prefix)
-      expect(consul.seed).toHaveBeenCalledWith(config.consul_key_prefix, config)
+    it('Should exit setupServiceManager', async () => {
+      const waitSpy = jest.spyOn(svcMngr, 'waitForServiceManager').mockImplementation(() => {
+        throw new Error('Test error')
+      })
+      const mockExit = jest.spyOn(process, 'exit').mockImplementation((code) => code as never)
+      await indexFile.setupServiceManager(config)
+      expect(mockExit).toHaveBeenCalledWith(0)
+      expect(waitSpy).toHaveBeenCalled()
     })
-    it('should pass processServiceConfigs seeded Consul', async () => {
-      const consulValues: Array<{ Key: string, Value: string }> = [
-        {
-          Key: componentName + '/config',
-          Value: '{"web_port": 8081, "delay_timer": 12}'
-        }
-      ]
-      consul.get = jest.fn(async () => await Promise.resolve(consulValues))
-      consul.process = jest.fn(() => JSON.stringify(consulValues, null, 2))
-      await indexFile.processServiceConfigs(consul, config)
-      expect(consul.get).toHaveBeenCalledWith(config.consul_key_prefix)
-      expect(consul.process).toHaveBeenCalledWith(consulValues)
+    it('should pass setupServiceManager', async () => {
+      const waitSpy = jest.spyOn(svcMngr, 'waitForServiceManager').mockReturnValue(Promise.resolve())
+      const prcSpy = jest.spyOn(svcMngr, 'processServiceConfigs').mockReturnValue(Promise.resolve(true))
+
+      await indexFile.setupServiceManager(config)
+      expect(waitSpy).toHaveBeenCalled()
+      expect(prcSpy).toHaveBeenCalled()
     })
 
     it('should pass with config', () => {
@@ -229,20 +221,6 @@ describe('Index', () => {
       })
     } as any
     await indexFile.waitForSecretProvider(secretMock)
-    expect(backOffSpy).toHaveBeenCalled()
-  })
-
-  it('should wait for service provider', async () => {
-    const backOffSpy = jest.spyOn(exponentialBackoff, 'backOff')
-    let shouldBeOk = false
-    const secretMock: IServiceManager = {
-      health: jest.fn(() => {
-        if (shouldBeOk) return null
-        shouldBeOk = true
-        throw new Error('error')
-      })
-    } as any
-    await indexFile.waitForServiceConfig(secretMock, 'consul')
     expect(backOffSpy).toHaveBeenCalled()
   })
 })

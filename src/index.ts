@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
+import * as svcMngr from './consul/serviceManager'
 import { logger } from './logging'
 import { type configType, type certificatesType } from './models/Config'
 import { Certificates } from './utils/certificates'
@@ -70,29 +71,14 @@ export async function setupServiceManager (config: configType): Promise<void> {
   if (config.consul_enabled) {
     const consul: IServiceManager = new ConsulService(config.consul_host, config.consul_port)
     try {
-      await waitForServiceConfig(consul, 'consul')
+      await svcMngr.waitForServiceManager(consul, 'consul')
       // Store or update configs
-      await processServiceConfigs(consul, config)
+      await svcMngr.processServiceConfigs(consul, config)
     } catch (err) {
       logger.error(`Unable to reach consul: ${err}  -  Exiting process.`)
       process.exit(0)
     }
   }
-}
-
-export async function processServiceConfigs (consul: IServiceManager, config: configType): Promise<boolean> {
-  const prefix = Environment.Config.consul_key_prefix
-  try {
-    const consulValues = await consul.get(prefix)
-    if (consulValues == null) {
-      await consul.seed(prefix, config)
-    } else {
-      consul.process(consulValues)
-    }
-  } catch (err) {
-    return await Promise.reject(err)
-  }
-  return await Promise.resolve(true)
 }
 
 export async function waitForDB (db: IDB): Promise<any> {
@@ -108,15 +94,6 @@ export async function waitForSecretProvider (secrets: ISecretManagerService): Pr
   return await backOff(async () => await secrets.health(), {
     retry: (e: any, attemptNumber: number) => {
       logger.info(`waiting for secret provider[${attemptNumber}] ${e.message || e.code || e}`)
-      return true
-    }
-  })
-}
-
-export async function waitForServiceConfig (service: IServiceManager, serviceName: string): Promise<void> {
-  await backOff(async () => await service.health(serviceName), {
-    retry: (e: any, attemptNumber: number) => {
-      logger.info(`waiting for consul[${attemptNumber}] ${e.code || e.message || e}`)
       return true
     }
   })
