@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
+import * as svcMngr from './consul/serviceManager'
 import { logger } from './logging'
 import { type configType, type certificatesType } from './models/Config'
 import { Certificates } from './utils/certificates'
@@ -12,12 +13,14 @@ import rc from 'rc'
 import { Environment } from './utils/Environment'
 import { MqttProvider } from './utils/MqttProvider'
 import { type ISecretManagerService } from './interfaces/ISecretManagerService'
+import { type IServiceManager } from './interfaces/IServiceManager'
 import { DbCreatorFactory } from './factories/DbCreatorFactory'
 import { SecretManagerCreatorFactory } from './factories/SecretManagerCreatorFactory'
 import { type IDB } from './interfaces/IDb'
 import { WebServer } from './server/webserver'
 import { MPSServer } from './server/mpsserver'
 import { backOff } from 'exponential-backoff'
+import { ConsulService } from './consul/consul'
 
 export async function main (): Promise<void> {
   try {
@@ -30,6 +33,8 @@ export async function main (): Promise<void> {
     // build config object
     const config: configType = rc('mps')
     Environment.Config = loadConfig(config)
+
+    await setupServiceManager(config)
 
     // DB initialization
     const newDB = new DbCreatorFactory()
@@ -59,6 +64,20 @@ export async function main (): Promise<void> {
   } catch (error) {
     logger.error('Error starting MPS microservice. Check server logs.')
     logger.error(error)
+  }
+}
+
+export async function setupServiceManager (config: configType): Promise<void> {
+  if (config.consul_enabled) {
+    const consul: IServiceManager = new ConsulService(config.consul_host, config.consul_port)
+    try {
+      await svcMngr.waitForServiceManager(consul, 'consul')
+      // Store or update configs
+      await svcMngr.processServiceConfigs(consul, config)
+    } catch (err) {
+      logger.error(`Unable to reach consul: ${err}  -  Exiting process.`)
+      process.exit(0)
+    }
   }
 }
 
@@ -97,6 +116,7 @@ export function loadConfig (config: any): configType {
   logger.silly(`Updated config... ${JSON.stringify(config, null, 2)}`)
   return config
 }
+
 async function setupSignalHandling (db: IDB): Promise<void> {
   // Cleans the DB before exit when it listens to the signals
   const signals = ['SIGINT', 'exit', 'uncaughtException', 'SIGTERM', 'SIGHUP']

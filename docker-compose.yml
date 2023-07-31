@@ -46,6 +46,13 @@ services:
       VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
     cap_add: 
       - IPC_LOCK
+  consul:
+    restart: always
+    image: hashicorp/consul
+    networks:
+      - openamtnetwork
+    ports: 
+      - 8500:8500      
 networks: 
   openamtnetwork:
     driver: "bridge"

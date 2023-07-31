@@ -4,6 +4,7 @@
  **********************************************************************/
 
 import * as indexFile from './index'
+import * as svcMngr from './consul/serviceManager'
 import * as exponentialBackoff from 'exponential-backoff'
 import { logger } from './logging'
 import VaultSecretManagerService from './secrets/vault'
@@ -19,6 +20,7 @@ describe('Index', () => {
       jest.resetAllMocks()
     })
     let config
+
     beforeEach(() => {
       process.env.NODE_ENV = 'test'
       config = {
@@ -70,14 +72,38 @@ describe('Index', () => {
             'SSL_OP_NO_TLSv1',
             'SSL_OP_NO_TLSv11'
           ]
-        }
+        },
+        consul_enabled: true,
+        consul_host: 'localhost',
+        consul_port: '8500',
+        consul_key_prefix: 'MPS'
       }
+      Environment.Config = config
     })
+    it('Should exit setupServiceManager', async () => {
+      const waitSpy = jest.spyOn(svcMngr, 'waitForServiceManager').mockImplementation(() => {
+        throw new Error('Test error')
+      })
+      const mockExit = jest.spyOn(process, 'exit').mockImplementation((code) => code as never)
+      await indexFile.setupServiceManager(config)
+      expect(mockExit).toHaveBeenCalledWith(0)
+      expect(waitSpy).toHaveBeenCalled()
+    })
+    it('should pass setupServiceManager', async () => {
+      const waitSpy = jest.spyOn(svcMngr, 'waitForServiceManager').mockReturnValue(Promise.resolve())
+      const prcSpy = jest.spyOn(svcMngr, 'processServiceConfigs').mockReturnValue(Promise.resolve(true))
+
+      await indexFile.setupServiceManager(config)
+      expect(waitSpy).toHaveBeenCalled()
+      expect(prcSpy).toHaveBeenCalled()
+    })
+
     it('should pass with config', () => {
       jest.spyOn(indexFile, 'main').mockResolvedValue(null)
       const result = indexFile.loadConfig(config)
       expect(result.web_tls_config).toEqual(config.web_tls_config)
     })
+
     it('Should fail with no jwt secret', () => {
       config.jwt_secret = ''
       const mockExit = jest.spyOn(process, 'exit')
