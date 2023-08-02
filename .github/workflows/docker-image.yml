@@ -36,7 +36,7 @@ jobs:
       
       run: docker build . --file Dockerfile --tag ${{ github.event.inputs.docker_registry }}/${{ github.event.inputs.docker_tag_name }}
     - name: Docker Login
-      uses: docker/login-action@adb73476b6e06caddec5db0bc1deacbec8cdd947 # v1.6.0
+      uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2.2.0
       with:
         registry: ${{ github.event.inputs.docker_registry }}
         username: ${{ secrets.DOCKER_USERNAME }}
