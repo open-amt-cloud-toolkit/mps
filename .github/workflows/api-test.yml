@@ -7,11 +7,19 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - name: Harden Runner
+      uses: step-security/harden-runner@cba0d00b1fc9a034e1e642ea0f1103c282990604 # v2.5.0
+      with:
+        egress-policy: audit
+
+    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
     - run: docker build -f Dockerfile -t mps:${GITHUB_SHA} .
     - run: docker-compose up -d
     - run: sleep 30
@@ -19,9 +27,9 @@ jobs:
     - run: docker run --network=host -v  /home/runner/work/mps/mps/src/test/collections/:/collections -v /home/runner/work/mps/mps/src/test/results/:/results postman/newman run /collections/mps_security_api_test_postman_collection.json -e /collections/MPS.postman_environment.json -d /collections/data/mps_security_api_test_data.json --insecure --reporters cli,json,junit --reporter-json-export /results/mps_api_security_results.json --reporter-junit-export /results/mps_api_security_results_junit.xml
     - name: Dump docker logs on
       if: failure()
-      uses: jwalton/gh-docker-logs@v1
+      uses: jwalton/gh-docker-logs@54a2a89cd6a2c929525f26ca67a7a4857a5dc1d9 # v1.0.1
     - name: Upload Postman Results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
       with:
         name: mps-api
         path: /home/runner/work/mps/mps/src/test/results
