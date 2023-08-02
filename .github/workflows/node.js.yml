@@ -24,9 +24,9 @@ jobs:
         node-version: [16.x, 18.x, 20.x]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@f1f314fca9dfce2769ece7d933488f076716723e # v1.4.6
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
@@ -35,7 +35,7 @@ jobs:
       - run: npm run compile --if-present
       - run: npm test
       - name: Test Report
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@e9fa2f582c0ebbe2e263fd18fad744d52e0b0203 # v1
         if: success() || failure() # run this step even if previous step failed
         continue-on-error: true
         with:
@@ -49,7 +49,7 @@ jobs:
       - name: Rename test file
         run: mv junit.xml mps-unit.xml
       - name: Upload JEST Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
         with:
           name: mps-unit
           path: mps-unit.xml
