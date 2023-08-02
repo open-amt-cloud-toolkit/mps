@@ -26,7 +26,7 @@ jobs:
 
         run: docker build . --file Dockerfile --tag vprodemo.azurecr.io/mps:${{ github.sha }} --tag vprodemo.azurecr.io/mps:latest
       - name: Docker Login
-        uses: docker/login-action@adb73476b6e06caddec5db0bc1deacbec8cdd947 # v1.6.0
+        uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2.2.0
         with:
           registry: vprodemo.azurecr.io
           username: ${{ secrets.DOCKER_USERNAME }}
