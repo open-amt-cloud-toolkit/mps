@@ -16,6 +16,9 @@ on:
             description: 'Tag you wish to use on the docker image'     
             required: true
             default: 'mps:v1'
+permissions:
+  contents: read
+
 jobs:
 
   build:
@@ -23,12 +26,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Harden Runner
+      uses: step-security/harden-runner@cba0d00b1fc9a034e1e642ea0f1103c282990604 # v2.5.0
+      with:
+        egress-policy: audit
+
+    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
     - name: Build the Docker image
       
       run: docker build . --file Dockerfile --tag ${{ github.event.inputs.docker_registry }}/${{ github.event.inputs.docker_tag_name }}
     - name: Docker Login
-      uses: docker/login-action@v1.6.0
+      uses: docker/login-action@adb73476b6e06caddec5db0bc1deacbec8cdd947 # v1.6.0
       with:
         registry: ${{ github.event.inputs.docker_registry }}
         username: ${{ secrets.DOCKER_USERNAME }}

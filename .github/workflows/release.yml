@@ -16,17 +16,22 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    - name: Harden Runner
+      uses: step-security/harden-runner@cba0d00b1fc9a034e1e642ea0f1103c282990604 # v2.5.0
+      with:
+        egress-policy: audit
+
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
     - name: Use Node.js 18.x
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3.7.0
       with:
         node-version: "18.x"
     - run: npm ci
     - run: npm run build-ext --if-present
     - run: rsync -a package.json README.md ./dist/
     - name: Semantic Release
-      uses: cycjimmy/semantic-release-action@v3
+      uses: cycjimmy/semantic-release-action@8e58d20d0f6c8773181f43eb74d6a05e3099571d # v3.4.2
       with:
         semantic_version: 19.0.5  # It is recommended to specify a version range
                                 # for semantic-release when using
