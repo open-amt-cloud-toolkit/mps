@@ -27,7 +27,7 @@ jobs:
     - run: docker run --network=host -v  /home/runner/work/mps/mps/src/test/collections/:/collections -v /home/runner/work/mps/mps/src/test/results/:/results postman/newman run /collections/mps_security_api_test_postman_collection.json -e /collections/MPS.postman_environment.json -d /collections/data/mps_security_api_test_data.json --insecure --reporters cli,json,junit --reporter-json-export /results/mps_api_security_results.json --reporter-junit-export /results/mps_api_security_results_junit.xml
     - name: Dump docker logs on
       if: failure()
-      uses: jwalton/gh-docker-logs@54a2a89cd6a2c929525f26ca67a7a4857a5dc1d9 # v1.0.1
+      uses: jwalton/gh-docker-logs@59c9656cd3cb7542525f3dce7ae2f44c0ff85d66 # v2.2.1
     - name: Upload Postman Results
       uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
       with:
