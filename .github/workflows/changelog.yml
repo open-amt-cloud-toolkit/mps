@@ -28,7 +28,7 @@ jobs:
           fetch-depth: 0
       - run: docker run -v $PWD:/workdir quay.io/git-chglog/git-chglog:0.15.1 --next-tag $(node --eval="process.stdout.write(require('./package.json').version)") --output CHANGELOG.md  
       - name: GitHub Upload Release Artifacts
-        uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # v2.3.1
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
         with:
           name: CHANGELOG.md
           path: |
