@@ -8,10 +8,12 @@ import { Environment } from './Environment'
 import { config } from '../test/helper/config'
 import mqtt1 from 'mqtt'
 
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+jest.mock('mqtt', () => ({ ...jest.requireActual('mqtt') as object }))
 describe('MQTT Turned ON Tests', () => {
   beforeEach(() => {
-    Environment.Config = config
     config.mqtt_address = 'mqtt://127.0.0.1:8883'
+    Environment.Config = config
     MqttProvider.instance = new MqttProvider()
   })
 
@@ -30,18 +32,15 @@ describe('MQTT Turned ON Tests', () => {
     jest.spyOn(mqtt1, 'connect').mockImplementation(() => ({
       connected: true
     } as any))
-
     expect(MqttProvider.instance.client).toBeUndefined()
     MqttProvider.instance.connectBroker()
     expect(MqttProvider.instance.client.connected).toBe(true)
   })
 
   it('Should send an event message when turned on', async () => {
-    MqttProvider.instance.client = {
-      publish: (topic, message, callback) => ({} as any)
-    } as any
-    const spy = jest.spyOn(MqttProvider.instance.client, 'publish').mockImplementation((topic, message, callback) => {
-      callback()
+    MqttProvider.instance.client = { publish: (_topic, _message, _opts, callback) => ({} as any) } as any
+    const spy = jest.spyOn(MqttProvider.instance.client, 'publish').mockImplementation((topic, message, opts, callback) => {
+      callback(null)
       return {} as any
     })
     MqttProvider.instance.turnedOn = true
@@ -54,10 +53,8 @@ describe('MQTT Turned ON Tests', () => {
   })
 
   it('Should throw error when event message publish fails', async () => {
-    MqttProvider.instance.client = {
-      publish: (topic, message, callback) => ({} as any)
-    } as any
-    const spy = jest.spyOn(MqttProvider.instance.client, 'publish').mockImplementation((topic, message, callback) => {
+    MqttProvider.instance.client = { publish: (topic, message, opts, callback) => ({} as any) } as any
+    const spy = jest.spyOn(MqttProvider.instance.client, 'publish').mockImplementation((topic, message, opts, callback) => {
       callback(new Error())
       return {} as any
     })
