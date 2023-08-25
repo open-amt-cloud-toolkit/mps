@@ -23,7 +23,7 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
         with: 
           fetch-depth: 0
       - run: docker run -v $PWD:/workdir quay.io/git-chglog/git-chglog:0.15.1 --next-tag $(node --eval="process.stdout.write(require('./package.json').version)") --output CHANGELOG.md  
