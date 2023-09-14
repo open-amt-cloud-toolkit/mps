@@ -32,7 +32,7 @@ export class DeviceTable implements IDeviceTable {
    * @description Get all devices from DB
    * @returns {Device[]} returns an array of objects
    */
-  async get (top: number = DefaultTop, skip: number = DefaultSkip, tenantId: string = ''): Promise<Device[]> {
+  async get (limit: number = DefaultTop, offset: number = DefaultSkip, tenantId: string = ''): Promise<Device[]> {
     const results = await this.db.query<Device>(`
     SELECT 
       guid as "guid",
@@ -47,7 +47,7 @@ export class DeviceTable implements IDeviceTable {
     FROM devices
     WHERE tenantid = $3 
     ORDER BY guid 
-    LIMIT $1 OFFSET $2`, [top, skip, tenantId])
+    LIMIT $1 OFFSET $2`, [limit, offset, tenantId])
     return results.rows
   }
 
