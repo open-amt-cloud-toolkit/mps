@@ -19,9 +19,9 @@ export async function getAllDevices (req: Request, res: Response): Promise<void>
       list = await req.db.devices.getByFriendlyName(req.query.friendlyName as string, req.tenantId)
     } else if (req.query.tags != null) {
       const tags = (req.query.tags as string).split(',')
-      list = await req.db.devices.getByTags(tags, req.query.method as string, req.query.$top as any, req.query.$skip as any, req.tenantId)
+      list = await req.db.devices.getByTags(tags, req.query.method as string, req.query.$top as string, req.query.$skip as string, req.tenantId)
     } else {
-      list = await req.db.devices.get(req.query.$top as any, req.query.$skip as any, req.tenantId)
+      list = await req.db.devices.get(req.query.$top as string, req.query.$skip as string, req.tenantId)
     }
     if (req.query.status != null) {
       list = list.filter(x => {
