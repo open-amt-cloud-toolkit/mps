@@ -17,7 +17,7 @@ export const UUIDRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA
 export const HTTPErrorTable = {
   200: 'httpErrorTableOK',
   400: 'Incorrect URI or Bad Request',
-  401: 'Authentication Error',
+  401: 'Unauthorized',
   404: {
     alarm: 'Alarm instance not found',
     device: 'Device not found/connected. Please connect again using CIRA.',

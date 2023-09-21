@@ -17,9 +17,13 @@ const ciraMiddleware = async (req: Request, res: Response, next): Promise<void> 
   const device = devices[guid]
 
   if ((device as any)?.ciraSocket.readyState === 'open') {
-    // const cred = await req.mpsService.secrets.getAMTCredentials(guid);
-    // req.amtStack = req.amtFactory.getAmtStack(guid, amtPort, cred[0], cred[1], 0)
-    // (req as any).httpHandler = new HttpHandler(cred[0], cred[1])
+    // if a tenantId is provided, ensure the request is for the same tenant/device
+    if (req.tenantId != null) {
+      if (req.tenantId !== device.tenantId) {
+        res.status(401).json(ErrorResponse(401, 'Unauthorized')).end()
+        return
+      }
+    }
 
     const ciraHandler = new CIRAHandler(device.httpHandler, device.username, device.password, device.limiter)
     req.deviceAction = new DeviceAction(ciraHandler, device.ciraSocket)
