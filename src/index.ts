@@ -123,7 +123,9 @@ async function setupSignalHandling (db: IDB): Promise<void> {
   signals.forEach((signal) => {
     process.on(signal, async () => {
       logger.debug('signal received :', signal)
-      await db.devices.clearInstanceStatus(Environment.Config.instance_name)
+      if (db?.devices != null) { // ensure db is not null and devices exists
+        await db.devices.clearInstanceStatus(Environment.Config.instance_name)
+      }
       MqttProvider.endBroker()
       if (signal !== 'exit') {
         setTimeout(() => process.exit(), 1000)
