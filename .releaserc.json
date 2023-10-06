@@ -16,8 +16,8 @@
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "docker build -t vprodemo.azurecr.io/rpc-go:v${nextRelease.version} .",
-        "publishCmd": "docker push vprodemo.azurecr.io/rpc-go:v${nextRelease.version}"
+        "prepareCmd": "docker build -t vprodemo.azurecr.io/mps:v${nextRelease.version} .",
+        "publishCmd": "docker push vprodemo.azurecr.io/mps:v${nextRelease.version}"
       }
     ]
   ]
