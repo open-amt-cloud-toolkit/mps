@@ -11,6 +11,7 @@ import { Environment } from '../utils/Environment'
 import { IncomingMessage } from 'http'
 import { Socket } from 'net'
 import { devices } from './mpsserver'
+import { signature } from '../routes/auth/signature'
 Environment.Config = config
 
 let certs: certificatesType
@@ -67,14 +68,40 @@ describe('webserver tests', () => {
       const result = web.verifyClientToken(info)
       expect(result).toBe(false)
     })
-    it('should return true when client jwt token is valid', () => {
-      const jwsSpy = jest.spyOn(web.jws, 'verify')
-      devices['4c4c4544-004b-4210-8033-b6c04f504633'] = {} as any
-      jwsSpy.mockImplementationOnce(() => true)
+    it('should return false when client jwt token is for invalid device', () => {
+      const inValidToken = signature(5, '4c4c4544-004d-4d10-8050-b3c04f325133')
       const info = {
         req: {
           url: '/relay/webrelay.ashx?p=2&host=4c4c4544-004b-4210-8033-b6c04f504633&port=16994&tls=0&tls1only=0',
-          headers: ['sec-websocket-protocol:supersecret']
+          headers: {
+            'sec-websocket-protocol': inValidToken
+          }
+        }
+      }
+      const result = web.verifyClientToken(info)
+      expect(result).toBe(false)
+    })
+    it('should return false when client jwt token is expired', () => {
+      const info = {
+        req: {
+          url: '/relay/webrelay.ashx?p=2&host=4c4c4544-004d-4d10-8050-b3c04f325133&port=16994&tls=0&tls1only=0',
+          headers: {
+            'sec-websocket-protocol': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJZCI6IiIsImlzcyI6IjlFbVJKVGJJaUliNGJJZVNzbWdjV0lqclI2SHlFVHFjIiwiZGV2aWNlSWQiOiI0YzRjNDU0NC0wMDRkLTRkMTAtODA1MC1iM2MwNGYzMjUxMzMiLCJleHAiOjE2OTY2MDk5NTN9.52h9jO1f8F4PmckqZeGyrpd3F5Wmq2d8041tO9cFrBc'
+          }
+        }
+      }
+      const result = web.verifyClientToken(info)
+      expect(result).toBe(false)
+    })
+    it('should return true when client jwt token is valid', () => {
+      const validToken = signature(5, '4c4c4544-004b-4210-8033-b6c04f504633')
+      devices['4c4c4544-004b-4210-8033-b6c04f504633'] = {} as any
+      const info = {
+        req: {
+          url: '/relay/webrelay.ashx?p=2&host=4c4c4544-004b-4210-8033-b6c04f504633&port=16994&tls=0&tls1only=0',
+          headers: {
+            'sec-websocket-protocol': validToken
+          }
         }
       }
       const result = web.verifyClientToken(info)
@@ -95,39 +122,42 @@ describe('webserver tests', () => {
       expect(result).toBe(false)
     })
     it('should allow KVM connection when no KVM connection', () => {
-      const jwsSpy = jest.spyOn(web.jws, 'verify')
-      jwsSpy.mockImplementationOnce(() => true)
+      const validToken = signature(5, '4c4c4544-004b-4210-8033-b6c04f504633')
       devices['4c4c4544-004b-4210-8033-b6c04f504633'].kvmConnect = false // {} as any
       const info = {
         req: {
           url: '/relay/webrelay.ashx?p=2&host=4c4c4544-004b-4210-8033-b6c04f504633&port=16994&tls=0&tls1only=0',
-          headers: ['sec-websocket-protocol:supersecret']
+          headers: {
+            'sec-websocket-protocol': validToken
+          }
         }
       }
       const result = web.verifyClientToken(info)
       expect(result).toBe(true)
     })
     it('should not allow KVM connection when KVM connection active', () => {
-      const jwsSpy = jest.spyOn(web.jws, 'verify')
-      jwsSpy.mockImplementationOnce(() => true)
+      const validToken = signature(5, '4c4c4544-004b-4210-8033-b6c04f504633')
       devices['4c4c4544-004b-4210-8033-b6c04f504633'].kvmConnect = true // {} as any
       const info = {
         req: {
           url: '/relay/webrelay.ashx?p=2&host=4c4c4544-004b-4210-8033-b6c04f504633&port=16994&tls=0&tls1only=0',
-          headers: ['sec-websocket-protocol:supersecret']
+          headers: {
+            'sec-websocket-protocol': validToken
+          }
         }
       }
       const result = web.verifyClientToken(info)
       expect(result).toBe(false)
     })
     it('should not allow KVM connection when no connection exists', () => {
-      const jwsSpy = jest.spyOn(web.jws, 'verify')
-      jwsSpy.mockImplementationOnce(() => true)
+      const validToken = signature(5, '4c4c4544-004b-4210-8033-b6c04f504633')
       devices['4c4c4544-004b-4210-8033-b6c04f504633'] = null
       const info = {
         req: {
           url: '/relay/webrelay.ashx?p=2&host=4c4c4544-004b-4210-8033-b6c04f504633&port=16994&tls=0&tls1only=0',
-          headers: ['sec-websocket-protocol:supersecret']
+          headers: {
+            'sec-websocket-protocol': validToken
+          }
         }
       }
       const result = web.verifyClientToken(info)
