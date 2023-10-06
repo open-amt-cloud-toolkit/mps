@@ -58,7 +58,8 @@ describe('device tests', () => {
       mpsusername as "mpsusername",
       tenantid as "tenantId",
       friendlyname as "friendlyName",
-      dnssuffix as "dnsSuffix"
+      dnssuffix as "dnsSuffix",
+      deviceinfo as "deviceInfo"
     FROM devices
     WHERE tenantid = $3 
     ORDER BY guid 
@@ -88,7 +89,8 @@ describe('device tests', () => {
       mpsusername as "mpsusername",
       tenantid as "tenantId",
       friendlyname as "friendlyName",
-      dnssuffix as "dnsSuffix"
+      dnssuffix as "dnsSuffix",
+      deviceinfo as "deviceInfo"
     FROM devices
     WHERE tenantid = $3 
     ORDER BY guid 
@@ -111,7 +113,8 @@ describe('device tests', () => {
       mpsusername as "mpsusername",
       tenantid as "tenantId",
       friendlyname as "friendlyName",
-      dnssuffix as "dnsSuffix"
+      dnssuffix as "dnsSuffix",
+      deviceinfo as "deviceInfo"
       FROM devices 
       WHERE guid = $1`, ['4c4c4544-004b-4210-8033-b6c04f504633'])
   })
@@ -161,7 +164,8 @@ describe('device tests', () => {
     mpsusername as "mpsusername",
     tenantid as "tenantId",
     friendlyname as "friendlyName",
-    dnssuffix as "dnsSuffix"
+    dnssuffix as "dnsSuffix",
+    deviceinfo as "deviceInfo"
     FROM devices 
     WHERE guid = $1 and tenantid = $2`, ['4c4c4544-004b-4210-8033-b6c04f504633', 'tenantId'])
   })
@@ -190,7 +194,8 @@ describe('device tests', () => {
       mpsusername as "mpsusername",
       tenantid as "tenantId",
       friendlyname as "friendlyName",
-      dnssuffix as "dnsSuffix"
+      dnssuffix as "dnsSuffix",
+      deviceinfo as "deviceInfo"
     FROM devices 
     WHERE hostname = $1 and tenantid = $2`, ['hostname', 'tenantId'])
   })
@@ -210,7 +215,8 @@ describe('device tests', () => {
       mpsusername as "mpsusername",
       tenantid as "tenantId",
       friendlyname as "friendlyName",
-      dnssuffix as "dnsSuffix"
+      dnssuffix as "dnsSuffix",
+      deviceinfo as "deviceInfo"
     FROM devices 
     WHERE hostname = $1 and tenantid = $2`, ['hostname', ''])
   })
@@ -264,7 +270,8 @@ describe('device tests', () => {
         mpsusername as "mpsusername",
         tenantid as "tenantId",
         friendlyname as "friendlyName",
-        dnssuffix as "dnsSuffix"
+        dnssuffix as "dnsSuffix",
+        deviceinfo as "deviceInfo"
       FROM devices 
       WHERE tags @> $1 and tenantId = $4
       ORDER BY guid 
@@ -295,7 +302,8 @@ describe('device tests', () => {
         mpsusername as "mpsusername",
         tenantid as "tenantId",
         friendlyname as "friendlyName",
-        dnssuffix as "dnsSuffix"
+        dnssuffix as "dnsSuffix",
+        deviceinfo as "deviceInfo"
       FROM devices 
       WHERE tags && $1 and tenantId = $4
       ORDER BY guid 
@@ -336,15 +344,23 @@ describe('device tests', () => {
       mpsusername: 'admin',
       tenantId: null,
       friendlyName: null,
-      dnsSuffix: null
+      dnsSuffix: null,
+      deviceInfo: {
+        fwBuild: '1111',
+        fwSku: '16392',
+        fwVersion: '16.1',
+        currentMode: '0',
+        dnsSuffixOs: '',
+        ipAddress: ''
+      }
     }
     querySpy.mockResolvedValueOnce({ rows: [{ device }], command: '', fields: null, rowCount: 1, oid: 0 })
     getById.mockResolvedValueOnce(device)
     const result = await deviceTable.insert(device)
     expect(querySpy).toBeCalledTimes(1)
     expect(querySpy).toBeCalledWith(`
-      INSERT INTO devices(guid, hostname, tags, mpsinstance, connectionstatus, mpsusername, tenantid, friendlyname, dnssuffix) 
-      values($1, $2, ARRAY(SELECT json_array_elements_text($3)), $4, $5, $6, $7, $8, $9)`,
+      INSERT INTO devices(guid, hostname, tags, mpsinstance, connectionstatus, mpsusername, tenantid, friendlyname, dnssuffix, deviceinfo) 
+      values($1, $2, ARRAY(SELECT json_array_elements_text($3)), $4, $5, $6, $7, $8, $9, $10)`,
     [
       device.guid,
       device.hostname,
@@ -354,7 +370,8 @@ describe('device tests', () => {
       device.mpsusername,
       device.tenantId,
       device.friendlyName,
-      device.dnsSuffix
+      device.dnsSuffix,
+      JSON.stringify(device.deviceInfo)
     ])
     expect(getById).toBeCalledTimes(1)
     expect(result).toBe(device)
@@ -370,7 +387,15 @@ describe('device tests', () => {
       mpsusername: 'admin',
       tenantId: null,
       friendlyName: null,
-      dnsSuffix: null
+      dnsSuffix: null,
+      deviceInfo: {
+        fwVersion: '16.1',
+        fwBuild: '1111',
+        fwSku: '16392',
+        currentMode: '0',
+        ipAddress: '',
+        dnsSuffixOs: ''
+      }
     }
     querySpy.mockResolvedValueOnce({ rows: [], command: '', fields: null, rowCount: 0, oid: 0 })
     const result = await deviceTable.insert(device)
@@ -388,7 +413,15 @@ describe('device tests', () => {
       mpsusername: 'admin',
       tenantId: null,
       friendlyName: null,
-      dnsSuffix: null
+      dnsSuffix: null,
+      deviceInfo: {
+        fwVersion: '16.1',
+        fwBuild: '1111',
+        fwSku: '16392',
+        currentMode: '0',
+        ipAddress: '',
+        dnsSuffixOs: ''
+      }
     }
     querySpy.mockRejectedValueOnce(() => {
       throw new Error()
@@ -412,7 +445,15 @@ describe('device tests', () => {
       mpsusername: 'admin',
       tenantId: null,
       friendlyName: null,
-      dnsSuffix: null
+      dnsSuffix: null,
+      deviceInfo: {
+        fwVersion: '16.1',
+        fwBuild: '1111',
+        fwSku: '16392',
+        currentMode: '0',
+        ipAddress: '',
+        dnsSuffixOs: ''
+      }
     }
     querySpy.mockRejectedValueOnce({ code: '23505' })
     try {
@@ -434,7 +475,15 @@ describe('device tests', () => {
       mpsusername: 'admin',
       tenantId: null,
       friendlyName: null,
-      dnsSuffix: null
+      dnsSuffix: null,
+      deviceInfo: {
+        fwVersion: '16.1',
+        fwBuild: '1111',
+        fwSku: '16392',
+        currentMode: '0',
+        ipAddress: '',
+        dnsSuffixOs: ''
+      }
     }
     querySpy.mockResolvedValueOnce({ rows: [{ device }], command: '', fields: null, rowCount: 1, oid: 0 })
     getById.mockResolvedValueOnce(device)
@@ -442,7 +491,7 @@ describe('device tests', () => {
     expect(querySpy).toBeCalledTimes(1)
     expect(querySpy).toBeCalledWith(`
       UPDATE devices 
-      SET tags=$2, hostname=$3, mpsinstance=$4, connectionstatus=$5, mpsusername=$6, friendlyname=$8, dnssuffix=$9
+      SET tags=$2, hostname=$3, mpsinstance=$4, connectionstatus=$5, mpsusername=$6, friendlyname=$8, dnssuffix=$9, deviceinfo=$10
       WHERE guid=$1 and tenantid = $7`,
     [
       device.guid,
@@ -453,7 +502,8 @@ describe('device tests', () => {
       device.mpsusername,
       device.tenantId,
       device.friendlyName,
-      device.dnsSuffix
+      device.dnsSuffix,
+      JSON.stringify(device.deviceInfo)
     ])
     expect(getById).toBeCalledTimes(1)
     expect(result).toBe(device)
@@ -470,7 +520,15 @@ describe('device tests', () => {
       mpsusername: 'admin',
       tenantId: null,
       friendlyName: null,
-      dnsSuffix: null
+      dnsSuffix: null,
+      deviceInfo: {
+        fwVersion: '16.1',
+        fwBuild: '1111',
+        fwSku: '16392',
+        currentMode: '0',
+        ipAddress: '',
+        dnsSuffixOs: ''
+      }
     }
     querySpy.mockResolvedValueOnce({ rows: [], command: '', fields: null, rowCount: 0, oid: 0 })
     try {
@@ -492,7 +550,15 @@ describe('device tests', () => {
       mpsusername: 'admin',
       tenantId: null,
       friendlyName: null,
-      dnsSuffix: null
+      dnsSuffix: null,
+      deviceInfo: {
+        fwVersion: '16.1',
+        fwBuild: '1111',
+        fwSku: '16392',
+        currentMode: '0',
+        ipAddress: '',
+        dnsSuffixOs: ''
+      }
     }
     querySpy.mockRejectedValueOnce(() => {
       throw new Error()
