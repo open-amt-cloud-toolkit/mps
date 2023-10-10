@@ -121,6 +121,26 @@ describe('WsRedirect tests', () => {
       wsRedirect.createCredential(paramsWithPof2 as any, credentials)
       expect(wsRedirect.interceptor).toBeFalsy()
     })
+
+    it('should not create credential if any are missing', () => {
+      const paramsWithPof2 = {
+        p: 2
+      }
+      const credentials = ['test']
+
+      wsRedirect.createCredential(paramsWithPof2 as any, credentials)
+      expect(wsRedirect.interceptor).toBeFalsy()
+    })
+
+    it('should not create credential too many are passed in', () => {
+      const paramsWithPof2 = {
+        p: 2
+      }
+      const credentials = ['test1', 'test2', 'test3']
+
+      wsRedirect.createCredential(paramsWithPof2 as any, credentials)
+      expect(wsRedirect.interceptor).toBeFalsy()
+    })
   })
 
   describe('setnormalTCP test', () => {

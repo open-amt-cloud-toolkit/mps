@@ -84,7 +84,7 @@ export class WsRedirect {
   }
 
   createCredential (params: queryParams, credentials: string[]): void {
-    if (credentials != null) {
+    if (credentials?.length === 2 && credentials[0] != null && credentials[1] != null) {
       logger.debug(messages.REDIRECT_CREATING_CREDENTIAL)
       if (params.p === 2) {
         this.interceptor = new RedirectInterceptor({
