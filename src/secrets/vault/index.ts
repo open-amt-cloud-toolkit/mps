@@ -65,7 +65,7 @@ export class VaultSecretManagerService implements ISecretManagerService {
   async getAMTCredentials (path: string): Promise<string[]> {
     const user = 'admin'
     const secret: { data: DeviceSecrets } = await this.getSecretAtPath(`devices/${path}`)
-    if (secret == null) {
+    if (secret?.data?.AMT_PASSWORD == null) {
       return null
     }
     const amtpass: string = secret.data.AMT_PASSWORD

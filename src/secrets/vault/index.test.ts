@@ -116,6 +116,31 @@ test('should return null if AMT credentials for a specific device does not exist
   expect(secretAtPathSpy).toHaveBeenCalledWith(`devices/${secretPath}`)
 })
 
+test('should return null if AMT_Password for a specific device does not exists', async () => {
+  const noCredential = {
+    data: {
+      data: {
+        MEBX_PASSWORD: 'Intel@123',
+        MPS_PASSWORD: 'lLJPJNtU2$8FZTUy'
+      }
+    }
+  }
+  const secretAtPathSpy = jest.spyOn(secretManagerService, 'getSecretAtPath').mockResolvedValue(noCredential.data)
+  const result = await secretManagerService.getAMTCredentials(secretPath)
+  expect(result).toEqual(null)
+  expect(secretAtPathSpy).toHaveBeenCalledWith(`devices/${secretPath}`)
+})
+
+test('should return null if secret data for a specific device does not exists', async () => {
+  const noCredential = {
+    data: { }
+  }
+  const secretAtPathSpy = jest.spyOn(secretManagerService, 'getSecretAtPath').mockResolvedValue(noCredential.data)
+  const result = await secretManagerService.getAMTCredentials(secretPath)
+  expect(result).toEqual(null)
+  expect(secretAtPathSpy).toHaveBeenCalledWith(`devices/${secretPath}`)
+})
+
 test('should get MPS certs', async () => {
   const secretAtPathSpy = jest.spyOn(secretManagerService, 'getSecretAtPath').mockResolvedValue(secretCert)
   const result = await secretManagerService.getMPSCerts()
