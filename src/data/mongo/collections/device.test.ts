@@ -64,13 +64,13 @@ describe('MongoDeviceTable', () => {
     expect(collection.findOne).toHaveBeenCalledWith({ guid: 'someId', tenantId: 'someTenantId' })
   })
 
-  it('should delete document by name and tenantId', async () => {
+  it('should delete document by guid and tenantId', async () => {
     collection.deleteOne.mockResolvedValue({ deletedCount: 1 } as any)
 
-    const result = await mongoDeviceTable.delete('someName', 'someTenantId')
+    const result = await mongoDeviceTable.delete('someGuid', 'someTenantId')
 
     expect(result).toBe(true)
-    expect(collection.deleteOne).toHaveBeenCalledWith({ friendlyName: 'someName', tenantId: 'someTenantId' })
+    expect(collection.deleteOne).toHaveBeenCalledWith({ guid: 'someGuid', tenantId: 'someTenantId' })
   })
 
   it('should insert a device', async () => {
