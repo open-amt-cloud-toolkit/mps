@@ -34,8 +34,7 @@ beforeEach(() => {
       fwBuild: '1111',
       fwSku: '16392',
       currentMode: '0',
-      ipAddress: '',
-      dnsSuffixOs: ''
+      ipAddress: ''
     }
   }
   allDevices = [

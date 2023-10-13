@@ -335,7 +335,7 @@ describe('device tests', () => {
 
   test('should return device when successfully inserted', async () => {
     const getById = jest.spyOn(deviceTable, 'getById')
-    const device = {
+    const device: Device = {
       guid: '4c4c4544-004b-4210-8033-b6c04f504633',
       hostname: 'hostname',
       tags: null,
@@ -350,7 +350,6 @@ describe('device tests', () => {
         fwSku: '16392',
         fwVersion: '16.1',
         currentMode: '0',
-        dnsSuffixOs: '',
         ipAddress: ''
       }
     }
@@ -377,8 +376,44 @@ describe('device tests', () => {
     expect(result).toBe(device)
   })
 
+  test('should return device when successfully inserted without deviceInfo field', async () => {
+    const getById = jest.spyOn(deviceTable, 'getById')
+    const device: Device = {
+      guid: '4c4c4544-004b-4210-8033-b6c04f504633',
+      hostname: 'hostname',
+      tags: null,
+      mpsInstance: 'localhost',
+      connectionStatus: false,
+      mpsusername: 'admin',
+      tenantId: null,
+      friendlyName: null,
+      dnsSuffix: null
+    }
+    querySpy.mockResolvedValueOnce({ rows: [{ device }], command: '', fields: null, rowCount: 1, oid: 0 })
+    getById.mockResolvedValueOnce(device)
+    const result = await deviceTable.insert(device)
+    expect(querySpy).toBeCalledTimes(1)
+    expect(querySpy).toBeCalledWith(`
+      INSERT INTO devices(guid, hostname, tags, mpsinstance, connectionstatus, mpsusername, tenantid, friendlyname, dnssuffix, deviceinfo) 
+      values($1, $2, ARRAY(SELECT json_array_elements_text($3)), $4, $5, $6, $7, $8, $9, $10)`,
+    [
+      device.guid,
+      device.hostname,
+      JSON.stringify(device.tags),
+      device.mpsInstance,
+      device.connectionStatus,
+      device.mpsusername,
+      device.tenantId,
+      device.friendlyName,
+      device.dnsSuffix,
+      JSON.stringify(device.deviceInfo)
+    ])
+    expect(getById).toBeCalledTimes(1)
+    expect(result).toBe(device)
+  })
+
   test('should get null when device not inserted and no exception', async () => {
-    const device = {
+    const device: Device = {
       guid: '4c4c4544-004b-4210-8033-b6c04f504633',
       hostname: 'hostname',
       tags: null,
@@ -393,8 +428,7 @@ describe('device tests', () => {
         fwBuild: '1111',
         fwSku: '16392',
         currentMode: '0',
-        ipAddress: '',
-        dnsSuffixOs: ''
+        ipAddress: ''
       }
     }
     querySpy.mockResolvedValueOnce({ rows: [], command: '', fields: null, rowCount: 0, oid: 0 })
@@ -404,7 +438,7 @@ describe('device tests', () => {
 
   test('should get an exception when device fails to insert', async () => {
     let mpsError = null
-    const device = {
+    const device: Device = {
       guid: '4c4c4544-004b-4210-8033-b6c04f504633',
       hostname: 'hostname',
       tags: null,
@@ -419,8 +453,7 @@ describe('device tests', () => {
         fwBuild: '1111',
         fwSku: '16392',
         currentMode: '0',
-        ipAddress: '',
-        dnsSuffixOs: ''
+        ipAddress: ''
       }
     }
     querySpy.mockRejectedValueOnce(() => {
@@ -436,7 +469,7 @@ describe('device tests', () => {
 
   test('should throw unique key violation exception when a device already exist', async () => {
     let mpsError = null
-    const device = {
+    const device: Device = {
       guid: '4c4c4544-004b-4210-8033-b6c04f504633',
       hostname: 'hostname',
       tags: null,
@@ -451,8 +484,7 @@ describe('device tests', () => {
         fwBuild: '1111',
         fwSku: '16392',
         currentMode: '0',
-        ipAddress: '',
-        dnsSuffixOs: ''
+        ipAddress: ''
       }
     }
     querySpy.mockRejectedValueOnce({ code: '23505' })
@@ -466,7 +498,7 @@ describe('device tests', () => {
 
   test('should get a device when device updates with change', async () => {
     const getById = jest.spyOn(deviceTable, 'getById')
-    const device = {
+    const device: Device = {
       guid: '4c4c4544-004b-4210-8033-b6c04f504633',
       hostname: 'hostname',
       tags: null,
@@ -481,8 +513,7 @@ describe('device tests', () => {
         fwBuild: '1111',
         fwSku: '16392',
         currentMode: '0',
-        ipAddress: '',
-        dnsSuffixOs: ''
+        ipAddress: ''
       }
     }
     querySpy.mockResolvedValueOnce({ rows: [{ device }], command: '', fields: null, rowCount: 1, oid: 0 })
@@ -511,7 +542,7 @@ describe('device tests', () => {
 
   test('should throw 400 exception when fails to update device', async () => {
     let mpsError = null
-    const device = {
+    const device: Device = {
       guid: '4c4c4544-004b-4210-8033-b6c04f504633',
       hostname: 'hostname',
       tags: null,
@@ -526,8 +557,7 @@ describe('device tests', () => {
         fwBuild: '1111',
         fwSku: '16392',
         currentMode: '0',
-        ipAddress: '',
-        dnsSuffixOs: ''
+        ipAddress: ''
       }
     }
     querySpy.mockResolvedValueOnce({ rows: [], command: '', fields: null, rowCount: 0, oid: 0 })
@@ -541,7 +571,7 @@ describe('device tests', () => {
 
   test('should throw an exception when fails to update device', async () => {
     let mpsError = null
-    const device = {
+    const device: Device = {
       guid: '4c4c4544-004b-4210-8033-b6c04f504633',
       hostname: 'hostname',
       tags: null,
@@ -556,8 +586,7 @@ describe('device tests', () => {
         fwBuild: '1111',
         fwSku: '16392',
         currentMode: '0',
-        ipAddress: '',
-        dnsSuffixOs: ''
+        ipAddress: ''
       }
     }
     querySpy.mockRejectedValueOnce(() => {

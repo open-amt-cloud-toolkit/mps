@@ -64,7 +64,7 @@ describe('MongoDeviceTable', () => {
     expect(collection.findOne).toHaveBeenCalledWith({ guid: 'someId', tenantId: 'someTenantId' })
   })
 
-  it('should delete document by name and tenantId', async () => {
+  it('should delete document by guid and tenantId', async () => {
     collection.deleteOne.mockResolvedValue({ deletedCount: 1 } as any)
 
     const result = await mongoDeviceTable.delete('someGuid', 'someTenantId')

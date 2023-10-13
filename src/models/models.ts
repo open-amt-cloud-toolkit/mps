@@ -18,7 +18,7 @@ export interface Device {
   tenantId: string
   friendlyName: string
   dnsSuffix: string
-  deviceInfo: DeviceInfo
+  deviceInfo?: DeviceInfo
 }
 export interface DeviceInfo {
   fwVersion: string
@@ -26,7 +26,6 @@ export interface DeviceInfo {
   fwSku: string
   currentMode: string
   ipAddress: string
-  dnsSuffixOs: string
 }
 export type Credentials = Record<string, AMTCredential>
 export interface AMTCredential {
