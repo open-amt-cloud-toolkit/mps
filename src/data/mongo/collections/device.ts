@@ -33,8 +33,8 @@ export class MongoDeviceTable implements IDeviceTable {
     return this.collection.findOne({ guid: id, tenantId }) as unknown as WithId<Device>
   }
 
-  async delete (name: string, tenantId: string = ''): Promise<boolean> {
-    const result = await this.collection.deleteOne({ friendlyName: name, tenantId })
+  async delete (id: string, tenantId: string = ''): Promise<boolean> {
+    const result = await this.collection.deleteOne({ guid: id, tenantId })
     return result.deletedCount && result.deletedCount > 0
   }
 
