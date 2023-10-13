@@ -189,11 +189,19 @@ export class WebServer {
     // verify JWT
     try {
       const valid = this.jws.verify(info.req.headers['sec-websocket-protocol'], 'HS256', Environment.Config.jwt_secret)
-      if (!valid) {
-        return false
+      const decodedToken = this.jws.decode(info.req.headers['sec-websocket-protocol'])
+      const currentTimestamp = Math.floor(Date.now() / 1000) // Current timestamp in seconds
+      const deviceId = decodedToken.payload.deviceId
+      const reqUrl = info.req.url
+      const urlSearchParams = new URL(`http://dummy.com/${reqUrl}`)
+      const reqDeviceId = urlSearchParams.searchParams.get('host')
+
+      if (!valid || !(decodedToken.payload.exp && decodedToken.payload.exp > currentTimestamp) || !(deviceId === reqDeviceId)) {
+        logger.error('Redirection token invalid')
+        return false // reject connection if problem with verify
       }
-    } catch (err) { // reject connection if problem with verify
-      return false
+    } catch (error) {
+      logger.error(`Error verifying the token: ${error.message}`)
     }
     // Test if device has an established KVM session
     const startIndex = info.req.url.indexOf('host=')
