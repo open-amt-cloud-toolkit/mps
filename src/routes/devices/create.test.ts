@@ -29,7 +29,14 @@ beforeEach(() => {
     tags: [],
     mpsusername: 'userName01',
     friendlyName: null,
-    dnsSuffix: null
+    dnsSuffix: null,
+    deviceInfo: {
+      fwVersion: '16.1',
+      fwBuild: '1111',
+      fwSku: '16392',
+      currentMode: '0',
+      ipAddress: ''
+    }
   }
   reqDevice = {
     guid,

@@ -20,7 +20,11 @@ export const validator = (): any => [
   check('tags')
     .optional()
     .isArray()
-    .withMessage('tags should be an array of strings')
+    .withMessage('tags should be an array of strings'),
+  check('deviceInfo')
+    .optional({ nullable: true })
+    .isObject()
+    .withMessage('deviceInfo should be an object if provided')
 ]
 
 export const odataValidator = (): any => [
