@@ -24,7 +24,7 @@ jobs:
 
         run: docker build . --file Dockerfile --tag vprodemo.azurecr.io/mps:${{ github.sha }} --tag vprodemo.azurecr.io/mps:latest
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@fbd16365eb88e12433951383f5e99bd901fc618f # master
+        uses: aquasecurity/trivy-action@b77b85c0254bba6789e787844f0585cde1e56320 # master
         with:
           image-ref: 'vprodemo.azurecr.io/mps:${{ github.sha }}'
           format: 'table'
