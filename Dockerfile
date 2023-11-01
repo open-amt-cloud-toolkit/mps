@@ -4,8 +4,7 @@
 #*********************************************************************/
 #Multistage docker layer to isolate the git credentials
 #First stage copy and install dependencies
-ARG BASE=node:18-bullseye-slim
-FROM ${BASE} as builder
+FROM node:20-bullseye-slim@sha256:f4032280e55c4116ffe38fb64e24e6632367b9d732c193fe991d2b02d911484f as builder
 LABEL license='SPDX-License-Identifier: Apache-2.0' \
       copyright='Copyright (c) Intel Corporation 2021'
 
