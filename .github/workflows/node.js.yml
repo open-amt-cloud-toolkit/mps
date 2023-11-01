@@ -31,7 +31,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
       - run: npm run lint
-        if: ${{ matrix.node-version == '18.x' }}
+        if: ${{ matrix.node-version == '20.x' }}
       - run: npm run compile --if-present
       - run: npm test
       - name: Test Report
@@ -45,7 +45,7 @@ jobs:
           fail-on-error: "false"
       - uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
         name: Upload Coverage Results
-        if: ${{ matrix.node-version == '18.x' }}
+        if: ${{ matrix.node-version == '20.x' }}
       - name: Rename test file
         run: mv junit.xml mps-unit.xml
       - name: Upload JEST Results
