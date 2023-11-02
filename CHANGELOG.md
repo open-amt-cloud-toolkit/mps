@@ -1,3 +1,202 @@
+<a name="2.12.5"></a>
+## [2.12.5] - 2023-11-01
+### Build
+- **deps:** bump mongodb from 6.1.0 to 6.2.0 ([#1136](https://github.com/open-amt-cloud-toolkit/mps/issues/1136)) (#f10dbae) 
+- **deps:** bump github/codeql-action from 2.22.4 to 2.22.5 ([#1144](https://github.com/open-amt-cloud-toolkit/mps/issues/1144)) (#8764122) 
+- **deps:** bump github/codeql-action from 2.22.3 to 2.22.4 ([#1130](https://github.com/open-amt-cloud-toolkit/mps/issues/1130)) (#c68885d) 
+- **deps:** bump actions/setup-node from 3.8.1 to 4.0.0 ([#1131](https://github.com/open-amt-cloud-toolkit/mps/issues/1131)) (#82d0287) 
+- **deps:** bump aquasecurity/trivy-action from 0.12.0 to 0.13.0 ([#1141](https://github.com/open-amt-cloud-toolkit/mps/issues/1141)) (#527119f) 
+- **deps:** bump mqtt from 5.1.2 to 5.1.3 ([#1139](https://github.com/open-amt-cloud-toolkit/mps/issues/1139)) (#e731079) 
+- **deps:** bump http-z from 6.1.2 to 7.0.0 ([#1126](https://github.com/open-amt-cloud-toolkit/mps/issues/1126)) (#b6287b1) 
+- **deps:** bump ossf/scorecard-action from 2.3.0 to 2.3.1 ([#1137](https://github.com/open-amt-cloud-toolkit/mps/issues/1137)) (#66a6db1) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.8.5 to 20.8.6 (#f591b53) 
+- **deps-dev:** bump eslint-plugin-import from 2.28.1 to 2.29.0 ([#1134](https://github.com/open-amt-cloud-toolkit/mps/issues/1134)) (#2a55276) 
+- **deps-dev:** bump [@types](https://github.com/types)/express from 4.17.19 to 4.17.20 ([#1133](https://github.com/open-amt-cloud-toolkit/mps/issues/1133)) (#55e8def) 
+- **deps-dev:** bump [@types](https://github.com/types)/ws from 8.5.7 to 8.5.8 ([#1132](https://github.com/open-amt-cloud-toolkit/mps/issues/1132)) (#0c6cba9) 
+- **deps-dev:** bump [@types](https://github.com/types)/body-parser from 1.19.3 to 1.19.4 ([#1125](https://github.com/open-amt-cloud-toolkit/mps/issues/1125)) (#9651c93) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.8.7 to 20.8.8 ([#1138](https://github.com/open-amt-cloud-toolkit/mps/issues/1138)) (#574b629) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.8.6 to 20.8.7 ([#1127](https://github.com/open-amt-cloud-toolkit/mps/issues/1127)) (#effe63c) 
+- **deps-dev:** bump [@types](https://github.com/types)/node-forge from 1.3.7 to 1.3.8 ([#1128](https://github.com/open-amt-cloud-toolkit/mps/issues/1128)) (#32a98af) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.8.8 to 20.8.9 ([#1142](https://github.com/open-amt-cloud-toolkit/mps/issues/1142)) (#10990e6) 
+- **deps-dev:** bump [@types](https://github.com/types)/pg from 8.10.5 to 8.10.7 ([#1129](https://github.com/open-amt-cloud-toolkit/mps/issues/1129)) (#2fafea4) 
+- **deps-dev:** bump eslint from 8.51.0 to 8.52.0 ([#1135](https://github.com/open-amt-cloud-toolkit/mps/issues/1135)) (#bc494af) 
+- **deps-dev:** bump [@babel](https://github.com/babel)/traverse from 7.20.12 to 7.23.2 (#62b37b8) 
+- **docker:** update node image to 20 (#b1a8fbd) 
+
+### Ci
+- update to node 20 (#745ee47) 
+
+### Fix
+- mps version and changelog (#0bef3ce) 
+- **redir:** improve data checking for redirection (#7aa1510) 
+
+### Test
+- add dnssuffix to api tests ([#1124](https://github.com/open-amt-cloud-toolkit/mps/issues/1124)) (#223d2f0) 
+
+
+<a name="v2.12.3"></a>
+## [v2.12.3] - 2023-10-17
+### Build
+- removes jenkinsfile ([#1092](https://github.com/open-amt-cloud-toolkit/mps/issues/1092)) (#8a8132e) 
+- **deps:** bump github/codeql-action from 2.22.2 to 2.22.3 (#cd69c99) 
+
+### Fix
+- fixed mongo device deletion ([#1100](https://github.com/open-amt-cloud-toolkit/mps/issues/1100)) (#ea2c973) 
+
+
+<a name="v2.12.2"></a>
+## [v2.12.2] - 2023-10-13
+
+<a name="v2.12.4"></a>
+## [v2.12.4] - 2023-10-10
+### Build
+- removes jenkinsfile ([#1092](https://github.com/open-amt-cloud-toolkit/mps/issues/1092)) (#8a8132e) 
+- **deps:** bump mqtt from 5.1.1 to 5.1.2 ([#1113](https://github.com/open-amt-cloud-toolkit/mps/issues/1113)) (#f8e8561) 
+- **deps:** bump http-z from 6.1.2 to 7.0.0 ([#1126](https://github.com/open-amt-cloud-toolkit/mps/issues/1126)) (#b6287b1) 
+- **deps:** bump github/codeql-action from 2.21.9 to 2.22.0 ([#1102](https://github.com/open-amt-cloud-toolkit/mps/issues/1102)) (#60b0390) 
+- **deps:** bump ossf/scorecard-action from 2.2.0 to 2.3.0 ([#1101](https://github.com/open-amt-cloud-toolkit/mps/issues/1101)) (#2df48c4) 
+- **deps:** bump github/codeql-action from 2.22.0 to 2.22.1 ([#1104](https://github.com/open-amt-cloud-toolkit/mps/issues/1104)) (#36b2d23) 
+- **deps:** bump github/codeql-action from 2.22.3 to 2.22.4 ([#1130](https://github.com/open-amt-cloud-toolkit/mps/issues/1130)) (#c68885d) 
+- **deps:** bump mqtt from 5.1.0 to 5.1.1 ([#1106](https://github.com/open-amt-cloud-toolkit/mps/issues/1106)) (#892daa5) 
+- **deps:** bump winston from 3.10.0 to 3.11.0 ([#1107](https://github.com/open-amt-cloud-toolkit/mps/issues/1107)) (#c4cc090) 
+- **deps:** bump github/codeql-action from 2.22.2 to 2.22.3 (#cd69c99) 
+- **deps:** bump actions/setup-node from 3.8.1 to 4.0.0 ([#1131](https://github.com/open-amt-cloud-toolkit/mps/issues/1131)) (#82d0287) 
+- **deps:** bump github/codeql-action from 2.22.1 to 2.22.2 ([#1116](https://github.com/open-amt-cloud-toolkit/mps/issues/1116)) (#af74746) 
+- **deps-dev:** bump [@types](https://github.com/types)/body-parser from 1.19.3 to 1.19.4 ([#1125](https://github.com/open-amt-cloud-toolkit/mps/issues/1125)) (#9651c93) 
+- **deps-dev:** bump [@types](https://github.com/types)/ws from 8.5.6 to 8.5.7 ([#1114](https://github.com/open-amt-cloud-toolkit/mps/issues/1114)) (#2f4c3d1) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.8.4 to 20.8.5 ([#1117](https://github.com/open-amt-cloud-toolkit/mps/issues/1117)) (#70d2369) 
+- **deps-dev:** bump [@types](https://github.com/types)/express from 4.17.18 to 4.17.19 ([#1112](https://github.com/open-amt-cloud-toolkit/mps/issues/1112)) (#045bc4f) 
+- **deps-dev:** bump [@types](https://github.com/types)/pg from 8.10.4 to 8.10.5 ([#1111](https://github.com/open-amt-cloud-toolkit/mps/issues/1111)) (#b678816) 
+- **deps-dev:** bump [@types](https://github.com/types)/node-forge from 1.3.6 to 1.3.7 ([#1109](https://github.com/open-amt-cloud-toolkit/mps/issues/1109)) (#fbb8813) 
+- **deps-dev:** bump [@types](https://github.com/types)/pg from 8.10.3 to 8.10.4 ([#1108](https://github.com/open-amt-cloud-toolkit/mps/issues/1108)) (#dd0b94e) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.8.5 to 20.8.6 (#f591b53) 
+- **deps-dev:** bump [@babel](https://github.com/babel)/traverse from 7.20.12 to 7.23.2 (#62b37b8) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.8.2 to 20.8.4 ([#1105](https://github.com/open-amt-cloud-toolkit/mps/issues/1105)) (#6739a7e) 
+- **deps-dev:** bump [@types](https://github.com/types)/pg from 8.10.5 to 8.10.7 ([#1129](https://github.com/open-amt-cloud-toolkit/mps/issues/1129)) (#2fafea4) 
+- **deps-dev:** bump [@types](https://github.com/types)/node-forge from 1.3.7 to 1.3.8 ([#1128](https://github.com/open-amt-cloud-toolkit/mps/issues/1128)) (#32a98af) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.8.6 to 20.8.7 ([#1127](https://github.com/open-amt-cloud-toolkit/mps/issues/1127)) (#effe63c) 
+- **deps-dev:** bump eslint from 8.50.0 to 8.51.0 ([#1103](https://github.com/open-amt-cloud-toolkit/mps/issues/1103)) (#3dcd5ef) 
+
+### Ci
+- updated automated docker push on release ([#1099](https://github.com/open-amt-cloud-toolkit/mps/issues/1099)) (#521ba04) 
+
+### Fix
+- fixed mongo device deletion ([#1100](https://github.com/open-amt-cloud-toolkit/mps/issues/1100)) (#ea2c973) 
+- Remove data from Mongo on deactivation ([#1118](https://github.com/open-amt-cloud-toolkit/mps/issues/1118)) (#40926e3) 
+- **redir:** improve data checking for redirection (#7aa1510) 
+
+### Test
+- add dnssuffix to api tests ([#1124](https://github.com/open-amt-cloud-toolkit/mps/issues/1124)) (#223d2f0) 
+
+
+<a name="v2.12.1"></a>
+## [v2.12.1] - 2023-10-06
+### Build
+- **deps:** bump [@open](https://github.com/open)-amt-cloud-toolkit/wsman-messages ([#1095](https://github.com/open-amt-cloud-toolkit/mps/issues/1095)) (#1b30f38) 
+- **deps:** bump mqtt from 5.0.5 to 5.1.0 ([#1096](https://github.com/open-amt-cloud-toolkit/mps/issues/1096)) (#851f485) 
+- **deps:** bump step-security/harden-runner from 2.5.1 to 2.6.0 (#d69ea71) 
+- **deps:** bump alpine from `7144f7b` to `eece025` ([#1090](https://github.com/open-amt-cloud-toolkit/mps/issues/1090)) (#bd3113c) 
+- **deps:** bump github/codeql-action from 2.21.8 to 2.21.9 ([#1089](https://github.com/open-amt-cloud-toolkit/mps/issues/1089)) (#33498b3) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.7.2 to 20.8.2 ([#1093](https://github.com/open-amt-cloud-toolkit/mps/issues/1093)) (#4545756) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.7.1 to 20.7.2 ([#1091](https://github.com/open-amt-cloud-toolkit/mps/issues/1091)) (#ecbe199) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.7.0 to 20.7.1 ([#1088](https://github.com/open-amt-cloud-toolkit/mps/issues/1088)) (#12201d9) 
+
+### Fix
+- redirection token expiration and device UUID check ([#1098](https://github.com/open-amt-cloud-toolkit/mps/issues/1098)) (#42fdb7a) 
+
+
+<a name="v2.12.0"></a>
+## [v2.12.0] - 2023-09-26
+### Build
+- **deps:** bump actions/setup-node from 3.8.0 to 3.8.1 ([#1031](https://github.com/open-amt-cloud-toolkit/mps/issues/1031)) (#e7fa8c5) 
+- **deps:** bump github/codeql-action from 2.1.27 to 2.21.2 (#efcaac3) 
+- **deps:** bump ossf/scorecard-action from 2.0.6 to 2.2.0 (#5d8c0d2) 
+- **deps:** bump danhellem/github-actions-issue-to-work-item (#2906e8b) 
+- **deps:** bump wagoid/commitlint-github-action from 4.1.15 to 5.4.3 (#9f16646) 
+- **deps:** bump docker/login-action from 1.6.0 to 2.2.0 (#571c61e) 
+- **deps:** bump actions/checkout from 4.0.0 to 4.1.0 ([#1080](https://github.com/open-amt-cloud-toolkit/mps/issues/1080)) (#031e277) 
+- **deps:** bump docker/login-action from 2.2.0 to 3.0.0 ([#1078](https://github.com/open-amt-cloud-toolkit/mps/issues/1078)) (#5dbd1f3) 
+- **deps:** bump mongodb from 6.0.0 to 6.1.0 (#0417e6b) 
+- **deps:** bump actions/setup-node from 1.4.6 to 3.7.0 (#66d38d5) 
+- **deps:** bump github/codeql-action from 2.21.7 to 2.21.8 ([#1075](https://github.com/open-amt-cloud-toolkit/mps/issues/1075)) (#984e1af) 
+- **deps:** bump ws from 8.14.1 to 8.14.2 ([#1074](https://github.com/open-amt-cloud-toolkit/mps/issues/1074)) (#2635574) 
+- **deps:** bump actions/upload-artifact from 2.3.1 to 3.1.2 (#6a65923) 
+- **deps:** bump actions/checkout from 3.1.0 to 3.5.3 (#ba64fed) 
+- **deps:** bump jwalton/gh-docker-logs from 1.0.1 to 2.2.1 (#166fd5f) 
+- **deps:** bump github/codeql-action from 2.21.6 to 2.21.7 ([#1070](https://github.com/open-amt-cloud-toolkit/mps/issues/1070)) (#1a3a2fd) 
+- **deps:** bump actions/add-to-project from 0.3.0 to 0.5.0 (#5f401ba) 
+- **deps:** bump docker/login-action from 2.2.0 to 3.0.0 ([#1065](https://github.com/open-amt-cloud-toolkit/mps/issues/1065)) (#b3bed90) 
+- **deps:** bump codecov/codecov-action from 3.1.3 to 3.1.4 ([#1014](https://github.com/open-amt-cloud-toolkit/mps/issues/1014)) (#38e0d62) 
+- **deps:** bump mqtt from 4.3.7 to 5.0.2 ([#1008](https://github.com/open-amt-cloud-toolkit/mps/issues/1008)) (#466efe4) 
+- **deps:** bump github/codeql-action from 2.21.2 to 2.21.3 (#1898760) 
+- **deps:** bump ws from 8.14.0 to 8.14.1 ([#1056](https://github.com/open-amt-cloud-toolkit/mps/issues/1056)) (#66c5229) 
+- **deps:** bump mqtt from 5.0.4 to 5.0.5 ([#1058](https://github.com/open-amt-cloud-toolkit/mps/issues/1058)) (#0e9ec96) 
+- **deps:** bump ws from 8.13.0 to 8.14.0 ([#1052](https://github.com/open-amt-cloud-toolkit/mps/issues/1052)) (#452b692) 
+- **deps:** bump actions/upload-artifact from 3.1.2 to 3.1.3 ([#1053](https://github.com/open-amt-cloud-toolkit/mps/issues/1053)) (#1a7444f) 
+- **deps:** bump [@open](https://github.com/open)-amt-cloud-toolkit/wsman-messages ([#1054](https://github.com/open-amt-cloud-toolkit/mps/issues/1054)) (#aca31cc) 
+- **deps:** bump alpine from `82d1e9d` to `7144f7b` (#5e2ec4e) 
+- **deps:** bump actions/checkout from 3.6.0 to 4.0.0 ([#1050](https://github.com/open-amt-cloud-toolkit/mps/issues/1050)) (#7cb6f31) 
+- **deps:** bump aquasecurity/trivy-action ([#1046](https://github.com/open-amt-cloud-toolkit/mps/issues/1046)) (#007a176) 
+- **deps:** bump step-security/harden-runner from 2.5.0 to 2.5.1 ([#1023](https://github.com/open-amt-cloud-toolkit/mps/issues/1023)) (#f58ccf6) 
+- **deps:** bump mqtt from 5.0.3 to 5.0.4 ([#1044](https://github.com/open-amt-cloud-toolkit/mps/issues/1044)) (#f7a30f9) 
+- **deps:** bump cycjimmy/semantic-release-action from 3.4.2 to 4.0.0 ([#1045](https://github.com/open-amt-cloud-toolkit/mps/issues/1045)) (#979aef5) 
+- **deps:** bump github/codeql-action from 2.21.4 to 2.21.5 ([#1043](https://github.com/open-amt-cloud-toolkit/mps/issues/1043)) (#aced362) 
+- **deps:** bump aquasecurity/trivy-action ([#1019](https://github.com/open-amt-cloud-toolkit/mps/issues/1019)) (#c2b8976) 
+- **deps:** bump github/codeql-action from 2.21.3 to 2.21.4 ([#1029](https://github.com/open-amt-cloud-toolkit/mps/issues/1029)) (#c201a03) 
+- **deps:** bump pg from 8.11.2 to 8.11.3 ([#1032](https://github.com/open-amt-cloud-toolkit/mps/issues/1032)) (#c915ea9) 
+- **deps:** bump actions/checkout from 3.5.3 to 3.6.0 ([#1038](https://github.com/open-amt-cloud-toolkit/mps/issues/1038)) (#6de5a1a) 
+- **deps:** bump actions/setup-node from 3.7.0 to 3.8.0 ([#1028](https://github.com/open-amt-cloud-toolkit/mps/issues/1028)) (#de4b813) 
+- **deps:** bump mqtt from 5.0.2 to 5.0.3 ([#1030](https://github.com/open-amt-cloud-toolkit/mps/issues/1030)) (#ab55c8b) 
+- **deps:** bump fsevents from 2.3.2 to 2.3.3 ([#1035](https://github.com/open-amt-cloud-toolkit/mps/issues/1035)) (#4d8ca59) 
+- **deps:** bump github/codeql-action from 2.21.5 to 2.21.6 ([#1067](https://github.com/open-amt-cloud-toolkit/mps/issues/1067)) (#39a2c8f) 
+- **deps:** bump pg from 8.11.1 to 8.11.2 ([#999](https://github.com/open-amt-cloud-toolkit/mps/issues/999)) (#a3e5851) 
+- **deps-dev:** bump eslint from 8.48.0 to 8.49.0 ([#1057](https://github.com/open-amt-cloud-toolkit/mps/issues/1057)) (#fc71774) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.5.4 to 20.5.6 ([#1039](https://github.com/open-amt-cloud-toolkit/mps/issues/1039)) (#9a67caf) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.5.1 to 20.5.3 ([#1036](https://github.com/open-amt-cloud-toolkit/mps/issues/1036)) (#fb37bee) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.4.10 to 20.5.0 ([#1026](https://github.com/open-amt-cloud-toolkit/mps/issues/1026)) (#5fb239a) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.5.3 to 20.5.4 ([#1037](https://github.com/open-amt-cloud-toolkit/mps/issues/1037)) (#c2b7ab3) 
+- **deps-dev:** bump eslint from 8.47.0 to 8.48.0 ([#1040](https://github.com/open-amt-cloud-toolkit/mps/issues/1040)) (#0bd69f8) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.5.6 to 20.5.7 ([#1042](https://github.com/open-amt-cloud-toolkit/mps/issues/1042)) (#f31ef6f) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.4.9 to 20.4.10 ([#1024](https://github.com/open-amt-cloud-toolkit/mps/issues/1024)) (#1da3caf) 
+- **deps-dev:** bump eslint from 8.46.0 to 8.47.0 ([#1025](https://github.com/open-amt-cloud-toolkit/mps/issues/1025)) (#cc05fe0) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.5.7 to 20.5.8 ([#1047](https://github.com/open-amt-cloud-toolkit/mps/issues/1047)) (#54ec614) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.5.8 to 20.5.9 ([#1048](https://github.com/open-amt-cloud-toolkit/mps/issues/1048)) (#5085dcf) 
+- **deps-dev:** bump [@types](https://github.com/types)/node-forge from 1.3.4 to 1.3.5 ([#1059](https://github.com/open-amt-cloud-toolkit/mps/issues/1059)) (#6815fa9) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.4.7 to 20.4.9 (#fe5a7c9) 
+- **deps-dev:** bump eslint-plugin-import from 2.28.0 to 2.28.1 ([#1034](https://github.com/open-amt-cloud-toolkit/mps/issues/1034)) (#bf4ddf1) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.5.9 to 20.6.0 ([#1060](https://github.com/open-amt-cloud-toolkit/mps/issues/1060)) (#0836416) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.4.6 to 20.4.7 ([#1015](https://github.com/open-amt-cloud-toolkit/mps/issues/1015)) (#a85e7a8) 
+- **deps-dev:** bump [@types](https://github.com/types)/express from 4.17.17 to 4.17.18 ([#1086](https://github.com/open-amt-cloud-toolkit/mps/issues/1086)) (#e191af7) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.6.0 to 20.6.1 ([#1072](https://github.com/open-amt-cloud-toolkit/mps/issues/1072)) (#39681df) 
+- **deps-dev:** bump [@types](https://github.com/types)/body-parser from 1.19.2 to 1.19.3 ([#1071](https://github.com/open-amt-cloud-toolkit/mps/issues/1071)) (#c036621) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.6.1 to 20.6.2 ([#1073](https://github.com/open-amt-cloud-toolkit/mps/issues/1073)) (#d0c2476) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.6.2 to 20.6.3 ([#1077](https://github.com/open-amt-cloud-toolkit/mps/issues/1077)) (#ce0d8dc) 
+- **deps-dev:** bump eslint from 8.49.0 to 8.50.0 ([#1081](https://github.com/open-amt-cloud-toolkit/mps/issues/1081)) (#d29d945) 
+- **deps-dev:** bump [@types](https://github.com/types)/ws from 8.5.5 to 8.5.6 ([#1082](https://github.com/open-amt-cloud-toolkit/mps/issues/1082)) (#19081bf) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.4.5 to 20.4.6 (#4bc2c35) 
+- **deps-dev:** bump [@types](https://github.com/types)/pg from 8.10.2 to 8.10.3 ([#1083](https://github.com/open-amt-cloud-toolkit/mps/issues/1083)) (#4d8050f) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.6.3 to 20.7.0 ([#1084](https://github.com/open-amt-cloud-toolkit/mps/issues/1084)) (#624231e) 
+- **deps-dev:** bump [@types](https://github.com/types)/node-forge from 1.3.5 to 1.3.6 ([#1085](https://github.com/open-amt-cloud-toolkit/mps/issues/1085)) (#3bb04f4) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.5.0 to 20.5.1 ([#1033](https://github.com/open-amt-cloud-toolkit/mps/issues/1033)) (#4f93a4b) 
+
+### Ci
+- rename releaserc.json to .releaserc.json (#ba460e2) 
+- add release tag to docker image ([#1064](https://github.com/open-amt-cloud-toolkit/mps/issues/1064)) (#5cfe812) 
+- update plugins for semantic release ([#1055](https://github.com/open-amt-cloud-toolkit/mps/issues/1055)) (#1922a15) 
+- [StepSecurity] Apply security best practices (#2b4e4d8) 
+
+### Docs
+- update badges (#53028fd) 
+
+### Feat
+- enable tenant check on AMT operations (#a4010b1) 
+- add support for mongo compatible nosql databases ([#1066](https://github.com/open-amt-cloud-toolkit/mps/issues/1066)) (#18096bc) 
+
+### Refactor
+- unpin docker compose minor revision (#c9d2588) 
+- **api:** removes use of 'any' type for $top and $skip (#aaa6e53) 
+- **db:** align variable names for limit and offset (#ce3c9da) 
+
 <a name="2.11.0"></a>
 ## [2.11.0] - 2023-07-31
 ### Build
