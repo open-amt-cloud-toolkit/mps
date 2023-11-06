@@ -45,13 +45,13 @@ export function setBootData (action: number, useSOL: boolean, r: AMT.Models.Boot
   r.ConfigurationDataReset = false
   r.FirmwareVerbosity = 0
   r.ForcedProgressEvents = false
-  r.IDERBootDevice = action === 202 || action === 203 ? 1 : 0 // 0 = Boot on Floppy, 1 = Boot on IDER
+  r.IDERBootDevice = (action === 202 || action === 203) ? 1 : 0 // 0 = Boot on Floppy, 1 = Boot on IDER
   r.LockKeyboard = false
   r.LockPowerButton = false
   r.LockResetButton = false
   r.LockSleepButton = false
   r.ReflashBIOS = false
-  r.UseIDER = action > 199 && action < 300
+  r.UseIDER = (action > 199 && action < 300)
   r.UseSOL = useSOL
   r.UseSafeMode = false
   r.UserPasswordBypass = false
@@ -66,7 +66,6 @@ const enum BootSources {
 
 export function setBootSource (action: number): CIM.Types.BootConfigSetting.InstanceID {
   let bootSource
-  if (action === 202 || action === 203) bootSource = BootSources.IDER_CD_ROM
   if (action === 400 || action === 401) bootSource = BootSources.PXE
   return bootSource
 }
