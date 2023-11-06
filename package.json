@@ -1,6 +1,6 @@
 {
   "name": "@open-amt-cloud-toolkit/mps",
-  "version": "2.12.5",
+  "version": "2.12.6",
   "description": "Containerized MPS service for executing Intel&reg; AMT features",
   "homepage": "https://github.com/open-amt-cloud-toolkit/mps",
   "contributors": [

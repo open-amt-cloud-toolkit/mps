@@ -1,3 +1,15 @@
+<a name="2.12.6"></a>
+## [2.12.6] - 2023-11-06
+### Build
+- **deps:** bump mqtt from 5.1.3 to 5.1.4 ([#1145](https://github.com/open-amt-cloud-toolkit/mps/issues/1145)) (#6a614b4) 
+- **deps:** bump aquasecurity/trivy-action from 0.13.0 to 0.13.1 ([#1146](https://github.com/open-amt-cloud-toolkit/mps/issues/1146)) (#e5a26ad) 
+- **deps:** bump [@open](https://github.com/open)-amt-cloud-toolkit/wsman-messages ([#1148](https://github.com/open-amt-cloud-toolkit/mps/issues/1148)) (#797f84e) 
+- **deps:** bump wagoid/commitlint-github-action from 5.4.3 to 5.4.4 ([#1152](https://github.com/open-amt-cloud-toolkit/mps/issues/1152)) (#c10eeba) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.8.9 to 20.8.10 ([#1147](https://github.com/open-amt-cloud-toolkit/mps/issues/1147)) (#51d785f) 
+
+### Fix
+- boot order for IDER (#b09e795)
+
 <a name="2.12.5"></a>
 ## [2.12.5] - 2023-11-01
 ### Build
