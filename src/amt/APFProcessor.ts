@@ -9,6 +9,8 @@ import Common from '../utils/common'
 import { type CIRASocket } from '../models/models'
 import { type CIRAChannel } from './CIRAChannel'
 import { EventEmitter } from 'stream'
+import { Environment } from '../utils/Environment'
+
 const KEEPALIVE_INTERVAL = 30 // 30 seconds is typical keepalive interval for AMT CIRA connection
 
 export enum APFProtocol {
@@ -421,6 +423,9 @@ const APFProcessor = {
   keepAliveRequest: (socket: CIRASocket, length: number, data: string): number => {
     if (length < 5) {
       return 0
+    }
+    if (Environment.Config.cira_last_seen) {
+      APFProcessor.APFEvents.emit('keepAliveRequest', socket.tag.nodeid)
     }
     logger.verbose(`${messages.MPS_KEEPALIVE_REQUEST}: ${socket.tag.nodeid}`)
     APFProcessor.SendKeepAliveReply(socket, Common.ReadInt(data, 1))

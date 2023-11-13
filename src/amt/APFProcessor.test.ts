@@ -7,6 +7,7 @@ import { Buffer } from 'node:buffer'
 import Common from '../utils/common'
 import { logger } from '../logging'
 import APFProcessor, { APFProtocol } from './APFProcessor'
+import { Environment } from '../utils/Environment'
 import { type CIRASocket } from '../models/models'
 import { type CIRAChannel } from './CIRAChannel'
 import { EventEmitter } from 'stream'
@@ -1008,6 +1009,74 @@ describe('APFProcessor Tests', () => {
         tag: {},
         write: jest.fn()
       } as any
+      const config = {
+        common_name: 'localhost',
+        port: 4433,
+        country: 'US',
+        company: 'NoCorp',
+        listen_any: true,
+        tls_offload: false,
+        web_port: 3000,
+        generate_certificates: true,
+        secrets_provider: 'string',
+        tls_cert: 'string',
+        tls_cert_key: 'string',
+        tls_cert_ca: 'string',
+        web_admin_user: 'admin',
+        web_admin_password: 'password',
+        web_auth_enabled: true,
+        vault_address: 'http://localhost:8200',
+        vault_token: 'myroot',
+        mqtt_address: '',
+        secrets_path: 'secret/data/',
+        cert_format: 'file',
+        data_path: '../private/data.json',
+        cert_path: '../private',
+        jwt_secret: 'secret',
+        jwt_issuer: '9EmRJTbIiIb4bIeSsmgcWIjrR6HyETqc',
+        jwt_expiration: 1440,
+        web_tls_cert: null,
+        web_tls_cert_key: null,
+        web_tls_cert_ca: null,
+        redirection_expiration_time: null,
+        cors_origin: '*',
+        cors_headers: '*',
+        cors_methods: '*',
+        jwt_token_header: null,
+        jwt_tenant_property: null,
+        db_provider: 'postgres',
+        connection_string: 'postgresql://<USERNAME>:<PASSWORD>@localhost:5432/mpsdb?sslmode=no-verify',
+        instance_name: 'localhost',
+        mps_tls_config: {
+          key: '../private/mpsserver-cert-private.key',
+          cert: '../private/mpsserver-cert-public.crt',
+          requestCert: true,
+          rejectUnauthorized: false,
+          minVersion: 'TLSv1',
+          ciphers: null,
+          secureOptions: ['SSL_OP_NO_SSLv2', 'SSL_OP_NO_SSLv3']
+        },
+        web_tls_config: {
+          key: '../private/mpsserver-cert-private.key',
+          cert: '../private/mpsserver-cert-public.crt',
+          ca: ['../private/root-cert-public.crt'],
+          secureOptions: [
+            'SSL_OP_NO_SSLv2',
+            'SSL_OP_NO_SSLv3',
+            'SSL_OP_NO_COMPRESSION',
+            'SSL_OP_CIPHER_SERVER_PREFERENCE',
+            'SSL_OP_NO_TLSv1',
+            'SSL_OP_NO_TLSv11'
+          ]
+        },
+        consul_enabled: true,
+        consul_host: 'localhost',
+        consul_port: '8500',
+        consul_key_prefix: 'MPS',
+        cira_last_seen: true
+      }
+      Environment.Config = config
+
       const length = 5
       const data = ''
       const sendKeepAliveReplySpy = jest.spyOn(APFProcessor, 'SendKeepAliveReply')

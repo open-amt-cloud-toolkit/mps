@@ -69,6 +69,6 @@ export const config: configType = {
   consul_enabled: true,
   consul_host: 'localhost',
   consul_port: '8500',
-  consul_key_prefix: 'MPS'
-
+  consul_key_prefix: 'MPS',
+  cira_last_seen: true
 }

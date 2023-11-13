@@ -29,12 +29,17 @@ beforeEach(() => {
     mpsusername: 'userName01',
     friendlyName: null,
     dnsSuffix: null,
+    lastConnected: null,
+    lastSeen: null,
+    lastDisconnected: null,
     deviceInfo: {
       fwVersion: '16.1',
       fwBuild: '1111',
       fwSku: '16392',
+      features: '',
       currentMode: '0',
-      ipAddress: ''
+      ipAddress: '',
+      lastUpdated: null
     }
   }
   allDevices = [

@@ -45,6 +45,7 @@ export enum messages {
   DEVICE_GET_EXCEPTION = 'Exception during Device Get request',
   DEVICE_GET_ALL_EXCEPTION = 'Exception during Device Get All request',
   DEVICE_GET_STATES_EXCEPTION = 'Exception during Device Get Stats request',
+  DEVICE_LAST_SEEN_STATUS_UPDATED = 'Device last seen status updated in db',
   DEVICE_REFRESH_SUCCESS = 'Device info refreshed',
   DEVICE_REFRESH_EXCEPTION = 'Exception during Device Refresh',
   DEVICE_TAGS_EXCEPTION = 'Exception during Device Get Tags request',
