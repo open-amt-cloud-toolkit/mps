@@ -17,7 +17,7 @@ export async function setAlarmOccurrence (req: Request, res: Response): Promise<
 
     MqttProvider.publishEvent('request', ['AMT_AddAlarm'], messages.ALARM_ADD_REQUESTED, guid)
 
-    if (payload == null || payload.ElementName == null || payload.StartTime == null) {
+    if (payload?.ElementName == null || payload.StartTime == null) {
       logger.error(`${messages.ALARM_ADD_INVALID_PARAMETERS} for guid : ${guid}.`)
       if (payload != null) {
         logger.info('Add alarm invalid body: ' + JSON.stringify(payload, null, '\t'))
