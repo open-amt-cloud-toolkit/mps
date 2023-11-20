@@ -18,6 +18,9 @@ export interface Device {
   tenantId: string
   friendlyName: string
   dnsSuffix: string
+  lastConnected?: Date
+  lastSeen?: Date
+  lastDisconnected?: Date
   deviceInfo?: DeviceInfo
 }
 export interface DeviceInfo {
@@ -25,7 +28,9 @@ export interface DeviceInfo {
   fwBuild: string
   fwSku: string
   currentMode: string
+  features: string
   ipAddress: string
+  lastUpdated: Date
 }
 export type Credentials = Record<string, AMTCredential>
 export interface AMTCredential {

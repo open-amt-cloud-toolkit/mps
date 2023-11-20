@@ -28,22 +28,23 @@ describe('MPS Server', function () {
   let sendUserAuthSpy: jest.SpyInstance
   let sendUserAuthFailSpy: jest.SpyInstance
   let socket
+  let testDevice: Device
   beforeEach(async function () {
     jest.setTimeout(60000)
-    const device = { mpsusername: 'admin' }
+    testDevice = { mpsusername: 'admin' } as any
     devicesMock = {
       get: async () => [] as Device[],
       getCount: async () => 0,
       getDistinctTags: async () => ['tag'],
-      getById: async (guid) => device as Device,
-      getByTags: async (tags) => [device] as Device[],
-      getByFriendlyName: async (hostname) => [device] as Device[],
-      getByHostname: async (hostname) => [device] as Device[],
+      getById: async (guid) => testDevice,
+      getByTags: async (tags) => [testDevice] as Device[],
+      getByFriendlyName: async (hostname) => [testDevice] as Device[],
+      getByHostname: async (hostname) => [testDevice] as Device[],
       getConnectedDevices: async (tenantId?) => 0,
       clearInstanceStatus: async () => true,
       delete: async (guid) => true,
       insert: async (device) => device,
-      update: async () => device as Device
+      update: async () => testDevice
     }
 
     db = {
@@ -114,6 +115,12 @@ describe('MPS Server', function () {
     expect(deviceDisconnectSpy).toHaveBeenCalledWith('123')
     expect(emitSpy).toHaveBeenCalledWith('disconnected', '123')
   })
+  it('should handle onAPFKeepAliveRequest', async () => {
+    const lastSeenUpdateSpy = jest.spyOn(mps, 'handleLastSeenUpdate')
+    devices['123'] = { ciraSocket: { tag: { id: 'ABC123XYZ', nodeid: '123' } } } as any
+    await mps.onAPFKeepAliveRequest('123')
+    expect(lastSeenUpdateSpy).toHaveBeenCalledWith('123')
+  })
   it('should allow device to connect if exists in db', async () => {
     await mps.onAPFProtocolVersion(socket)
     expect(deviceSpy).toHaveBeenCalledWith('123')
@@ -148,6 +155,16 @@ describe('MPS Server', function () {
     expect(devices['123'].ciraSocket.tag.id).toEqual('ABC123XYZ')
     expect(deviceConnectSpy).toHaveBeenCalledWith('123')
     expect(sendUserAuthSpy).toHaveBeenCalledWith(socket)
+  })
+  it('should update last seen update', async () => {
+    const debugSpy = jest.spyOn(logger, 'debug')
+    testDevice = {} as any
+    Environment.Config = { instance_name: 'mpsInstance' } as any
+    devices['123'] = { ciraSocket: { tag: { SystemId: '123', id: 'MNO123XYZ', nodeid: '123' }, end: jest.fn() } } as any
+    await mps.handleLastSeenUpdate('123')
+    expect(deviceSpy).toHaveBeenCalledWith('123')
+    expect(deviceUpdateSpy).toHaveBeenCalledWith({ connectionStatus: true, mpsInstance: 'mpsInstance', lastSeen: testDevice.lastSeen })
+    expect(debugSpy).toHaveBeenCalledWith('Device last seen status updated in db : 123')
   })
   it('should NOT verify user auth when NOT valid', async () => {
     const deviceConnectSpy = jest.spyOn(mps, 'handleDeviceConnect').mockResolvedValue(null)
@@ -286,13 +303,21 @@ describe('MPS Server', function () {
     await mps.handleDeviceDisconnect('123')
     expect(devices['123']).toBeUndefined()
     expect(deviceSpy).toHaveBeenCalledWith('123')
-    expect(deviceUpdateSpy).toHaveBeenCalledWith({ connectionStatus: false, mpsInstance: null, mpsusername: 'admin' })
+    const roughDateTest = new Date()
+    expect(testDevice.lastDisconnected.getDay()).toBe(roughDateTest.getDay())
+    expect(testDevice.lastDisconnected.getMonth()).toBe(roughDateTest.getMonth())
+    expect(testDevice.lastDisconnected.getFullYear()).toBe(roughDateTest.getFullYear())
+    expect(deviceUpdateSpy).toHaveBeenCalledWith({ connectionStatus: false, mpsInstance: null, mpsusername: 'admin', lastDisconnected: testDevice.lastDisconnected })
     expect(emitSpy).toHaveBeenCalledWith('disconnected', '123')
   })
   it('should handle device connect', async () => {
     devices['123'] = { device: 'a device' } as any
     Environment.Config = { instance_name: 'mpsInstance' } as any
     await mps.handleDeviceConnect('123')
-    expect(deviceUpdateSpy).toHaveBeenCalledWith({ connectionStatus: true, mpsInstance: 'mpsInstance', mpsusername: 'admin' })
+    const roughDateTest = new Date()
+    expect(testDevice.lastConnected.getDay()).toBe(roughDateTest.getDay())
+    expect(testDevice.lastConnected.getMonth()).toBe(roughDateTest.getMonth())
+    expect(testDevice.lastConnected.getFullYear()).toBe(roughDateTest.getFullYear())
+    expect(deviceUpdateSpy).toHaveBeenCalledWith({ connectionStatus: true, mpsInstance: 'mpsInstance', mpsusername: 'admin', lastConnected: testDevice.lastConnected })
   })
 })

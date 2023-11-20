@@ -58,5 +58,6 @@
   "consul_enabled": false,
   "consul_host": "localhost",
   "consul_port": "8500",
-  "consul_key_prefix": "MPS"
+  "consul_key_prefix": "MPS",
+  "cira_last_seen": true
 }

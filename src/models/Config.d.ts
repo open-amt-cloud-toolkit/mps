@@ -44,7 +44,7 @@ export interface configType {
   consul_host: string
   consul_port: string
   consul_key_prefix: string
-
+  cira_last_seen: boolean
 }
 
 export interface certificatesType {

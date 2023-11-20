@@ -53,6 +53,7 @@ export class MPSServer {
     APFProcessor.APFEvents.on('userAuthRequest', this.onVerifyUserAuth.bind(this))
     APFProcessor.APFEvents.on('protocolVersion', this.onAPFProtocolVersion.bind(this))
     APFProcessor.APFEvents.on('disconnected', this.onAPFDisconnected.bind(this))
+    APFProcessor.APFEvents.on('keepAliveRequest', this.onAPFKeepAliveRequest.bind(this))
 
     // Creates a TLS server for secure connection
     this.server = tlsCreateServer(this.certs.mps_tls_config, this.onTLSConnection)
@@ -92,6 +93,12 @@ export class MPSServer {
         socket.end()
       } catch (e) { }
     }
+  }
+
+  onAPFKeepAliveRequest = async (nodeId: string): Promise<void> => {
+    try {
+      await this.handleLastSeenUpdate(nodeId)
+    } catch (e) { }
   }
 
   onVerifyUserAuth = async (socket: CIRASocket, username: string, password: string): Promise<void> => {
@@ -220,6 +227,7 @@ export class MPSServer {
       if (device != null) {
         device.connectionStatus = false
         device.mpsInstance = null
+        device.lastDisconnected = new Date()
         const results = await this.db.devices.update(device)
         if (results) {
           // Device connection status updated in db
@@ -234,6 +242,7 @@ export class MPSServer {
     const device: Device = await this.db.devices.getById(guid)
     device.connectionStatus = true
     device.mpsInstance = Environment.Config.instance_name
+    device.lastConnected = new Date()
     const results = await this.db.devices.update(device)
     if (results) {
       MqttProvider.publishEvent('success', ['CIRA_Connected'], messages.MPS_CIRA_CONNECTION_ESTABLISHED, guid)
@@ -241,6 +250,22 @@ export class MPSServer {
     } else {
       MqttProvider.publishEvent('fail', ['CIRA_Connected'], messages.MPS_CIRA_CONNECTION_FAILED, guid)
       logger.error(`${messages.MPS_CIRA_CONNECTION_FAILED} for ${guid}`)
+    }
+  }
+
+  async handleLastSeenUpdate (guid: string): Promise<void> {
+    if (devices[guid] != null) {
+      const device: Device = await this.db.devices.getById(guid)
+      if (device != null) {
+        device.connectionStatus = true
+        device.mpsInstance = Environment.Config.instance_name
+        device.lastSeen = new Date()
+        const results = await this.db.devices.update(device)
+        if (results) {
+          // Device connection status updated in db
+          logger.debug(`${messages.DEVICE_LAST_SEEN_STATUS_UPDATED} : ${guid}`)
+        }
+      }
     }
   }
 }

@@ -84,6 +84,9 @@ export class DeviceTable implements IDeviceTable {
     tenantid as "tenantId",
     friendlyname as "friendlyName",
     dnssuffix as "dnsSuffix",
+    lastconnected as "lastConnected",
+    lastseen as "lastSeen",
+    lastdisconnected as "lastDisconnected",
     deviceinfo as "deviceInfo"
     FROM devices 
     WHERE guid = $1 and tenantid = $2`
@@ -99,6 +102,9 @@ export class DeviceTable implements IDeviceTable {
       tenantid as "tenantId",
       friendlyname as "friendlyName",
       dnssuffix as "dnsSuffix",
+      lastconnected as "lastConnected",
+      lastseen as "lastSeen",
+      lastdisconnected as "lastDisconnected",
       deviceinfo as "deviceInfo"
       FROM devices 
       WHERE guid = $1`
@@ -227,7 +233,7 @@ export class DeviceTable implements IDeviceTable {
     try {
       const results = await this.db.query(`
       UPDATE devices 
-      SET tags=$2, hostname=$3, mpsinstance=$4, connectionstatus=$5, mpsusername=$6, friendlyname=$8, dnssuffix=$9, deviceinfo=$10
+      SET tags=$2, hostname=$3, mpsinstance=$4, connectionstatus=$5, mpsusername=$6, friendlyname=$8, dnssuffix=$9, lastconnected=$10, lastseen=$11, lastdisconnected=$12, deviceinfo=$13
       WHERE guid=$1 and tenantid = $7`,
       [
         device.guid,
@@ -239,6 +245,9 @@ export class DeviceTable implements IDeviceTable {
         device.tenantId,
         device.friendlyName,
         device.dnsSuffix,
+        device.lastConnected,
+        device.lastSeen,
+        device.lastDisconnected,
         JSON.stringify(device.deviceInfo)
       ])
       if (results.rowCount > 0) {

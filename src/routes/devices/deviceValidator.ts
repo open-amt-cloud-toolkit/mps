@@ -17,6 +17,12 @@ export const validator = (): any => [
   check('mpsusername')
     .optional({ nullable: true })
     .isString(),
+  check('connect')
+    .optional({ nullable: true })
+    .isISO8601().toDate(),
+  check('disconnect')
+    .optional({ nullable: true })
+    .isISO8601().toDate(),
   check('tags')
     .optional()
     .isArray()
