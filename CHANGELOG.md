@@ -1,3 +1,64 @@
+<a name="2.13.2"></a>
+## [2.13.2] - 2023-11-29
+### Build
+- **deps:** bump mqtt from 5.3.0 to 5.3.1 ([#1195](https://github.com/open-amt-cloud-toolkit/mps/issues/1195)) (#641d9fd) 
+- **deps-dev:** bump eslint-config-standard-with-typescript ([#1179](https://github.com/open-amt-cloud-toolkit/mps/issues/1179)) (#552dd6d) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin ([#1196](https://github.com/open-amt-cloud-toolkit/mps/issues/1196)) (#24e15d5) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 6.12.0 to 6.13.1 ([#1197](https://github.com/open-amt-cloud-toolkit/mps/issues/1197)) (#e5f1e0f) 
+
+### Fix
+- update build tasks, package.json and changelog (#4717211) 
+
+
+<a name="v2.13.1"></a>
+## [v2.13.1] - 2023-11-27
+### Build
+- **deps:** bump github/codeql-action from 2.22.7 to 2.22.8 ([#1189](https://github.com/open-amt-cloud-toolkit/mps/issues/1189)) (#9b46ee3) 
+- **deps:** bump mqtt from 5.2.2 to 5.3.0 ([#1180](https://github.com/open-amt-cloud-toolkit/mps/issues/1180)) (#8e2aa89) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.9.3 to 20.10.0 ([#1190](https://github.com/open-amt-cloud-toolkit/mps/issues/1190)) (#a071b20) 
+- **deps-dev:** bump [@types](https://github.com/types)/node-forge from 1.3.9 to 1.3.10 ([#1187](https://github.com/open-amt-cloud-toolkit/mps/issues/1187)) (#cb0f9a3) 
+- **deps-dev:** bump [@types](https://github.com/types)/ws from 8.5.9 to 8.5.10 ([#1186](https://github.com/open-amt-cloud-toolkit/mps/issues/1186)) (#af4df18) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/parser from 6.11.0 to 6.12.0 ([#1181](https://github.com/open-amt-cloud-toolkit/mps/issues/1181)) (#f831851) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin ([#1182](https://github.com/open-amt-cloud-toolkit/mps/issues/1182)) (#ed23b93) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.9.1 to 20.9.3 ([#1184](https://github.com/open-amt-cloud-toolkit/mps/issues/1184)) (#ad2bda1) 
+
+### Ci
+- adds persist-credentials:false to checkout (#5ae3e4a) 
+
+### Fix
+- updates lint rules to remove unbound method check (#9d39ebf) 
+
+
+<a name="v2.13.0"></a>
+## [v2.13.0] - 2023-11-20
+### Build
+- **deps:** bump mqtt from 5.1.4 to 5.2.1 ([#1167](https://github.com/open-amt-cloud-toolkit/mps/issues/1167)) (#268586b) 
+- **deps:** bump step-security/harden-runner from 2.6.0 to 2.6.1 ([#1173](https://github.com/open-amt-cloud-toolkit/mps/issues/1173)) (#63006fd) 
+- **deps:** bump mongodb from 6.2.0 to 6.3.0 ([#1175](https://github.com/open-amt-cloud-toolkit/mps/issues/1175)) (#a04771e) 
+- **deps:** bump [@open](https://github.com/open)-amt-cloud-toolkit/wsman-messages ([#1158](https://github.com/open-amt-cloud-toolkit/mps/issues/1158)) (#e664fab) 
+- **deps:** bump github/codeql-action from 2.22.6 to 2.22.7 ([#1174](https://github.com/open-amt-cloud-toolkit/mps/issues/1174)) (#80a75df) 
+- **deps:** bump github/codeql-action from 2.22.5 to 2.22.6 ([#1170](https://github.com/open-amt-cloud-toolkit/mps/issues/1170)) (#cec5c4e) 
+- **deps:** bump mqtt from 5.2.1 to 5.2.2 ([#1171](https://github.com/open-amt-cloud-toolkit/mps/issues/1171)) (#3ac98bd) 
+- **deps:** bump aquasecurity/trivy-action from 0.13.1 to 0.14.0 ([#1163](https://github.com/open-amt-cloud-toolkit/mps/issues/1163)) (#2fc07d8) 
+- **deps-dev:** bump eslint from 8.53.0 to 8.54.0 ([#1177](https://github.com/open-amt-cloud-toolkit/mps/issues/1177)) (#ce2b10a) 
+- **deps-dev:** bump [@types](https://github.com/types)/node-forge from 1.3.8 to 1.3.9 ([#1165](https://github.com/open-amt-cloud-toolkit/mps/issues/1165)) (#8453dc2) 
+- **deps-dev:** bump [@types](https://github.com/types)/pg from 8.10.8 to 8.10.9 ([#1164](https://github.com/open-amt-cloud-toolkit/mps/issues/1164)) (#95acd5c) 
+- **deps-dev:** bump [@typescript](https://github.com/typescript)-eslint/eslint-plugin from 5.61.0 to 6.11.0 ([#1172](https://github.com/open-amt-cloud-toolkit/mps/issues/1172)) (#06ae87f) 
+- **deps-dev:** bump [@types](https://github.com/types)/body-parser from 1.19.4 to 1.19.5 ([#1162](https://github.com/open-amt-cloud-toolkit/mps/issues/1162)) (#f9d1b30) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.8.10 to 20.9.0 ([#1161](https://github.com/open-amt-cloud-toolkit/mps/issues/1161)) (#6076692) 
+- **deps-dev:** bump [@types](https://github.com/types)/express from 4.17.20 to 4.17.21 ([#1160](https://github.com/open-amt-cloud-toolkit/mps/issues/1160)) (#78bfc1c) 
+- **deps-dev:** bump [@types](https://github.com/types)/ws from 8.5.8 to 8.5.9 ([#1159](https://github.com/open-amt-cloud-toolkit/mps/issues/1159)) (#c3773e8) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.9.0 to 20.9.1 ([#1176](https://github.com/open-amt-cloud-toolkit/mps/issues/1176)) (#fcf0985) 
+- **deps-dev:** bump [@types](https://github.com/types)/pg from 8.10.7 to 8.10.8 ([#1155](https://github.com/open-amt-cloud-toolkit/mps/issues/1155)) (#eb9be4a) 
+- **deps-dev:** bump eslint from 8.52.0 to 8.53.0 ([#1156](https://github.com/open-amt-cloud-toolkit/mps/issues/1156)) (#cc309fb) 
+
+### Ci
+- release action updates version and changelog ([#1168](https://github.com/open-amt-cloud-toolkit/mps/issues/1168)) (#c05ae10) 
+- adds report out to code analysis action (#acd472d) 
+
+### Feat
+- add cira timestamps to db ([#1153](https://github.com/open-amt-cloud-toolkit/mps/issues/1153)) (#c965660) 
+
 <a name="2.12.6"></a>
 ## [2.12.6] - 2023-11-06
 ### Build
