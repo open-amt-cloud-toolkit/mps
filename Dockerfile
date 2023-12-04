@@ -27,7 +27,7 @@ COPY .mpsrc ./
 RUN npm run build
 RUN npm prune --production
 
-FROM alpine:latest@sha256:eece025e432126ce23f223450a0326fbebde39cdf496a85d8c016293fc851978
+FROM alpine:latest@sha256:34871e7290500828b39e22294660bee86d966bc0017544e848dd9a255cdf59e0
 
 RUN addgroup -g 1000 node && adduser -u 1000 -G node -s /bin/sh -D node 
 RUN apk update && apk upgrade --no-cache && apk add nodejs --no-cache
