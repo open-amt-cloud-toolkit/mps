@@ -1,3 +1,23 @@
+<a name="2.13.4"></a>
+## [2.13.4] - 2023-12-04
+### Build
+- **deps:** bump alpine from `eece025` to `34871e7` ([#1204](https://github.com/open-amt-cloud-toolkit/mps/issues/1204)) (#f03ce94) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.10.1 to 20.10.2 ([#1205](https://github.com/open-amt-cloud-toolkit/mps/issues/1205)) (#9619045) 
+- **deps-dev:** bump eslint from 8.54.0 to 8.55.0 ([#1206](https://github.com/open-amt-cloud-toolkit/mps/issues/1206)) (#b06d056) 
+- **deps-dev:** bump [@types](https://github.com/types)/node from 20.10.0 to 20.10.1 ([#1201](https://github.com/open-amt-cloud-toolkit/mps/issues/1201)) (#6502076) 
+
+### Ci
+- automatically update package.json version during release process ([#1202](https://github.com/open-amt-cloud-toolkit/mps/issues/1202)) (#1803896) 
+
+### Fix
+- update build tasks, package.json and changelog (#cbababb) 
+
+
+<a name="v2.13.3"></a>
+## [v2.13.3] - 2023-11-29
+### Fix
+- update changelog ([#1199](https://github.com/open-amt-cloud-toolkit/mps/issues/1199)) (#32be2c3) 
+
 <a name="2.13.2"></a>
 ## [2.13.2] - 2023-11-29
 ### Build
