@@ -59,7 +59,7 @@ export class WebServer {
       this.app.use(parser.json(), this.appUseJsonParser.bind(this))
       this.app.use(this.appUseCall.bind(this))
 
-      // Relay websocket. KVM & SOL use this websocket.
+      // Relay websocket. KVM, IDER & SOL use this websocket.
       this.relayWSS.on('connection', this.relayConnection.bind(this))
 
       this.loadCustomMiddleware().then(customMiddleware => {
@@ -185,34 +185,51 @@ export class WebServer {
     }
   }
 
+  updateDeviceConnection (guid: string, connectionType: string): boolean {
+    const connectionProperty = `${connectionType}Connect`
+    if (devices[guid]?.[connectionProperty]) {
+      return false
+    } else if (devices[guid] != null) {
+      devices[guid][connectionProperty] = true
+      return true
+    } else {
+      return false
+    }
+  }
+
   verifyClientToken (info): boolean {
+    const reqParams: Record<string, any> = {}
     // verify JWT
     try {
       const valid = this.jws.verify(info.req.headers['sec-websocket-protocol'], 'HS256', Environment.Config.jwt_secret)
       const decodedToken = this.jws.decode(info.req.headers['sec-websocket-protocol'])
       const currentTimestamp = Math.floor(Date.now() / 1000) // Current timestamp in seconds
       const deviceId = decodedToken.payload.deviceId
-      const reqUrl = info.req.url
-      const urlSearchParams = new URL(`http://dummy.com/${reqUrl}`)
-      const reqDeviceId = urlSearchParams.searchParams.get('host')
 
-      if (!valid || !(decodedToken.payload.exp && decodedToken.payload.exp > currentTimestamp) || !(deviceId === reqDeviceId)) {
+      const queryString = info.req.url.split('?')[1]
+      const params = new URLSearchParams(queryString)
+      params.forEach((value, key) => {
+        reqParams[key] = value
+      })
+
+      if (!valid || !(decodedToken.payload.exp && decodedToken.payload.exp > currentTimestamp) || !(deviceId === reqParams.host)) {
         logger.error('Redirection token invalid')
         return false // reject connection if problem with verify
       }
     } catch (error) {
       logger.error(`Error verifying the token: ${error.message}`)
     }
-    // Test if device has an established KVM session
-    const startIndex = info.req.url.indexOf('host=')
-    const guid = info.req.url.substring(startIndex + 5, startIndex + 5 + 36)
-    if (devices[guid]?.kvmConnect) {
-      return false
-    } else if (devices[guid] != null) {
-      devices[guid].kvmConnect = true
-      return true
-    } else {
-      return false
+
+    const guid = reqParams.host
+    const mode = reqParams.mode
+    const modes = ['kvm', 'sol', 'ider']
+
+    // Check for backward compatibility
+    if (!modes.includes(mode)) {
+      return devices[guid]?.kvmConnect ? false : !!devices[guid]
     }
+
+    // Handle device connection based on mode
+    return this.updateDeviceConnection(guid, mode)
   }
 }

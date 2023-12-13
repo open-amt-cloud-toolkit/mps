@@ -32,7 +32,8 @@ export class WsRedirect {
       port: Number(reqQueryURL.searchParams.get('port')),
       p: Number(reqQueryURL.searchParams.get('p')),
       tls: Number(reqQueryURL.searchParams.get('tls')),
-      tls1only: Number(reqQueryURL.searchParams.get('tls1only'))
+      tls1only: Number(reqQueryURL.searchParams.get('tls1only')),
+      mode: reqQueryURL.searchParams.get('mode')
     };
 
     (this.websocketFromWeb as any)._socket.pause()
@@ -77,7 +78,18 @@ export class WsRedirect {
   handleClose (params: queryParams, CloseEvent: WebSocket.CloseEvent): void {
     logger.debug(`${messages.REDIRECT_CLOSING_WEB_SOCKET} to ${params.host}: ${params.port}.`)
     if (this.websocketFromDevice) {
-      devices[params.host].kvmConnect = false // Indicate no current KVM session on the device
+      switch (params.mode) {
+        case 'kvm':
+          devices[params.host].kvmConnect = false // Indicate no current KVM session on the device
+          break
+        case 'ider':
+          devices[params.host].iderConnect = false // Indicate no current ider session on the device
+          break
+        case 'sol':
+          devices[params.host].solConnect = false // Indicate no current sol session on the device
+          break
+      }
+
       this.websocketFromDevice.CloseChannel()
       MqttProvider.publishEvent('success', ['handleClose'], messages.REDIRECTION_SESSION_ENDED)
     }

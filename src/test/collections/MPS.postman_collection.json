@@ -487,6 +487,48 @@
 					"response": []
 				},
 				{
+					"name": "Device Redirection Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Device should not be found\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eq(\"Device not found/connected. Please connect again using CIRA.\")\r",
+									"    pm.expect(jsonData.errorDescription).to.eq(\"guid : d12428be-9fa1-4226-9784-54b2038beab6\")\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices/redirectstatus/d12428be-9fa1-4226-9784-54b2038beab6",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices",
+								"redirectstatus",
+								"d12428be-9fa1-4226-9784-54b2038beab6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Device by GUID for different tenant",
 					"event": [
 						{

@@ -17,6 +17,7 @@ import { refreshDevice } from './refresh'
 import { param, query } from 'express-validator'
 import validateMiddleware from '../../middleware/validate'
 import ciraMiddleware from '../../middleware/cira'
+import { getRedirStatus } from './getRedirStatus'
 
 const deviceRouter: Router = Router()
 
@@ -24,6 +25,7 @@ deviceRouter.get('/', odataValidator(), metadataQueryValidator(), validateMiddle
 deviceRouter.get('/stats', stats)
 deviceRouter.get('/tags', getDistinctTags)
 deviceRouter.get('/:guid', param('guid').isUUID(), validateMiddleware, getDevice)
+deviceRouter.get('/redirectstatus/:guid', param('guid').isUUID(), validateMiddleware, ciraMiddleware, getRedirStatus)
 deviceRouter.post('/', validator(), validateMiddleware, insertDevice)
 deviceRouter.patch('/', validator(), validateMiddleware, updateDevice)
 deviceRouter.delete('/refresh/:guid', validator(), validateMiddleware, refreshDevice)

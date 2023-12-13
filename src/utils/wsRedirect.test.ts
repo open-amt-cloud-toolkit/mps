@@ -78,22 +78,45 @@ describe('WsRedirect tests', () => {
   })
 
   describe('handleClose tests', () => {
-    const params: queryParams = {
-      host: 'localhost',
-      port: 1111
-    } as any
+    let params: queryParams
+    let publishEventSpy
 
-    it('should handle close', () => {
+    beforeEach(() => {
+      params = {
+        host: 'localhost',
+        port: 1111,
+        mode: 'kvm' // default mode for testing
+      } as any
       wsRedirect.websocketFromDevice = {
         CloseChannel: jest.fn()
       } as any
-      devices[params.host] = {} as any
-      jest.spyOn(wsRedirect.websocketFromDevice, 'CloseChannel')
-      const publishEventSpy = jest.spyOn(MqttProvider, 'publishEvent')
+      devices[params.host] = { kvmConnect: true, iderConnect: true, solConnect: true } as any
+      publishEventSpy = jest.spyOn(MqttProvider, 'publishEvent')
+    })
+
+    it('should handle close for KVM mode', () => {
       wsRedirect.handleClose(params, null)
       expect(publishEventSpy).toHaveBeenCalled()
       expect(wsRedirect.websocketFromDevice.CloseChannel).toBeCalled()
       expect(devices[params.host].kvmConnect).toBeFalsy()
+    })
+
+    it('should handle close for IDER mode', () => {
+      params.mode = 'ider'
+      wsRedirect.handleClose(params, null)
+      expect(devices[params.host].iderConnect).toBeFalsy()
+    })
+
+    it('should handle close for SOL mode', () => {
+      params.mode = 'sol'
+      wsRedirect.handleClose(params, null)
+      expect(devices[params.host].solConnect).toBeFalsy()
+    })
+
+    it('should do nothing if websocketFromDevice is not set', () => {
+      wsRedirect.websocketFromDevice = null
+      wsRedirect.handleClose(params, null)
+      expect(publishEventSpy).toHaveBeenCalled()
     })
   })
 
