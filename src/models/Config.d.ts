@@ -95,6 +95,7 @@ export interface queryParams {
   p: number
   tls: number
   tls1only: number
+  mode: string
 }
 
 export class DataWithCount {

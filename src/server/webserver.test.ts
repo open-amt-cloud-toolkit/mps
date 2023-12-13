@@ -135,6 +135,97 @@ describe('webserver tests', () => {
       const result = web.verifyClientToken(info)
       expect(result).toBe(true)
     })
+
+    it('should allow KVM connection when no KVM connection and mode is kvm', () => {
+      const validToken = signature(5, '4c4c4544-004b-4210-8033-b6c04f504633')
+      devices['4c4c4544-004b-4210-8033-b6c04f504633'].kvmConnect = false // {} as any
+      const info = {
+        req: {
+          url: '/relay/webrelay.ashx?p=2&host=4c4c4544-004b-4210-8033-b6c04f504633&port=16994&tls=0&tls1only=0&mode=kvm',
+          headers: {
+            'sec-websocket-protocol': validToken
+          }
+        }
+      }
+      const result = web.verifyClientToken(info)
+      expect(result).toBe(true)
+    })
+
+    it('should not allow KVM connection when no KVM connection and mode is kvm', () => {
+      const validToken = signature(5, '4c4c4544-004b-4210-8033-b6c04f504633')
+      devices['4c4c4544-004b-4210-8033-b6c04f504633'].kvmConnect = true // {} as any
+      const info = {
+        req: {
+          url: '/relay/webrelay.ashx?p=2&host=4c4c4544-004b-4210-8033-b6c04f504633&port=16994&tls=0&tls1only=0&mode=kvm',
+          headers: {
+            'sec-websocket-protocol': validToken
+          }
+        }
+      }
+      const result = web.verifyClientToken(info)
+      expect(result).toBe(false)
+    })
+
+    it('should not allow sol connection when sol connection and mode is sol', () => {
+      const validToken = signature(5, '4c4c4544-004b-4210-8033-b6c04f504633')
+      devices['4c4c4544-004b-4210-8033-b6c04f504633'].solConnect = true // {} as any
+      const info = {
+        req: {
+          url: '/relay/webrelay.ashx?p=2&host=4c4c4544-004b-4210-8033-b6c04f504633&port=16994&tls=0&tls1only=0&mode=sol',
+          headers: {
+            'sec-websocket-protocol': validToken
+          }
+        }
+      }
+      const result = web.verifyClientToken(info)
+      expect(result).toBe(false)
+    })
+
+    it('should not allow sol connection when no sol connection and mode is sol', () => {
+      const validToken = signature(5, '4c4c4544-004b-4210-8033-b6c04f504633')
+      devices['4c4c4544-004b-4210-8033-b6c04f504633'].solConnect = false // {} as any
+      const info = {
+        req: {
+          url: '/relay/webrelay.ashx?p=2&host=4c4c4544-004b-4210-8033-b6c04f504633&port=16994&tls=0&tls1only=0&mode=sol',
+          headers: {
+            'sec-websocket-protocol': validToken
+          }
+        }
+      }
+      const result = web.verifyClientToken(info)
+      expect(result).toBe(true)
+    })
+
+    it('should not allow ider connection when ider connection and mode is ider', () => {
+      const validToken = signature(5, '4c4c4544-004b-4210-8033-b6c04f504633')
+      devices['4c4c4544-004b-4210-8033-b6c04f504633'].iderConnect = true // {} as any
+      const info = {
+        req: {
+          url: '/relay/webrelay.ashx?p=2&host=4c4c4544-004b-4210-8033-b6c04f504633&port=16994&tls=0&tls1only=0&mode=ider',
+          headers: {
+            'sec-websocket-protocol': validToken
+          }
+        }
+      }
+      const result = web.verifyClientToken(info)
+      expect(result).toBe(false)
+    })
+
+    it('should allow ider connection when no ider connection and mode is ider', () => {
+      const validToken = signature(5, '4c4c4544-004b-4210-8033-b6c04f504633')
+      devices['4c4c4544-004b-4210-8033-b6c04f504633'].iderConnect = false // {} as any
+      const info = {
+        req: {
+          url: '/relay/webrelay.ashx?p=2&host=4c4c4544-004b-4210-8033-b6c04f504633&port=16994&tls=0&tls1only=0&mode=ider',
+          headers: {
+            'sec-websocket-protocol': validToken
+          }
+        }
+      }
+      const result = web.verifyClientToken(info)
+      expect(result).toBe(true)
+    })
+
     it('should not allow KVM connection when KVM connection active', () => {
       const validToken = signature(5, '4c4c4544-004b-4210-8033-b6c04f504633')
       devices['4c4c4544-004b-4210-8033-b6c04f504633'].kvmConnect = true // {} as any
