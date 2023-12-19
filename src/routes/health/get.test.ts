@@ -98,7 +98,6 @@ describe('Checks health of dependent services', () => {
     it('should return Vault initialized and sealed values on successful response', async () => {
       secretProviderSpy.health.mockReturnValue(secretProviderValidResponse)
       const response = await getSecretStoreHealth(secretProviderSpy)
-      console.log(response)
       expect(response.initialized).toBe(true)
       expect(response.sealed).toBe(false)
     })

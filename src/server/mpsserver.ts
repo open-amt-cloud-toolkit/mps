@@ -164,7 +164,6 @@ export class MPSServer {
     // Detect if this is an HTTPS request, if it is, return a simple answer and disconnect. This is useful for debugging access to the MPS port.
     if (socket.tag.first) {
       if (socket.tag.accumulator.length < 3) return
-      // if (!socket.tag.clientCert.subject) { console.log("MPS Connection, no client cert: " + socket.remoteAddress); socket.write('HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\nMeshCentral2 MPS server.\r\nNo client certificate given.'); socket.end(); return; }
       if (socket.tag.accumulator.substring(0, 3) === 'GET') {
         logger.debug(`${messages.MPS_HTTP_GET_CONNECTION}: ${socket.remoteAddress}`)
         socket.write('HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: close\r\n\r\n<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>Intel Management Presence Server (MPS).<br />Intel&reg; AMT computers must connect here using CIRA.</body></html>')

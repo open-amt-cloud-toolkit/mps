@@ -255,7 +255,6 @@ export class DeviceAction {
     logger.silly(`getProcessor ${messages.REQUEST}`)
     let xmlRequestBody = this.cim.Processor.Enumerate()
     const enumResponse = await this.ciraHandler.Enumerate(this.ciraSocket, xmlRequestBody)
-    console.log(JSON.stringify(enumResponse))
     if (enumResponse == null) {
       logger.error(`getProcessor failed. Reason: ${messages.ENUMERATION_RESPONSE_NULL}`)
       return null
