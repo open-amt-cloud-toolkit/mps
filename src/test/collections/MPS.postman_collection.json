@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "1e7d3ee4-f5db-474d-b9c5-3b6fe64a8251",
+		"_postman_id": "cdd6420a-a4e3-4a0d-acf5-d92a1350d100",
 		"name": "MPS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "30575654"
+		"_exporter_id": "2243498"
 	},
 	"item": [
 		{
@@ -2492,9 +2492,12 @@
 									"\r",
 									"pm.test(\"request should fail without username\", function () {\r",
 									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData.errors[0].msg).to.be.eql(\"User name is required\");\r",
+									"    pm.expect(jsonData.errors[0].msg).to.be.eql(\"Invalid value\");\r",
 									"    pm.expect(jsonData.errors[0].path).to.be.eql(\"username\");\r",
 									"    pm.expect(jsonData.errors[0].location).to.be.eql(\"body\");\r",
+									"    pm.expect(jsonData.errors[1].msg).to.be.eql(\"User name is required\");\r",
+									"    pm.expect(jsonData.errors[1].path).to.be.eql(\"username\");\r",
+									"    pm.expect(jsonData.errors[1].location).to.be.eql(\"body\");\r",
 									"});\r",
 									""
 								],
