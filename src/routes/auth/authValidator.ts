@@ -7,6 +7,7 @@ import { check } from 'express-validator'
 
 export const authValidator = (): any => [
   check('username')
+    .isString()
     .not()
     .isEmpty()
     .withMessage('User name is required'),
