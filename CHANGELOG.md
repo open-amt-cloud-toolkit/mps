@@ -1,3 +1,11 @@
+## [2.13.6](https://github.com/open-amt-cloud-toolkit/mps/compare/v2.13.5...v2.13.6) (2023-12-21)
+
+
+### Bug Fixes
+
+* remove unnecessary console.log statements ([8b92598](https://github.com/open-amt-cloud-toolkit/mps/commit/8b9259817aa0a34cf2f1f4a7973509a12c88e3f3))
+* validate username ([#1240](https://github.com/open-amt-cloud-toolkit/mps/issues/1240)) ([a0ccd6b](https://github.com/open-amt-cloud-toolkit/mps/commit/a0ccd6b2fd4dce21f1299b3e4c17dc2de6df729b))
+
 <a name="2.13.4"></a>
 ## [2.13.4] - 2023-12-04
 ### Build
@@ -1399,4 +1407,4 @@ Auth is now stateless, db and vault required
 
 ### Refactor
 - **docker:** remove build pre-build step (#14a7848) 
-- **docker:** optimize dockerfile (#51cfb0e) 
+- **docker:** optimize dockerfile (#51cfb0e)
