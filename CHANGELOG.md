@@ -1,3 +1,10 @@
+## [2.13.7](https://github.com/open-amt-cloud-toolkit/mps/compare/v2.13.6...v2.13.7) (2023-12-22)
+
+
+### Bug Fixes
+
+* adds hostname length check ([#1241](https://github.com/open-amt-cloud-toolkit/mps/issues/1241)) ([93549c1](https://github.com/open-amt-cloud-toolkit/mps/commit/93549c1b1977a52854427948c25c2eab034a3d0c))
+
 ## [2.13.6](https://github.com/open-amt-cloud-toolkit/mps/compare/v2.13.5...v2.13.6) (2023-12-21)
 
 

@@ -8,18 +8,15 @@ import { check, query } from 'express-validator'
 export const validator = (): any => [
   check('guid')
     .isUUID()
-    .custom((value, { req }) => {
-      if (Array.isArray(value)) {
-        throw new Error('guid should not be an array')
-      }
-      return true
-    }),
+    .not().isArray(),
   check('friendlyName')
     .optional({ nullable: true })
     .isString(),
   check('hostname')
     .optional({ nullable: true })
-    .isString(),
+    .isString()
+    .isLength({ max: 255 })
+    .withMessage('Hostname must be less than 256 characters'),
   check('mpsusername')
     .optional({ nullable: true })
     .isString(),
