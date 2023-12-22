@@ -7,7 +7,13 @@ import { check, query } from 'express-validator'
 
 export const validator = (): any => [
   check('guid')
-    .isUUID(),
+    .isUUID()
+    .custom((value, { req }) => {
+      if (Array.isArray(value)) {
+        throw new Error('guid should not be an array')
+      }
+      return true
+    }),
   check('friendlyName')
     .optional({ nullable: true })
     .isString(),
