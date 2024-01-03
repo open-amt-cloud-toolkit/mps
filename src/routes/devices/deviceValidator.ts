@@ -13,7 +13,9 @@ export const validator = (): any => [
     .isString(),
   check('hostname')
     .optional({ nullable: true })
-    .isString(),
+    .isString()
+    .isLength({ max: 255 })
+    .withMessage('Hostname must be less than 256 characters'),
   check('mpsusername')
     .optional({ nullable: true })
     .isString(),
