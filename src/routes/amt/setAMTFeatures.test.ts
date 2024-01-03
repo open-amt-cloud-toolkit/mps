@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { MqttProvider } from '../../utils/MqttProvider'
-import { createSpyObj } from '../../test/helper/jest'
-import { setAMTFeatures } from './setAMTFeatures'
-import { AMT_REDIRECTION_SERVICE_ENABLE_STATE } from '@open-amt-cloud-toolkit/wsman-messages/models/common'
-import { DeviceAction } from '../../amt/DeviceAction'
-import { CIRAHandler } from '../../amt/CIRAHandler'
-import { HttpHandler } from '../../amt/HttpHandler'
+import { MqttProvider } from '../../utils/MqttProvider.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { setAMTFeatures } from './setAMTFeatures.js'
+import { AMT_REDIRECTION_SERVICE_ENABLE_STATE } from '@open-amt-cloud-toolkit/wsman-messages/models/common.js'
+import { DeviceAction } from '../../amt/DeviceAction.js'
+import { CIRAHandler } from '../../amt/CIRAHandler.js'
+import { HttpHandler } from '../../amt/HttpHandler.js'
 
 describe('set amt features', () => {
   let resSpy

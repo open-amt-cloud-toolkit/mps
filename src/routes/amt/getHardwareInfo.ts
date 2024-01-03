@@ -4,10 +4,10 @@
  **********************************************************************/
 
 import { type Response, type Request } from 'express'
-import { logger, messages } from '../../logging'
-import { ErrorResponse } from '../../utils/amtHelper'
-import { MqttProvider } from '../../utils/MqttProvider'
-import { type DeviceAction } from '../../amt/DeviceAction'
+import { logger, messages } from '../../logging/index.js'
+import { ErrorResponse } from '../../utils/amtHelper.js'
+import { MqttProvider } from '../../utils/MqttProvider.js'
+import { type DeviceAction } from '../../amt/DeviceAction.js'
 
 export async function hardwareInfo (req: Request, res: Response): Promise<void> {
   try {

@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { ErrorResponse } from '../../utils/amtHelper'
-import { MqttProvider } from '../../utils/MqttProvider'
-import { powerCapabilities } from './powerCapabilities'
-import { setupAndConfigurationServiceResponse, softwareIdentityResponse, versionResponse } from '../../test/helper/wsmanResponses'
-import { createSpyObj } from '../../test/helper/jest'
-import { DeviceAction } from '../../amt/DeviceAction'
-import { CIRAHandler } from '../../amt/CIRAHandler'
-import { HttpHandler } from '../../amt/HttpHandler'
-import { messages } from '../../logging'
+import { ErrorResponse } from '../../utils/amtHelper.js'
+import { MqttProvider } from '../../utils/MqttProvider.js'
+import { powerCapabilities } from './powerCapabilities.js'
+import { setupAndConfigurationServiceResponse, softwareIdentityResponse, versionResponse } from '../../test/helper/wsmanResponses.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { DeviceAction } from '../../amt/DeviceAction.js'
+import { CIRAHandler } from '../../amt/CIRAHandler.js'
+import { HttpHandler } from '../../amt/HttpHandler.js'
+import { messages } from '../../logging/index.js'
 
 describe('Power Capabilities', () => {
   let req: Express.Request

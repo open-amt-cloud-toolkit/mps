@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import * as hw from './getHardwareInfo'
-import { createSpyObj } from '../../test/helper/jest'
-import { biosElement, card, chassis, chip, computerSystemPackage, mediaAccessDevice, physicalMemory, physicalPackage, processor, systemPackaging } from '../../test/helper/wsmanResponses'
-import { DeviceAction } from '../../amt/DeviceAction'
-import { CIRAHandler } from '../../amt/CIRAHandler'
-import { HttpHandler } from '../../amt/HttpHandler'
-import { messages } from '../../logging'
+import * as hw from './getHardwareInfo.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { biosElement, card, chassis, chip, computerSystemPackage, mediaAccessDevice, physicalMemory, physicalPackage, processor, systemPackaging } from '../../test/helper/wsmanResponses.js'
+import { DeviceAction } from '../../amt/DeviceAction.js'
+import { CIRAHandler } from '../../amt/CIRAHandler.js'
+import { HttpHandler } from '../../amt/HttpHandler.js'
+import { messages } from '../../logging/index.js'
 
 describe('Hardware information', () => {
   let resSpy

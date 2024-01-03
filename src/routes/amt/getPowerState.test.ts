@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { powerState } from './getPowerState'
-import { createSpyObj } from '../../test/helper/jest'
-import { serviceAvailableToElement } from '../../test/helper/wsmanResponses'
-import { CIRAHandler } from '../../amt/CIRAHandler'
-import { DeviceAction } from '../../amt/DeviceAction'
-import { HttpHandler } from '../../amt/HttpHandler'
-import { messages } from '../../logging'
+import { powerState } from './getPowerState.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { serviceAvailableToElement } from '../../test/helper/wsmanResponses.js'
+import { CIRAHandler } from '../../amt/CIRAHandler.js'
+import { DeviceAction } from '../../amt/DeviceAction.js'
+import { HttpHandler } from '../../amt/HttpHandler.js'
+import { messages } from '../../logging/index.js'
 
 describe('power state', () => {
   let resSpy

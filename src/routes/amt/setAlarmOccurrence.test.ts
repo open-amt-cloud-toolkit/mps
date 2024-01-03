@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import * as setAlarm from './setAlarmOccurrence'
-import { createSpyObj } from '../../test/helper/jest'
-import { addAlarmClockOccurrenceResponse, addAlarmClockOccurrenceQuotaLimitResponse, addAlarmClockOccurrenceDuplicateResponse } from '../../test/helper/wsmanResponses'
-import { DeviceAction } from '../../amt/DeviceAction'
-import { CIRAHandler } from '../../amt/CIRAHandler'
-import { HttpHandler } from '../../amt/HttpHandler'
-import { messages } from '../../logging'
+import * as setAlarm from './setAlarmOccurrence.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { addAlarmClockOccurrenceResponse, addAlarmClockOccurrenceQuotaLimitResponse, addAlarmClockOccurrenceDuplicateResponse } from '../../test/helper/wsmanResponses.js'
+import { DeviceAction } from '../../amt/DeviceAction.js'
+import { CIRAHandler } from '../../amt/CIRAHandler.js'
+import { HttpHandler } from '../../amt/HttpHandler.js'
+import { messages } from '../../logging/index.js'
 
 describe('ADD Alarm Clock Occurrence', () => {
   let resSpy

@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { mpsrootcert } from './index'
-import { createSpyObj } from '../../test/helper/jest'
-import { ErrorResponse } from '../../utils/amtHelper'
-import { messages } from '../../logging'
+import { mpsrootcert } from './index.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { ErrorResponse } from '../../utils/amtHelper.js'
+import { messages } from '../../logging/index.js'
 
 describe('Check index', () => {
   let resSpy

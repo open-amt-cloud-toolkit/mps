@@ -4,14 +4,14 @@
  **********************************************************************/
 
 import { type CIM } from '@open-amt-cloud-toolkit/wsman-messages'
-import { CIRAHandler } from '../../amt/CIRAHandler'
-import { DeviceAction } from '../../amt/DeviceAction'
-import { HttpHandler } from '../../amt/HttpHandler'
-import { messages } from '../../logging'
-import { createSpyObj } from '../../test/helper/jest'
-import { ErrorResponse } from '../../utils/amtHelper'
-import { MqttProvider } from '../../utils/MqttProvider'
-import { powerAction } from './powerAction'
+import { CIRAHandler } from '../../amt/CIRAHandler.js'
+import { DeviceAction } from '../../amt/DeviceAction.js'
+import { HttpHandler } from '../../amt/HttpHandler.js'
+import { messages } from '../../logging/index.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { ErrorResponse } from '../../utils/amtHelper.js'
+import { MqttProvider } from '../../utils/MqttProvider.js'
+import { powerAction } from './powerAction.js'
 
 describe('Power Capabilities', () => {
   let req: Express.Request

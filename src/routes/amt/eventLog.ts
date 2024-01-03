@@ -4,11 +4,11 @@
  **********************************************************************/
 
 import { type Response, type Request } from 'express'
-import { logger, messages } from '../../logging'
-import { ErrorResponse } from '../../utils/amtHelper'
-import { MqttProvider } from '../../utils/MqttProvider'
-import { SystemEntityTypes, SystemFirmwareError, SystemFirmwareProgress, WatchdogCurrentStates } from '../../utils/constants'
-import Common from '../../utils/common'
+import { logger, messages } from '../../logging/index.js'
+import { ErrorResponse } from '../../utils/amtHelper.js'
+import { MqttProvider } from '../../utils/MqttProvider.js'
+import { SystemEntityTypes, SystemFirmwareError, SystemFirmwareProgress, WatchdogCurrentStates } from '../../utils/constants.js'
+import Common from '../../utils/common.js'
 import { type AMT } from '@open-amt-cloud-toolkit/wsman-messages'
 
 export async function eventLog (req: Request, res: Response): Promise<void> {
