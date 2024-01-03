@@ -37,8 +37,6 @@ export class WsRedirect {
     };
 
     (this.websocketFromWeb as any)._socket.pause()
-    // console.log('Socket paused', ws._socket);
-
     // When data is received from the web socket, forward the data into the associated TCP connection.
     // If the TCP connection is pending, buffer up the data until it connects.
     this.websocketFromWeb.onmessage = this.handleMessage.bind(this)

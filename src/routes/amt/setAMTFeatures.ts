@@ -89,6 +89,5 @@ export async function setRedirectionService (device: DeviceAction, amtRedirRespo
 }
 
 export async function setUserConsent (device: DeviceAction, optServiceRes: IPS.Models.OptInServiceResponse, guid: string): Promise<void> {
-  const result = await device.putIpsOptInService(optServiceRes)
-  console.log(result)
+  await device.putIpsOptInService(optServiceRes)
 }

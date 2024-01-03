@@ -142,7 +142,6 @@ export class WebServer {
 
   async useAPIv1 (req: Request, res: Response, next: NextFunction): Promise<void> {
     const newDB = new DbCreatorFactory()
-    console.log(req.headers)
 
     req.db = await newDB.getDb()
     req.secrets = this.secrets
