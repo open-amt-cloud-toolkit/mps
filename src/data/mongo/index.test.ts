@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import MongoDB from '.'
+import MongoDB from './index.js'
 
 describe('Mongo', () => {
   let dbInstance: MongoDB = null

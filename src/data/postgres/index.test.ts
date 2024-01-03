@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { type QueryResult } from 'pg'
-import PostgresDb, { POSTGRES_RESPONSE_CODES } from '.'
+import PostgresDb, { POSTGRES_RESPONSE_CODES } from './index.js'
 
 const db: PostgresDb = new PostgresDb('postgresql://postgresadmin:admin123@localhost:5432/mpsdb?sslmode=no-verify')
 describe('Postgres', () => {

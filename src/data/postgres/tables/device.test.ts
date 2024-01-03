@@ -5,7 +5,7 @@
 
 import { DeviceTable } from './device.js'
 import { type Device } from '../../../models/models.js'
-import PostgresDb from '..'
+import PostgresDb from '../index.js'
 // import { MPSValidationError } from '../../../utils/MPSValidationError'
 
 describe('device tests', () => {

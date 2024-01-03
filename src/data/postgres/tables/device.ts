@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { logger, messages } from '../../../logging/index.js'
-import { type PostgresDb } from '..'
+import { type PostgresDb } from '../index.js'
 import { type IDeviceTable } from '../../../interfaces/IDeviceTable.js'
 import { type Device } from '../../../models/models.js'
 import { MPSValidationError } from '../../../utils/MPSValidationError.js'
