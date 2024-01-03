@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { type certificatesType } from '../models/Config'
-import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
-import { config } from '../test/helper/config'
-import { WebServer } from './webserver'
-import { Environment } from '../utils/Environment'
+import { type certificatesType } from '../models/Config.js'
+import { type ISecretManagerService } from '../interfaces/ISecretManagerService.js'
+import { config } from '../test/helper/config.js'
+import { WebServer } from './webserver.js'
+import { Environment } from '../utils/Environment.js'
 import { IncomingMessage } from 'http'
 import { Socket } from 'net'
-import { devices } from './mpsserver'
-import { signature } from '../routes/auth/signature'
+import { devices } from './mpsserver.js'
+import { signature } from '../routes/auth/signature.js'
 Environment.Config = config
 
 let certs: certificatesType

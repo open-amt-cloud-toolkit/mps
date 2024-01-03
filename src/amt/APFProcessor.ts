@@ -4,12 +4,12 @@
  **********************************************************************/
 
 import { Buffer } from 'node:buffer'
-import { logger, messages } from '../logging'
-import Common from '../utils/common'
-import { type CIRASocket } from '../models/models'
-import { type CIRAChannel } from './CIRAChannel'
+import { logger, messages } from '../logging/index.js'
+import Common from '../utils/common.js'
+import { type CIRASocket } from '../models/models.js'
+import { type CIRAChannel } from './CIRAChannel.js'
 import { EventEmitter } from 'stream'
-import { Environment } from '../utils/Environment'
+import { Environment } from '../utils/Environment.js'
 
 const KEEPALIVE_INTERVAL = 30 // 30 seconds is typical keepalive interval for AMT CIRA connection
 

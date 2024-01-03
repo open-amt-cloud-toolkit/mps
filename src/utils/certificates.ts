@@ -11,10 +11,10 @@
 * @version v0.1.0e
 */
 
-import { logger, messages } from '../logging'
-import { type certificatesType, type mpsConfigType, type webConfigType, type certAndKeyType } from '../models/Config'
+import { logger, messages } from '../logging/index.js'
+import { type certificatesType, type mpsConfigType, type webConfigType, type certAndKeyType } from '../models/Config.js'
 import forge from 'node-forge'
-import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
+import { type ISecretManagerService } from '../interfaces/ISecretManagerService.js'
 
 export class Certificates {
   constructor (private readonly config: any, private readonly secrets: ISecretManagerService) {

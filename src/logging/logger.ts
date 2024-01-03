@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import * as winston from 'winston'
-import { type ILogger } from '../interfaces/ILogger'
+import { type ILogger } from '../interfaces/ILogger.js'
 
 const { combine, timestamp, printf } = winston.format
 const myFormat = printf(info => `${info.timestamp as string} ${info.level}: ${info.message}`)

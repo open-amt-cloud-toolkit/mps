@@ -4,8 +4,8 @@
  **********************************************************************/
 
 import type Consul from 'consul'
-import { ConsulService } from './consul'
-import { config } from './../test/helper/config'
+import { ConsulService } from './consul.js'
+import { config } from './../test/helper/config.js'
 
 const consul: Consul = new ConsulService('consul', '8500')
 let componentName: string

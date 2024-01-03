@@ -4,10 +4,10 @@
  **********************************************************************/
 
 import url from 'url'
-import { type eventType, type OpenAMTEvent } from '../models/models'
-import { logger, messages } from '../logging'
+import { type eventType, type OpenAMTEvent } from '../models/models.js'
+import { logger, messages } from '../logging/index.js'
 import { type MqttClient, connect } from 'mqtt'
-import { Environment } from './Environment'
+import { Environment } from './Environment.js'
 // Provides functions to abstract the interactions
 // with mqtt broker
 export class MqttProvider {

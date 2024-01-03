@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { AmtMode, type Args, type Connection, ConnectionType } from '../models/models'
-import { config } from '../test/helper/config'
-import Common from './common'
-import { Environment } from './Environment'
-import { AuthenticationStatus, AuthenticationType, RedirectCommands, RedirectInterceptor, StartRedirectionSessionReplyStatus } from './redirectInterceptor'
+import { AmtMode, type Args, type Connection, ConnectionType } from '../models/models.js'
+import { config } from '../test/helper/config.js'
+import Common from './common.js'
+import { Environment } from './Environment.js'
+import { AuthenticationStatus, AuthenticationType, RedirectCommands, RedirectInterceptor, StartRedirectionSessionReplyStatus } from './redirectInterceptor.js'
 
 Environment.Config = config
 

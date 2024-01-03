@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { type certificatesType } from '../models/Config'
-import { devices, MPSServer } from './mpsserver'
-import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
-import { type Device } from '../models/models'
-import { type IDeviceTable } from '../interfaces/IDeviceTable'
-import { type IDB } from '../interfaces/IDb'
-import { Environment } from '../utils/Environment'
-import { logger } from '../logging'
-import APFProcessor from '../amt/APFProcessor'
+import { type certificatesType } from '../models/Config.js'
+import { devices, MPSServer } from './mpsserver.js'
+import { type ISecretManagerService } from '../interfaces/ISecretManagerService.js'
+import { type Device } from '../models/models.js'
+import { type IDeviceTable } from '../interfaces/IDeviceTable.js'
+import { type IDB } from '../interfaces/IDb.js'
+import { Environment } from '../utils/Environment.js'
+import { logger } from '../logging/index.js'
+import APFProcessor from '../amt/APFProcessor.js'
 
 let certs: certificatesType
 let db: IDB

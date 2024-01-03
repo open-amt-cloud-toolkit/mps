@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import * as svcMngr from './serviceManager'
-import { type IServiceManager } from '../interfaces/IServiceManager'
-import { ConsulService } from './consul'
-import { Environment } from '../utils/Environment'
+import * as svcMngr from './serviceManager.js'
+import { type IServiceManager } from '../interfaces/IServiceManager.js'
+import { ConsulService } from './consul.js'
+import { Environment } from '../utils/Environment.js'
 import * as exponentialBackoff from 'exponential-backoff'
 
 const consul: IServiceManager = new ConsulService('consul', '8500')

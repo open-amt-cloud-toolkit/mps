@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { WsRedirect } from './wsRedirect'
-import { type queryParams } from '../models/Config'
-import { RedirectInterceptor } from './redirectInterceptor'
-import { devices } from '../server/mpsserver'
-import { ConnectedDevice } from '../amt/ConnectedDevice'
+import { WsRedirect } from './wsRedirect.js'
+import { type queryParams } from '../models/Config.js'
+import { RedirectInterceptor } from './redirectInterceptor.js'
+import { devices } from '../server/mpsserver.js'
+import { ConnectedDevice } from '../amt/ConnectedDevice.js'
 import { Socket } from 'net'
-import { MqttProvider } from './MqttProvider'
+import { MqttProvider } from './MqttProvider.js'
 import { EventEmitter } from 'stream'
 
 const fakeGuid = '00000000-0000-0000-0000-000000000000'

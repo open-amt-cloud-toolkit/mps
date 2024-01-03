@@ -19,19 +19,19 @@
 * @version v0.2.0c
 */
 
-import { logger, messages } from '../logging'
-import { Environment } from '../utils/Environment'
+import { logger, messages } from '../logging/index.js'
+import { Environment } from '../utils/Environment.js'
 import { type Server } from 'net'
 import { createServer as tlsCreateServer, type TLSSocket } from 'tls'
 import { randomBytes } from 'crypto'
-import APFProcessor from '../amt/APFProcessor'
-import { type CIRASocket, type Device } from '../models/models'
-import { type certificatesType } from '../models/Config'
+import APFProcessor from '../amt/APFProcessor.js'
+import { type CIRASocket, type Device } from '../models/models.js'
+import { type certificatesType } from '../models/Config.js'
 import { EventEmitter } from 'stream'
-import { type IDB } from '../interfaces/IDb'
-import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
-import { ConnectedDevice } from '../amt/ConnectedDevice'
-import { MqttProvider } from '../utils/MqttProvider'
+import { type IDB } from '../interfaces/IDb.js'
+import { type ISecretManagerService } from '../interfaces/ISecretManagerService.js'
+import { ConnectedDevice } from '../amt/ConnectedDevice.js'
+import { MqttProvider } from '../utils/MqttProvider.js'
 // 90 seconds max idle time, higher than the typical KEEP-ALIVE period of 60 seconds
 const MAX_IDLE = 90000
 

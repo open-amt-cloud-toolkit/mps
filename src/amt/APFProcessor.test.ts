@@ -4,12 +4,12 @@
  **********************************************************************/
 
 import { Buffer } from 'node:buffer'
-import Common from '../utils/common'
-import { logger } from '../logging'
-import APFProcessor, { APFProtocol } from './APFProcessor'
-import { Environment } from '../utils/Environment'
-import { type CIRASocket } from '../models/models'
-import { type CIRAChannel } from './CIRAChannel'
+import Common from '../utils/common.js'
+import { logger } from '../logging/index.js'
+import APFProcessor, { APFProtocol } from './APFProcessor.js'
+import { Environment } from '../utils/Environment.js'
+import { type CIRASocket } from '../models/models.js'
+import { type CIRAChannel } from './CIRAChannel.js'
 import { EventEmitter } from 'stream'
 
 describe('APFProcessor Tests', () => {

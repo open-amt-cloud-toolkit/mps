@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { type ISecretManagerService } from '../../interfaces/ISecretManagerService'
-import { type certificatesType } from '../../models/Config'
+import { type ISecretManagerService } from '../../interfaces/ISecretManagerService.js'
+import { type certificatesType } from '../../models/Config.js'
 import got, { type Got } from 'got'
-import { Environment } from '../../utils/Environment'
-import { type DeviceSecrets } from '../../models/models'
-import { type ILogger } from '../../interfaces/ILogger'
-import { messages } from '../../logging'
+import { Environment } from '../../utils/Environment.js'
+import { type DeviceSecrets } from '../../models/models.js'
+import { type ILogger } from '../../interfaces/ILogger.js'
+import { messages } from '../../logging/messages.js'
 
 export class VaultSecretManagerService implements ISecretManagerService {
   gotClient: Got

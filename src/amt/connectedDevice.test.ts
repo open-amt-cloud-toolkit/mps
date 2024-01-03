@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { type CIRASocket } from '../models/models'
-import { ConnectedDevice } from './ConnectedDevice'
+import { type CIRASocket } from '../models/models.js'
+import { ConnectedDevice } from './ConnectedDevice.js'
 
 const socket: CIRASocket = null
 

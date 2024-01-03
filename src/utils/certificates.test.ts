@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Certificates } from './certificates'
-import { type certificatesType } from '../models/Config'
+import { Certificates } from './certificates.js'
+import { type certificatesType } from '../models/Config.js'
 import forge from 'node-forge'
-import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
+import { type ISecretManagerService } from '../interfaces/ISecretManagerService.js'
 
 let certificates: Certificates
 let certificatesTls12: Certificates

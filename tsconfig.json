@@ -2,10 +2,10 @@
     "compilerOptions": {
         "strictNullChecks": false,
         "outDir": "./dist",
-        "moduleResolution": "node",
-        "module": "commonjs",
+        "moduleResolution": "NodeNext",
+        "module": "NodeNext",
         "allowJs": true,
-        "target": "es2019",
+        "target": "ES2022",
         "sourceMap": true,
         "resolveJsonModule": true,
         "esModuleInterop": true,

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { type CIRASocket } from '../models/models'
+import { type CIRASocket } from '../models/models.js'
 import {
   alarmClockOccurrences,
   addAlarmClockOccurrenceResponse,

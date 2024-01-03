@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { type CIRASocket } from '../models/models'
-import APFProcessor from './APFProcessor'
-import { CIRAChannel } from './CIRAChannel'
-import { type connectionParams, HttpHandler } from './HttpHandler'
+import { type CIRASocket } from '../models/models.js'
+import APFProcessor from './APFProcessor.js'
+import { CIRAChannel } from './CIRAChannel.js'
+import { type connectionParams, HttpHandler } from './HttpHandler.js'
 
 describe('CIRA Channel', () => {
   let ciraChannel: CIRAChannel

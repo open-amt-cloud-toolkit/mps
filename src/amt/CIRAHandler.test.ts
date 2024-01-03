@@ -6,12 +6,12 @@
 // import { CIRASocket } from '../models/models'
 // import { card, computerSystemPackage, enumerateResponseCIMSoftwareIdentity } from '../test/helper/wsmanResponses'
 import { type HttpZResponseModel } from 'http-z'
-import { type CIRASocket } from '../models/models'
-import { computerSystemPackage } from '../test/helper/wsmanResponses'
-import { parseBody } from '../utils/parseWSManResponseBody'
-import APFProcessor from './APFProcessor'
-import { CIRAHandler } from './CIRAHandler'
-import { HttpHandler } from './HttpHandler'
+import { type CIRASocket } from '../models/models.js'
+import { computerSystemPackage } from '../test/helper/wsmanResponses.js'
+import { parseBody } from '../utils/parseWSManResponseBody.js'
+import APFProcessor from './APFProcessor.js'
+import { CIRAHandler } from './CIRAHandler.js'
+import { HttpHandler } from './HttpHandler.js'
 
 describe('CIRA Handler', () => {
   let ciraHandler: CIRAHandler

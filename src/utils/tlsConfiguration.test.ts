@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import tlsConfiguration from './tlsConfiguration'
+import tlsConfiguration from './tlsConfiguration.js'
 import path from 'path'
 import fs from 'fs'
-import { logger } from '../logging'
-import { type mpsConfigType, type webConfigType, type directConfigType } from '../models/Config'
+import { logger } from '../logging/index.js'
+import { type mpsConfigType, type webConfigType, type directConfigType } from '../models/Config.js'
 import { constants } from 'crypto'
 
 const web = tlsConfiguration.web

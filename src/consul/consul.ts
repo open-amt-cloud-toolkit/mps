@@ -4,10 +4,10 @@
  **********************************************************************/
 
 import Consul from 'consul'
-import { logger } from './../logging/logger'
-import { type configType } from './../models/Config'
-import type { IServiceManager } from './../interfaces/IServiceManager'
-import { Environment } from './../utils/Environment'
+import { logger } from './../logging/logger.js'
+import { type configType } from './../models/Config.js'
+import type { IServiceManager } from './../interfaces/IServiceManager.js'
+import { Environment } from './../utils/Environment.js'
 
 export class ConsulService implements IServiceManager {
   consul: Consul.Consul

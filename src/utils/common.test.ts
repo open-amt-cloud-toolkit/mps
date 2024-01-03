@@ -4,7 +4,7 @@
  **********************************************************************/
 
 // Import all required methods from common.js file
-import Common from './common'
+import Common from './common.js'
 const v = 256
 const p = 0
 const s3 = '256'

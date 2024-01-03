@@ -5,13 +5,13 @@
 
 // import httpZ, { HttpZResponseModel } from 'http-z'
 import { Buffer } from 'node:buffer'
-import { type CIRASocket } from '../models/models'
-import APFProcessor from './APFProcessor'
-import { type connectionParams, type HttpHandler } from './HttpHandler'
+import { type CIRASocket } from '../models/models.js'
+import APFProcessor from './APFProcessor.js'
+import { type connectionParams, type HttpHandler } from './HttpHandler.js'
 import { EventEmitter } from 'stream'
 import httpZ, { type HttpZResponseModel } from 'http-z'
-import { parseBody } from '../utils/parseWSManResponseBody'
-import { logger } from '../logging'
+import { parseBody } from '../utils/parseWSManResponseBody.js'
+import { logger } from '../logging/index.js'
 
 export class CIRAChannel {
   targetport: number
