@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import * as deleteAlarm from './deleteAlarmOccurrence'
-import { createSpyObj } from '../../test/helper/jest'
-import { deleteAlarmClockOccurrence, deleteAlarmClockOccurrenceNotFound } from '../../test/helper/wsmanResponses'
-import { DeviceAction } from '../../amt/DeviceAction'
-import { CIRAHandler } from '../../amt/CIRAHandler'
-import { HttpHandler } from '../../amt/HttpHandler'
-import { messages } from '../../logging'
+import * as deleteAlarm from './deleteAlarmOccurrence.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { deleteAlarmClockOccurrence, deleteAlarmClockOccurrenceNotFound } from '../../test/helper/wsmanResponses.js'
+import { DeviceAction } from '../../amt/DeviceAction.js'
+import { CIRAHandler } from '../../amt/CIRAHandler.js'
+import { HttpHandler } from '../../amt/HttpHandler.js'
+import { messages } from '../../logging/index.js'
 
 describe('Delete Alarm Clock Occurrence', () => {
   let resSpy

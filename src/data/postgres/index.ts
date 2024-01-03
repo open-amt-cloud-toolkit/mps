@@ -8,10 +8,10 @@
   Pattern referred from https://node-postgres.com/guides/project-structure
 */
 import { Pool, type QueryResult } from 'pg'
-import { type IDB } from '../../interfaces/IDb'
-import { type IDeviceTable } from '../../interfaces/IDeviceTable'
-import { logger, messages } from '../../logging'
-import { DeviceTable } from './tables/device'
+import { type IDB } from '../../interfaces/IDb.js'
+import { type IDeviceTable } from '../../interfaces/IDeviceTable.js'
+import { logger, messages } from '../../logging/index.js'
+import { DeviceTable } from './tables/device.js'
 
 export class PostgresDb implements IDB {
   pool: Pool

@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { createSpyObj } from '../test/helper/jest'
-import { ErrorResponse } from '../utils/amtHelper'
-import ciraMiddleware from './cira'
-import { devices } from '../server/mpsserver'
+import { createSpyObj } from '../test/helper/jest.js'
+import { ErrorResponse } from '../utils/amtHelper.js'
+import ciraMiddleware from './cira.js'
+import { devices } from '../server/mpsserver.js'
 
 describe('CIRA Middleware', () => {
   let req, next, resSpy

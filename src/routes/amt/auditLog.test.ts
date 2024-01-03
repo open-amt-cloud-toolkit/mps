@@ -4,12 +4,12 @@
  **********************************************************************/
 
 import { atob } from 'atob'
-import * as auditLog from './auditLog'
-import { MqttProvider } from '../../utils/MqttProvider'
-import { createSpyObj } from '../../test/helper/jest'
-import { DeviceAction } from '../../amt/DeviceAction'
-import { CIRAHandler } from '../../amt/CIRAHandler'
-import { HttpHandler } from '../../amt/HttpHandler'
+import * as auditLog from './auditLog.js'
+import { MqttProvider } from '../../utils/MqttProvider.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { DeviceAction } from '../../amt/DeviceAction.js'
+import { CIRAHandler } from '../../amt/CIRAHandler.js'
+import { HttpHandler } from '../../amt/HttpHandler.js'
 import { type AMT } from '@open-amt-cloud-toolkit/wsman-messages'
 
 describe('auditLog', () => {

@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { type IDB } from '../interfaces/IDb'
-import { Environment } from '../utils/Environment'
+import { type IDB } from '../interfaces/IDb.js'
+import { Environment } from '../utils/Environment.js'
 
 export class DbCreatorFactory {
   private static instance: IDB

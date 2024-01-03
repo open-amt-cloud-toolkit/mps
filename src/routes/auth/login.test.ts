@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { login } from './login'
+import { login } from './login.js'
 import jws from 'jws'
-import { createSpyObj } from '../../test/helper/jest'
-import { Environment } from '../../utils/Environment'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { Environment } from '../../utils/Environment.js'
 import * as val from 'express-validator'
 jest.mock('express-validator')
 

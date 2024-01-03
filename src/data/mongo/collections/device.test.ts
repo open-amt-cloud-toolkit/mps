@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { type Db, type Collection } from 'mongodb'
-import { MongoDeviceTable } from './device'
+import { MongoDeviceTable } from './device.js'
 
 jest.mock('mongodb')
 

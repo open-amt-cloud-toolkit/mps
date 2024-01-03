@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Environment } from '../utils/Environment'
-import { DbCreatorFactory } from './DbCreatorFactory'
-import { config } from '../test/helper/config'
-import { type IDB } from '../interfaces/IDb'
+import { Environment } from '../utils/Environment.js'
+import { DbCreatorFactory } from './DbCreatorFactory.js'
+import { config } from '../test/helper/config.js'
+import { type IDB } from '../interfaces/IDb.js'
 
 describe('DB Creator Factory', () => {
   it('should pass with default test configuration', async () => {

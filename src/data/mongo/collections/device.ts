@@ -4,9 +4,9 @@
  **********************************************************************/
 
 import { ObjectId, type Db, type Collection, type WithId, type OptionalId } from 'mongodb'
-import { type Device } from '../../../models/models'
-import { type IDeviceTable } from '../../../interfaces/IDeviceTable'
-import { DefaultSkip, DefaultTop } from '../../../utils/constants'
+import { type Device } from '../../../models/models.js'
+import { type IDeviceTable } from '../../../interfaces/IDeviceTable.js'
+import { DefaultSkip, DefaultTop } from '../../../utils/constants.js'
 
 export class MongoDeviceTable implements IDeviceTable {
   private readonly db: Db

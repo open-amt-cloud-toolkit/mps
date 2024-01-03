@@ -4,9 +4,9 @@
  **********************************************************************/
 
 import { VaultSecretManagerService } from '.'
-import { logger } from '../../logging'
-import { config } from '../../test/helper/config'
-import { Environment } from '../../utils/Environment'
+import { logger } from '../../logging/index.js'
+import { config } from '../../test/helper/config.js'
+import { Environment } from '../../utils/Environment.js'
 
 let secretManagerService: VaultSecretManagerService = null
 Environment.Config = config

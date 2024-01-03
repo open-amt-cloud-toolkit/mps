@@ -4,11 +4,11 @@
  **********************************************************************/
 
 import { type AMT } from '@open-amt-cloud-toolkit/wsman-messages'
-import { CIRAHandler } from '../../amt/CIRAHandler'
-import { DeviceAction } from '../../amt/DeviceAction'
-import { HttpHandler } from '../../amt/HttpHandler'
-import { createSpyObj } from '../../test/helper/jest'
-import { bootOptions, determinePowerAction, setBootData, setBootSource } from './bootOptions'
+import { CIRAHandler } from '../../amt/CIRAHandler.js'
+import { DeviceAction } from '../../amt/DeviceAction.js'
+import { HttpHandler } from '../../amt/HttpHandler.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { bootOptions, determinePowerAction, setBootData, setBootSource } from './bootOptions.js'
 
 describe('Boot Options', () => {
   let resSpy: any

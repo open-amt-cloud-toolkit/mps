@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { DeviceTable } from './device'
-import { type Device } from '../../../models/models'
+import { DeviceTable } from './device.js'
+import { type Device } from '../../../models/models.js'
 import PostgresDb from '..'
 // import { MPSValidationError } from '../../../utils/MPSValidationError'
 

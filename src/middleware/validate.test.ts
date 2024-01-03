@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { createSpyObj } from '../test/helper/jest'
-import validateMiddleware from './validate'
+import { createSpyObj } from '../test/helper/jest.js'
+import validateMiddleware from './validate.js'
 jest.mock('express-validator', () => ({
   validationResult: jest.fn().mockImplementation((shouldHaveErrors) => ({
     isEmpty: jest.fn().mockReturnValue(!shouldHaveErrors),

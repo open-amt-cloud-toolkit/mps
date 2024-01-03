@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { logger, messages } from '../../../logging'
+import { logger, messages } from '../../../logging/index.js'
 import { type PostgresDb } from '..'
-import { type IDeviceTable } from '../../../interfaces/IDeviceTable'
-import { type Device } from '../../../models/models'
-import { MPSValidationError } from '../../../utils/MPSValidationError'
-import { DefaultSkip, DefaultTop } from '../../../utils/constants'
+import { type IDeviceTable } from '../../../interfaces/IDeviceTable.js'
+import { type Device } from '../../../models/models.js'
+import { MPSValidationError } from '../../../utils/MPSValidationError.js'
+import { DefaultSkip, DefaultTop } from '../../../utils/constants.js'
 
 export class DeviceTable implements IDeviceTable {
   db: PostgresDb

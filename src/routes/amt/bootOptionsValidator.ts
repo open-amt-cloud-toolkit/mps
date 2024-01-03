@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { check } from 'express-validator'
-import { DMTFPowerExtendedStates } from '../../utils/constants'
+import { DMTFPowerExtendedStates } from '../../utils/constants.js'
 
 export const bootOptionsValidator = (): any => [
   check('action')

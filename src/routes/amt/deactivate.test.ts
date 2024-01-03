@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { deactivate } from './deactivate'
-import { messages } from '../../logging'
-import { createSpyObj } from '../../test/helper/jest'
+import { deactivate } from './deactivate.js'
+import { messages } from '../../logging/index.js'
+import { createSpyObj } from '../../test/helper/jest.js'
 
 describe('deactivate', () => {
   let resSpy: any
