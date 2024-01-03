@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { logger, messages } from '../../logging'
-import { devices } from '../../server/mpsserver'
-import { refreshDevice } from './refresh'
+import { logger, messages } from '../../logging/index.js'
+import { devices } from '../../server/mpsserver.js'
+import { refreshDevice } from './refresh.js'
 
 describe('refresh tests', () => {
   let res: Express.Response

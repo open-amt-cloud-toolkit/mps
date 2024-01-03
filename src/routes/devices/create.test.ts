@@ -4,9 +4,9 @@
  **********************************************************************/
 
 import { v4 as uuid } from 'uuid'
-import { insertDevice } from './create'
-import { MPSValidationError } from '../../utils/MPSValidationError'
-import { type Device } from '../../models/models'
+import { insertDevice } from './create.js'
+import { MPSValidationError } from '../../utils/MPSValidationError.js'
+import { type Device } from '../../models/models.js'
 
 let req
 let res

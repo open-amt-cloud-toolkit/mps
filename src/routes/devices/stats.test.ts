@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { stats } from './stats'
+import { stats } from './stats.js'
 
 let res: Express.Response
 let jsonSpy: jest.SpyInstance

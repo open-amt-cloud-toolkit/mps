@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Environment } from '../../utils/Environment'
+import { Environment } from '../../utils/Environment.js'
 import jws from 'jws'
 
 export function signature (expirationMinutes, device: string): any {

@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { getVersion } from './get'
-import { createSpyObj } from '../../test/helper/jest'
-import { ServiceVersion } from '../../utils/constants'
+import { getVersion } from './get.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { ServiceVersion } from '../../utils/constants.js'
 
 describe('Checks version of dependent services', () => {
   describe('getVersion tests', () => {

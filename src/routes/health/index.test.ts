@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import index from './index'
+import index from './index.js'
 
 describe('Check index from health', () => {
   let indexSpy: jest.SpyInstance

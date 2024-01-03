@@ -4,8 +4,8 @@
  **********************************************************************/
 
 import { v4 as uuid } from 'uuid'
-import { getDevice } from './get'
-import { type Device } from '../../models/models'
+import { getDevice } from './get.js'
+import { type Device } from '../../models/models.js'
 
 let req
 let res

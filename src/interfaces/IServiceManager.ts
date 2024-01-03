@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { type configType } from '../models/Config'
+import { type configType } from '../models/Config.js'
 export interface IServiceManager {
   health: (prefix: string) => Promise<boolean>
   get: (prefix: string) => Promise<any>

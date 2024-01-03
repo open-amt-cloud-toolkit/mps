@@ -5,7 +5,7 @@
 
 import { type Socket } from 'net'
 import { type DetailedPeerCertificate, type TLSSocket } from 'tls'
-import { type CIRAChannel } from '../amt/CIRAChannel'
+import { type CIRAChannel } from '../amt/CIRAChannel.js'
 import type WebSocket from 'ws'
 
 export interface Device {

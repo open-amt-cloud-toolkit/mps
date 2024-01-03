@@ -31,12 +31,12 @@ import {
   softwareIdentityResponse,
   startOptInResponse,
   systemPackaging
-} from '../test/helper/wsmanResponses'
-import { CIRAHandler } from './CIRAHandler'
-import { DeviceAction } from './DeviceAction'
-import { HttpHandler } from './HttpHandler'
-import { type Selector } from '@open-amt-cloud-toolkit/wsman-messages/WSMan'
-import { type Models } from '@open-amt-cloud-toolkit/wsman-messages/ips/models'
+} from '../test/helper/wsmanResponses.js'
+import { CIRAHandler } from './CIRAHandler.js'
+import { DeviceAction } from './DeviceAction.js'
+import { HttpHandler } from './HttpHandler.js'
+import { type Selector } from '@open-amt-cloud-toolkit/wsman-messages/WSMan.js'
+import { type Models } from '@open-amt-cloud-toolkit/wsman-messages/ips/models.js'
 import { type AMT, type CIM } from '@open-amt-cloud-toolkit/wsman-messages'
 
 describe('Device Action Tests', () => {

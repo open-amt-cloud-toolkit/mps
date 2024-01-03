@@ -4,9 +4,9 @@
  **********************************************************************/
 
 import { v4 as uuid } from 'uuid'
-import { getAllDevices } from './getAll'
-import { type Device } from '../../models/models'
-import { type DataWithCount } from '../../models/Config'
+import { getAllDevices } from './getAll.js'
+import { type Device } from '../../models/models.js'
+import { type DataWithCount } from '../../models/Config.js'
 
 let req
 let res

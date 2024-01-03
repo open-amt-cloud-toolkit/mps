@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import router from './index'
+import router from './index.js'
 
 describe('Check index from devices', () => {
   const routes = [

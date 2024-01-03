@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { type Request, type Response } from 'express'
-import { logger, messages } from '../../logging'
+import { logger, messages } from '../../logging/index.js'
 
 export async function deleteDevice (req: Request, res: Response): Promise<void> {
   try {

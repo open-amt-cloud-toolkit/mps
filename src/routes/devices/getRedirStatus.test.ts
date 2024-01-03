@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { getRedirStatus } from './getRedirStatus'
+import { getRedirStatus } from './getRedirStatus.js'
 import { type Request, type Response } from 'express'
-import { devices } from '../../server/mpsserver'
+import { devices } from '../../server/mpsserver.js'
 
 jest.mock('../../logging', () => ({
   logger: {

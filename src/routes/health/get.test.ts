@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { getHealthCheck, getDBHealth, getSecretStoreHealth } from './get'
-import { Environment } from '../../utils/Environment'
-import { createSpyObj } from '../../test/helper/jest'
-import { MqttProvider } from '../../utils/MqttProvider'
-import { ErrorResponse } from '../../utils/amtHelper'
-import { messages } from '../../logging'
+import { getHealthCheck, getDBHealth, getSecretStoreHealth } from './get.js'
+import { Environment } from '../../utils/Environment.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { MqttProvider } from '../../utils/MqttProvider.js'
+import { ErrorResponse } from '../../utils/amtHelper.js'
+import { messages } from '../../logging/index.js'
 
 describe('Checks health of dependent services', () => {
   describe('getHealthCheck tests', () => {

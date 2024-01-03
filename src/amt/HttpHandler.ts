@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { logger, messages } from '../logging'
+import { logger, messages } from '../logging/index.js'
 import { createHash } from 'crypto'
 import * as xml2js from 'xml2js'
-import { type DigestChallenge } from '@open-amt-cloud-toolkit/wsman-messages/models/common'
+import { type DigestChallenge } from '@open-amt-cloud-toolkit/wsman-messages/models/common.js'
 
 export class connectionParams {
   port: number

@@ -5,7 +5,7 @@
 
 import { Router } from 'express'
 
-import { getVersion } from './get'
+import { getVersion } from './get.js'
 const versionRouter: Router = Router()
 
 versionRouter.get('/', getVersion)

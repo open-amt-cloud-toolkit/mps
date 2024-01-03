@@ -4,12 +4,12 @@
  **********************************************************************/
 
 import { Router } from 'express'
-import deviceRouter from './devices/index'
-import { mpsrootcert } from './certs'
-import authRouter from './auth/index'
-import amtRouter from './amt/index'
-import healthRouter from './health'
-import version from './version'
+import deviceRouter from './devices/index.js'
+import { mpsrootcert } from './certs/index.js'
+import authRouter from './auth/index.js'
+import amtRouter from './amt/index.js'
+import healthRouter from './health/index.js'
+import version from './version/index.js'
 
 const router: Router = Router()
 

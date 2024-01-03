@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { logger, messages } from '../../logging'
-import { devices } from '../../server/mpsserver'
-import { disconnect } from './disconnect'
+import { logger, messages } from '../../logging/index.js'
+import { devices } from '../../server/mpsserver.js'
+import { disconnect } from './disconnect.js'
 
 let res: Express.Response
 let statusSpy: jest.SpyInstance

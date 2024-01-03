@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { ErrorResponse } from '../../utils/amtHelper'
-import { logger, messages } from '../../logging'
+import { ErrorResponse } from '../../utils/amtHelper.js'
+import { logger, messages } from '../../logging/index.js'
 import { type Request, type Response } from 'express'
-import { devices } from '../../server/mpsserver'
+import { devices } from '../../server/mpsserver.js'
 
 export async function disconnect (req: Request, res: Response): Promise<void> {
   try {

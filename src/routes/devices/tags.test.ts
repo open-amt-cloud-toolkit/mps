@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { getDistinctTags } from './tags'
-import { logger } from '../../logging'
+import { getDistinctTags } from './tags.js'
+import { logger } from '../../logging/index.js'
 
 let req: any
 let res: any

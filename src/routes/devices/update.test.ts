@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { MPSValidationError } from '../../utils/MPSValidationError'
-import { updateDevice } from './update'
-import { logger } from '../../logging'
+import { MPSValidationError } from '../../utils/MPSValidationError.js'
+import { updateDevice } from './update.js'
+import { logger } from '../../logging/index.js'
 
 let res: Express.Response
 let statusSpy: jest.SpyInstance

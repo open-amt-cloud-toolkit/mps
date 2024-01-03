@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { logger } from '../../logging'
-import { deleteDevice } from './delete'
+import { logger } from '../../logging/index.js'
+import { deleteDevice } from './delete.js'
 
 let res: Express.Response
 let statusSpy: jest.SpyInstance

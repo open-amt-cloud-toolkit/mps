@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { type Device } from '../models/models'
-import { type ITable } from './ITable'
+import { type Device } from '../models/models.js'
+import { type ITable } from './ITable.js'
 
 export interface IDeviceTable extends ITable<Device> {
   getConnectedDevices: (tenantId?: string) => Promise<number>
