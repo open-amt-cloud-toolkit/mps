@@ -1,3 +1,10 @@
+## [2.13.8](https://github.com/open-amt-cloud-toolkit/mps/compare/v2.13.7...v2.13.8) (2024-01-04)
+
+
+### Bug Fixes
+
+* updates validation to uuid ([#1242](https://github.com/open-amt-cloud-toolkit/mps/issues/1242)) ([d88fa91](https://github.com/open-amt-cloud-toolkit/mps/commit/d88fa918651647e903a8e9d6b30b49fa30396982))
+
 ## [2.13.7](https://github.com/open-amt-cloud-toolkit/mps/compare/v2.13.6...v2.13.7) (2023-12-22)
 
 
