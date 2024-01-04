@@ -130,7 +130,7 @@ export class DeviceAction {
 
   async changeBootOrder (bootSource?: Types.BootConfigSetting.InstanceID): Promise<any> {
     logger.silly(`changeBootOrder ${messages.REQUEST}`)
-    let xmlRequestBody
+    let xmlRequestBody: string
     if (bootSource == null) {
       xmlRequestBody = this.cim.BootConfigSetting.ChangeBootOrder()
     } else {

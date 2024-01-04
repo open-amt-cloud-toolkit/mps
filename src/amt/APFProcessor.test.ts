@@ -138,9 +138,9 @@ describe('APFProcessor Tests', () => {
 
   describe('disconnect() tests', () => {
     it('should disconnect and return 0 when len is < 7', () => {
-      const fakeCiraSocket: any = null
+      const fakeCiraSocket: CIRASocket = null
       const len: number = 6
-      const data: any = null
+      const data: string = null
       const result = APFProcessor.disconnect(fakeCiraSocket, len, data)
       const expectedResult = 0
       expect(result).toEqual(expectedResult)
@@ -153,7 +153,7 @@ describe('APFProcessor Tests', () => {
         }
       }
       const len: number = 66666
-      const data: any = 'data'
+      const data: string = 'data'
       const emitSpy = jest.spyOn(APFProcessor.APFEvents, 'emit')
       const result = APFProcessor.disconnect(fakeCiraSocket as any, len, data)
       const expectedResult = 7
@@ -166,7 +166,7 @@ describe('APFProcessor Tests', () => {
     it('should return 0 if len < 9', () => {
       const fakeCiraSocket: any = null
       const len: number = 8
-      const data: any = null
+      const data: string = null
       const result = APFProcessor.channelData(fakeCiraSocket, len, data)
       const expectedResult = 0
       expect(result).toEqual(expectedResult)
@@ -175,7 +175,7 @@ describe('APFProcessor Tests', () => {
     it('should return -1 if LengthOfData > 1048576', () => {
       const fakeCiraSocket: any = null
       const len: number = 9 + 1048577
-      const data: any = null
+      const data: string = null
       const readIntSpy = jest.spyOn(Common, 'ReadInt')
         .mockReturnValueOnce(1)
         .mockReturnValueOnce(1048577)
@@ -186,9 +186,9 @@ describe('APFProcessor Tests', () => {
     })
 
     it('should return 0 if len < 9 + LengthOfData', () => {
-      const fakeCiraSocket: any = null
+      const fakeCiraSocket: CIRASocket = null
       const len: number = 9
-      const data: any = null
+      const data: string = null
       jest.spyOn(Common, 'ReadInt').mockReturnValue(1)
       const result = APFProcessor.channelData(fakeCiraSocket, len, data)
       const expectedResult = 0
@@ -196,18 +196,18 @@ describe('APFProcessor Tests', () => {
     })
 
     it('should return 9 + LengthOfData if cirachannel is null', () => {
-      const fakeCiraSocket = {
+      const fakeCiraSocket: CIRASocket = {
         tag: {
           activetunnels: 0,
           channels: []
         }
-      }
+      } as any
       const len: number = 100
-      const data: any = null
+      const data: string = null
       const lengthOfData = 1
       const readIntSpy = jest.spyOn(Common, 'ReadInt').mockReturnValue(lengthOfData)
       const errorSpy = jest.spyOn(logger, 'error')
-      const result = APFProcessor.channelData(fakeCiraSocket as any, len, data)
+      const result = APFProcessor.channelData(fakeCiraSocket, len, data)
       const expectedResult = 9 + lengthOfData
       expect(result).toEqual(expectedResult)
       expect(readIntSpy).toHaveBeenCalled()
