@@ -6,7 +6,7 @@
 import url from 'url'
 import { type eventType, type OpenAMTEvent } from '../models/models'
 import { logger, messages } from '../logging'
-import { type MqttClient, connect } from 'mqtt'
+import { type MqttClient, connect, type IClientOptions } from 'mqtt'
 import { Environment } from './Environment'
 // Provides functions to abstract the interactions
 // with mqtt broker
@@ -16,7 +16,7 @@ export class MqttProvider {
   mqttUrl: url.URL
   baseUrl: string
   port: number
-  options: any
+  options: IClientOptions
 
   static instance: MqttProvider
 

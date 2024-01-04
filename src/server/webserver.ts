@@ -78,7 +78,7 @@ export class WebServer {
     }
   }
 
-  appUseJsonParser (err: any, req: Request, res: Response, next: () => void): any {
+  appUseJsonParser (err: any, req: Request, res: Response, next: () => void): Response {
     if (err instanceof SyntaxError) {
       return res.status(400).send(ErrorResponse(400))
     } else {
@@ -205,7 +205,7 @@ export class WebServer {
       const currentTimestamp = Math.floor(Date.now() / 1000) // Current timestamp in seconds
       const deviceId = decodedToken.payload.deviceId
 
-      const queryString = info.req.url.split('?')[1]
+      const queryString = info.req.url.split('?')[1] as string
       const params = new URLSearchParams(queryString)
       params.forEach((value, key) => {
         reqParams[key] = value
@@ -219,8 +219,8 @@ export class WebServer {
       logger.error(`Error verifying the token: ${error.message}`)
     }
 
-    const guid = reqParams.host
-    const mode = reqParams.mode
+    const guid = reqParams.host as string
+    const mode = reqParams.mode as string
     const modes = ['kvm', 'sol', 'ider']
 
     // Check for backward compatibility

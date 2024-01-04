@@ -47,7 +47,7 @@ export class MongoDeviceTable implements IDeviceTable {
   }
 
   async update (item: Device): Promise<WithId<Device>> {
-    const result = await this.collection.findOneAndUpdate({ _id: new ObjectId((item as any)._id), tenantId: item.tenantId }, { $set: item }, { returnDocument: 'after', includeResultMetadata: false })
+    const result = await this.collection.findOneAndUpdate({ _id: new ObjectId((item as any)._id as number), tenantId: item.tenantId }, { $set: item }, { returnDocument: 'after', includeResultMetadata: false })
     return result as any
   }
 

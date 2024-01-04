@@ -8,17 +8,17 @@ import { logger, messages } from '../../logging'
 import { ErrorResponse } from '../../utils/amtHelper'
 import { MqttProvider } from '../../utils/MqttProvider'
 import { AMTStatusCodes } from '../../utils/constants'
-import { type AMT } from '@open-amt-cloud-toolkit/wsman-messages'
+import { type AMT, type CIM } from '@open-amt-cloud-toolkit/wsman-messages'
 
 export async function powerAction (req: Request, res: Response): Promise<void> {
   try {
     const payload = req.body
     const results = await req.deviceAction.getBootOptions()
-    const bootData = setBootData(payload.action, false, results.AMT_BootSettingData)
+    const bootData = setBootData(payload.action as number, false, results.AMT_BootSettingData)
     await req.deviceAction.setBootConfiguration(bootData)
 
-    const powerAction = await req.deviceAction.sendPowerAction(payload.action)
-    powerAction.Body.RequestPowerStateChange_OUTPUT.ReturnValueStr = AMTStatusToString(powerAction.Body.RequestPowerStateChange_OUTPUT.ReturnValue)
+    const powerAction = await req.deviceAction.sendPowerAction(payload.action as CIM.Types.PowerManagementService.PowerState)
+    powerAction.Body.RequestPowerStateChange_OUTPUT.ReturnValueStr = AMTStatusToString(powerAction.Body.RequestPowerStateChange_OUTPUT.ReturnValue as number)
     powerAction.Body = powerAction.Body.RequestPowerStateChange_OUTPUT
     MqttProvider.publishEvent('success', ['AMT_PowerAction'], messages.POWER_ACTION_REQUESTED)
     res.status(200).json(powerAction).end()

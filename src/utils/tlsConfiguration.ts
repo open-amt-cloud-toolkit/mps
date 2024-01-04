@@ -68,7 +68,7 @@ export default {
       // Load CA certificates
       if (webConfig.ca) {
         const caCertLocationArr = webConfig.ca
-        const caCertArr = []
+        const caCertArr: string[] = []
         for (let i: number = 0; i < caCertLocationArr.length; i++) {
           if (!fs.existsSync(path.join(__dirname, caCertLocationArr[i]))) {
             caCertArr.push(

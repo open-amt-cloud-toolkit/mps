@@ -31,7 +31,7 @@ export async function hardwareInfo (req: Request, res: Response): Promise<void> 
   }
 }
 
-export async function get (device: DeviceAction, guid: string): Promise<any> {
+export async function get (device: DeviceAction, guid: string): Promise<Record<string, any>> {
   const response: Record<string, any> = {}
   response.CIM_ComputerSystemPackage = await device.getComputerSystemPackage()
   response.CIM_Chassis = await device.getChassis()

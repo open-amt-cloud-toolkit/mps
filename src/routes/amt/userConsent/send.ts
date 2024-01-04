@@ -10,7 +10,7 @@ import { MqttProvider } from '../../../utils/MqttProvider'
 import { AMTStatusCodes } from '../../../utils/constants'
 
 export async function send (req: Request, res: Response): Promise<void> {
-  const userConsentCode = req.body.consentCode
+  const userConsentCode: number = req.body.consentCode
   const guid: string = req.params.guid
   try {
     // Cancel a previous opt-in code request.
