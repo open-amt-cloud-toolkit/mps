@@ -59,7 +59,7 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
     if (isRedirectionChanged) {
       amtRedirectionResponse.AMT_RedirectionService.EnabledState = (32768 + ((ider ? 1 : 0) + (sol ? 2 : 0))) as AMT.Types.RedirectionService.EnabledState
       amtRedirectionResponse.AMT_RedirectionService.ListenerEnabled = redir
-      await setRedirectionService(req.deviceAction, amtRedirectionResponse, kvm, payload.guid)
+      await setRedirectionService(req.deviceAction, amtRedirectionResponse, kvm, payload.guid as string)
     }
 
     const optResponse = optServiceResponse.IPS_OptInService
@@ -67,7 +67,7 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
     const optInRequiredValue = UserConsentOptions[key]
     if (optResponse.OptInRequired !== optInRequiredValue) {
       optResponse.OptInRequired = optInRequiredValue
-      await setUserConsent(req.deviceAction, optServiceResponse, payload.guid)
+      await setUserConsent(req.deviceAction, optServiceResponse, payload.guid as string)
     }
 
     MqttProvider.publishEvent('success', ['AMT_SetFeatures'], messages.AMT_FEATURES_SET_SUCCESS, guid)

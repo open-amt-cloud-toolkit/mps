@@ -11,13 +11,13 @@ import { type Request, type Response } from 'express'
 export async function insertDevice (req: Request, res: Response): Promise<void> {
   let device: Device
   try {
-    device = await req.db.devices.getById(req.body.guid, req.body.tenantId)
+    device = await req.db.devices.getById(req.body.guid as string, req.body.tenantId as string)
     if (device != null) {
       device = { ...device, ...req.body }
       const results = await req.db.devices.update(device)
       res.status(200).json(results)
     } else {
-      const newEntry = {
+      const newEntry: Device = {
         tenantId: '',
         connectionStatus: false,
         ...req.body

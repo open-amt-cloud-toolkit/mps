@@ -112,7 +112,7 @@ export class WsRedirect {
     this.websocketFromDevice = this.ciraHandler.SetupCiraChannel(devices[params.host].ciraSocket, params.port)
     this.websocketFromDevice.write = null
     // this.websocketFromDevice.xtls = 0
-    this.websocketFromDevice.onData = (data: any): void => {
+    this.websocketFromDevice.onData = (data: string): void => {
       // Run data thru interceptor
       if (this.interceptor) {
         data = this.interceptor.processAmtData(data)

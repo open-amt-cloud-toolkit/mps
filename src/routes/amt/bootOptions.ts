@@ -15,9 +15,9 @@ export async function bootOptions (req: Request, res: Response): Promise<void> {
     const payload = req.body // payload.action
     const device = req.deviceAction
     const results = await device.getBootOptions()
-    const bootData = setBootData(payload.action, payload.useSOL, results.AMT_BootSettingData)
+    const bootData = setBootData(payload.action as number, payload.useSOL as boolean, results.AMT_BootSettingData)
     await device.setBootConfiguration(bootData)
-    const forceBootSource = setBootSource(payload.action)
+    const forceBootSource = setBootSource(payload.action as number)
     if (forceBootSource != null) { // only if
       await device.forceBootMode()
       await device.changeBootOrder(forceBootSource)
@@ -25,9 +25,9 @@ export async function bootOptions (req: Request, res: Response): Promise<void> {
       await device.forceBootMode()
       await device.changeBootOrder()
     }
-    const newAction = determinePowerAction(payload.action)
+    const newAction = determinePowerAction(payload.action as number)
     const powerActionResult = await device.sendPowerAction(newAction)
-    powerActionResult.Body.RequestPowerStateChange_OUTPUT.ReturnValueStr = AMTStatusToString(powerActionResult.Body.RequestPowerStateChange_OUTPUT.ReturnValue)
+    powerActionResult.Body.RequestPowerStateChange_OUTPUT.ReturnValueStr = AMTStatusToString(powerActionResult.Body.RequestPowerStateChange_OUTPUT.ReturnValue as number)
     powerActionResult.Body = powerActionResult.Body.RequestPowerStateChange_OUTPUT
 
     res.status(200).json(powerActionResult)

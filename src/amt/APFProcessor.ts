@@ -442,7 +442,7 @@ const APFProcessor = {
     )
   },
 
-  SendKeepAliveReply: (socket: CIRASocket, cookie): void => {
+  SendKeepAliveReply: (socket: CIRASocket, cookie: number): void => {
     logger.silly(messages.MPS_SEND_KEEPALIVE_REPLY)
     APFProcessor.Write(socket, String.fromCharCode(APFProtocol.KEEPALIVE_REPLY) + Common.IntToStr(cookie))
   },
@@ -452,7 +452,7 @@ const APFProcessor = {
     APFProcessor.Write(socket, String.fromCharCode(APFProtocol.SERVICE_ACCEPT) + Common.IntToStr(service.length) + service)
   },
 
-  SendTcpForwardSuccessReply: (socket: CIRASocket, port): void => {
+  SendTcpForwardSuccessReply: (socket: CIRASocket, port: number): void => {
     logger.silly(messages.MPS_SEND_TCP_FORWARD_SUCCESS_REPLY)
     APFProcessor.Write(socket, String.fromCharCode(APFProtocol.REQUEST_SUCCESS) + Common.IntToStr(port))
   },
@@ -462,12 +462,12 @@ const APFProcessor = {
     APFProcessor.Write(socket, String.fromCharCode(APFProtocol.REQUEST_SUCCESS))
   },
 
-  SendKeepAliveRequest: (socket: CIRASocket, cookie): void => {
+  SendKeepAliveRequest: (socket: CIRASocket, cookie: number): void => {
     logger.silly(messages.MPS_SEND_KEEP_ALIVE_REQUEST)
     APFProcessor.Write(socket, String.fromCharCode(APFProtocol.KEEPALIVE_REQUEST) + Common.IntToStr(cookie))
   },
 
-  SendChannelOpenFailure: (socket: CIRASocket, senderChannel, reasonCode): void => {
+  SendChannelOpenFailure: (socket: CIRASocket, senderChannel: number, reasonCode: number): void => {
     logger.silly(messages.MPS_SEND_CHANNEL_OPEN_FAILURE)
     APFProcessor.Write(
       socket,
@@ -479,7 +479,7 @@ const APFProcessor = {
     )
   },
 
-  SendChannelOpenConfirmation: (socket: CIRASocket, recipientChannelId, senderChannelId, initialWindowSize): void => {
+  SendChannelOpenConfirmation: (socket: CIRASocket, recipientChannelId: number, senderChannelId: number, initialWindowSize: number): void => {
     logger.silly(messages.MPS_SEND_CHANNEL_OPEN_CONFIRMATION)
     APFProcessor.Write(
       socket,
@@ -541,7 +541,7 @@ const APFProcessor = {
     }
   },
 
-  SendChannelData: (socket: CIRASocket, channelid, data: Buffer): void => {
+  SendChannelData: (socket: CIRASocket, channelid: number, data: Buffer): void => {
     logger.silly(`${messages.MPS_SEND_CHANNEL_DATA}, ${channelid}`)
     const b = Buffer.allocUnsafe(9 + data.length)
     b[0] = APFProtocol.CHANNEL_DATA
@@ -560,7 +560,7 @@ const APFProcessor = {
     */
   },
 
-  SendChannelWindowAdjust: (socket: CIRASocket, channelid, bytestoadd): void => {
+  SendChannelWindowAdjust: (socket: CIRASocket, channelid: number, bytestoadd: number): void => {
     logger.silly(`${messages.MPS_SEND_CHANNEL_WINDOW_ADJUST}, ${channelid}, ${bytestoadd}`)
     APFProcessor.Write(
       socket,
@@ -570,7 +570,7 @@ const APFProcessor = {
     )
   },
 
-  SendDisconnect: (socket: CIRASocket, reasonCode): void => {
+  SendDisconnect: (socket: CIRASocket, reasonCode: number): void => {
     logger.silly(`${messages.MPS_SEND_CHANNEL_DISCONNECT}, ${reasonCode}`)
     APFProcessor.Write(
       socket,
@@ -596,7 +596,7 @@ const APFProcessor = {
     APFProcessor.Write(socket, String.fromCharCode(APFProtocol.USERAUTH_SUCCESS))
   },
 
-  Write: (socket: CIRASocket, data): void => {
+  Write: (socket: CIRASocket, data: string): void => {
     socket.write(Buffer.from(data, 'binary'))
   },
 

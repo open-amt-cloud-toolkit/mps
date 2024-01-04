@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { Certificates } from './certificates'
-import { type certificatesType } from '../models/Config'
+import { type certAndKeyType, type certificatesType } from '../models/Config'
 import forge from 'node-forge'
 import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
 
@@ -45,8 +45,8 @@ const secrets: ISecretManagerService = {
 
 beforeEach(() => {
   getMPSCertsSpy = jest.spyOn(secrets, 'getMPSCerts')
-  certificates = new Certificates(config, secrets)
-  certificatesTls12 = new Certificates(configtls12, secrets)
+  certificates = new Certificates(config as any, secrets)
+  certificatesTls12 = new Certificates(configtls12 as any, secrets)
   writeSecretWithObjectSpy = jest.spyOn(secrets, 'writeSecretWithObject')
   storeCertificatesSpy = jest.spyOn(certificates, 'storeCertificates')
   generateKeyPairSpy = jest.spyOn(forge.pki.rsa, 'generateKeyPair')
@@ -198,13 +198,13 @@ describe('IssueWebServerCertificate', () => {
     createCertificateSpy.mockReturnValue(certificate)
     getPublicKeyFingerprintSpy.mockReturnValue('abc123')
     sha384CreateSpy.mockReturnValue(123456 as any)
-    const rootcert = {
+    const rootcert: certAndKeyType = {
       cert: {
         subject: {
           attributes: {}
         }
       }
-    }
+    } as any
     const addThumbPrintToName = true
     const commonName = 'cn'
     const country = 'us'
@@ -234,13 +234,13 @@ describe('IssueWebServerCertificate', () => {
     createCertificateSpy.mockReturnValue(certificate)
     getPublicKeyFingerprintSpy.mockReturnValue('abc123')
     sha384CreateSpy.mockReturnValue(123456 as any)
-    const rootcert = {
+    const rootcert: certAndKeyType = {
       cert: {
         subject: {
           attributes: {}
         }
       }
-    }
+    } as any
     const addThumbPrintToName = true
     const commonName = 'cn'
     const country = 'us'

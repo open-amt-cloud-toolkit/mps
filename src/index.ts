@@ -63,7 +63,7 @@ export async function main (): Promise<void> {
     webServer.listen()
   } catch (error) {
     logger.error('Error starting MPS microservice. Check server logs.')
-    logger.error(error)
+    logger.error(error as string)
   }
 }
 

@@ -12,12 +12,12 @@
 */
 
 import { logger, messages } from '../logging'
-import { type certificatesType, type mpsConfigType, type webConfigType, type certAndKeyType } from '../models/Config'
+import { type certificatesType, type mpsConfigType, type webConfigType, type certAndKeyType, type configType } from '../models/Config'
 import forge from 'node-forge'
 import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
 
 export class Certificates {
-  constructor (private readonly config: any, private readonly secrets: ISecretManagerService) {
+  constructor (private readonly config: configType, private readonly secrets: ISecretManagerService) {
     this.config = config
     this.secrets = secrets
   }
@@ -101,7 +101,7 @@ export class Certificates {
     return { cert, key: keys.privateKey }
   }
 
-  IssueWebServerCertificate = (rootcert, addThumbPrintToName: boolean, commonName: string, country: string, organization: string, extKeyUsage, strong: boolean): any => {
+  IssueWebServerCertificate = (rootcert: certAndKeyType, addThumbPrintToName: boolean, commonName: string, country: string, organization: string, extKeyUsage, strong: boolean): any => {
     const keys = forge.pki.rsa.generateKeyPair((strong) ? 3072 : 2048)
     const cert = forge.pki.createCertificate()
     cert.publicKey = keys.publicKey

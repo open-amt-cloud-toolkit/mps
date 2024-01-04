@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { check } from 'express-validator'
+import { check, type ValidationChain } from 'express-validator'
 
-export const authValidator = (): any => [
+export const authValidator = (): ValidationChain[] => [
   check('username')
     .isString()
     .not()

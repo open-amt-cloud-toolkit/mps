@@ -30,7 +30,7 @@
     "compile": "tsc --project tsconfig.build.json",
     "lint": "eslint . --ext .ts",
     "start": "npm run build && node ./dist/index.js",
-    "test": "jest --detectOpenHandles --forceExit --coverage"
+    "test": "jest  --forceExit --coverage"
   },
   "dependencies": {
     "@open-amt-cloud-toolkit/wsman-messages": "^5.6.1",
@@ -65,7 +65,7 @@
     "@typescript-eslint/parser": "^6.17.0",
     "eslint": "^8.56.0",
     "eslint-config-standard": "^17.1.0",
-    "eslint-config-standard-with-typescript": "^40.0.0",
+    "eslint-config-standard-with-typescript": "^43.0.0",
     "eslint-plugin-header": "^3.1.1",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-license-header": "^0.6.0",

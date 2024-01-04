@@ -3,11 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
+import type forge from 'node-forge'
+
 export interface configType {
   common_name: string
   port: number
   country: string
   company: string
+  organization?: string
   listen_any: boolean
   https?: boolean
   web_port: number
@@ -54,8 +57,8 @@ export interface certificatesType {
 }
 
 export interface mpsConfigType {
-  cert: any
-  key: any
+  cert: string
+  key: string
   minVersion: any
   secureOptions?: any
   requestCert: boolean
@@ -64,21 +67,21 @@ export interface mpsConfigType {
 }
 
 export interface webConfigType {
-  ca: any
-  cert: any
-  key: any
+  ca: string[] | string
+  cert: string
+  key: string
   secureOptions?: any
 }
 
 export interface certAndKeyType {
-  cert: any
-  key: any
+  cert: forge.pki.Certificate
+  key: forge.pki.PrivateKey
 }
 
 export interface directConfigType {
-  ca: any
-  cert: any
-  key: any
+  ca: string
+  cert: string
+  key: string
   ciphers: string
   secureOptions?: any
   rejectUnauthorized: boolean

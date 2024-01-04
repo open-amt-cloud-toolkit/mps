@@ -9,9 +9,7 @@
         "standard-with-typescript"
     ],
     "ignorePatterns": [
-        "**/*.js",
-        "**/*.spec.ts"
-        // "**/*.test.ts"
+        "**/*.js"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -36,6 +34,7 @@
         "@typescript-eslint/restrict-plus-operands": 0,
         "@typescript-eslint/no-misused-promises": 0,
         "@typescript-eslint/prefer-nullish-coalescing": 0,
-        "@typescript-eslint/unbound-method": 0
+        "@typescript-eslint/unbound-method": 0,
+        "@typescript-eslint/no-unsafe-argument": 0
     }
 }

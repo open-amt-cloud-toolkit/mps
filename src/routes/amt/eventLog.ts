@@ -74,7 +74,7 @@ function parseEventLogs (response: any): EventLog[] {
   if (typeof response.Body.GetRecords_OUTPUT.RecordArray === 'string') {
     response.Body.GetRecords_OUTPUT.RecordArray = [response.Body.GetRecords_OUTPUT.RecordArray]
   }
-  response.Body.GetRecords_OUTPUT?.RecordArray?.forEach((record) => {
+  response.Body.GetRecords_OUTPUT?.RecordArray?.forEach((record: string) => {
     const eventRecord = Buffer.from(record, 'base64')
     if (eventRecord != null) {
       const log: EventLog = {}

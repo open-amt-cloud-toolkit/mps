@@ -61,7 +61,7 @@ function parseVersionData (amtVersionData): number {
   const verList = amtVersionData.CIM_SoftwareIdentity.responses
   for (const i in verList) {
     if (verList[i].InstanceID === 'AMT') {
-      return parseInt(verList[i].VersionString.split('.')[0])
+      return parseInt(verList[i].VersionString.split('.')[0] as string)
     }
   }
 }
