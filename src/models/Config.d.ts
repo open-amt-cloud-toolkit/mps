@@ -75,15 +75,6 @@ export interface certAndKeyType {
   key: any
 }
 
-export interface directConfigType {
-  ca: any
-  cert: any
-  key: any
-  ciphers: string
-  secureOptions?: any
-  rejectUnauthorized: boolean
-}
-
 export interface apiResponseType {
   statuscode: number
   payload: any
