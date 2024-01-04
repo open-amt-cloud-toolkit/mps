@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "cdd6420a-a4e3-4a0d-acf5-d92a1350d100",
+		"_postman_id": "fdc5c12a-725b-4e8e-8477-4200e91f1c90",
 		"name": "MPS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "2243498"
@@ -257,7 +257,55 @@
 					"response": []
 				},
 				{
-					"name": "Create Device with tags as string",
+					"name": "Create Device with invalid GUID as array",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"pm.test(\"Expect to return device info\",function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.errors[0].msg).to.be.equal(\"Invalid value\")\r",
+									"    pm.expect(jsonData.errors[0].path).to.be.equal(\"guid\")  \r",
+									"    pm.expect(jsonData.errors[0].location).to.be.equal(\"body\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"guid\": [],\r\n    \"hostname\": \"hostname\",\r\n    \"tags\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}/api/v1/devices",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Device with invalid tags",
 					"event": [
 						{
 							"listen": "test",
