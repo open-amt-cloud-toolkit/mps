@@ -7,12 +7,11 @@ import tlsConfiguration from './tlsConfiguration'
 import path from 'path'
 import fs from 'fs'
 import { logger } from '../logging'
-import { type mpsConfigType, type webConfigType, type directConfigType } from '../models/Config'
+import { type mpsConfigType, type webConfigType } from '../models/Config'
 import { constants } from 'crypto'
 
 const web = tlsConfiguration.web
 const mps = tlsConfiguration.mps
-const direct = tlsConfiguration.direct
 let existsSyncSpy: jest.SpyInstance
 let readFileSyncSpy: jest.SpyInstance
 let jsonParseSpy: jest.SpyInstance
@@ -285,110 +284,6 @@ describe('mps', () => {
     jsonParseSpy.mockReturnValue(mpsConfig)
     existsSyncSpy.mockReturnValue(true)
     const result = mps()
-    expect(result).toBeFalsy()
-    expect(errorSpy).toHaveBeenCalled()
-    expect(exitSpy).toHaveBeenCalled()
-  })
-})
-
-describe('direct', () => {
-  it('should return directConnConfig', () => {
-    const directConfig = {
-      cert: 'cert',
-      key: 'key',
-      secureOptions: [constants.SSL_OP_NO_SSLv2, constants.SSL_OP_NO_SSLv3, constants.SSL_OP_NO_TLSv1],
-      rejectUnauthorized: true,
-      ca: 'ca',
-      ciphers: 'ciphers',
-      null: null
-    }
-    readFileSyncSpy.mockImplementation()
-    jsonParseSpy.mockReturnValue(directConfig)
-    existsSyncSpy.mockReturnValue(true)
-    const result = direct()
-    expect(result).toEqual(directConfig)
-    expect(readFileSyncSpy).toHaveBeenCalled()
-  })
-
-  it('should return void if directtls config file does not exist', () => {
-    existsSyncSpy.mockReturnValue(false)
-    const result = direct()
-    expect(result).toBeUndefined()
-    expect(errorSpy).toHaveBeenCalled()
-  })
-
-  it('should exit if Direct Connection Configuration missing either TLS cert or private key', () => {
-    const directConfig: directConfigType = {
-      cert: null,
-      key: null,
-      secureOptions: [constants.SSL_OP_NO_SSLv2, constants.SSL_OP_NO_SSLv3],
-      rejectUnauthorized: true,
-      ca: 'ca',
-      ciphers: 'ciphers'
-    }
-    readFileSyncSpy.mockImplementation()
-    jsonParseSpy.mockReturnValue(directConfig)
-    existsSyncSpy.mockReturnValue(true)
-    const result = direct()
-    expect(result).toBeFalsy()
-    expect(errorSpy).toHaveBeenCalled()
-    expect(exitSpy).toHaveBeenCalled()
-  })
-
-  it('should exit if TLS cert or private key does not exist', () => {
-    const directConfig: directConfigType = {
-      cert: 'cert',
-      key: 'key',
-      secureOptions: [constants.SSL_OP_NO_SSLv2, constants.SSL_OP_NO_SSLv3],
-      rejectUnauthorized: true,
-      ca: 'ca',
-      ciphers: 'ciphers'
-    }
-    readFileSyncSpy.mockImplementation()
-    jsonParseSpy.mockReturnValue(directConfig)
-    existsSyncSpy.mockImplementation((p) => {
-      if (p === path.join(__dirname, directConfig.key)) {
-        return true
-      } else if (p === path.join(__dirname, directConfig.cert)) {
-        return false
-      } else {
-        return true
-      }
-    })
-    const result = direct()
-    expect(result).toBeFalsy()
-    expect(errorSpy).toHaveBeenCalled()
-    expect(exitSpy).toHaveBeenCalled()
-  })
-
-  it('should exit if exception on failed to parse json file', () => {
-    existsSyncSpy.mockReturnValue(true)
-    jsonParseSpy.mockImplementation(() => {
-      throw new Error('fake json parse error')
-    })
-    const result = direct()
-    expect(result).toBeFalsy()
-    expect(errorSpy).toHaveBeenCalled()
-    expect(exitSpy).toHaveBeenCalled()
-  })
-
-  it('should exit on exception', () => {
-    const directConfig: directConfigType = {
-      cert: 'cert',
-      key: 'key',
-      secureOptions: [constants.SSL_OP_NO_SSLv2, constants.SSL_OP_NO_SSLv3],
-      rejectUnauthorized: true,
-      ca: 'ca',
-      ciphers: 'ciphers'
-    }
-    readFileSyncSpy.mockImplementation((p, e) => {
-      if (p === path.join(__dirname, directConfig.key)) {
-        throw Error('fake read file error')
-      }
-    })
-    jsonParseSpy.mockReturnValue(directConfig)
-    existsSyncSpy.mockReturnValue(true)
-    const result = direct()
     expect(result).toBeFalsy()
     expect(errorSpy).toHaveBeenCalled()
     expect(exitSpy).toHaveBeenCalled()

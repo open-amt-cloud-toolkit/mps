@@ -7,12 +7,12 @@ import path from 'path'
 import fs from 'fs'
 
 import { logger, messages } from '../logging'
-import { type mpsConfigType, type webConfigType, type directConfigType } from '../models/Config'
+import { type mpsConfigType, type webConfigType } from '../models/Config'
 import { constants } from 'crypto'
 
 const webTlsConfigPath = path.join(__dirname, '../../private/webtlsconfig.json')
 const mpsTlsConfigPath = path.join(__dirname, '../../private/mpstlsconfig.json')
-const directConnTlsConfigPath = path.join(__dirname, '../../private/directConntlsconfig.json')
+
 export default {
   web: (): webConfigType => {
     try {
@@ -179,51 +179,6 @@ export default {
       return mpsConfig
     } catch (ex) {
       logger.error(messages.TLS_CONFIGURATION_MPS_TLS_CONFIGURATION_EXCEPTION, ex.message)
-      return process.exit()
-    }
-  },
-
-  direct: (): directConfigType => {
-    try {
-      let directConnConfig: directConfigType
-      // Parse MPS TLS Configuration json file
-      try {
-        if (fs.existsSync(directConnTlsConfigPath)) {
-          directConnConfig = JSON.parse(fs.readFileSync(directConnTlsConfigPath, 'utf8'))
-        } else {
-          logger.error(`${messages.TLS_CONFIGURATION_DIRECT_TLS_CONFIG_DOES_NOT_EXIST} ${directConnTlsConfigPath}`)
-          return
-        }
-      } catch (ex) {
-        logger.error(messages.TLS_CONFIGURATION_JSON_PARSE_EXCEPTION, ex.message)
-        return process.exit()
-      }
-
-      // Load SSL Cert and key
-      if (directConnConfig.key && directConnConfig.cert && directConnConfig.ca) {
-        if (!fs.existsSync(path.join(__dirname, directConnConfig.key)) || !fs.existsSync(path.join(__dirname, directConnConfig.cert))) {
-          logger.error(messages.TLS_CONFIGURATION_TLS_CERTIFICATE_OR_KEY_DOES_NOT_EXIST)
-          return process.exit()
-        } else {
-          directConnConfig.key = fs.readFileSync(path.join(__dirname, directConnConfig.key), 'utf8')
-          directConnConfig.cert = fs.readFileSync(path.join(__dirname, directConnConfig.cert), 'utf8')
-          directConnConfig.ca = fs.readFileSync(path.join(__dirname, directConnConfig.ca), 'utf8')
-        }
-      } else {
-        logger.error(messages.TLS_CONFIGURATION_CERTIFICATE_OR_KEY_DOES_NOT_EXIST)
-        return process.exit()
-      }
-      if (directConnConfig.secureOptions) {
-        const optionArr = directConnConfig.secureOptions
-        let secoption: any = constants[optionArr[0]] | constants[optionArr[1]]
-        for (let i: number = 2; i < optionArr.length; i++) {
-          secoption = secoption | constants[optionArr[i]]
-        }
-        directConnConfig.secureOptions = secoption
-      }
-      return directConnConfig
-    } catch (ex) {
-      logger.error(messages.TLS_CONFIGURATION_DIRECT_TLS_CONFIGURATION_EXCEPTION, ex.message)
       return process.exit()
     }
   }

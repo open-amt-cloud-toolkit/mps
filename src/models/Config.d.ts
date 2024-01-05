@@ -78,15 +78,6 @@ export interface certAndKeyType {
   key: forge.pki.PrivateKey
 }
 
-export interface directConfigType {
-  ca: string
-  cert: string
-  key: string
-  ciphers: string
-  secureOptions?: any
-  rejectUnauthorized: boolean
-}
-
 export interface apiResponseType {
   statuscode: number
   payload: any
