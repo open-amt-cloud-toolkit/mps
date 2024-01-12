@@ -49,7 +49,7 @@ jobs:
       - name: Rename test file
         run: mv junit.xml mps-unit-${{ matrix.node-version }}.xml
       - name: Upload JEST Results
-        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
+        uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595 # v4.1.0
         with:
           name: mps-unit-${{ matrix.node-version }}
           path: mps-unit-${{ matrix.node-version }}.xml
