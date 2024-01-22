@@ -28,8 +28,10 @@ export const validator = (): any => [
     .isISO8601().toDate(),
   check('tags')
     .optional()
-    .isArray()
-    .withMessage('tags should be an array of strings'),
+    .isArray().withMessage('tags should be an array of strings'),
+  check('tags.*')
+    .optional()
+    .isString().withMessage('tags should be an array of strings'),
   check('deviceInfo')
     .optional({ nullable: true })
     .isObject()
