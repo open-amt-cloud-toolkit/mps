@@ -3,26 +3,34 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { type certificatesType } from '../models/Config'
-import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
-import { config } from '../test/helper/config'
-import { WebServer } from './webserver'
-import { Environment } from '../utils/Environment'
-import { IncomingMessage } from 'http'
-import { Socket } from 'net'
-import { devices } from './mpsserver'
-import { signature } from '../routes/auth/signature'
+import { type certificatesType } from '../models/Config.js'
+import { type ISecretManagerService } from '../interfaces/ISecretManagerService.js'
+import { config } from '../test/helper/config.js'
+import { Environment } from '../utils/Environment.js'
+import { IncomingMessage } from 'node:http'
+import { Socket } from 'node:net'
+import { devices } from './mpsserver.js'
+import { signature } from '../routes/auth/signature.js'
+import { jest } from '@jest/globals'
+import { spyOn } from 'jest-mock'
+
 Environment.Config = config
 
 let certs: certificatesType
 let secrets: ISecretManagerService
-let web: WebServer
-jest.mock('fs', () => ({
+jest.unstable_mockModule('node:fs', () => ({
   existsSync: jest.fn(() => true),
   lstatSync: jest.fn(() => ({ isDirectory: () => true })),
   readdirSync: jest.fn(() => ['example.js'] as any)
 }))
-jest.mock('../middleware/custom/example', () => function (req, res, next) {})
+jest.unstable_mockModule('node:url', () => ({
+  URL: jest.fn(() => ({ pathname: '/relay/webrelay.ashx' })),
+  fileURLToPath: jest.fn(() => ''),
+  pathToFileURL: jest.fn(() => ({ href: '../middleware/custom/example' }))
+}))
+jest.unstable_mockModule('../middleware/custom/example', () => ({ default: () => function (req, res, next) {} }))
+const webserver = await import('./webserver.js')
+let web: any
 
 describe('webserver tests', () => {
   beforeAll(async function () {
@@ -41,7 +49,7 @@ describe('webserver tests', () => {
       mps_tls_config: {} as any,
       web_tls_config: {} as any
     }
-    web = new WebServer(secrets, certs)
+    web = new webserver.WebServer(secrets, certs)
   })
 
   describe('WEB Server test', () => {
@@ -57,7 +65,7 @@ describe('webserver tests', () => {
 
   describe('verify client token', () => {
     it('should return false when client jwt token is invalid', () => {
-      const jwsSpy = jest.spyOn(web.jws, 'verify')
+      const jwsSpy = spyOn(web.jws, 'verify')
       jwsSpy.mockImplementationOnce(() => false)
       const info = {
         req: {
@@ -108,7 +116,7 @@ describe('webserver tests', () => {
       expect(result).toBe(true)
     })
     it('should return false and handle error while client jwt token is verified', () => {
-      const jwsSpy = jest.spyOn(web.jws, 'verify')
+      const jwsSpy = spyOn(web.jws, 'verify')
       jwsSpy.mockImplementationOnce(() => {
         throw new Error()
       })
@@ -262,7 +270,7 @@ describe('webserver tests', () => {
       request.url = '/relay/webrelay.ashx?p=2&host=4c4c4544-004b-4210-8033-b6c04f504633&port=16994&tls=0&tls1only=0'
       const socket: Socket = new Socket()
       const head: Buffer = null
-      const handleUpgradeSpy = jest.spyOn(web.relayWSS, 'handleUpgrade')
+      const handleUpgradeSpy = spyOn(web.relayWSS, 'handleUpgrade')
       web.handleUpgrade(request, socket, head)
       expect(handleUpgradeSpy).toHaveBeenCalledTimes(1)
     })
@@ -277,13 +285,13 @@ describe('webserver tests', () => {
 
   describe('listen', () => {
     it('should listen on port 3000', () => {
-      const listenSpy = jest.spyOn(web.server, 'listen')
+      const listenSpy = spyOn(web.server, 'listen')
       web.listen()
       expect(listenSpy).toHaveBeenCalledTimes(1)
       web.server.close()
     })
     it('should listen on port null', () => {
-      const listenSpy = jest.spyOn(web.server, 'listen')
+      const listenSpy = spyOn(web.server, 'listen')
       Environment.Config.web_port = null
       web.listen()
       expect(listenSpy).toHaveBeenCalledTimes(2)
@@ -299,7 +307,7 @@ describe('webserver tests', () => {
         certs: null
       }
       let res: Express.Response
-      const useapiv1Spy = jest.spyOn(web, 'useAPIv1')
+      const useapiv1Spy = spyOn(web, 'useAPIv1')
       await web.useAPIv1(req as any, res as any, jest.fn())
       expect(useapiv1Spy).toHaveBeenCalledTimes(1)
     })
@@ -313,7 +321,7 @@ describe('webserver tests', () => {
         certs: null
       }
       let res: Express.Response
-      const appUseJsonParserSpy = jest.spyOn(web, 'appUseJsonParser')
+      const appUseJsonParserSpy = spyOn(web, 'appUseJsonParser')
       web.appUseJsonParser(null, req as any, res as any, jest.fn())
       expect(appUseJsonParserSpy).toHaveBeenCalledTimes(1)
     })
@@ -333,7 +341,7 @@ describe('webserver tests', () => {
         }
       }
       const err = new SyntaxError()
-      const appUseJsonParserSpy = jest.spyOn(web, 'appUseJsonParser')
+      const appUseJsonParserSpy = spyOn(web, 'appUseJsonParser')
       web.appUseJsonParser(err, req as any, res as any, jest.fn())
       expect(appUseJsonParserSpy).toHaveBeenCalledTimes(2)
     })
@@ -353,7 +361,7 @@ describe('webserver tests', () => {
         on: jest.fn()
       }
       const next = jest.fn()
-      const appUseCallSpy = jest.spyOn(web, 'appUseCall')
+      const appUseCallSpy = spyOn(web, 'appUseCall')
       web.appUseCall(req as any, res as any, next)
       expect(appUseCallSpy).toHaveBeenCalledTimes(1)
     })
@@ -375,10 +383,10 @@ describe('webserver tests', () => {
       const res: Express.Response = {
         removeListener: jest.fn()
       }
-      const afterResponseSpy = jest.spyOn(web, 'afterResponse')
-      const closeChannelSpy = jest.spyOn((req as any).deviceAction.ciraHandler.channel, 'CloseChannel')
-      const reqRemoveListenerSpy = jest.spyOn(req as any, 'removeListener')
-      const resRemoveListenerSpy = jest.spyOn(res as any, 'removeListener')
+      const afterResponseSpy = spyOn(web, 'afterResponse')
+      const closeChannelSpy = spyOn((req as any).deviceAction.ciraHandler.channel, 'CloseChannel')
+      const reqRemoveListenerSpy = spyOn(req as any, 'removeListener')
+      const resRemoveListenerSpy = spyOn(res as any, 'removeListener')
       web.afterResponse(req as any, res as any)
       expect(afterResponseSpy).toHaveBeenCalledTimes(1)
       expect(closeChannelSpy).toHaveBeenCalledTimes(1)
@@ -398,7 +406,7 @@ describe('webserver tests', () => {
       const res: Express.Response = {
         removeListener: jest.fn()
       }
-      const afterResponseSpy = jest.spyOn(web, 'afterResponse')
+      const afterResponseSpy = spyOn(web, 'afterResponse')
       web.afterResponse(req as any, res as any)
       expect(afterResponseSpy).toHaveBeenCalledTimes(2)
     })
@@ -415,7 +423,7 @@ describe('webserver tests', () => {
       const res: Express.Response = {
         removeListener: jest.fn()
       }
-      const afterResponseSpy = jest.spyOn(web, 'afterResponse')
+      const afterResponseSpy = spyOn(web, 'afterResponse')
       web.onAborted(req as any, res as any)
       expect(afterResponseSpy).toHaveBeenCalledTimes(3)
     })
@@ -427,7 +435,7 @@ describe('webserver tests', () => {
         pause: jest.fn()
       }
       const mockSocket = new Socket()
-      mockSocket.connect = jest.fn()
+      mockSocket.connect = jest.fn() as any
 
       const mockWebSocketExt = {
         _socket: mockWebSocket,
@@ -437,7 +445,7 @@ describe('webserver tests', () => {
       const mockIncomingMessage = {
         url: 'https://iotg.com?tls=0'
       }
-      const relayConnectionSpy = jest.spyOn(web, 'relayConnection')
+      const relayConnectionSpy = spyOn(web, 'relayConnection')
       await web.relayConnection(mockWebSocketExt as any, mockIncomingMessage as any)
       expect(relayConnectionSpy).toHaveBeenCalledTimes(1)
     })

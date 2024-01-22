@@ -3,11 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import * as svcMngr from './serviceManager'
-import { type IServiceManager } from '../interfaces/IServiceManager'
-import { ConsulService } from './consul'
-import { Environment } from '../utils/Environment'
-import * as exponentialBackoff from 'exponential-backoff'
+import { type IServiceManager } from '../interfaces/IServiceManager.js'
+import { ConsulService } from './consul.js'
+import { Environment } from '../utils/Environment.js'
+import { jest } from '@jest/globals'
+
+const backOffSpy = jest.fn()
+jest.unstable_mockModule('exponential-backoff', () => ({
+  backOff: backOffSpy
+}))
+
+const svcMngr = await import('./serviceManager.js')
 
 const consul: IServiceManager = new ConsulService('consul', '8500')
 let componentName: string
@@ -19,7 +25,6 @@ describe('Index', () => {
     jest.clearAllMocks()
     jest.restoreAllMocks()
     jest.resetAllMocks()
-    // process.env = env
   })
   beforeEach(() => {
     jest.clearAllMocks()
@@ -37,7 +42,6 @@ describe('Index', () => {
   })
 
   it('should wait for service provider', async () => {
-    const backOffSpy = jest.spyOn(exponentialBackoff, 'backOff')
     let shouldBeOk = false
     const secretMock: IServiceManager = {
       health: jest.fn(() => {

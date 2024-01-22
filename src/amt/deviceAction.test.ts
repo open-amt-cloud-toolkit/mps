@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { type CIRASocket } from '../models/models'
+import { type CIRASocket } from '../models/models.js'
+import { type SpyInstance, spyOn } from 'jest-mock'
 import {
   alarmClockOccurrences,
   addAlarmClockOccurrenceResponse,
@@ -31,30 +32,30 @@ import {
   softwareIdentityResponse,
   startOptInResponse,
   systemPackaging
-} from '../test/helper/wsmanResponses'
-import { CIRAHandler } from './CIRAHandler'
-import { DeviceAction } from './DeviceAction'
-import { HttpHandler } from './HttpHandler'
-import { type Selector } from '@open-amt-cloud-toolkit/wsman-messages/WSMan'
-import { type Models } from '@open-amt-cloud-toolkit/wsman-messages/ips/models'
+} from '../test/helper/wsmanResponses.js'
+import { CIRAHandler } from './CIRAHandler.js'
+import { DeviceAction } from './DeviceAction.js'
+import { HttpHandler } from './HttpHandler.js'
+import { type Selector } from '@open-amt-cloud-toolkit/wsman-messages/WSMan.js'
+import { type Models } from '@open-amt-cloud-toolkit/wsman-messages/ips/models.js'
 import { type AMT, type CIM } from '@open-amt-cloud-toolkit/wsman-messages'
 
 describe('Device Action Tests', () => {
-  let enumerateSpy: jest.SpyInstance
-  let pullSpy: jest.SpyInstance
-  let getSpy: jest.SpyInstance
-  let sendSpy: jest.SpyInstance
-  let deleteSpy: jest.SpyInstance
+  let enumerateSpy: SpyInstance<any>
+  let pullSpy: SpyInstance<any>
+  let getSpy: SpyInstance<any>
+  let sendSpy: SpyInstance<any>
+  let deleteSpy: SpyInstance<any>
   let device: DeviceAction
   beforeEach(() => {
     const socket: CIRASocket = null
     const handler = new CIRAHandler(new HttpHandler(), 'admin', 'P@ssw0rd')
     device = new DeviceAction(handler, socket)
-    enumerateSpy = jest.spyOn(device.ciraHandler, 'Enumerate')
-    pullSpy = jest.spyOn(device.ciraHandler, 'Pull')
-    getSpy = jest.spyOn(device.ciraHandler, 'Get')
-    sendSpy = jest.spyOn(device.ciraHandler, 'Send')
-    deleteSpy = jest.spyOn(device.ciraHandler, 'Delete')
+    enumerateSpy = spyOn(device.ciraHandler, 'Enumerate')
+    pullSpy = spyOn(device.ciraHandler, 'Pull')
+    getSpy = spyOn(device.ciraHandler, 'Get')
+    sendSpy = spyOn(device.ciraHandler, 'Send')
+    deleteSpy = spyOn(device.ciraHandler, 'Delete')
   })
 
   afterEach(() => {

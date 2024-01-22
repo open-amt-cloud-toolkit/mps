@@ -3,14 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import * as authValidator from './authValidator'
+import { authValidator } from './authValidator.js'
 
 describe('Check authValidator from auth', () => {
-  let authSpy: jest.SpyInstance
-  beforeEach(() => {
-    authSpy = jest.spyOn(authValidator, 'authValidator')
-  })
   it('should pass if defined', async () => {
-    expect(authSpy).toBeDefined()
+    const result = authValidator()
+    expect(result).toBeDefined()
+    expect(result.length).toBe(2)
   })
 })

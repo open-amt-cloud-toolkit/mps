@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { request } from 'http'
-import { type RequestOptions } from 'https'
+import { request } from 'node:http'
+import { type RequestOptions } from 'node:https'
 
 const options: RequestOptions = {
   host: 'localhost',

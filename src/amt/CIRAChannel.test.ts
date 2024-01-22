@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { type CIRASocket } from '../models/models'
-import APFProcessor from './APFProcessor'
-import { CIRAChannel } from './CIRAChannel'
-import { type connectionParams, HttpHandler } from './HttpHandler'
+import { type CIRASocket } from '../models/models.js'
+import APFProcessor from './APFProcessor.js'
+import { CIRAChannel } from './CIRAChannel.js'
+import { type connectionParams, HttpHandler } from './HttpHandler.js'
+import { jest } from '@jest/globals'
+import { spyOn } from 'jest-mock'
 
 describe('CIRA Channel', () => {
   let ciraChannel: CIRAChannel
@@ -56,7 +58,8 @@ describe('CIRA Channel', () => {
   it('should close channel when open', () => {
     ciraChannel.state = 2
     ciraChannel.amtchannelid = 44
-    const sendChannelSpy = jest.spyOn(APFProcessor, 'SendChannelClose').mockImplementation(() => {})
+    const sendChannelSpy = spyOn(APFProcessor, 'SendChannelClose').mockImplementation(() => {})
+    sendChannelSpy.mockReset()
     const state = ciraChannel.CloseChannel()
     expect(sendChannelSpy).toHaveBeenCalledWith(ciraChannel)
     expect(state).toBe(0)
@@ -72,7 +75,7 @@ describe('CIRA Channel', () => {
       username: 'admin',
       password: 'P@ssw0rd'
     }
-    const sendChannelSpy = jest.spyOn(APFProcessor, 'SendChannelData').mockImplementation(() => {})
+    const sendChannelSpy = spyOn(APFProcessor, 'SendChannelData').mockImplementation(() => {})
 
     const writePromise = ciraChannel.writeData(data, params)
     ciraChannel.onData(httpHeader200 + enumCimSoftwareIdentityResponse)
@@ -91,8 +94,8 @@ describe('CIRA Channel', () => {
     ciraChannel.sendcredits = 10
     ciraChannel.sendBuffer = Buffer.alloc(10)
     const data = String.fromCharCode(1, 2, 3, 4, 0xC0, 5)
-    const sendChannelSpy = jest.spyOn(APFProcessor, 'SendChannelData').mockImplementation(() => {})
-
+    const sendChannelSpy = spyOn(APFProcessor, 'SendChannelData').mockImplementation(() => {})
+    sendChannelSpy.mockReset()
     const writePromise = ciraChannel.writeData(data, null)
     const responseData = await writePromise
 
@@ -112,7 +115,8 @@ describe('CIRA Channel', () => {
       username: 'admin',
       password: 'P@ssw0rd'
     }
-    const sendChannelSpy = jest.spyOn(APFProcessor, 'SendChannelData').mockImplementation(() => {})
+    const sendChannelSpy = spyOn(APFProcessor, 'SendChannelData').mockImplementation(() => {})
+    sendChannelSpy.mockReset()
     const writePromise = ciraChannel.writeData(data, params)
     ciraChannel.onData('KVMR')
     const responseData = await writePromise

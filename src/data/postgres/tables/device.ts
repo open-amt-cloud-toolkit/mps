@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { logger, messages } from '../../../logging'
-import { type PostgresDb } from '..'
-import { type IDeviceTable } from '../../../interfaces/IDeviceTable'
-import { type Device } from '../../../models/models'
-import { MPSValidationError } from '../../../utils/MPSValidationError'
-import { DefaultSkip, DefaultTop } from '../../../utils/constants'
+import { logger, messages } from '../../../logging/index.js'
+import { type PostgresDb } from '../index.js'
+import { type IDeviceTable } from '../../../interfaces/IDeviceTable.js'
+import { type Device } from '../../../models/models.js'
+import { MPSValidationError } from '../../../utils/MPSValidationError.js'
+import { DefaultSkip, DefaultTop } from '../../../utils/constants.js'
 
 export class DeviceTable implements IDeviceTable {
   db: PostgresDb
@@ -197,7 +197,7 @@ export class DeviceTable implements IDeviceTable {
   async insert (device: Device): Promise<Device> {
     try {
       const results = await this.db.query(`
-      INSERT INTO devices(guid, hostname, tags, mpsinstance, connectionstatus, mpsusername, tenantid, friendlyname, dnssuffix, deviceinfo) 
+      INSERT INTO devices(guid, hostname, tags, mpsinstance, connectionstatus, mpsusername, tenantid, friendlyname, dnssuffix, deviceinfo)
       values($1, $2, ARRAY(SELECT json_array_elements_text($3)), $4, $5, $6, $7, $8, $9, $10)`,
       [
         device.guid,

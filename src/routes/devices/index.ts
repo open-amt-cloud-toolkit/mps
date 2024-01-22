@@ -4,20 +4,20 @@
  **********************************************************************/
 
 import { Router } from 'express'
-import { metadataQueryValidator, odataValidator, validator } from './deviceValidator'
-import { disconnect } from './disconnect'
-import { getAllDevices } from './getAll'
-import { stats } from './stats'
-import { getDevice } from './get'
-import { getDistinctTags } from './tags'
-import { insertDevice } from './create'
-import { updateDevice } from './update'
-import { deleteDevice } from './delete'
-import { refreshDevice } from './refresh'
+import { metadataQueryValidator, odataValidator, validator } from './deviceValidator.js'
+import { disconnect } from './disconnect.js'
+import { getAllDevices } from './getAll.js'
+import { stats } from './stats.js'
+import { getDevice } from './get.js'
+import { getDistinctTags } from './tags.js'
+import { insertDevice } from './create.js'
+import { updateDevice } from './update.js'
+import { deleteDevice } from './delete.js'
+import { refreshDevice } from './refresh.js'
 import { param, query } from 'express-validator'
-import validateMiddleware from '../../middleware/validate'
-import ciraMiddleware from '../../middleware/cira'
-import { getRedirStatus } from './getRedirStatus'
+import validateMiddleware from '../../middleware/validate.js'
+import ciraMiddleware from '../../middleware/cira.js'
+import { getRedirStatus } from './getRedirStatus.js'
 
 const deviceRouter: Router = Router()
 

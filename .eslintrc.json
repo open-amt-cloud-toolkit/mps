@@ -1,6 +1,6 @@
 {
     "env": {
-        "es2020": true,
+        "es2022": true,
         "node": true,
         "jest": true
     },
@@ -9,7 +9,9 @@
         "standard-with-typescript"
     ],
     "ignorePatterns": [
-        "**/*.js"
+        "**/*.js",
+        "**/version.ts",
+        "jest.config.ts"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {

@@ -5,10 +5,10 @@
 
 import { Router } from 'express'
 import { param } from 'express-validator'
-import validateMiddleware from '../../middleware/validate'
-import { login } from './login'
-import { authValidator } from './authValidator'
-import { authorizeDevice } from './authorizeDevice'
+import validateMiddleware from '../../middleware/validate.js'
+import { login } from './login.js'
+import { authValidator } from './authValidator.js'
+import { authorizeDevice } from './authorizeDevice.js'
 
 const authRouter: Router = Router()
 

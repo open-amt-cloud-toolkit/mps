@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { type certificatesType } from '../models/Config'
+import { type certificatesType } from '../models/Config.js'
 
 export interface ISecretManagerService {
   getSecretFromKey: (path: string, key: string) => Promise<string>

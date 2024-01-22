@@ -3,19 +3,20 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { version } from './getVersion'
-import { createSpyObj } from '../../test/helper/jest'
-import { setupAndConfigurationServiceResponse, softwareIdentityResponse, versionResponse } from '../../test/helper/wsmanResponses'
-import { CIRAHandler } from '../../amt/CIRAHandler'
-import { DeviceAction } from '../../amt/DeviceAction'
-import { HttpHandler } from '../../amt/HttpHandler'
-import { messages } from '../../logging'
+import { version } from './getVersion.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { setupAndConfigurationServiceResponse, softwareIdentityResponse, versionResponse } from '../../test/helper/wsmanResponses.js'
+import { CIRAHandler } from '../../amt/CIRAHandler.js'
+import { DeviceAction } from '../../amt/DeviceAction.js'
+import { HttpHandler } from '../../amt/HttpHandler.js'
+import { messages } from '../../logging/index.js'
+import { type SpyInstance, spyOn } from 'jest-mock'
 
 describe('version', () => {
   let resSpy
   let req
-  let setupAndConfigurationServiceSpy: jest.SpyInstance
-  let softwareIdentitySpy: jest.SpyInstance
+  let setupAndConfigurationServiceSpy: SpyInstance<any>
+  let softwareIdentitySpy: SpyInstance<any>
   beforeEach(() => {
     const handler = new CIRAHandler(new HttpHandler(), 'admin', 'P@ssw0rd')
     const device = new DeviceAction(handler, null)
@@ -28,8 +29,8 @@ describe('version', () => {
     resSpy.json.mockReturnThis()
     resSpy.send.mockReturnThis()
 
-    softwareIdentitySpy = jest.spyOn(device, 'getSoftwareIdentity')
-    setupAndConfigurationServiceSpy = jest.spyOn(device, 'getSetupAndConfigurationService')
+    softwareIdentitySpy = spyOn(device, 'getSoftwareIdentity')
+    setupAndConfigurationServiceSpy = spyOn(device, 'getSetupAndConfigurationService')
   })
 
   it('should get version', async () => {

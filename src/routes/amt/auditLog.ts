@@ -4,12 +4,11 @@
  **********************************************************************/
 
 import { type Response, type Request } from 'express'
-import { logger, messages } from '../../logging'
-import { ErrorResponse } from '../../utils/amtHelper'
-import { MqttProvider } from '../../utils/MqttProvider'
-import { atob } from 'atob'
-import Common from '../../utils/common'
-import { AMTAuditStringTable, RealmNames } from '../../utils/constants'
+import { logger, messages } from '../../logging/index.js'
+import { ErrorResponse } from '../../utils/amtHelper.js'
+import { MqttProvider } from '../../utils/MqttProvider.js'
+import Common from '../../utils/common.js'
+import { AMTAuditStringTable, RealmNames } from '../../utils/constants.js'
 import { type Common as WsmanMessagesCommon } from '@open-amt-cloud-toolkit/wsman-messages'
 
 export async function auditLog (req: Request, res: Response): Promise<void> {
@@ -65,7 +64,7 @@ export function convertToAuditLogResult (readRecordsOutput: WsmanMessagesCommon.
 
   for (const eventRecord of readRecordsOutput.EventRecords) {
     let ptr: number
-    const decodedEventRecord: string = atob(eventRecord)
+    const decodedEventRecord: string = Buffer.from(eventRecord, 'base64').toString('binary')
     const auditLogRecord: WsmanMessagesCommon.Models.AuditLogRecord = {
       AuditAppID: 0,
       EventID: 0,

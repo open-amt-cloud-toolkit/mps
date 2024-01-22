@@ -4,7 +4,9 @@
  **********************************************************************/
 
 import { type QueryResult } from 'pg'
-import PostgresDb, { POSTGRES_RESPONSE_CODES } from '.'
+import PostgresDb, { POSTGRES_RESPONSE_CODES } from './index.js'
+import { jest } from '@jest/globals'
+import { spyOn } from 'jest-mock'
 
 const db: PostgresDb = new PostgresDb('postgresql://postgresadmin:admin123@localhost:5432/mpsdb?sslmode=no-verify')
 describe('Postgres', () => {
@@ -13,7 +15,7 @@ describe('Postgres', () => {
   })
 
   test('should return result when query executes', async () => {
-    const dbQuery = jest.spyOn(db, 'query')
+    const dbQuery = spyOn(db, 'query')
     dbQuery.mockResolvedValueOnce({ rows: [0], command: 'SELECT', fields: null, rowCount: 0, oid: 0 })
     const result = await db.query('SELECT * FROM devices')
     expect(result).toEqual({ rows: [0], command: 'SELECT', fields: null, rowCount: 0, oid: 0 })
@@ -21,7 +23,7 @@ describe('Postgres', () => {
 
   test('should return result when pool query executes', async () => {
     const qr: QueryResult = { rows: [0], command: 'SELECT', fields: null, rowCount: 0, oid: 0 }
-    const dbQuery = jest.spyOn(db.pool, 'query').mockImplementation(async () => qr)
+    const dbQuery = spyOn(db.pool, 'query').mockImplementation(async () => qr)
     const result = await db.query('SELECT * FROM devices', null)
     expect(result.rowCount).toBe(0)
     expect(dbQuery).toBeCalledWith('SELECT * FROM devices', null)

@@ -3,13 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { logger } from '../../logging'
-import { deleteDevice } from './delete'
+import { logger } from '../../logging/index.js'
+import { deleteDevice } from './delete.js'
+import { jest } from '@jest/globals'
+import { type SpyInstance, spyOn } from 'jest-mock'
 
 let res: Express.Response
-let statusSpy: jest.SpyInstance
-let jsonSpy: jest.SpyInstance
-let endSpy: jest.SpyInstance
+let statusSpy: SpyInstance<any>
+let jsonSpy: SpyInstance<any>
+let endSpy: SpyInstance<any>
 
 beforeEach(() => {
   res = {
@@ -17,9 +19,9 @@ beforeEach(() => {
     json: () => res,
     end: () => res
   }
-  statusSpy = jest.spyOn(res as any, 'status')
-  endSpy = jest.spyOn(res as any, 'end')
-  jsonSpy = jest.spyOn(res as any, 'json')
+  statusSpy = spyOn(res as any, 'status')
+  endSpy = spyOn(res as any, 'end')
+  jsonSpy = spyOn(res as any, 'json')
 })
 
 afterEach(() => {
@@ -89,7 +91,7 @@ describe('delete', () => {
   })
 
   it('should return 404 when device or secrets deletion fails', async () => {
-    req.secrets.deleteSecretAtPath = jest.fn().mockRejectedValue(new Error())
+    req.secrets.deleteSecretAtPath = jest.fn<any>().mockRejectedValue(new Error())
     req.db.devices.getById = jest.fn().mockReturnValue(null)
     req.query.isSecretToBeDeleted = 'true'
     await deleteDevice(req, res as any)
@@ -127,7 +129,7 @@ describe('delete', () => {
   it('should set status to 404 when guid exists in db and secrets, but fails to delete from secret', async () => {
     req.db.devices.getById = jest.fn().mockReturnValue({})
     req.db.devices.delete = jest.fn().mockReturnValue({})
-    req.secrets.deleteSecretAtPath = jest.fn().mockRejectedValue(new Error())
+    req.secrets.deleteSecretAtPath = jest.fn<any>().mockRejectedValue(new Error())
 
     req.query.isSecretToBeDeleted = 'true'
 
@@ -155,7 +157,7 @@ describe('delete', () => {
       throw new TypeError('fake error')
     })
     req.db.devices.delete = jest.fn().mockReturnValue({})
-    const errorSpy = jest.spyOn(logger, 'error')
+    const errorSpy = spyOn(logger, 'error')
     await deleteDevice(req, res as any)
     expect(statusSpy).toHaveBeenCalledWith(500)
     expect(jsonSpy).not.toHaveBeenCalled()

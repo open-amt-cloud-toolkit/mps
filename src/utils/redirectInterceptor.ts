@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { type Args, type Connection, ConnectionType } from '../models/models'
-import Common from './common'
+import { type Args, type Connection, ConnectionType } from '../models/models.js'
+import Common from './common.js'
 
 export enum RedirectCommands {
   StartRedirectionSession = 0x10,

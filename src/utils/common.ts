@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { createHash, randomBytes } from 'crypto'
+import { createHash, randomBytes } from 'node:crypto'
 const Common = {
   ReadShort: (v: string, p: number): number => (v.charCodeAt(p) << 8) + v.charCodeAt(p + 1),
   ReadShortX: (v: string, p: number): number => (v.charCodeAt(p + 1) << 8) + v.charCodeAt(p),

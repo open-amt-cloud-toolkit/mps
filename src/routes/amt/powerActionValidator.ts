@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { check } from 'express-validator'
-import { DMTFPowerStates } from '../../utils/constants'
+import { DMTFPowerStates } from '../../utils/constants.js'
 
 export const powerActionValidator = (): any => [
   check('action')

@@ -4,8 +4,8 @@
  **********************************************************************/
 
 import { type Request, type Response } from 'express'
-import { logger } from '../../logging/logger'
-import { messages } from '../../logging/messages'
+import { logger } from '../../logging/index.js'
+import { messages } from '../../logging/messages.js'
 
 export async function stats (req: Request, res: Response): Promise<void> {
   try {

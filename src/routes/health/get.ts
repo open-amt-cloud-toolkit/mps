@@ -4,15 +4,15 @@
  **********************************************************************/
 
 import { type Request, type Response } from 'express'
-import { POSTGRES_RESPONSE_CODES } from '../../data/postgres'
-import { type HealthCheck } from '../../models/models'
-import { ErrorResponse } from '../../utils/amtHelper'
-import { Environment } from '../../utils/Environment'
-import { logger, messages } from '../../logging'
-import { MqttProvider } from '../../utils/MqttProvider'
-import { VaultResponseCodes } from '../../utils/constants'
-import { type ISecretManagerService } from '../../interfaces/ISecretManagerService'
-import { type IDB } from '../../interfaces/IDb'
+import { POSTGRES_RESPONSE_CODES } from '../../data/postgres/index.js'
+import { type HealthCheck } from '../../models/models.js'
+import { ErrorResponse } from '../../utils/amtHelper.js'
+import { Environment } from '../../utils/Environment.js'
+import { logger, messages } from '../../logging/index.js'
+import { MqttProvider } from '../../utils/MqttProvider.js'
+import { VaultResponseCodes } from '../../utils/constants.js'
+import { type ISecretManagerService } from '../../interfaces/ISecretManagerService.js'
+import { type IDB } from '../../interfaces/IDb.js'
 
 export async function getHealthCheck (req: Request, res: Response): Promise<void> {
   try {

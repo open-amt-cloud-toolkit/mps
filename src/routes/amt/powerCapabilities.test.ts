@@ -3,23 +3,24 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { ErrorResponse } from '../../utils/amtHelper'
-import { MqttProvider } from '../../utils/MqttProvider'
-import { powerCapabilities } from './powerCapabilities'
-import { setupAndConfigurationServiceResponse, softwareIdentityResponse, versionResponse } from '../../test/helper/wsmanResponses'
-import { createSpyObj } from '../../test/helper/jest'
-import { DeviceAction } from '../../amt/DeviceAction'
-import { CIRAHandler } from '../../amt/CIRAHandler'
-import { HttpHandler } from '../../amt/HttpHandler'
-import { messages } from '../../logging'
+import { ErrorResponse } from '../../utils/amtHelper.js'
+import { MqttProvider } from '../../utils/MqttProvider.js'
+import { powerCapabilities } from './powerCapabilities.js'
+import { setupAndConfigurationServiceResponse, softwareIdentityResponse, versionResponse } from '../../test/helper/wsmanResponses.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { DeviceAction } from '../../amt/DeviceAction.js'
+import { CIRAHandler } from '../../amt/CIRAHandler.js'
+import { HttpHandler } from '../../amt/HttpHandler.js'
+import { messages } from '../../logging/index.js'
+import { type SpyInstance, spyOn } from 'jest-mock'
 
 describe('Power Capabilities', () => {
   let req: Express.Request
   let resSpy
-  let mqttSpy: jest.SpyInstance
+  let mqttSpy: SpyInstance<any>
   let powerCaps
-  let swIdentitySpy: jest.SpyInstance
-  let setupAndConfigSpy: jest.SpyInstance
+  let swIdentitySpy: SpyInstance<any>
+  let setupAndConfigSpy: SpyInstance<any>
   let device: DeviceAction
   beforeEach(() => {
     const handler = new CIRAHandler(new HttpHandler(), 'admin', 'P@ssw0rd')
@@ -35,11 +36,11 @@ describe('Power Capabilities', () => {
     resSpy.json.mockReturnThis()
     resSpy.send.mockReturnThis()
 
-    mqttSpy = jest.spyOn(MqttProvider, 'publishEvent')
+    mqttSpy = spyOn(MqttProvider, 'publishEvent')
 
     powerCaps = { Body: { AMT_BootCapabilities: {} } }
-    swIdentitySpy = jest.spyOn(device, 'getSoftwareIdentity')
-    setupAndConfigSpy = jest.spyOn(device, 'getSetupAndConfigurationService')
+    swIdentitySpy = spyOn(device, 'getSoftwareIdentity')
+    setupAndConfigSpy = spyOn(device, 'getSetupAndConfigurationService')
   })
   it('Should get power capabilities', async () => {
     const expectedResponse = {
@@ -58,7 +59,7 @@ describe('Power Capabilities', () => {
       'Reset to PXE': 400,
       'Power on to PXE': 401
     }
-    jest.spyOn(device, 'getPowerCapabilities').mockResolvedValue(powerCaps)
+    spyOn(device, 'getPowerCapabilities').mockResolvedValue(powerCaps)
     swIdentitySpy.mockResolvedValue(softwareIdentityResponse.Envelope.Body)
     setupAndConfigSpy.mockResolvedValue(setupAndConfigurationServiceResponse.Envelope)
     await powerCapabilities(req as any, resSpy)
@@ -87,7 +88,7 @@ describe('Power Capabilities', () => {
     versionResponse.CIM_SoftwareIdentity.responses = [
       { InstanceID: 'AMT', IsEntity: 'true', VersionString: '9.0.0' }
     ]
-    jest.spyOn(device, 'getPowerCapabilities').mockResolvedValue(powerCaps)
+    spyOn(device, 'getPowerCapabilities').mockResolvedValue(powerCaps)
     swIdentitySpy.mockResolvedValue(softwareIdentityResponse.Envelope.Body)
     setupAndConfigSpy.mockResolvedValue(setupAndConfigurationServiceResponse.Envelope)
     await powerCapabilities(req as any, resSpy)
@@ -121,7 +122,7 @@ describe('Power Capabilities', () => {
     powerCaps.Body.AMT_BootCapabilities.BIOSSetup = true
     powerCaps.Body.AMT_BootCapabilities.SecureErase = true
     powerCaps.Body.AMT_BootCapabilities.ForceDiagnosticBoot = true
-    jest.spyOn(device, 'getPowerCapabilities').mockResolvedValue(powerCaps)
+    spyOn(device, 'getPowerCapabilities').mockResolvedValue(powerCaps)
     swIdentitySpy.mockResolvedValue(softwareIdentityResponse.Envelope.Body)
     setupAndConfigSpy.mockResolvedValue(setupAndConfigurationServiceResponse.Envelope)
     await powerCapabilities(req as any, resSpy)
@@ -131,7 +132,7 @@ describe('Power Capabilities', () => {
     expect(mqttSpy).toHaveBeenCalled()
   })
   it('Should handle error', async () => {
-    jest.spyOn(device, 'getPowerCapabilities').mockResolvedValue(null)
+    spyOn(device, 'getPowerCapabilities').mockResolvedValue(null)
     swIdentitySpy.mockResolvedValue(softwareIdentityResponse.Envelope.Body)
     setupAndConfigSpy.mockResolvedValue(setupAndConfigurationServiceResponse.Envelope)
     await powerCapabilities(req as any, resSpy)

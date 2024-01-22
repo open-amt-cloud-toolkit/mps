@@ -9,27 +9,26 @@
 * @version v0.2.0c
 */
 
-import { type Socket } from 'net'
+import { type Socket } from 'node:net'
 
 import express, { type NextFunction, type Request, type RequestHandler, type Response } from 'express'
-import { createServer, type IncomingMessage, type Server } from 'http'
-import * as parser from 'body-parser'
+import { createServer, type IncomingMessage, type Server } from 'node:http'
+import parser from 'body-parser'
 import jws from 'jws'
-import { type certificatesType } from '../models/Config'
-import { ErrorResponse } from '../utils/amtHelper'
-import { logger, messages } from '../logging'
-import routes from '../routes'
+import { type certificatesType } from '../models/Config.js'
+import { ErrorResponse } from '../utils/amtHelper.js'
+import { logger, messages } from '../logging/index.js'
+import routes from '../routes/index.js'
 import WebSocket from 'ws'
-import { URL } from 'url'
+import { URL, fileURLToPath, pathToFileURL } from 'node:url'
 import cors from 'cors'
-import { lstatSync, existsSync, readdirSync } from 'fs'
-import { DbCreatorFactory } from '../factories/DbCreatorFactory'
-import { Environment } from '../utils/Environment'
-import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
-import { WsRedirect } from '../utils/wsRedirect'
-import { devices } from './mpsserver'
-import path from 'path'
-
+import { lstatSync, existsSync, readdirSync } from 'node:fs'
+import { DbCreatorFactory } from '../factories/DbCreatorFactory.js'
+import { Environment } from '../utils/Environment.js'
+import { type ISecretManagerService } from '../interfaces/ISecretManagerService.js'
+import { WsRedirect } from '../utils/wsRedirect.js'
+import { devices } from './mpsserver.js'
+import path from 'node:path'
 export class WebServer {
   app: express.Express
   server: Server = null
@@ -38,9 +37,14 @@ export class WebServer {
   certs: certificatesType
   // to unit test code
   jws: jws = jws
-
+  __filename: string
+  __dirname: string
   constructor (secrets: ISecretManagerService, certs: certificatesType) {
     try {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      this.__filename = fileURLToPath(import.meta.url)
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      this.__dirname = path.dirname(this.__filename)
       this.secrets = secrets
       this.certs = certs
       this.app = express()
@@ -88,7 +92,7 @@ export class WebServer {
   }
 
   async loadCustomMiddleware (): Promise<RequestHandler[]> {
-    const pathToCustomMiddleware = path.join(__dirname, '../middleware/custom')
+    const pathToCustomMiddleware = path.join(this.__dirname, '../middleware/custom')
     const middleware: RequestHandler[] = []
     const doesExist = existsSync(pathToCustomMiddleware)
     const isDirectory = lstatSync(pathToCustomMiddleware).isDirectory()
@@ -96,7 +100,10 @@ export class WebServer {
       const files = readdirSync(pathToCustomMiddleware)
       for (const file of files) {
         if (path.extname(file) === '.js' && !file.endsWith('test.js')) {
-          const customMiddleware = await import(path.join(pathToCustomMiddleware, file.substring(0, file.lastIndexOf('.'))))
+          const filePath = path.join(pathToCustomMiddleware, file)
+          const fileURL = pathToFileURL(filePath) // Convert path to URL
+          // const customMiddleware = await import(path.join(pathToCustomMiddleware, file.substring(0, file.lastIndexOf('.'))))
+          const customMiddleware = await import(fileURL.href) // Use URL href for dynamic import
           logger.info('Loading custom middleware: ' + file)
           if (customMiddleware?.default != null) {
             middleware.push(customMiddleware.default)

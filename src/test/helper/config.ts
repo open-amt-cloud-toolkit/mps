@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { type configType } from '../../models/Config'
+import { type configType } from '../../models/Config.js'
 
 // Parsing configuration
 export const config: configType = {

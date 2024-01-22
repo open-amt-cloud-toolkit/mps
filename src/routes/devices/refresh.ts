@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { ErrorResponse } from '../../utils/amtHelper'
-import { logger, messages } from '../../logging'
-import { devices } from '../../server/mpsserver'
+import { ErrorResponse } from '../../utils/amtHelper.js'
+import { logger, messages } from '../../logging/index.js'
+import { devices } from '../../server/mpsserver.js'
 import { type Request, type Response } from 'express'
-import { ConnectedDevice } from '../../amt/ConnectedDevice'
+import { ConnectedDevice } from '../../amt/ConnectedDevice.js'
 
 export async function refreshDevice (req: Request, res: Response): Promise<void> {
   try {

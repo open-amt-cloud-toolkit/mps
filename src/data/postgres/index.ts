@@ -7,23 +7,23 @@
   Code pattern used to make connections and queries.
   Pattern referred from https://node-postgres.com/guides/project-structure
 */
-import { Pool, type QueryResult } from 'pg'
-import { type IDB } from '../../interfaces/IDb'
-import { type IDeviceTable } from '../../interfaces/IDeviceTable'
-import { logger, messages } from '../../logging'
-import { DeviceTable } from './tables/device'
+import pg from 'pg'
+import { type IDB } from '../../interfaces/IDb.js'
+import { type IDeviceTable } from '../../interfaces/IDeviceTable.js'
+import { logger, messages } from '../../logging/index.js'
+import { DeviceTable } from './tables/device.js'
 
 export class PostgresDb implements IDB {
-  pool: Pool
+  pool: pg.Pool
   devices: IDeviceTable
   constructor (connectionString: string) {
-    this.pool = new Pool({
+    this.pool = new pg.Pool({
       connectionString
     })
     this.devices = new DeviceTable(this)
   }
 
-  async query<T> (text: string, params?: any): Promise<QueryResult<T>> {
+  async query<T> (text: string, params?: any): Promise<pg.QueryResult<T>> {
     const start = Date.now()
     const res = await this.pool.query(text, params)
     const duration = Date.now() - start

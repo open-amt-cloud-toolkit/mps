@@ -3,21 +3,23 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { v4 as uuid } from 'uuid'
-import { insertDevice } from './create'
-import { MPSValidationError } from '../../utils/MPSValidationError'
-import { type Device } from '../../models/models'
+import { randomUUID } from 'node:crypto'
+import { insertDevice } from './create.js'
+import { MPSValidationError } from '../../utils/MPSValidationError.js'
+import { type Device } from '../../models/models.js'
+import { jest } from '@jest/globals'
+import { type SpyInstance, spyOn } from 'jest-mock'
 
 let req
 let res
-let statusSpy: jest.SpyInstance
-let jsonSpy: jest.SpyInstance
-let endSpy: jest.SpyInstance
+let statusSpy: SpyInstance<any>
+let jsonSpy: SpyInstance<any>
+let endSpy: SpyInstance<any>
 let mockDevice: Device
 let reqDevice: any
 
 beforeEach(() => {
-  const guid = uuid()
+  const guid = randomUUID()
   const tenantId = 'tenantId01'
   const connectionStatus = true
   mockDevice = {
@@ -67,9 +69,9 @@ beforeEach(() => {
     json: () => res,
     end: () => res
   }
-  statusSpy = jest.spyOn(res, 'status')
-  endSpy = jest.spyOn(res, 'end')
-  jsonSpy = jest.spyOn(res, 'json')
+  statusSpy = spyOn(res, 'status')
+  endSpy = spyOn(res, 'end')
+  jsonSpy = spyOn(res, 'json')
 })
 
 describe('create', () => {

@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { logger, messages } from '../logging'
-import { type IncomingMessage } from 'http'
-import { type queryParams } from '../models/Config'
-import { devices } from '../server/mpsserver'
-import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
-import { RedirectInterceptor } from './redirectInterceptor'
+import { logger, messages } from '../logging/index.js'
+import { type IncomingMessage } from 'node:http'
+import { type queryParams } from '../models/Config.js'
+import { devices } from '../server/mpsserver.js'
+import { type ISecretManagerService } from '../interfaces/ISecretManagerService.js'
+import { RedirectInterceptor } from './redirectInterceptor.js'
 import type WebSocket from 'ws'
-import { CIRAHandler } from '../amt/CIRAHandler'
-import { type CIRAChannel } from '../amt/CIRAChannel'
-import { MqttProvider } from './MqttProvider'
+import { CIRAHandler } from '../amt/CIRAHandler.js'
+import { type CIRAChannel } from '../amt/CIRAChannel.js'
+import { MqttProvider } from './MqttProvider.js'
 
 export class WsRedirect {
   secrets: ISecretManagerService

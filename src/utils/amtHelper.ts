@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { HTTPErrorTable } from './constants'
+import { HTTPErrorTable } from './constants.js'
 
 export const ErrorResponse = (status: number, errDesc?: string, error?: string): any => {
   let response

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-exports = module.exports = function (req, res, next) {
+export default (req, res, next): any => {
   // Add custom middleware logic here
   // Example use-cases would be handling custom authentication tokens, adding trace IDs, debugging requests, etc...
 

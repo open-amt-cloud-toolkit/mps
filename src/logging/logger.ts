@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import * as winston from 'winston'
-import { type ILogger } from '../interfaces/ILogger'
+import { type ILogger } from '../interfaces/ILogger.js'
 
 const { combine, timestamp, printf } = winston.format
 const myFormat = printf(info => `${info.timestamp as string} ${info.level}: ${info.message}`)
@@ -14,15 +14,9 @@ export const logger: ILogger = winston.createLogger({
   format: combine(timestamp(), myFormat),
   transports: [
     new winston.transports.Console()
-    // new winston.transports.File({
-    //   filename: path.join(__dirname, '/logs/debug.log')
-    // })
   ],
   exceptionHandlers: [
     new winston.transports.Console()
-    // new winston.transports.File({
-    //   filename: path.join(__dirname, '/logs/exceptions.log')
-    // })
   ],
   exitOnError: false
 })

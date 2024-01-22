@@ -3,15 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { logger, messages } from '../../logging'
-import { devices } from '../../server/mpsserver'
-import { refreshDevice } from './refresh'
+import { logger, messages } from '../../logging/index.js'
+import { devices } from '../../server/mpsserver.js'
+import { refreshDevice } from './refresh.js'
+import { jest } from '@jest/globals'
+import { type SpyInstance, spyOn } from 'jest-mock'
 
 describe('refresh tests', () => {
   let res: Express.Response
-  let statusSpy: jest.SpyInstance
-  let jsonSpy: jest.SpyInstance
-  let getCredsSpy: jest.SpyInstance
+  let statusSpy: SpyInstance<any>
+  let jsonSpy: SpyInstance<any>
+  let getCredsSpy: SpyInstance<any>
   let req
   beforeEach(() => {
     res = {
@@ -20,8 +22,8 @@ describe('refresh tests', () => {
       end: () => res
     }
 
-    statusSpy = jest.spyOn(res as any, 'status')
-    jsonSpy = jest.spyOn(res as any, 'json')
+    statusSpy = spyOn(res as any, 'status')
+    jsonSpy = spyOn(res as any, 'json')
 
     req = {
       params: {
@@ -37,7 +39,7 @@ describe('refresh tests', () => {
         deleteSecretAtPath: async (path: string) => { }
       }
     } as any
-    getCredsSpy = jest.spyOn(req.secrets, 'getAMTCredentials')
+    getCredsSpy = spyOn(req.secrets, 'getAMTCredentials')
   })
 
   afterEach(() => {
@@ -83,7 +85,7 @@ describe('refresh tests', () => {
       kvmConnect: { kvmConnect: false },
       limiter: { limiter: 'dummy' }
     } as any
-    const loggerSpy = jest.spyOn(logger, 'error')
+    const loggerSpy = spyOn(logger, 'error')
     await refreshDevice(req, res as any)
     expect(statusSpy).toHaveBeenCalledWith(500)
     expect(loggerSpy).toHaveBeenCalled()

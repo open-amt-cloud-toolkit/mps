@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { logger, messages } from '../../logging'
+import { logger, messages } from '../../logging/index.js'
 import { type Request, type Response } from 'express'
-import { devices } from '../../server/mpsserver'
+import { devices } from '../../server/mpsserver.js'
 
 export async function getRedirStatus (req: Request, res: Response): Promise<void> {
   try {

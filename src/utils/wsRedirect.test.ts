@@ -3,14 +3,16 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { WsRedirect } from './wsRedirect'
-import { type queryParams } from '../models/Config'
-import { RedirectInterceptor } from './redirectInterceptor'
-import { devices } from '../server/mpsserver'
-import { ConnectedDevice } from '../amt/ConnectedDevice'
-import { Socket } from 'net'
-import { MqttProvider } from './MqttProvider'
-import { EventEmitter } from 'stream'
+import { WsRedirect } from './wsRedirect.js'
+import { type queryParams } from '../models/Config.js'
+import { RedirectInterceptor } from './redirectInterceptor.js'
+import { devices } from '../server/mpsserver.js'
+import { ConnectedDevice } from '../amt/ConnectedDevice.js'
+import { Socket } from 'node:net'
+import { MqttProvider } from './MqttProvider.js'
+import { EventEmitter } from 'node:events'
+import { jest } from '@jest/globals'
+import { type SpyInstance, spyOn } from 'jest-mock'
 
 const fakeGuid = '00000000-0000-0000-0000-000000000000'
 
@@ -21,8 +23,8 @@ describe('WsRedirect tests', () => {
       resume: jest.fn()
     }
   }
-  let pauseSpy: jest.SpyInstance
-  let resumeSpy: jest.SpyInstance
+  let pauseSpy: SpyInstance<any>
+  let resumeSpy: SpyInstance<any>
   let wsRedirect: WsRedirect
 
   beforeEach(() => {
@@ -35,23 +37,23 @@ describe('WsRedirect tests', () => {
       deleteSecretAtPath: async (path: string) => { },
       health: async () => ({})
     }
-    resumeSpy = jest.spyOn(mockWebSocket._socket, 'resume').mockReturnValue(null)
-    pauseSpy = jest.spyOn(mockWebSocket._socket, 'pause').mockReturnValue(null)
+    resumeSpy = spyOn(mockWebSocket._socket, 'resume').mockReturnValue(null)
+    pauseSpy = spyOn(mockWebSocket._socket, 'pause').mockReturnValue(null)
     wsRedirect = new WsRedirect(mockWebSocket as any, secretManagerService)
   })
 
   describe('handleConnection tests', () => {
     it('should handle connection with TCP socket', async () => {
-      const mockSocket = new Socket()
-      mockSocket.connect = jest.fn()
+      const mockSocket = new Socket();
+      (mockSocket as any).connect = jest.fn()
 
       const mockIncomingMessage = {
         url: `https://iotg.com?tls=0&host=${fakeGuid}`
       }
       devices[fakeGuid] = new ConnectedDevice(null, 'admin', 'P@ssw0rd', '')
 
-      const setNormalTCPSpy = jest.spyOn(wsRedirect, 'setNormalTCP').mockReturnValue()
-      const publishEventSpy = jest.spyOn(MqttProvider, 'publishEvent')
+      const setNormalTCPSpy = spyOn(wsRedirect, 'setNormalTCP').mockReturnValue()
+      const publishEventSpy = spyOn(MqttProvider, 'publishEvent')
       await wsRedirect.handleConnection(mockIncomingMessage as any)
 
       expect(setNormalTCPSpy).toBeCalled()
@@ -69,8 +71,8 @@ describe('WsRedirect tests', () => {
     wsRedirect.interceptor = {
       processBrowserData: jest.fn()
     } as any
-    const interceptorSpy = jest.spyOn(wsRedirect.interceptor, 'processBrowserData').mockReturnValue('binaryData')
-    const writeSpy = jest.spyOn(wsRedirect.websocketFromDevice, 'writeData')
+    const interceptorSpy = spyOn(wsRedirect.interceptor, 'processBrowserData').mockReturnValue('binaryData')
+    const writeSpy = spyOn(wsRedirect.websocketFromDevice, 'writeData')
     void wsRedirect.handleMessage(message)
 
     expect(interceptorSpy).toBeCalledWith(message.data)
@@ -91,7 +93,7 @@ describe('WsRedirect tests', () => {
         CloseChannel: jest.fn()
       } as any
       devices[params.host] = { kvmConnect: true, iderConnect: true, solConnect: true } as any
-      publishEventSpy = jest.spyOn(MqttProvider, 'publishEvent')
+      publishEventSpy = spyOn(MqttProvider, 'publishEvent')
     })
 
     it('should handle close for KVM mode', () => {
@@ -183,7 +185,7 @@ describe('WsRedirect tests', () => {
       wsRedirect.interceptor = {
         processBrowserData: jest.fn()
       } as any
-      const setupCIRASpy = jest.spyOn(wsRedirect.ciraHandler, 'SetupCiraChannel').mockReturnValue(mockCiraChannel)
+      const setupCIRASpy = spyOn(wsRedirect.ciraHandler, 'SetupCiraChannel').mockReturnValue(mockCiraChannel)
 
       wsRedirect.setNormalTCP(params)
       expect(setupCIRASpy).toHaveBeenCalled()
@@ -205,7 +207,7 @@ describe('WsRedirect tests', () => {
       wsRedirect.ciraHandler = {
         SetupCiraChannel: jest.fn()
       } as any
-      const setupCIRASpy = jest.spyOn(wsRedirect.ciraHandler, 'SetupCiraChannel').mockReturnValue(mockCiraChannel)
+      const setupCIRASpy = spyOn(wsRedirect.ciraHandler, 'SetupCiraChannel').mockReturnValue(mockCiraChannel)
 
       wsRedirect.setNormalTCP(params)
 

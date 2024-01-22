@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { generalSettings } from './getGeneralSettings'
-import { createSpyObj } from '../../test/helper/jest'
-import { CIRAHandler } from '../../amt/CIRAHandler'
-import { DeviceAction } from '../../amt/DeviceAction'
-import { HttpHandler } from '../../amt/HttpHandler'
-import { messages } from '../../logging'
+import { generalSettings } from './getGeneralSettings.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { CIRAHandler } from '../../amt/CIRAHandler.js'
+import { DeviceAction } from '../../amt/DeviceAction.js'
+import { HttpHandler } from '../../amt/HttpHandler.js'
+import { messages } from '../../logging/index.js'
+import { spyOn } from 'jest-mock'
 
 const response = {
   Envelope: {
@@ -65,7 +66,7 @@ describe('general settings', () => {
     resSpy.json.mockReturnThis()
     resSpy.send.mockReturnThis()
 
-    generalSettingsSpy = jest.spyOn(device, 'getGeneralSettings')
+    generalSettingsSpy = spyOn(device, 'getGeneralSettings')
   })
 
   it('should get version', async () => {

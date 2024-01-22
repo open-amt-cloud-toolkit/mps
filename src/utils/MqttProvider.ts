@@ -3,17 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import url from 'url'
-import { type eventType, type OpenAMTEvent } from '../models/models'
-import { logger, messages } from '../logging'
+import { URL } from 'node:url'
+import { type eventType, type OpenAMTEvent } from '../models/models.js'
+import { logger, messages } from '../logging/index.js'
 import { type MqttClient, connect, type IClientOptions } from 'mqtt'
-import { Environment } from './Environment'
+import { Environment } from './Environment.js'
 // Provides functions to abstract the interactions
 // with mqtt broker
 export class MqttProvider {
   client: MqttClient
   turnedOn: boolean
-  mqttUrl: url.URL
+  mqttUrl: URL
   baseUrl: string
   port: number
   options: IClientOptions
@@ -26,7 +26,7 @@ export class MqttProvider {
       logger.info(messages.MQTT_OFF)
     } else {
       this.turnedOn = true
-      this.mqttUrl = new url.URL(Environment.Config.mqtt_address)
+      this.mqttUrl = new URL(Environment.Config.mqtt_address)
       this.baseUrl = 'mqtt://' + this.mqttUrl.host
       this.port = +this.mqttUrl.port
       this.options = {

@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { type HttpZResponseModel } from 'http-z'
-import { parseBody } from './parseWSManResponseBody'
+import { parseBody } from './parseWSManResponseBody.js'
 
 describe('Check parseWSManResponseBody', () => {
   it('Should pass when converting WSMan response to json', async () => {

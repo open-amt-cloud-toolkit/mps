@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const packageObj = require('../../package.json')
-export const ServiceVersion = packageObj.version
-
 export const AMTPort = 16992
 
 export const DefaultNetworkingAdaptor = 'eth0'
