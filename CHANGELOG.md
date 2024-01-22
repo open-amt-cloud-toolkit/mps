@@ -1,3 +1,10 @@
+## [2.13.9](https://github.com/open-amt-cloud-toolkit/mps/compare/v2.13.8...v2.13.9) (2024-01-22)
+
+
+### Bug Fixes
+
+* adds validation for tag array types ([87986f7](https://github.com/open-amt-cloud-toolkit/mps/commit/87986f716d93fff8ded1660f1073d609b854bac2))
+
 ## [2.13.8](https://github.com/open-amt-cloud-toolkit/mps/compare/v2.13.7...v2.13.8) (2024-01-04)
 
 
