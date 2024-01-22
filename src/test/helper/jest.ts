@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
+import { jest } from '@jest/globals'
+
 export const createSpyObj = (baseName, methodNames): Record<string, jest.Mock<any>> => {
   const obj: any = {}
 

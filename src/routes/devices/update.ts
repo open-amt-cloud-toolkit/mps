@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { logger, messages } from '../../logging'
-import { MPSValidationError } from '../../utils/MPSValidationError'
+import { logger, messages } from '../../logging/index.js'
+import { MPSValidationError } from '../../utils/MPSValidationError.js'
 import { type Request, type Response } from 'express'
 
 export async function updateDevice (req: Request, res: Response): Promise<void> {

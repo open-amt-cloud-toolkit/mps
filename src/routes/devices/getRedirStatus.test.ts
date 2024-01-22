@@ -3,9 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { getRedirStatus } from './getRedirStatus'
+import { getRedirStatus } from './getRedirStatus.js'
 import { type Request, type Response } from 'express'
-import { devices } from '../../server/mpsserver'
+import { devices } from '../../server/mpsserver.js'
+import { jest } from '@jest/globals'
+import { type SpyInstance, spyOn } from 'jest-mock'
 
 jest.mock('../../logging', () => ({
   logger: {
@@ -24,7 +26,7 @@ describe('getRedirStatus', () => {
   let req
   let res
   let testDevices
-  let getByIdSpy: jest.SpyInstance
+  let getByIdSpy: SpyInstance<any>
 
   beforeEach(() => {
     testDevices = devices
@@ -38,7 +40,7 @@ describe('getRedirStatus', () => {
       json: jest.fn().mockReturnThis(),
       end: jest.fn()
     } as unknown as Response
-    getByIdSpy = jest.spyOn(req.db.devices, 'getById')
+    getByIdSpy = spyOn(req.db.devices, 'getById')
   })
 
   it('should return 404 if device is not found', async () => {

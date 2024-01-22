@@ -3,25 +3,26 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { MqttProvider } from '../../utils/MqttProvider'
-import { createSpyObj } from '../../test/helper/jest'
-import { setAMTFeatures } from './setAMTFeatures'
-import { AMT_REDIRECTION_SERVICE_ENABLE_STATE } from '@open-amt-cloud-toolkit/wsman-messages/models/common'
-import { DeviceAction } from '../../amt/DeviceAction'
-import { CIRAHandler } from '../../amt/CIRAHandler'
-import { HttpHandler } from '../../amt/HttpHandler'
+import { MqttProvider } from '../../utils/MqttProvider.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { setAMTFeatures } from './setAMTFeatures.js'
+import { AMT_REDIRECTION_SERVICE_ENABLE_STATE } from '@open-amt-cloud-toolkit/wsman-messages/models/common.js'
+import { DeviceAction } from '../../amt/DeviceAction.js'
+import { CIRAHandler } from '../../amt/CIRAHandler.js'
+import { HttpHandler } from '../../amt/HttpHandler.js'
+import { type SpyInstance, spyOn } from 'jest-mock'
 
 describe('set amt features', () => {
   let resSpy
   let req
-  let redirectionSpy: jest.SpyInstance
-  let optInServiceSpy: jest.SpyInstance
-  let kvmRedirectionSpy: jest.SpyInstance
-  let setRedirectionServiceSpy: jest.SpyInstance
-  let setKvmRedirectionSapSpy: jest.SpyInstance
-  let putRedirectionServiceSpy: jest.SpyInstance
-  let putIpsOptInServiceSpy: jest.SpyInstance
-  let mqttSpy: jest.SpyInstance
+  let redirectionSpy: SpyInstance<any>
+  let optInServiceSpy: SpyInstance<any>
+  let kvmRedirectionSpy: SpyInstance<any>
+  let setRedirectionServiceSpy: SpyInstance<any>
+  let setKvmRedirectionSapSpy: SpyInstance<any>
+  let putRedirectionServiceSpy: SpyInstance<any>
+  let putIpsOptInServiceSpy: SpyInstance<any>
+  let mqttSpy: SpyInstance<any>
 
   beforeEach(() => {
     const handler = new CIRAHandler(new HttpHandler(), 'admin', 'P@ssw0rd')
@@ -43,15 +44,15 @@ describe('set amt features', () => {
     resSpy.json.mockReturnThis()
     resSpy.send.mockReturnThis()
 
-    redirectionSpy = jest.spyOn(device, 'getRedirectionService')
-    optInServiceSpy = jest.spyOn(device, 'getIpsOptInService')
-    kvmRedirectionSpy = jest.spyOn(device, 'getKvmRedirectionSap')
-    setRedirectionServiceSpy = jest.spyOn(device, 'setRedirectionService')
-    setKvmRedirectionSapSpy = jest.spyOn(device, 'setKvmRedirectionSap')
-    putRedirectionServiceSpy = jest.spyOn(device, 'putRedirectionService')
-    putIpsOptInServiceSpy = jest.spyOn(device, 'putIpsOptInService')
+    redirectionSpy = spyOn(device, 'getRedirectionService')
+    optInServiceSpy = spyOn(device, 'getIpsOptInService')
+    kvmRedirectionSpy = spyOn(device, 'getKvmRedirectionSap')
+    setRedirectionServiceSpy = spyOn(device, 'setRedirectionService')
+    setKvmRedirectionSapSpy = spyOn(device, 'setKvmRedirectionSap')
+    putRedirectionServiceSpy = spyOn(device, 'putRedirectionService')
+    putIpsOptInServiceSpy = spyOn(device, 'putIpsOptInService')
 
-    mqttSpy = jest.spyOn(MqttProvider, 'publishEvent')
+    mqttSpy = spyOn(MqttProvider, 'publishEvent')
 
     redirectionSpy.mockResolvedValue({ AMT_RedirectionService: { EnabledState: AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled, ListenerEnabled: 'true' } })
     optInServiceSpy.mockResolvedValue({ IPS_OptInService: { OptInRequired: 4294967295 } })

@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { getVersion } from './get'
-import { createSpyObj } from '../../test/helper/jest'
-import { ServiceVersion } from '../../utils/constants'
+import { getVersion } from './get.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { version } from '../../utils/version.js'
 
 describe('Checks version of dependent services', () => {
   describe('getVersion tests', () => {
@@ -19,7 +19,7 @@ describe('Checks version of dependent services', () => {
     it('should return a version', async () => {
       getVersion(null, resSpy)
       expect(resSpy.status).toHaveBeenCalledWith(200)
-      expect(resSpy.json).toHaveBeenCalledWith({ serviceVersion: ServiceVersion })
+      expect(resSpy.json).toHaveBeenCalledWith({ serviceVersion: version })
     })
   })
 })

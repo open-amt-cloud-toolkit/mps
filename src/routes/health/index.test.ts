@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import index from './index'
+import index from './index.js'
+import { spyOn } from 'jest-mock'
 
 describe('Check index from health', () => {
-  let indexSpy: jest.SpyInstance
+  let indexSpy: any
   beforeEach(() => {
-    indexSpy = jest.spyOn(index, 'get')
+    indexSpy = spyOn(index, 'get')
   })
   it('should pass', async () => {
     expect(indexSpy).toBeDefined()

@@ -4,20 +4,21 @@
  **********************************************************************/
 
 import { type AMT } from '@open-amt-cloud-toolkit/wsman-messages'
-import { CIRAHandler } from '../../amt/CIRAHandler'
-import { DeviceAction } from '../../amt/DeviceAction'
-import { HttpHandler } from '../../amt/HttpHandler'
-import { createSpyObj } from '../../test/helper/jest'
-import { bootOptions, determinePowerAction, setBootData, setBootSource } from './bootOptions'
+import { CIRAHandler } from '../../amt/CIRAHandler.js'
+import { DeviceAction } from '../../amt/DeviceAction.js'
+import { HttpHandler } from '../../amt/HttpHandler.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { bootOptions, determinePowerAction, setBootData, setBootSource } from './bootOptions.js'
+import { type SpyInstance, spyOn } from 'jest-mock'
 
 describe('Boot Options', () => {
   let resSpy: any
   let req: any
-  let getBootOptionsSpy: jest.SpyInstance
-  let setBootConfigurationSpy: jest.SpyInstance
-  let forceBootModeSpy: jest.SpyInstance
-  let changeBootOrderSpy: jest.SpyInstance
-  let sendPowerActionSpy: jest.SpyInstance
+  let getBootOptionsSpy: SpyInstance<any>
+  let setBootConfigurationSpy: SpyInstance<any>
+  let forceBootModeSpy: SpyInstance<any>
+  let changeBootOrderSpy: SpyInstance<any>
+  let sendPowerActionSpy: SpyInstance<any>
   let bootSettingData: AMT.Models.BootSettingData | any
   beforeEach(() => {
     const handler = new CIRAHandler(new HttpHandler(), 'admin', 'P@ssw0rd')
@@ -51,15 +52,15 @@ describe('Boot Options', () => {
       SecureErase: 'false'
     }
 
-    getBootOptionsSpy = jest.spyOn(device, 'getBootOptions')
+    getBootOptionsSpy = spyOn(device, 'getBootOptions')
     getBootOptionsSpy.mockResolvedValue({ AMT_BootSettingData: bootSettingData })
-    setBootConfigurationSpy = jest.spyOn(device, 'setBootConfiguration')
+    setBootConfigurationSpy = spyOn(device, 'setBootConfiguration')
     setBootConfigurationSpy.mockResolvedValue({})
-    forceBootModeSpy = jest.spyOn(device, 'forceBootMode')
+    forceBootModeSpy = spyOn(device, 'forceBootMode')
     forceBootModeSpy.mockResolvedValue({})
-    changeBootOrderSpy = jest.spyOn(device, 'changeBootOrder')
+    changeBootOrderSpy = spyOn(device, 'changeBootOrder')
     changeBootOrderSpy.mockResolvedValue({})
-    sendPowerActionSpy = jest.spyOn(device, 'sendPowerAction')
+    sendPowerActionSpy = spyOn(device, 'sendPowerAction')
     sendPowerActionSpy.mockResolvedValue({ Body: { RequestPowerStateChange_OUTPUT: { ReturnValue: 0 } } })
   })
   it('should handle error', async () => {

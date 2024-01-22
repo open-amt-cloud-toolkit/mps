@@ -3,15 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { type certificatesType } from '../models/Config'
-import { devices, MPSServer } from './mpsserver'
-import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
-import { type Device } from '../models/models'
-import { type IDeviceTable } from '../interfaces/IDeviceTable'
-import { type IDB } from '../interfaces/IDb'
-import { Environment } from '../utils/Environment'
-import { logger } from '../logging'
-import APFProcessor from '../amt/APFProcessor'
+import { type certificatesType } from '../models/Config.js'
+import { devices, MPSServer } from './mpsserver.js'
+import { type ISecretManagerService } from '../interfaces/ISecretManagerService.js'
+import { type Device } from '../models/models.js'
+import { type IDeviceTable } from '../interfaces/IDeviceTable.js'
+import { type IDB } from '../interfaces/IDb.js'
+import { Environment } from '../utils/Environment.js'
+import { logger } from '../logging/index.js'
+import APFProcessor from '../amt/APFProcessor.js'
+import { jest } from '@jest/globals'
+import { type SpyInstance, spyOn } from 'jest-mock'
 
 let certs: certificatesType
 let db: IDB
@@ -20,13 +22,13 @@ let secrets: ISecretManagerService
 let mps: MPSServer
 
 describe('MPS Server', function () {
-  let deviceSpy: jest.SpyInstance
-  let deviceUpdateSpy: jest.SpyInstance
-  let processCommandSpy: jest.SpyInstance
-  let getSecretSpy: jest.SpyInstance
-  let getCredsSpy: jest.SpyInstance
-  let sendUserAuthSpy: jest.SpyInstance
-  let sendUserAuthFailSpy: jest.SpyInstance
+  let deviceSpy: SpyInstance<any>
+  let deviceUpdateSpy: SpyInstance<any>
+  let processCommandSpy: SpyInstance<any>
+  let getSecretSpy: SpyInstance<any>
+  let getCredsSpy: SpyInstance<any>
+  let sendUserAuthSpy: SpyInstance<any>
+  let sendUserAuthFailSpy: SpyInstance<any>
   let socket
   let testDevice: Device
   beforeEach(async function () {
@@ -66,13 +68,13 @@ describe('MPS Server', function () {
       mps_tls_config: {} as any,
       web_tls_config: {} as any
     }
-    deviceSpy = jest.spyOn(devicesMock, 'getById')
-    deviceUpdateSpy = jest.spyOn(devicesMock, 'update')
-    getSecretSpy = jest.spyOn(secrets, 'getSecretFromKey')
-    getCredsSpy = jest.spyOn(secrets, 'getAMTCredentials')
-    sendUserAuthSpy = jest.spyOn(APFProcessor, 'SendUserAuthSuccess').mockReturnValue(null)
-    sendUserAuthFailSpy = jest.spyOn(APFProcessor, 'SendUserAuthFail').mockReturnValue(null)
-    processCommandSpy = jest.spyOn(APFProcessor, 'processCommand').mockResolvedValue(0)
+    deviceSpy = spyOn(devicesMock, 'getById')
+    deviceUpdateSpy = spyOn(devicesMock, 'update')
+    getSecretSpy = spyOn(secrets, 'getSecretFromKey')
+    getCredsSpy = spyOn(secrets, 'getAMTCredentials')
+    sendUserAuthSpy = spyOn(APFProcessor, 'SendUserAuthSuccess').mockReturnValue(null)
+    sendUserAuthFailSpy = spyOn(APFProcessor, 'SendUserAuthFail').mockReturnValue(null)
+    processCommandSpy = spyOn(APFProcessor, 'processCommand').mockResolvedValue(0)
     socket = {
       tag: { SystemId: '123', id: 'ABC123XYZ', nodeid: '123' },
       end: jest.fn(),
@@ -95,20 +97,20 @@ describe('MPS Server', function () {
     expect(true).toBeTruthy()
   })
   it('should listen on configured port', () => {
-    const listenSpy = jest.spyOn(mps.server, 'listen').mockReturnValue(null)
+    const listenSpy = spyOn(mps.server, 'listen').mockReturnValue(null)
     Environment.Config = { port: 3000 } as any
     mps.listen()
     expect(listenSpy).toHaveBeenCalledWith(3000, mps.listeningListener)
   })
   it('should log what port the server is listening on', () => {
-    const infoSpy = jest.spyOn(logger, 'info')
+    const infoSpy = spyOn(logger, 'info')
     Environment.Config = { common_name: 'localhost', port: 3000 } as any
     mps.listeningListener()
     expect(infoSpy).toHaveBeenCalledWith('Intel(R) AMT server running on localhost:3000.')
   })
   it('should handle onAPFDisconnected', async () => {
-    const deviceDisconnectSpy = jest.spyOn(mps, 'handleDeviceDisconnect')
-    const emitSpy = jest.spyOn(mps.events, 'emit')
+    const deviceDisconnectSpy = spyOn(mps, 'handleDeviceDisconnect')
+    const emitSpy = spyOn(mps.events, 'emit')
     devices['123'] = { ciraSocket: { tag: { id: 'ABC123XYZ', nodeid: '123' } } } as any
     await mps.onAPFDisconnected('123')
     expect(devices['123']).toBeUndefined()
@@ -116,7 +118,7 @@ describe('MPS Server', function () {
     expect(emitSpy).toHaveBeenCalledWith('disconnected', '123')
   })
   it('should handle onAPFKeepAliveRequest', async () => {
-    const lastSeenUpdateSpy = jest.spyOn(mps, 'handleLastSeenUpdate')
+    const lastSeenUpdateSpy = spyOn(mps, 'handleLastSeenUpdate')
     devices['123'] = { ciraSocket: { tag: { id: 'ABC123XYZ', nodeid: '123' } } } as any
     await mps.onAPFKeepAliveRequest('123')
     expect(lastSeenUpdateSpy).toHaveBeenCalledWith('123')
@@ -126,14 +128,14 @@ describe('MPS Server', function () {
     expect(deviceSpy).toHaveBeenCalledWith('123')
   })
   it('should not allow device to connect if exists in db', async () => {
-    deviceSpy = jest.spyOn(devicesMock, 'getById').mockResolvedValue(null)
-    const endSpy = jest.spyOn(socket, 'end')
+    deviceSpy = spyOn(devicesMock, 'getById').mockResolvedValue(null)
+    const endSpy = spyOn(socket, 'end')
     await mps.onAPFProtocolVersion(socket)
     expect(deviceSpy).toHaveBeenCalledWith('123')
     expect(endSpy).toHaveBeenCalled()
   })
   it('should verify user auth when valid', async () => {
-    const deviceConnectSpy = jest.spyOn(mps, 'handleDeviceConnect').mockResolvedValue(null)
+    const deviceConnectSpy = spyOn(mps, 'handleDeviceConnect').mockResolvedValue(null)
     await mps.onVerifyUserAuth(socket, 'admin', 'P@ssw0rd')
     expect(deviceSpy).toHaveBeenCalledWith('123')
     expect(getSecretSpy).toHaveBeenCalledWith('devices/123', 'MPS_PASSWORD')
@@ -143,8 +145,8 @@ describe('MPS Server', function () {
     expect(sendUserAuthSpy).toHaveBeenCalledWith(socket)
   })
   it('should delete old device connection if a new connection request comes from same device', async () => {
-    const deviceConnectSpy = jest.spyOn(mps, 'handleDeviceConnect')
-    const deviceDisconnectSpy = jest.spyOn(mps, 'handleDeviceDisconnect')
+    const deviceConnectSpy = spyOn(mps, 'handleDeviceConnect')
+    const deviceDisconnectSpy = spyOn(mps, 'handleDeviceDisconnect')
     devices['123'] = { ciraSocket: { tag: { SystemId: '123', id: 'MNO123XYZ', nodeid: '123' }, end: jest.fn() } } as any
     await mps.onVerifyUserAuth(socket, 'admin', 'P@ssw0rd')
     expect(deviceSpy).toHaveBeenCalledWith('123')
@@ -157,7 +159,7 @@ describe('MPS Server', function () {
     expect(sendUserAuthSpy).toHaveBeenCalledWith(socket)
   })
   it('should update last seen update', async () => {
-    const debugSpy = jest.spyOn(logger, 'debug')
+    const debugSpy = spyOn(logger, 'debug')
     testDevice = {} as any
     Environment.Config = { instance_name: 'mpsInstance' } as any
     devices['123'] = { ciraSocket: { tag: { SystemId: '123', id: 'MNO123XYZ', nodeid: '123' }, end: jest.fn() } } as any
@@ -167,7 +169,7 @@ describe('MPS Server', function () {
     expect(debugSpy).toHaveBeenCalledWith('Device last seen status updated in db : 123')
   })
   it('should NOT verify user auth when NOT valid', async () => {
-    const deviceConnectSpy = jest.spyOn(mps, 'handleDeviceConnect').mockResolvedValue(null)
+    const deviceConnectSpy = spyOn(mps, 'handleDeviceConnect').mockResolvedValue(null)
     await mps.onVerifyUserAuth(socket, 'admin', 'WrongP@ssw0rd')
     expect(deviceSpy).toHaveBeenCalled()
     expect(getSecretSpy).toHaveBeenCalled()
@@ -177,7 +179,7 @@ describe('MPS Server', function () {
     expect(sendUserAuthFailSpy).toHaveBeenCalledWith(socket)
   })
   it('should NOT verify user auth valid but vault call fails', async () => {
-    const deviceConnectSpy = jest.spyOn(mps, 'handleDeviceConnect').mockResolvedValue(null)
+    const deviceConnectSpy = spyOn(mps, 'handleDeviceConnect').mockResolvedValue(null)
     getCredsSpy.mockRejectedValue(new Error('unknown'))
     await mps.onVerifyUserAuth(socket, 'admin', 'P@ssw0rd')
     expect(deviceSpy).toHaveBeenCalled()
@@ -188,17 +190,17 @@ describe('MPS Server', function () {
     expect(sendUserAuthFailSpy).toHaveBeenCalledWith(socket)
   })
   it('should connect with TLS', () => {
-    const addHandlersSpy = jest.spyOn(mps, 'addHandlers').mockReturnValue(null)
+    const addHandlersSpy = spyOn(mps, 'addHandlers').mockReturnValue(null)
     delete socket.tag
     mps.onTLSConnection(socket)
     expect(socket.tag).toBeDefined()
     expect(addHandlersSpy).toHaveBeenCalledWith(socket)
   })
   it('should add handlers', () => {
-    const setEncodingSpy = jest.spyOn(socket, 'setEncoding')
-    const setTimeoutSpy = jest.spyOn(socket, 'setTimeout')
-    const onSpy = jest.spyOn(socket, 'on')
-    const addListenerSpy = jest.spyOn(socket, 'addListener')
+    const setEncodingSpy = spyOn(socket, 'setEncoding')
+    const setTimeoutSpy = spyOn(socket, 'setTimeout')
+    const onSpy = spyOn(socket, 'on')
+    const addListenerSpy = spyOn(socket, 'addListener')
     mps.addHandlers(socket)
     expect(setEncodingSpy).toHaveBeenCalled()
     expect(setTimeoutSpy).toHaveBeenCalled()
@@ -206,8 +208,8 @@ describe('MPS Server', function () {
     expect(addListenerSpy).toHaveBeenCalledTimes(3)
   })
   it('should disconnect on timeout', async () => {
-    const endSpy = jest.spyOn(socket, 'end')
-    const deviceDisconnectSpy = jest.spyOn(mps, 'handleDeviceDisconnect')
+    const endSpy = spyOn(socket, 'end')
+    const deviceDisconnectSpy = spyOn(mps, 'handleDeviceDisconnect')
     devices['123'] = { ciraSocket: { tag: { id: 'ABC123XYZ', nodeid: '123' } } } as any
     await mps.onTimeout(socket)
     expect(endSpy).toHaveBeenCalled()
@@ -215,8 +217,8 @@ describe('MPS Server', function () {
     expect(devices['123']).toBeUndefined()
   })
   it('should NOT disconnect on timeout if socketids dont match', async () => {
-    const endSpy = jest.spyOn(socket, 'end')
-    const deviceDisconnectSpy = jest.spyOn(mps, 'handleDeviceDisconnect')
+    const endSpy = spyOn(socket, 'end')
+    const deviceDisconnectSpy = spyOn(mps, 'handleDeviceDisconnect')
     devices['123'] = { ciraSocket: { tag: { id: 'Mno123XYZ', nodeid: '123' } } } as any
     await mps.onTimeout(socket)
     expect(endSpy).toHaveBeenCalled()
@@ -224,7 +226,7 @@ describe('MPS Server', function () {
     expect(devices['123']).toBeDefined()
   })
   it('should do nothing data when not much is received', async () => {
-    const endSpy = jest.spyOn(socket, 'end')
+    const endSpy = spyOn(socket, 'end')
     socket.tag.accumulator = ''
     socket.tag.first = true
     await mps.onDataReceived(socket, 'A')
@@ -232,7 +234,7 @@ describe('MPS Server', function () {
     expect(processCommandSpy).not.toHaveBeenCalled()
   })
   it('should NOT process data when HTTP request received', async () => {
-    const endSpy = jest.spyOn(socket, 'end')
+    const endSpy = spyOn(socket, 'end')
     socket.tag.accumulator = ''
     socket.tag.first = true
     await mps.onDataReceived(socket, 'GET')
@@ -240,7 +242,7 @@ describe('MPS Server', function () {
     expect(processCommandSpy).not.toHaveBeenCalled()
   })
   it('should process data when data received', async () => {
-    const endSpy = jest.spyOn(socket, 'end')
+    const endSpy = spyOn(socket, 'end')
     socket.tag.accumulator = ''
     socket.tag.first = true
     await mps.onDataReceived(socket, 'data')
@@ -250,14 +252,14 @@ describe('MPS Server', function () {
   it('should continue process data when data received ', async () => {
     const length = 9
     let callCount = 0
-    processCommandSpy = jest.spyOn(APFProcessor, 'processCommand').mockImplementation(async () => {
+    processCommandSpy = spyOn(APFProcessor, 'processCommand').mockImplementation(async () => {
       if (callCount === 0) {
         callCount++
         return length
       }
       return 0
     })
-    const endSpy = jest.spyOn(socket, 'end')
+    const endSpy = spyOn(socket, 'end')
     socket.tag.accumulator = ''
     socket.tag.first = true
     await mps.onDataReceived(socket, 'datadata')
@@ -266,8 +268,8 @@ describe('MPS Server', function () {
     expect(endSpy).not.toHaveBeenCalled()
   })
   it('should end connection when unknown command', async () => {
-    processCommandSpy = jest.spyOn(APFProcessor, 'processCommand').mockResolvedValue(-1)
-    const endSpy = jest.spyOn(socket, 'end')
+    processCommandSpy = spyOn(APFProcessor, 'processCommand').mockResolvedValue(-1)
+    const endSpy = spyOn(socket, 'end')
     socket.tag.accumulator = ''
     socket.tag.first = true
     await mps.onDataReceived(socket, 'data')
@@ -275,30 +277,30 @@ describe('MPS Server', function () {
     expect(endSpy).toHaveBeenCalled()
   })
   it('should disconnect on close', async () => {
-    const deviceDisconnectSpy = jest.spyOn(mps, 'handleDeviceDisconnect')
+    const deviceDisconnectSpy = spyOn(mps, 'handleDeviceDisconnect')
     devices['123'] = { ciraSocket: { tag: { id: 'ABC123XYZ', nodeid: '123' } } } as any
     await mps.onClose(socket)
     expect(deviceDisconnectSpy).toHaveBeenCalledWith('123')
   })
   it('should NOT disconnect on close if socketids dont match', async () => {
-    const deviceDisconnectSpy = jest.spyOn(mps, 'handleDeviceDisconnect')
+    const deviceDisconnectSpy = spyOn(mps, 'handleDeviceDisconnect')
     devices['123'] = { ciraSocket: { tag: { id: 'OAMCT123MNO', nodeid: '123' } } } as any
     await mps.onClose(socket)
     expect(deviceDisconnectSpy).not.toHaveBeenCalledWith('123')
     expect(devices['123']).toBeDefined()
   })
   it('should NOT log on error when ECONNRESET', () => {
-    const errorLogSpy = jest.spyOn(logger, 'error')
+    const errorLogSpy = spyOn(logger, 'error')
     mps.onError(socket, { code: 'ECONNRESET' } as any)
     expect(errorLogSpy).not.toHaveBeenCalled()
   })
   it('should log on error when other error', () => {
-    const errorLogSpy = jest.spyOn(logger, 'error')
+    const errorLogSpy = spyOn(logger, 'error')
     mps.onError(socket, { code: 'COOL ERROR' } as any)
     expect(errorLogSpy).toHaveBeenCalled()
   })
   it('should handle device disconnect', async () => {
-    const emitSpy = jest.spyOn(mps.events, 'emit')
+    const emitSpy = spyOn(mps.events, 'emit')
     devices['123'] = { device: 'a device' } as any
     await mps.handleDeviceDisconnect('123')
     expect(devices['123']).toBeUndefined()

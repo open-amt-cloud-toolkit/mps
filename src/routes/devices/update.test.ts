@@ -3,14 +3,16 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { MPSValidationError } from '../../utils/MPSValidationError'
-import { updateDevice } from './update'
-import { logger } from '../../logging'
+import { MPSValidationError } from '../../utils/MPSValidationError.js'
+import { updateDevice } from './update.js'
+import { logger } from '../../logging/index.js'
+import { jest } from '@jest/globals'
+import { type SpyInstance, spyOn } from 'jest-mock'
 
 let res: Express.Response
-let statusSpy: jest.SpyInstance
-let jsonSpy: jest.SpyInstance
-let endSpy: jest.SpyInstance
+let statusSpy: SpyInstance<any>
+let jsonSpy: SpyInstance<any>
+let endSpy: SpyInstance<any>
 
 beforeEach(() => {
   res = {
@@ -18,9 +20,9 @@ beforeEach(() => {
     json: () => res,
     end: () => res
   }
-  statusSpy = jest.spyOn(res as any, 'status')
-  jsonSpy = jest.spyOn(res as any, 'json')
-  endSpy = jest.spyOn(res as any, 'end')
+  statusSpy = spyOn(res as any, 'status')
+  jsonSpy = spyOn(res as any, 'json')
+  endSpy = spyOn(res as any, 'end')
 })
 
 afterEach(() => {
@@ -30,7 +32,7 @@ afterEach(() => {
 
 describe('update', () => {
   const guid = '00000000-0000-0000-0000-000000000000'
-  const errorSpy = jest.spyOn(logger, 'error')
+  const errorSpy = spyOn(logger, 'error')
 
   it('should set status to 404 if getById gets no result', async () => {
     const req = {
@@ -64,7 +66,7 @@ describe('update', () => {
       }
     }
     const expectedDevice = { ...device, ...req.body }
-    const updateSpy = jest.spyOn(req.db.devices, 'update').mockReturnValue(expectedDevice)
+    const updateSpy = spyOn(req.db.devices, 'update').mockReturnValue(expectedDevice)
     await updateDevice(req as any, res as any)
     expect(updateSpy).toHaveBeenCalled()
     expect(statusSpy).toBeCalledWith(200)

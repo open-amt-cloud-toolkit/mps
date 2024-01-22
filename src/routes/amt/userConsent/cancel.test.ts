@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { createSpyObj } from '../../../test/helper/jest'
-import { cancel } from './cancel'
-import { cancelOptInResponse } from '../../../test/helper/wsmanResponses'
-import { DeviceAction } from '../../../amt/DeviceAction'
-import { HttpHandler } from '../../../amt/HttpHandler'
-import { CIRAHandler } from '../../../amt/CIRAHandler'
-import { messages } from '../../../logging'
+import { createSpyObj } from '../../../test/helper/jest.js'
+import { cancel } from './cancel.js'
+import { cancelOptInResponse } from '../../../test/helper/wsmanResponses.js'
+import { DeviceAction } from '../../../amt/DeviceAction.js'
+import { HttpHandler } from '../../../amt/HttpHandler.js'
+import { CIRAHandler } from '../../../amt/CIRAHandler.js'
+import { messages } from '../../../logging/index.js'
+import { spyOn } from 'jest-mock'
 
 describe('cancel user consent code', () => {
   let resSpy
@@ -27,7 +28,7 @@ describe('cancel user consent code', () => {
     resSpy.json.mockReturnThis()
     resSpy.send.mockReturnThis()
 
-    cancelUserConsetCodeSpy = jest.spyOn(device, 'cancelUserConsentCode')
+    cancelUserConsetCodeSpy = spyOn(device, 'cancelUserConsentCode')
   })
 
   it('should cancel user conset code', async () => {

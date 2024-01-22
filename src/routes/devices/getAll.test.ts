@@ -3,24 +3,26 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { v4 as uuid } from 'uuid'
-import { getAllDevices } from './getAll'
-import { type Device } from '../../models/models'
-import { type DataWithCount } from '../../models/Config'
+import { randomUUID } from 'node:crypto'
+import { getAllDevices } from './getAll.js'
+import { type Device } from '../../models/models.js'
+import { type DataWithCount } from '../../models/Config.js'
+import { jest } from '@jest/globals'
+import { type SpyInstance, spyOn } from 'jest-mock'
 
 let req
 let res
-let statusSpy: jest.SpyInstance
-let jsonSpy: jest.SpyInstance
-let endSpy: jest.SpyInstance
+let statusSpy: SpyInstance<any>
+let jsonSpy: SpyInstance<any>
+let endSpy: SpyInstance<any>
 let mockDevice: Device
 let allDevices: Device[]
-let getSpy: jest.SpyInstance
-let getCountSpy: jest.SpyInstance
+let getSpy: SpyInstance<any>
+let getCountSpy: SpyInstance<any>
 
 beforeEach(() => {
   mockDevice = {
-    guid: uuid(),
+    guid: randomUUID(),
     tenantId: '',
     hostname: 'host01.test.com',
     mpsInstance: '',
@@ -46,7 +48,7 @@ beforeEach(() => {
     mockDevice,
     {
       ...mockDevice,
-      guid: uuid(),
+      guid: randomUUID(),
       hostname: 'host02.test.com',
       connectionStatus: false
     }
@@ -68,16 +70,16 @@ beforeEach(() => {
       }
     }
   }
-  getSpy = jest.spyOn(req.db.devices, 'get')
-  getCountSpy = jest.spyOn(req.db.devices, 'getCount')
+  getSpy = spyOn(req.db.devices, 'get')
+  getCountSpy = spyOn(req.db.devices, 'getCount')
   res = {
     status: () => res,
     json: () => res,
     end: () => res
   }
-  statusSpy = jest.spyOn(res, 'status')
-  endSpy = jest.spyOn(res, 'end')
-  jsonSpy = jest.spyOn(res, 'json')
+  statusSpy = spyOn(res, 'status')
+  endSpy = spyOn(res, 'end')
+  jsonSpy = spyOn(res, 'json')
 })
 
 async function run200WithCount (expected: DataWithCount): Promise<void> {
@@ -137,14 +139,14 @@ describe('getAll', () => {
   it('should get by hostname', async () => {
     req.query.hostname = mockDevice.hostname
     const expected = [mockDevice]
-    const spy = jest.spyOn(req.db.devices, 'getByHostname').mockResolvedValue(expected)
+    const spy = spyOn(req.db.devices, 'getByHostname').mockResolvedValue(expected)
     await run200WithoutCount(expected)
     expect(spy).toHaveBeenCalledWith(mockDevice.hostname, req.tenantId)
   })
   it('should get by friendlyName', async () => {
     req.query.friendlyName = mockDevice.friendlyName = 'friendlyName'
     const expected = [mockDevice]
-    const spy = jest.spyOn(req.db.devices, 'getByFriendlyName').mockResolvedValue(expected)
+    const spy = spyOn(req.db.devices, 'getByFriendlyName').mockResolvedValue(expected)
     await run200WithoutCount(expected)
     expect(spy).toHaveBeenCalledWith(mockDevice.friendlyName, req.tenantId)
   })
@@ -154,7 +156,7 @@ describe('getAll', () => {
     req.query.tags = tags.join(',')
     req.query.method = method
     const expected = [mockDevice]
-    const spy = jest.spyOn(req.db.devices, 'getByTags').mockResolvedValue(expected)
+    const spy = spyOn(req.db.devices, 'getByTags').mockResolvedValue(expected)
     await run200WithoutCount(expected)
     expect(spy).toHaveBeenCalledWith(tags, method, req.query.$top, req.query.$skip, req.tenantId)
   })

@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { type Socket } from 'net'
-import { type DetailedPeerCertificate, type TLSSocket } from 'tls'
-import { type CIRAChannel } from '../amt/CIRAChannel'
+import { type Socket } from 'node:net'
+import { type DetailedPeerCertificate, type TLSSocket } from 'node:tls'
+import { type CIRAChannel } from '../amt/CIRAChannel.js'
 import type WebSocket from 'ws'
 
 export interface Device {

@@ -3,18 +3,19 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import * as alarms from './getAlarmOccurrences'
-import { createSpyObj } from '../../test/helper/jest'
-import { alarmClockOccurrences, alarmClockNoOccurrences, alarmClockManyOccurrences } from '../../test/helper/wsmanResponses'
-import { DeviceAction } from '../../amt/DeviceAction'
-import { CIRAHandler } from '../../amt/CIRAHandler'
-import { HttpHandler } from '../../amt/HttpHandler'
-import { messages } from '../../logging'
+import { getAlarmOccurrences } from './getAlarmOccurrences.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { alarmClockOccurrences, alarmClockNoOccurrences, alarmClockManyOccurrences } from '../../test/helper/wsmanResponses.js'
+import { DeviceAction } from '../../amt/DeviceAction.js'
+import { CIRAHandler } from '../../amt/CIRAHandler.js'
+import { HttpHandler } from '../../amt/HttpHandler.js'
+import { messages } from '../../logging/index.js'
+import { jest } from '@jest/globals'
+import { spyOn } from 'jest-mock'
 
 describe('Alarm Clock Occurrences', () => {
   let resSpy
   let req
-  const getSpy = jest.spyOn(alarms, 'get')
   let AlarmClockOccurrenceSpy
 
   beforeEach(() => {
@@ -25,7 +26,7 @@ describe('Alarm Clock Occurrences', () => {
     resSpy.status.mockReturnThis()
     resSpy.json.mockReturnThis()
     resSpy.send.mockReturnThis()
-    AlarmClockOccurrenceSpy = jest.spyOn(device, 'getAlarmClockOccurrences')
+    AlarmClockOccurrenceSpy = spyOn(device, 'getAlarmClockOccurrences')
   })
 
   afterEach(() => {
@@ -35,46 +36,36 @@ describe('Alarm Clock Occurrences', () => {
   it('should get a single alarm clock occurrence', async () => {
     const expectedResult =
       [alarmClockOccurrences.Envelope.Body.PullResponse.Items.IPS_AlarmClockOccurrence]
-
     AlarmClockOccurrenceSpy.mockResolvedValueOnce(alarmClockOccurrences.Envelope)
-
-    await alarms.getAlarmOccurrences(req, resSpy)
+    await getAlarmOccurrences(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(200)
     expect(resSpy.json).toHaveBeenCalledWith(expectedResult)
   })
 
   it('should get many alarm clock occurrences', async () => {
     const expectedResult = alarmClockManyOccurrences.Envelope.Body.PullResponse.Items.IPS_AlarmClockOccurrence
-
     AlarmClockOccurrenceSpy.mockResolvedValueOnce(alarmClockManyOccurrences.Envelope)
-
-    await alarms.getAlarmOccurrences(req, resSpy)
+    await getAlarmOccurrences(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(200)
     expect(resSpy.json).toHaveBeenCalledWith(expectedResult)
   })
 
   it('should get empty array if no alarm clock occurrences', async () => {
     const expectedResult = []
-
     AlarmClockOccurrenceSpy.mockResolvedValueOnce(alarmClockNoOccurrences.Envelope)
-
-    await alarms.getAlarmOccurrences(req, resSpy)
+    await getAlarmOccurrences(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(200)
     expect(resSpy.json).toHaveBeenCalledWith(expectedResult)
   })
 
   it('should handle error 400', async () => {
     AlarmClockOccurrenceSpy.mockResolvedValueOnce(null)
-
-    await alarms.getAlarmOccurrences(req, resSpy)
+    await getAlarmOccurrences(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(400)
     expect(resSpy.json).toHaveBeenCalledWith({ error: 'Incorrect URI or Bad Request', errorDescription: `${messages.ALARM_OCCURRENCES_GET_REQUEST_FAILED} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.` })
   })
   it('should handle error 500', async () => {
-    getSpy.mockImplementation(() => {
-      throw new Error()
-    })
-    await alarms.getAlarmOccurrences(req, resSpy)
+    await getAlarmOccurrences(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(500)
     expect(resSpy.json).toHaveBeenCalledWith({ error: 'Internal Server Error', errorDescription: messages.ALARM_OCCURRENCES_EXCEPTION })
   })

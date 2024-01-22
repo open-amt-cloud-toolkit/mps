@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { createSpyObj } from '../../../test/helper/jest'
-import { send } from './send'
-import { sendOptInCodeResponse } from '../../../test/helper/wsmanResponses'
-import { HttpHandler } from '../../../amt/HttpHandler'
-import { CIRAHandler } from '../../../amt/CIRAHandler'
-import { DeviceAction } from '../../../amt/DeviceAction'
-import { messages } from '../../../logging'
+import { createSpyObj } from '../../../test/helper/jest.js'
+import { send } from './send.js'
+import { sendOptInCodeResponse } from '../../../test/helper/wsmanResponses.js'
+import { HttpHandler } from '../../../amt/HttpHandler.js'
+import { CIRAHandler } from '../../../amt/CIRAHandler.js'
+import { DeviceAction } from '../../../amt/DeviceAction.js'
+import { messages } from '../../../logging/index.js'
+import { spyOn } from 'jest-mock'
 
 describe('send user consent code', () => {
   let resSpy
@@ -28,7 +29,7 @@ describe('send user consent code', () => {
     resSpy.json.mockReturnThis()
     resSpy.send.mockReturnThis()
 
-    sendUserConsetCodeSpy = jest.spyOn(device, 'sendUserConsentCode')
+    sendUserConsetCodeSpy = spyOn(device, 'sendUserConsentCode')
   })
 
   it('should send user conset code', async () => {

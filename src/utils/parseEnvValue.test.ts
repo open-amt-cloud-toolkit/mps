@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import * as parse from './parseEnvValue'
+import * as parse from './parseEnvValue.js'
 
 describe('Check parseEnvValue', () => {
   it('Should pass when converting string to number', () => {

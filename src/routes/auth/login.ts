@@ -5,10 +5,9 @@
 
 import { validationResult } from 'express-validator'
 import { type Request, type Response } from 'express'
-import { logger } from '../../logging/logger'
-import { Environment } from '../../utils/Environment'
-import { messages } from '../../logging'
-import { signature } from './signature'
+import { logger, messages } from '../../logging/index.js'
+import { Environment } from '../../utils/Environment.js'
+import { signature } from './signature.js'
 
 export async function login (req: Request, res: Response): Promise<void> {
   const errors = validationResult(req)

@@ -3,13 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { logger, messages } from '../../logging'
-import { devices } from '../../server/mpsserver'
-import { disconnect } from './disconnect'
+import { logger, messages } from '../../logging/index.js'
+import { devices } from '../../server/mpsserver.js'
+import { disconnect } from './disconnect.js'
+import { jest } from '@jest/globals'
+import { type SpyInstance, spyOn } from 'jest-mock'
 
 let res: Express.Response
-let statusSpy: jest.SpyInstance
-let jsonSpy: jest.SpyInstance
+let statusSpy: SpyInstance<any>
+let jsonSpy: SpyInstance<any>
 
 beforeEach(() => {
   res = {
@@ -17,8 +19,8 @@ beforeEach(() => {
     json: () => res,
     end: () => res
   }
-  statusSpy = jest.spyOn(res as any, 'status')
-  jsonSpy = jest.spyOn(res as any, 'json')
+  statusSpy = spyOn(res as any, 'status')
+  jsonSpy = spyOn(res as any, 'json')
 })
 
 afterEach(() => {
@@ -57,7 +59,7 @@ describe('disconnect', () => {
         })
       }
     } as any
-    const loggerSpy = jest.spyOn(logger, 'error')
+    const loggerSpy = spyOn(logger, 'error')
     await disconnect(req, res as any)
     expect(statusSpy).toHaveBeenCalledWith(500)
     expect(loggerSpy).toHaveBeenCalled()

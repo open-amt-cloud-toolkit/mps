@@ -3,27 +3,27 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import tlsConfiguration from './tlsConfiguration'
-import path from 'path'
-import fs from 'fs'
-import { logger } from '../logging'
-import { type mpsConfigType, type webConfigType } from '../models/Config'
-import { constants } from 'crypto'
+import { web, mps } from './tlsConfiguration.js'
+import path from 'node:path'
+import fs from 'node:fs'
+import { logger } from '../logging/index.js'
+import { type mpsConfigType, type webConfigType } from '../models/Config.js'
+import { constants } from 'node:crypto'
+import { jest } from '@jest/globals'
+import { type SpyInstance, spyOn } from 'jest-mock'
 
-const web = tlsConfiguration.web
-const mps = tlsConfiguration.mps
-let existsSyncSpy: jest.SpyInstance
-let readFileSyncSpy: jest.SpyInstance
-let jsonParseSpy: jest.SpyInstance
-let errorSpy: jest.SpyInstance
-let exitSpy: jest.SpyInstance
+let existsSyncSpy: SpyInstance<any>
+let readFileSyncSpy: SpyInstance<any>
+let jsonParseSpy: SpyInstance<any>
+let errorSpy: SpyInstance<any>
+let exitSpy: SpyInstance<any>
 
 beforeEach(() => {
-  errorSpy = jest.spyOn(logger, 'error')
-  exitSpy = jest.spyOn(process, 'exit').mockImplementation((code: number) => null as never)
-  existsSyncSpy = jest.spyOn(fs, 'existsSync')
-  readFileSyncSpy = jest.spyOn(fs, 'readFileSync')
-  jsonParseSpy = jest.spyOn(JSON, 'parse')
+  errorSpy = spyOn(logger, 'error')
+  exitSpy = spyOn(process, 'exit').mockImplementation((code: number) => null as never)
+  existsSyncSpy = spyOn(fs, 'existsSync')
+  readFileSyncSpy = spyOn(fs, 'readFileSync')
+  jsonParseSpy = spyOn(JSON, 'parse')
 })
 
 afterEach(() => {
@@ -40,7 +40,7 @@ describe('web', () => {
       secureOptions: [constants.SSL_OP_NO_SSLv2, constants.SSL_OP_NO_SSLv3, constants.SSL_OP_NO_TLSv1],
       null: null
     }
-    readFileSyncSpy.mockImplementation()
+    readFileSyncSpy.mockImplementation(() => {})
     jsonParseSpy.mockReturnValue(webConfig)
     existsSyncSpy.mockReturnValue(true)
     const result = web()
@@ -55,7 +55,7 @@ describe('web', () => {
       key: 'key',
       secureOptions: [constants.SSL_OP_NO_SSLv2]
     }
-    readFileSyncSpy.mockImplementation()
+    readFileSyncSpy.mockImplementation(() => {})
     jsonParseSpy.mockReturnValue(webConfig)
     existsSyncSpy.mockReturnValue(true)
     const result = web()
@@ -76,7 +76,7 @@ describe('web', () => {
       key: null,
       secureOptions: [constants.SSL_OP_NO_SSLv2, constants.SSL_OP_NO_SSLv3]
     }
-    readFileSyncSpy.mockImplementation()
+    readFileSyncSpy.mockImplementation(() => {})
     jsonParseSpy.mockReturnValue(webConfig)
     existsSyncSpy.mockReturnValue(true)
     const result = web()
@@ -92,7 +92,7 @@ describe('web', () => {
       key: 'key',
       secureOptions: [constants.SSL_OP_NO_SSLv2, constants.SSL_OP_NO_SSLv3]
     }
-    readFileSyncSpy.mockImplementation()
+    readFileSyncSpy.mockImplementation(() => {})
     jsonParseSpy.mockReturnValue(webConfig)
     existsSyncSpy.mockImplementation((p) => {
       if (p === path.join(__dirname, webConfig.key)) {
@@ -127,7 +127,7 @@ describe('web', () => {
       key: 'key',
       secureOptions: [constants.SSL_OP_NO_SSLv2, constants.SSL_OP_NO_SSLv3]
     }
-    readFileSyncSpy.mockImplementation()
+    readFileSyncSpy.mockImplementation(() => {})
     jsonParseSpy.mockReturnValue(webConfig)
     existsSyncSpy.mockImplementation((p) => {
       if (p === path.join(__dirname, webConfig.key)) {
@@ -176,7 +176,7 @@ describe('mps', () => {
       rejectUnauthorized: true,
       null: null
     }
-    readFileSyncSpy.mockImplementation()
+    readFileSyncSpy.mockImplementation(() => {})
     jsonParseSpy.mockReturnValue(mpsConfig)
     existsSyncSpy.mockReturnValue(true)
     const result = mps()
@@ -194,7 +194,7 @@ describe('mps', () => {
       rejectUnauthorized: true,
       null: null
     }
-    readFileSyncSpy.mockImplementation()
+    readFileSyncSpy.mockImplementation(() => {})
     jsonParseSpy.mockReturnValue(mpsConfig)
     existsSyncSpy.mockReturnValue(true)
     const result = mps()
@@ -219,7 +219,7 @@ describe('mps', () => {
       rejectUnauthorized: true,
       ciphers: null
     }
-    readFileSyncSpy.mockImplementation()
+    readFileSyncSpy.mockImplementation(() => {})
     jsonParseSpy.mockReturnValue(mpsConfig)
     existsSyncSpy.mockReturnValue(true)
     const result = mps()
@@ -238,7 +238,7 @@ describe('mps', () => {
       rejectUnauthorized: true,
       ciphers: null
     }
-    readFileSyncSpy.mockImplementation()
+    readFileSyncSpy.mockImplementation(() => {})
     jsonParseSpy.mockReturnValue(mpsConfig)
     existsSyncSpy.mockImplementation((p) => {
       if (p === path.join(__dirname, mpsConfig.key)) {

@@ -4,10 +4,10 @@
  **********************************************************************/
 
 import { MongoClient, type Db } from 'mongodb'
-import { type IDB } from '../../interfaces/IDb'
-import { type IDeviceTable } from '../../interfaces/IDeviceTable'
-import { MongoDeviceTable } from './collections/device'
-import { logger } from '../../logging'
+import { type IDB } from '../../interfaces/IDb.js'
+import { type IDeviceTable } from '../../interfaces/IDeviceTable.js'
+import { MongoDeviceTable } from './collections/device.js'
+import { logger } from '../../logging/index.js'
 
 export default class MongoDB implements IDB {
   db: Db

@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { logger } from '../logging'
-import { Environment } from '../utils/Environment'
-import { SecretManagerCreatorFactory } from './SecretManagerCreatorFactory'
-import { config } from '../test/helper/config'
-import { type ILogger } from '../interfaces/ILogger'
-import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
+import { logger } from '../logging/index.js'
+import { Environment } from '../utils/Environment.js'
+import { SecretManagerCreatorFactory } from './SecretManagerCreatorFactory.js'
+import { config } from '../test/helper/config.js'
+import { type ILogger } from '../interfaces/ILogger.js'
+import { type ISecretManagerService } from '../interfaces/ISecretManagerService.js'
 
 describe('Secret Manager Factory', () => {
   it('should pass with default test configuration', async () => {
@@ -19,7 +19,7 @@ describe('Secret Manager Factory', () => {
     const mgr2 = await factory.getSecretManager(logger)
     expect(mgr2).not.toBeNull()
     const { default: Provider }: { default: new (logger: ILogger) => ISecretManagerService } =
-        await import(`../secrets/${Environment.Config.secrets_provider}`)
+         await import(`../secrets/${Environment.Config.secrets_provider}`)
     const mgr3 = new Provider(logger)
     expect(mgr3).not.toBeNull()
     expect(mgr1).toEqual(mgr2)

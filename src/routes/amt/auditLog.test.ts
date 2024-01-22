@@ -3,21 +3,21 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { atob } from 'atob'
-import * as auditLog from './auditLog'
-import { MqttProvider } from '../../utils/MqttProvider'
-import { createSpyObj } from '../../test/helper/jest'
-import { DeviceAction } from '../../amt/DeviceAction'
-import { CIRAHandler } from '../../amt/CIRAHandler'
-import { HttpHandler } from '../../amt/HttpHandler'
+import * as auditLog from './auditLog.js'
+import { MqttProvider } from '../../utils/MqttProvider.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { DeviceAction } from '../../amt/DeviceAction.js'
+import { CIRAHandler } from '../../amt/CIRAHandler.js'
+import { HttpHandler } from '../../amt/HttpHandler.js'
 import { type AMT } from '@open-amt-cloud-toolkit/wsman-messages'
+import { type SpyInstance, spyOn } from 'jest-mock'
 
 describe('auditLog', () => {
   let req
   let resSpy
   let device: DeviceAction
-  let mqttSpy: jest.SpyInstance
-  let getAuditLogSpy: jest.SpyInstance
+  let mqttSpy: SpyInstance<any>
+  let getAuditLogSpy: SpyInstance<any>
   const fakeGuid = '00000000-0000-0000-0000-000000000000'
   const eventRecords = [
     'ABUAAAAJJCRPc0FkbWluP/Nj6wAJMTI3LjAuMC4xBFyZIW4=',
@@ -55,8 +55,8 @@ describe('auditLog', () => {
     resSpy.status.mockReturnThis()
     resSpy.json.mockReturnThis()
     resSpy.send.mockReturnThis()
-    mqttSpy = jest.spyOn(MqttProvider, 'publishEvent')
-    getAuditLogSpy = jest.spyOn(device, 'getAuditLog')
+    mqttSpy = spyOn(MqttProvider, 'publishEvent')
+    getAuditLogSpy = spyOn(device, 'getAuditLog')
   })
 
   it('should convert response to an auditLog result', () => {
@@ -73,7 +73,7 @@ describe('auditLog', () => {
   })
 
   it('should get initiator info for http digest and ptr value from decoded event record', () => {
-    const fakeDecodedEventRecordforInitiatorTypeHttpDigest = atob('ABUAAAAJJCRPc0FkbWluP/Nj6wAJMTI3LjAuMC4xBFyZIW4=')
+    const fakeDecodedEventRecordforInitiatorTypeHttpDigest = Buffer.from('ABUAAAAJJCRPc0FkbWluP/Nj6wAJMTI3LjAuMC4xBFyZIW4=', 'base64').toString('binary')
     const [initiatorType, initiator, ptr] = auditLog.getInitiatorInfo(fakeDecodedEventRecordforInitiatorTypeHttpDigest)
     expect(initiatorType).toBe(auditLog.InitiatorType.HttpDigest)
     expect(initiator).toBe('$$OsAdmin')
@@ -81,7 +81,7 @@ describe('auditLog', () => {
   })
 
   it('should get initiator info for local and ptr value from decoded event record', () => {
-    const fakeDecodedEventRecordforInitiatorTypeLocal = atob('ABAAAAJegj0UAgAA')
+    const fakeDecodedEventRecordforInitiatorTypeLocal = Buffer.from('ABAAAAJegj0UAgAA', 'base64').toString('binary')
     const [initiatorType, initiator, ptr] = auditLog.getInitiatorInfo(fakeDecodedEventRecordforInitiatorTypeLocal)
     expect(initiatorType).toBe(auditLog.InitiatorType.Local)
     expect(initiator).toBe('Local')

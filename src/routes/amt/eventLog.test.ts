@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { eventLog, GetEventDetailStr } from './eventLog'
-import { createSpyObj } from '../../test/helper/jest'
-import { amtMessageLog } from '../../test/helper/wsmanResponses'
-import { CIRAHandler } from '../../amt/CIRAHandler'
-import { HttpHandler } from '../../amt/HttpHandler'
-import { DeviceAction } from '../../amt/DeviceAction'
-import { messages } from '../../logging'
+import { eventLog, GetEventDetailStr } from './eventLog.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { amtMessageLog } from '../../test/helper/wsmanResponses.js'
+import { CIRAHandler } from '../../amt/CIRAHandler.js'
+import { HttpHandler } from '../../amt/HttpHandler.js'
+import { DeviceAction } from '../../amt/DeviceAction.js'
+import { messages } from '../../logging/index.js'
+import { spyOn } from 'jest-mock'
 
 describe('event log', () => {
   let resSpy
@@ -27,7 +28,7 @@ describe('event log', () => {
     resSpy.json.mockReturnThis()
     resSpy.send.mockReturnThis()
 
-    eventLogSpy = jest.spyOn(device, 'getEventLog')
+    eventLogSpy = spyOn(device, 'getEventLog')
   })
 
   it('should get event logs', async () => {

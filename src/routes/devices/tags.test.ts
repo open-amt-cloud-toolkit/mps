@@ -3,13 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { getDistinctTags } from './tags'
-import { logger } from '../../logging'
+import { getDistinctTags } from './tags.js'
+import { logger } from '../../logging/index.js'
+import { jest } from '@jest/globals'
+import { type SpyInstance, spyOn } from 'jest-mock'
 
 let req: any
 let res: any
-let statusSpy: jest.SpyInstance
-let jsonSpy: jest.SpyInstance
+let statusSpy: SpyInstance<any>
+let jsonSpy: SpyInstance<any>
 
 beforeEach(() => {
   req = {
@@ -24,8 +26,8 @@ beforeEach(() => {
     json: () => res,
     end: () => res
   }
-  statusSpy = jest.spyOn(res, 'status')
-  jsonSpy = jest.spyOn(res, 'json')
+  statusSpy = spyOn(res, 'status')
+  jsonSpy = spyOn(res, 'json')
 })
 
 afterEach(() => {
@@ -53,7 +55,7 @@ describe('tags', () => {
     req.db.devices.getDistinctTags = jest.fn().mockImplementation(() => {
       throw new TypeError('fake error')
     })
-    const logSpy = jest.spyOn(logger, 'error')
+    const logSpy = spyOn(logger, 'error')
     await getDistinctTags(req, res)
     expect(statusSpy).toBeCalledWith(500)
     expect(jsonSpy).not.toHaveBeenCalled()

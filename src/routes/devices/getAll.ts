@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { type Device } from '../../models/models'
-import { logger, messages } from '../../logging'
-import { type DataWithCount } from '../../models/Config'
+import { type Device } from '../../models/models.js'
+import { logger, messages } from '../../logging/index.js'
+import { type DataWithCount } from '../../models/Config.js'
 import { type Request, type Response } from 'express'
 
 export async function getAllDevices (req: Request, res: Response): Promise<void> {

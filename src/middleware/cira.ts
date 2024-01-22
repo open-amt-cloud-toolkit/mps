@@ -4,13 +4,11 @@
  **********************************************************************/
 
 import { type Request, type Response } from 'express'
-import { CIRAHandler } from '../amt/CIRAHandler'
-import { DeviceAction } from '../amt/DeviceAction'
-import { devices } from '../server/mpsserver'
-// import { HttpHandler } from '../amt/HttpHandler'
-import { ErrorResponse } from '../utils/amtHelper'
-// import { amtPort } from '../utils/constants'
-import { MqttProvider } from '../utils/MqttProvider'
+import { CIRAHandler } from '../amt/CIRAHandler.js'
+import { DeviceAction } from '../amt/DeviceAction.js'
+import { devices } from '../server/mpsserver.js'
+import { ErrorResponse } from '../utils/amtHelper.js'
+import { MqttProvider } from '../utils/MqttProvider.js'
 
 const ciraMiddleware = async (req: Request, res: Response, next): Promise<void> => {
   const guid = req.params.guid

@@ -3,20 +3,22 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Certificates } from './certificates'
-import { type certAndKeyType, type certificatesType } from '../models/Config'
+import { Certificates } from './certificates.js'
+import { type certAndKeyType, type certificatesType } from '../models/Config.js'
 import forge from 'node-forge'
-import { type ISecretManagerService } from '../interfaces/ISecretManagerService'
+import { type ISecretManagerService } from '../interfaces/ISecretManagerService.js'
+import { jest } from '@jest/globals'
+import { type SpyInstance, spyOn } from 'jest-mock'
 
 let certificates: Certificates
 let certificatesTls12: Certificates
-let generateKeyPairSpy: jest.SpyInstance
-let createCertificateSpy: jest.SpyInstance
-let getPublicKeyFingerprintSpy: jest.SpyInstance
-let sha384CreateSpy: jest.SpyInstance
-let getMPSCertsSpy: jest.SpyInstance
-let storeCertificatesSpy: jest.SpyInstance
-let writeSecretWithObjectSpy: jest.SpyInstance
+let generateKeyPairSpy: SpyInstance<any>
+let createCertificateSpy: SpyInstance<any>
+let getPublicKeyFingerprintSpy: SpyInstance<any>
+let sha384CreateSpy: SpyInstance<any>
+let getMPSCertsSpy: SpyInstance<any>
+let storeCertificatesSpy: SpyInstance<any>
+let writeSecretWithObjectSpy: SpyInstance<any>
 const config = {
   common_name: 'me',
   country: 'us',
@@ -44,15 +46,15 @@ const secrets: ISecretManagerService = {
 }
 
 beforeEach(() => {
-  getMPSCertsSpy = jest.spyOn(secrets, 'getMPSCerts')
+  getMPSCertsSpy = spyOn(secrets, 'getMPSCerts')
   certificates = new Certificates(config as any, secrets)
   certificatesTls12 = new Certificates(configtls12 as any, secrets)
-  writeSecretWithObjectSpy = jest.spyOn(secrets, 'writeSecretWithObject')
-  storeCertificatesSpy = jest.spyOn(certificates, 'storeCertificates')
-  generateKeyPairSpy = jest.spyOn(forge.pki.rsa, 'generateKeyPair')
-  createCertificateSpy = jest.spyOn(forge.pki, 'createCertificate')
-  getPublicKeyFingerprintSpy = jest.spyOn(forge.pki, 'getPublicKeyFingerprint')
-  sha384CreateSpy = jest.spyOn(forge.md.sha384, 'create')
+  writeSecretWithObjectSpy = spyOn(secrets, 'writeSecretWithObject')
+  storeCertificatesSpy = spyOn(certificates, 'storeCertificates')
+  generateKeyPairSpy = spyOn(forge.pki.rsa, 'generateKeyPair')
+  createCertificateSpy = spyOn(forge.pki, 'createCertificate')
+  getPublicKeyFingerprintSpy = spyOn(forge.pki, 'getPublicKeyFingerprint')
+  sha384CreateSpy = spyOn(forge.md.sha384, 'create')
 })
 
 afterEach(() => {
@@ -69,10 +71,10 @@ describe('constructor', () => {
 
 describe('generateCertificates', () => {
   it('should generate certificates', () => {
-    const generateRootCertificateSpy = jest.spyOn(certificates, 'GenerateRootCertificate').mockReturnValue({})
-    const certificateToPemSpy = jest.spyOn(forge.pki, 'certificateToPem').mockReturnValue('certificate')
-    const privateKeyToPemSpy = jest.spyOn(forge.pki, 'privateKeyToPem').mockReturnValue('private key')
-    const issueWebServerCertificateSpy = jest.spyOn(certificates, 'IssueWebServerCertificate').mockReturnValue({})
+    const generateRootCertificateSpy = spyOn(certificates, 'GenerateRootCertificate').mockReturnValue({})
+    const certificateToPemSpy = spyOn(forge.pki, 'certificateToPem').mockReturnValue('certificate')
+    const privateKeyToPemSpy = spyOn(forge.pki, 'privateKeyToPem').mockReturnValue('private key')
+    const issueWebServerCertificateSpy = spyOn(certificates, 'IssueWebServerCertificate').mockReturnValue({})
     const result: certificatesType = certificates.generateCertificates()
     expect(result.mps_tls_config).toBeTruthy()
     expect(result.web_tls_config).toBeTruthy()
@@ -84,10 +86,10 @@ describe('generateCertificates', () => {
   })
 
   it('should generate certificates for TLS1.2', () => {
-    const generateRootCertificateSpy = jest.spyOn(certificatesTls12, 'GenerateRootCertificate').mockReturnValue({})
-    const certificateToPemSpy = jest.spyOn(forge.pki, 'certificateToPem').mockReturnValue('certificate')
-    const privateKeyToPemSpy = jest.spyOn(forge.pki, 'privateKeyToPem').mockReturnValue('private key')
-    const issueWebServerCertificateSpy = jest.spyOn(certificatesTls12, 'IssueWebServerCertificate').mockReturnValue({})
+    const generateRootCertificateSpy = spyOn(certificatesTls12, 'GenerateRootCertificate').mockReturnValue({})
+    const certificateToPemSpy = spyOn(forge.pki, 'certificateToPem').mockReturnValue('certificate')
+    const privateKeyToPemSpy = spyOn(forge.pki, 'privateKeyToPem').mockReturnValue('private key')
+    const issueWebServerCertificateSpy = spyOn(certificatesTls12, 'IssueWebServerCertificate').mockReturnValue({})
     const result: certificatesType = certificatesTls12.generateCertificates()
     expect(result.mps_tls_config).toBeTruthy()
     expect(result.web_tls_config).toBeTruthy()
@@ -154,8 +156,8 @@ describe('getCertificates', () => {
   it('should get certificates after generating them first if they do not already exist', async () => {
     const expectedCertificates = {} as any
     getMPSCertsSpy.mockReturnValue(null)
-    storeCertificatesSpy.mockImplementation()
-    const generateCertificatesSpy = jest.spyOn(certificates, 'generateCertificates').mockReturnValue(expectedCertificates)
+    storeCertificatesSpy.mockImplementation(() => {})
+    const generateCertificatesSpy = spyOn(certificates, 'generateCertificates').mockReturnValue(expectedCertificates)
     const result = await certificates.getCertificates()
     expect(result).toEqual(expectedCertificates)
     expect(generateCertificatesSpy).toBeCalled()
@@ -169,7 +171,7 @@ describe('storeCertificates', () => {
       mps_tls_config: undefined,
       web_tls_config: undefined
     }
-    writeSecretWithObjectSpy.mockImplementation()
+    writeSecretWithObjectSpy.mockImplementation(() => {})
     await certificates.storeCertificates(certificatesData)
     const expectedData = { data: certificatesData }
     expect(writeSecretWithObjectSpy).toBeCalledWith('MPSCerts', expectedData)

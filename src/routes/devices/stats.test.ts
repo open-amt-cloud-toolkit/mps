@@ -3,11 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { stats } from './stats'
+import { stats } from './stats.js'
+import { jest } from '@jest/globals'
+import { type SpyInstance, spyOn } from 'jest-mock'
 
 let res: Express.Response
-let jsonSpy: jest.SpyInstance
-let resSpy: jest.SpyInstance
+let jsonSpy: SpyInstance<any>
+let resSpy: SpyInstance<any>
 
 beforeEach(() => {
   res = {
@@ -15,8 +17,8 @@ beforeEach(() => {
     json: () => res,
     end: () => res
   }
-  jsonSpy = jest.spyOn(res as any, 'json')
-  resSpy = jest.spyOn(res as any, 'status')
+  jsonSpy = spyOn(res as any, 'json')
+  resSpy = spyOn(res as any, 'status')
 })
 
 afterEach(() => {
@@ -51,8 +53,8 @@ describe('stats', () => {
     const req = {
       db: {
         devices: {
-          getConnectedDevices: jest.fn().mockRejectedValue(new Error()),
-          getCount: jest.fn().mockRejectedValue(new Error())
+          getConnectedDevices: jest.fn<any>().mockRejectedValue(new Error()),
+          getCount: jest.fn<any>().mockRejectedValue(new Error())
         }
       }
     }

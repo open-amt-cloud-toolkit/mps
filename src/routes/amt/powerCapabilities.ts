@@ -4,10 +4,10 @@
  **********************************************************************/
 
 import { type Response, type Request } from 'express'
-import { logger, messages } from '../../logging'
-import { ErrorResponse } from '../../utils/amtHelper'
-import { MqttProvider } from '../../utils/MqttProvider'
-import { getVersion } from './getVersion'
+import { logger, messages } from '../../logging/index.js'
+import { ErrorResponse } from '../../utils/amtHelper.js'
+import { MqttProvider } from '../../utils/MqttProvider.js'
+import { getVersion } from './getVersion.js'
 
 export async function powerCapabilities (req: Request, res: Response): Promise<void> {
   try {

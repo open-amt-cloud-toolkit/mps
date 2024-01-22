@@ -3,23 +3,20 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-// import { CIRASocket } from '../models/models'
-// import { card, computerSystemPackage, enumerateResponseCIMSoftwareIdentity } from '../test/helper/wsmanResponses'
 import { type HttpZResponseModel } from 'http-z'
-import { type CIRASocket } from '../models/models'
-import { computerSystemPackage } from '../test/helper/wsmanResponses'
-import { parseBody } from '../utils/parseWSManResponseBody'
-import APFProcessor from './APFProcessor'
-import { CIRAHandler } from './CIRAHandler'
-import { HttpHandler } from './HttpHandler'
+import { type CIRASocket } from '../models/models.js'
+import { computerSystemPackage } from '../test/helper/wsmanResponses.js'
+import { parseBody } from '../utils/parseWSManResponseBody.js'
+import APFProcessor from './APFProcessor.js'
+import { CIRAHandler } from './CIRAHandler.js'
+import { HttpHandler } from './HttpHandler.js'
+import { spyOn } from 'jest-mock'
 
 describe('CIRA Handler', () => {
   let ciraHandler: CIRAHandler
 
   const httpHeader200 =
     'HTTP/1.1 200 OK\r\nDate: Mon, 10 Jan 2022 20:37:48 GMT\r\nServer: Intel(R) Active Management Technology 15.0.23.1706\r\nX-Frame-Options: DENY\r\nContent-Type: application/soap+xml; charset=UTF-8\r\nTransfer-Encoding: chunked\r\n'
-  // const enumCimSoftwareIdentityResponse =
-  //   '\r\n0220\r\n<?xml version="1.0" encoding="UTF-8"?><a:Envelope xmlns:a="http://www.w3.org/2003/05/soap-envelope" xmlns:b="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:c="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns:d="http://schemas.xmlsoap.org/ws/2005/02/trust" xmlns:e="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:f="http://schemas.dmtf.org/wbem/wsman/1/cimbinding.xsd" xmlns:g="http://schemas.xmlsoap.org/ws/2004/09/enumeration" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a:Hea\r\n022A\r\nder><b:To>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</b:To><b:RelatesTo>0</b:RelatesTo><b:Action a:mustUnderstand="true">http://schemas.xmlsoap.org/ws/2004/09/enumeration/EnumerateResponse</b:Action><b:MessageID>uuid:00000000-8086-8086-8086-000000000030</b:MessageID><c:ResourceURI>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_SoftwareIdentity</c:ResourceURI></a:Header><a:Body><g:EnumerateResponse><g:EnumerationContext>17000000-0000-0000-0000-000000000000</g:EnumerationContext></g:EnumerateResponse></a:Body></a:Envelope>\r\n0\r\n\r\n'
   const cimComputerPackageResponse =
     '\r\n0220\r\n<?xml version="1.0" encoding="UTF-8"?><a:Envelope xmlns:a="http://www.w3.org/2003/05/soap-envelope" xmlns:b="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:c="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns:d="http://schemas.xmlsoap.org/ws/2005/02/trust" xmlns:e="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:f="http://schemas.dmtf.org/wbem/wsman/1/cimbinding.xsd" xmlns:g="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ComputerSystemPackage" xmlns:xsi="http://www.w3.org/2001/\r\n02FA\r\nXMLSchema-instance"><a:Header><b:To>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</b:To><b:RelatesTo>1</b:RelatesTo><b:Action a:mustUnderstand="true">http://schemas.xmlsoap.org/ws/2004/09/transfer/GetResponse</b:Action><b:MessageID>uuid:00000000-8086-8086-8086-000000000001</b:MessageID><c:ResourceURI>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ComputerSystemPackage</c:ResourceURI></a:Header><a:Body><g:CIM_ComputerSystemPackage><g:Antecedent><b:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</b:Address><b:ReferenceParameters><c:ResourceURI>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_Chassis</c:ResourceURI><c:SelectorSet><c:Selector Name="CreationClassName">CIM_Chassis</c:Selector><c:Selector \r\n0267\r\nName="Tag">CIM_Chassis</c:Selector></c:SelectorSet></b:ReferenceParameters></g:Antecedent><g:Dependent><b:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</b:Address><b:ReferenceParameters><c:ResourceURI>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ComputerSystem</c:ResourceURI><c:SelectorSet><c:Selector Name="CreationClassName">CIM_ComputerSystem</c:Selector><c:Selector Name="Name">ManagedSystem</c:Selector></c:SelectorSet></b:ReferenceParameters></g:Dependent><g:PlatformGUID>44454C4C4B0010428033B6C04F504633</g:PlatformGUID></g:CIM_ComputerSystemPackage></a:Body></a:Envelope>\r\n0\r\n\r\n'
   const cimCardResponse =
@@ -31,25 +28,23 @@ describe('CIRA Handler', () => {
     ciraHandler = new CIRAHandler(new HttpHandler(), 'admin', 'P@ssw0rd')
   })
   it('should call Send when Pull<T> called', async () => {
-    sendSpy = jest.spyOn(ciraHandler, 'Send').mockResolvedValue('xml')
+    sendSpy = spyOn(ciraHandler, 'Send').mockResolvedValue('xml')
     await ciraHandler.Pull<any>(null, '')
     expect(sendSpy).toHaveBeenCalledWith(null, '')
   })
   it('should call Send when Get<T> called', async () => {
-    sendSpy = jest.spyOn(ciraHandler, 'Send').mockResolvedValue('xml')
+    sendSpy = spyOn(ciraHandler, 'Send').mockResolvedValue('xml')
     await ciraHandler.Get<any>(null, '')
     expect(sendSpy).toHaveBeenCalledWith(null, '')
   })
   it('should call Send when Enumerate called', async () => {
-    sendSpy = jest.spyOn(ciraHandler, 'Send').mockResolvedValue('xml')
+    sendSpy = spyOn(ciraHandler, 'Send').mockResolvedValue('xml')
     await ciraHandler.Enumerate(null, '')
     expect(sendSpy).toHaveBeenCalledWith(null, '')
   })
 
   it('Should add request to send', async () => {
-    // const socket: CIRASocket = null
-    // const rawXml = '<?xml version="1.0" encoding="utf-8"?><Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns="http://www.w3.org/2003/05/soap-envelope"><Header><a:Action>http://schemas.xmlsoap.org/ws/2004/09/enumeration/Enumerate</a:Action><a:To>/wsman</a:To><w:ResourceURI>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_SoftwareIdentity</w:ResourceURI><a:MessageID>0</a:MessageID><a:ReplyTo><a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address></a:ReplyTo><w:OperationTimeout>PT60S</w:OperationTimeout></Header><Body><Enumerate xmlns="http://schemas.xmlsoap.org/ws/2004/09/enumeration" /></Body></Envelope>'
-    const spy = jest.spyOn(ciraHandler, 'ExecRequest').mockResolvedValue('data')
+    const spy = spyOn(ciraHandler, 'ExecRequest').mockResolvedValue('data')
     const result = await ciraHandler.Send(null, 'hello')
     expect(ciraHandler.socket).toBeNull()
     expect(spy).toHaveBeenCalledWith('hello')
@@ -65,10 +60,10 @@ describe('CIRA Handler', () => {
         return 0
       }
     } as any
-    const closeSpy = jest.spyOn(ciraHandler.channel, 'CloseChannel')
-    const execSpy = jest.spyOn(ciraHandler, 'ExecRequest')
+    const closeSpy = spyOn(ciraHandler.channel, 'CloseChannel')
+    const execSpy = spyOn(ciraHandler, 'ExecRequest')
     let count = 0
-    const handleResultSpy = jest.spyOn(ciraHandler, 'handleResult').mockImplementation(() => {
+    const handleResultSpy = spyOn(ciraHandler, 'handleResult').mockImplementation(() => {
       if (count === 0) {
         count++
         throw new Error('Unauthorized')
@@ -76,7 +71,7 @@ describe('CIRA Handler', () => {
         return { data: 'data' }
       }
     })
-    const connectSpy = jest.spyOn(ciraHandler, 'Connect').mockResolvedValue(2)
+    const connectSpy = spyOn(ciraHandler, 'Connect').mockResolvedValue(2)
     expect(ciraHandler.channelState).toBe(0)
     const result = await ciraHandler.ExecRequest('xml')
     expect(connectSpy).toHaveBeenCalled()
@@ -91,8 +86,8 @@ describe('CIRA Handler', () => {
     ciraHandler.channel = {
       write: async () => 'response'
     } as any
-    const handleResultSpy = jest.spyOn(ciraHandler, 'handleResult').mockReturnValue({ data: 'data' })
-    const connectSpy = jest.spyOn(ciraHandler, 'Connect')
+    const handleResultSpy = spyOn(ciraHandler, 'handleResult').mockReturnValue({ data: 'data' })
+    const connectSpy = spyOn(ciraHandler, 'Connect')
     ciraHandler.channelState = 2
     ciraHandler.httpHandler.isAuthInProgress = new Promise((resolve, reject) => {
       ciraHandler.httpHandler.authResolve = resolve
@@ -117,9 +112,9 @@ describe('CIRA Handler', () => {
     expect(() => { ciraHandler.handleResult('') }).toThrowError('rawMessage has incorrect format')
   })
   it('should throw Unauthorized Error when 401 from ATM - digest challenge', () => {
-    const handleAuthSpy = jest.spyOn(ciraHandler, 'handleAuth')
+    const handleAuthSpy = spyOn(ciraHandler, 'handleAuth')
     ciraHandler.httpHandler.authResolve = () => {}
-    const authSpy = jest.spyOn(ciraHandler.httpHandler, 'authResolve')
+    const authSpy = spyOn(ciraHandler.httpHandler, 'authResolve')
     expect(() => { ciraHandler.handleResult(unauthorizedResponse) }).toThrowError('Unauthorized')
     expect(authSpy).toHaveBeenCalled()
     expect(handleAuthSpy).toHaveBeenCalled()
@@ -159,7 +154,7 @@ describe('CIRA Handler', () => {
     expect(response).toEqual(null)
   })
   it('should set up a new CIRA channel', () => {
-    const sendChannelSpy = jest.spyOn(APFProcessor, 'SendChannelOpen').mockImplementation(() => {})
+    const sendChannelSpy = spyOn(APFProcessor, 'SendChannelOpen').mockImplementation(() => {})
     const socket: CIRASocket = { tag: { first: true, activetunnels: 0, boundPorts: [], host: null, nextchannelid: 4, channels: {}, nextsourceport: 0, nodeid: null } } as any
     const channel = ciraHandler.SetupCiraChannel(socket, 16692)
     expect(sendChannelSpy).toBeCalledTimes(1)

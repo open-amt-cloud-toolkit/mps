@@ -4,10 +4,10 @@
  **********************************************************************/
 
 import { type Response, type Request } from 'express'
-import { logger, messages } from '../../../logging'
-import { ErrorResponse } from '../../../utils/amtHelper'
-import { MqttProvider } from '../../../utils/MqttProvider'
-import { AMTStatusCodes } from '../../../utils/constants'
+import { logger, messages } from '../../../logging/index.js'
+import { ErrorResponse } from '../../../utils/amtHelper.js'
+import { MqttProvider } from '../../../utils/MqttProvider.js'
+import { AMTStatusCodes } from '../../../utils/constants.js'
 
 export async function request (req: Request, res: Response): Promise<void> {
   try {

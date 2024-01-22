@@ -3,14 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { createSpyObj } from '../test/helper/jest'
-import validateMiddleware from './validate'
-jest.mock('express-validator', () => ({
-  validationResult: jest.fn().mockImplementation((shouldHaveErrors) => ({
-    isEmpty: jest.fn().mockReturnValue(!shouldHaveErrors),
-    array: jest.fn()
-  }))
+import { createSpyObj } from '../test/helper/jest.js'
+import { jest } from '@jest/globals'
+let mockReturnValue = true
+jest.unstable_mockModule('express-validator', () => ({
+  validationResult: () => ({
+    isEmpty: jest.fn().mockReturnValue(mockReturnValue),
+    array: jest.fn().mockReturnValue([{ test: 'error' }])
+  } as any)
 }))
+
+const v = await import('./validate.js')
 
 describe('Validate Middleware', () => {
   let next: jest.Mock<any>
@@ -24,13 +27,14 @@ describe('Validate Middleware', () => {
     resSpy.send.mockReturnThis()
   })
   it('should call next() when no errors', async () => {
-    await validateMiddleware(false as any, resSpy, next)
+    await v.default(false as any, resSpy, next)
     expect(resSpy.json).not.toHaveBeenCalled()
     expect(resSpy.status).not.toHaveBeenCalled()
     expect(next).toHaveBeenCalled()
   })
   it('should return 400 when validation errors', async () => {
-    await validateMiddleware(true as any, resSpy, next)
+    mockReturnValue = false
+    await v.default(true as any, resSpy, next)
     expect(resSpy.json).toHaveBeenCalled()
     expect(resSpy.status).toHaveBeenCalledWith(400)
     expect(next).not.toHaveBeenCalled()

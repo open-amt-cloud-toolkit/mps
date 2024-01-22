@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { logger, messages } from '../../logging'
+import { logger, messages } from '../../logging/index.js'
 import { type Request, type Response } from 'express'
-import { ErrorResponse } from '../../utils/amtHelper'
+import { ErrorResponse } from '../../utils/amtHelper.js'
 
 export async function mpsrootcert (req: Request, res: Response): Promise<void> {
   try {

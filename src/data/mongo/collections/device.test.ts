@@ -4,7 +4,8 @@
  **********************************************************************/
 
 import { type Db, type Collection } from 'mongodb'
-import { MongoDeviceTable } from './device'
+import { MongoDeviceTable } from './device.js'
+import { jest } from '@jest/globals'
 
 jest.mock('mongodb')
 
@@ -46,7 +47,7 @@ describe('MongoDeviceTable', () => {
     collection.find.mockReturnValue({
       skip: jest.fn().mockReturnThis(),
       limit: jest.fn().mockReturnThis(),
-      toArray: jest.fn().mockResolvedValue(mockData)
+      toArray: jest.fn<any>().mockResolvedValue(mockData)
     } as any)
 
     const result = await mongoDeviceTable.get('5', '10', 'someTenantId')
@@ -91,7 +92,7 @@ describe('MongoDeviceTable', () => {
   })
 
   it('should update a device', async () => {
-    const mockDevice = { _id: 'someId', tenantId: 'someTenantId', some: 'device' } as any
+    const mockDevice = { _id: 1, tenantId: 'someTenantId', some: 'device' } as any
     collection.findOneAndUpdate.mockResolvedValue(mockDevice)
 
     const result = await mongoDeviceTable.update(mockDevice)
@@ -125,7 +126,7 @@ describe('MongoDeviceTable', () => {
     collection.find.mockReturnValue({
       skip: jest.fn().mockReturnThis(),
       limit: jest.fn().mockReturnThis(),
-      toArray: jest.fn().mockResolvedValue(mockData)
+      toArray: jest.fn<any>().mockResolvedValue(mockData)
     } as any)
 
     const result = await mongoDeviceTable.getByTags(mockTags, 'AND', '5', '10', 'someTenantId')
@@ -139,7 +140,7 @@ describe('MongoDeviceTable', () => {
   it('should fetch documents by friendly name', async () => {
     const mockData = [{ friendlyName: 'someName' }]
     collection.find.mockReturnValue({
-      toArray: jest.fn().mockResolvedValue(mockData)
+      toArray: jest.fn<any>().mockResolvedValue(mockData)
     } as any)
 
     const result = await mongoDeviceTable.getByFriendlyName('someName', 'someTenantId')
@@ -150,7 +151,7 @@ describe('MongoDeviceTable', () => {
   it('should fetch documents by hostname', async () => {
     const mockData = [{ hostname: 'someHostname' }]
     collection.find.mockReturnValue({
-      toArray: jest.fn().mockResolvedValue(mockData)
+      toArray: jest.fn<any>().mockResolvedValue(mockData)
     } as any)
 
     const result = await mongoDeviceTable.getByHostname('someHostname', 'someTenantId')

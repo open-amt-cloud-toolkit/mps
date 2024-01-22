@@ -3,11 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { authorizeDevice } from './authorizeDevice'
-import { createSpyObj } from '../../test/helper/jest'
-import { Environment } from '../../utils/Environment'
-import * as val from 'express-validator'
-jest.mock('express-validator')
+import { createSpyObj } from '../../test/helper/jest.js'
+import { Environment } from '../../utils/Environment.js'
+import { jest } from '@jest/globals'
+import { spyOn } from 'jest-mock'
+
+jest.unstable_mockModule('express-validator', () => ({
+  validationResult: () => ({
+    isEmpty: jest.fn().mockReturnValue(true),
+    array: jest.fn().mockReturnValue([{ test: 'error' }])
+  } as any)
+}))
+const auth = await import ('./authorizeDevice.js')
 
 describe('Check login', () => {
   let resSpy
@@ -28,10 +35,6 @@ describe('Check login', () => {
     resSpy.status.mockReturnThis()
     resSpy.json.mockReturnThis()
     resSpy.send.mockReturnThis()
-    jest.spyOn(val, 'validationResult').mockImplementation(() => ({
-      isEmpty: jest.fn().mockReturnValue(true),
-      array: jest.fn().mockReturnValue([{ test: 'error' }])
-    } as any))
     Environment.Config = {
       web_admin_user: 'admin',
       web_admin_password: 'Passw0rd',
@@ -42,9 +45,9 @@ describe('Check login', () => {
     } as any
   })
   it('should fail with device does not exits', async () => {
-    const query = jest.spyOn(req.db.devices, 'getById')
+    const query = spyOn(req.db.devices, 'getById')
     query.mockResolvedValueOnce(null)
-    await authorizeDevice(req, resSpy)
+    await auth.authorizeDevice(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(404)
   })
   it('should pass with a token', async () => {
@@ -57,9 +60,9 @@ describe('Check login', () => {
       mpsusername: 'admin',
       tenantId: null
     }
-    const query = jest.spyOn(req.db.devices, 'getById')
+    const query = spyOn(req.db.devices, 'getById')
     query.mockResolvedValueOnce({ rows: [device], command: '', fields: null, rowCount: 0, oid: 0 })
-    await authorizeDevice(req, resSpy)
+    await auth.authorizeDevice(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(200)
   })
 })

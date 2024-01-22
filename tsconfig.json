@@ -1,23 +1,21 @@
 {
     "compilerOptions": {
         "strictNullChecks": false,
+        "baseUrl": "./src",
         "outDir": "./dist",
-        "moduleResolution": "node",
-        "module": "commonjs",
+        "moduleResolution": "NodeNext",
+        "module": "NodeNext",
         "allowJs": true,
-        "target": "es2019",
+        "target": "ESNext",
         "sourceMap": true,
-        "resolveJsonModule": true,
         "esModuleInterop": true,
-        "typeRoots": [
-            "node_modules/@types",
-            "src/custom.d.ts",
-        ]
+        // "paths": {
+        //     "#src/*": [
+        //         "./src/*"
+        //     ]
+        // }
     },
     "include": [
         "./src/**/*"
-    ],
-    "type": [
-        "@types/node"
     ]
 }

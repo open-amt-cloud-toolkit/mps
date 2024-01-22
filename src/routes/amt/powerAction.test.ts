@@ -4,22 +4,23 @@
  **********************************************************************/
 
 import { type CIM } from '@open-amt-cloud-toolkit/wsman-messages'
-import { CIRAHandler } from '../../amt/CIRAHandler'
-import { DeviceAction } from '../../amt/DeviceAction'
-import { HttpHandler } from '../../amt/HttpHandler'
-import { messages } from '../../logging'
-import { createSpyObj } from '../../test/helper/jest'
-import { ErrorResponse } from '../../utils/amtHelper'
-import { MqttProvider } from '../../utils/MqttProvider'
-import { powerAction } from './powerAction'
+import { CIRAHandler } from '../../amt/CIRAHandler.js'
+import { DeviceAction } from '../../amt/DeviceAction.js'
+import { HttpHandler } from '../../amt/HttpHandler.js'
+import { messages } from '../../logging/index.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { ErrorResponse } from '../../utils/amtHelper.js'
+import { MqttProvider } from '../../utils/MqttProvider.js'
+import { powerAction } from './powerAction.js'
+import { type SpyInstance, spyOn } from 'jest-mock'
 
 describe('Power Capabilities', () => {
   let req: Express.Request
   let resSpy
-  let mqttSpy: jest.SpyInstance
+  let mqttSpy: SpyInstance<any>
   let powerActionFromDevice: CIM.Models.PowerActionResponse
-  let getBootOptionsSpy: jest.SpyInstance
-  let setBootConfigurationSpy: jest.SpyInstance
+  let getBootOptionsSpy: SpyInstance<any>
+  let setBootConfigurationSpy: SpyInstance<any>
   let device: DeviceAction
   beforeEach(() => {
     const handler = new CIRAHandler(new HttpHandler(), 'admin', 'P@ssw0rd')
@@ -37,10 +38,10 @@ describe('Power Capabilities', () => {
     resSpy.status.mockReturnThis()
     resSpy.json.mockReturnThis()
     resSpy.send.mockReturnThis()
-    mqttSpy = jest.spyOn(MqttProvider, 'publishEvent')
+    mqttSpy = spyOn(MqttProvider, 'publishEvent')
     powerActionFromDevice = { Body: { RequestPowerStateChange_OUTPUT: { ReturnValue: 0 } } } as any
-    getBootOptionsSpy = jest.spyOn(device, 'getBootOptions').mockResolvedValue({ AMT_BootSettingData: {} } as any)
-    setBootConfigurationSpy = jest.spyOn(device, 'setBootConfiguration').mockResolvedValue({} as any)
+    getBootOptionsSpy = spyOn(device, 'getBootOptions').mockResolvedValue({ AMT_BootSettingData: {} } as any)
+    setBootConfigurationSpy = spyOn(device, 'setBootConfiguration').mockResolvedValue({} as any)
   })
   it('Should send power action', async () => {
     const expectedResponse = {
@@ -49,7 +50,7 @@ describe('Power Capabilities', () => {
         ReturnValueStr: 'SUCCESS'
       }
     }
-    jest.spyOn(device, 'sendPowerAction').mockResolvedValue(powerActionFromDevice)
+    spyOn(device, 'sendPowerAction').mockResolvedValue(powerActionFromDevice)
     await powerAction(req as any, resSpy)
     expect(getBootOptionsSpy).toHaveBeenCalled()
     expect(setBootConfigurationSpy).toHaveBeenCalled()
@@ -67,7 +68,7 @@ describe('Power Capabilities', () => {
       }
     }
     const powerActionErrorFromDevice: CIM.Models.PowerActionResponse = { Body: { RequestPowerStateChange_OUTPUT: { ReturnValue: -1 } } } as any
-    jest.spyOn(device, 'sendPowerAction').mockResolvedValue(powerActionErrorFromDevice)
+    spyOn(device, 'sendPowerAction').mockResolvedValue(powerActionErrorFromDevice)
 
     await powerAction(req as any, resSpy)
     expect(getBootOptionsSpy).toHaveBeenCalled()
@@ -79,7 +80,7 @@ describe('Power Capabilities', () => {
   })
 
   it('Should handle error', async () => {
-    jest.spyOn(device, 'sendPowerAction').mockResolvedValue(null)
+    spyOn(device, 'sendPowerAction').mockResolvedValue(null)
     await powerAction(req as any, resSpy)
     expect(getBootOptionsSpy).toHaveBeenCalled()
     expect(setBootConfigurationSpy).toHaveBeenCalled()

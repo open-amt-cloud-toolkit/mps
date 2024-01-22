@@ -4,11 +4,11 @@
  **********************************************************************/
 
 import { type Response, type Request } from 'express'
-import { logger, messages } from '../../logging'
-import { UserConsentOptions } from '../../utils/constants'
-import { ErrorResponse } from '../../utils/amtHelper'
-import { MPSValidationError } from '../../utils/MPSValidationError'
-import { MqttProvider } from '../../utils/MqttProvider'
+import { logger, messages } from '../../logging/index.js'
+import { UserConsentOptions } from '../../utils/constants.js'
+import { ErrorResponse } from '../../utils/amtHelper.js'
+import { MPSValidationError } from '../../utils/MPSValidationError.js'
+import { MqttProvider } from '../../utils/MqttProvider.js'
 import { type AMT, type CIM, type IPS, Common } from '@open-amt-cloud-toolkit/wsman-messages'
 
 export async function getAMTFeatures (req: Request, res: Response): Promise<void> {

@@ -3,20 +3,22 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { v4 as uuid } from 'uuid'
-import { getDevice } from './get'
-import { type Device } from '../../models/models'
+import { randomUUID } from 'node:crypto'
+import { getDevice } from './get.js'
+import { type Device } from '../../models/models.js'
+import { jest } from '@jest/globals'
+import { type SpyInstance, spyOn } from 'jest-mock'
 
 let req
 let res
-let statusSpy: jest.SpyInstance
-let jsonSpy: jest.SpyInstance
-let endSpy: jest.SpyInstance
-let getByIdSpy: jest.SpyInstance
+let statusSpy: SpyInstance<any>
+let jsonSpy: SpyInstance<any>
+let endSpy: SpyInstance<any>
+let getByIdSpy: SpyInstance<any>
 let mockDevice: Device
 
 beforeEach(() => {
-  const guid = uuid()
+  const guid = randomUUID()
   mockDevice = {
     guid,
     tenantId: '',
@@ -53,10 +55,10 @@ beforeEach(() => {
     json: () => res,
     end: () => res
   }
-  statusSpy = jest.spyOn(res, 'status')
-  endSpy = jest.spyOn(res, 'end')
-  jsonSpy = jest.spyOn(res, 'json')
-  getByIdSpy = jest.spyOn(req.db.devices, 'getById')
+  statusSpy = spyOn(res, 'status')
+  endSpy = spyOn(res, 'end')
+  jsonSpy = spyOn(res, 'json')
+  getByIdSpy = spyOn(req.db.devices, 'getById')
 })
 
 async function run200 (): Promise<void> {

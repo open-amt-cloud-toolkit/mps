@@ -3,5 +3,5 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-export { logger } from './logger'
-export { messages } from './messages'
+export { logger } from './logger.js'
+export { messages } from './messages.js'

@@ -4,9 +4,10 @@
  **********************************************************************/
 
 import type Consul from 'consul'
-import { ConsulService } from './consul'
-import { config } from './../test/helper/config'
-
+import { ConsulService } from './consul.js'
+import { config } from './../test/helper/config.js'
+import { jest } from '@jest/globals'
+import { spyOn } from 'jest-mock'
 const consul: Consul = new ConsulService('consul', '8500')
 let componentName: string
 let serviceName: string
@@ -29,7 +30,7 @@ describe('consul', () => {
 
   describe('ConsulService', () => {
     it('get Consul health', async () => {
-      const spyHealth = jest.spyOn(consul.consul.health, 'service')
+      const spyHealth = spyOn(consul.consul.health, 'service')
       await consul.health(serviceName)
       expect(spyHealth).toHaveBeenCalledWith({ passing: true, service: 'consul' })
     })
@@ -39,7 +40,7 @@ describe('consul', () => {
       expect(consul.consul.kv.set).toHaveBeenCalledWith(componentName + '/config', JSON.stringify(config, null, 2))
     })
     it('seed Consul failure', async () => {
-      consul.consul.kv.set = jest.spyOn(consul.consul.kv, 'set').mockResolvedValue(Promise.reject(new Error()))
+      consul.consul.kv.set = spyOn(consul.consul.kv, 'set').mockResolvedValue(Promise.reject(new Error()))
       const result = await consul.seed(componentName, config)
       expect(result).toBe(false)
     })

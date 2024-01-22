@@ -4,9 +4,9 @@
  **********************************************************************/
 
 import { type Request, type Response } from 'express'
-import { logger } from '../../logging/logger'
-import { Environment } from '../../utils/Environment'
-import { signature } from './signature'
+import { logger } from '../../logging/index.js'
+import { Environment } from '../../utils/Environment.js'
+import { signature } from './signature.js'
 
 export async function authorizeDevice (req: Request, res: Response): Promise<void> {
   const guid: string = req.params.guid

@@ -3,24 +3,24 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import * as svcMngr from './consul/serviceManager'
-import { logger } from './logging'
-import { type configType, type certificatesType } from './models/Config'
-import { Certificates } from './utils/certificates'
-import tlsConfig from './utils/tlsConfiguration'
-import { parseValue } from './utils/parseEnvValue'
+import { processServiceConfigs, waitForServiceManager } from './consul/serviceManager.js'
+import { logger } from './logging/index.js'
+import { type configType, type certificatesType } from './models/Config.js'
+import { Certificates } from './utils/certificates.js'
+import { web, mps } from './utils/tlsConfiguration.js'
+import { parseValue } from './utils/parseEnvValue.js'
 import rc from 'rc'
-import { Environment } from './utils/Environment'
-import { MqttProvider } from './utils/MqttProvider'
-import { type ISecretManagerService } from './interfaces/ISecretManagerService'
-import { type IServiceManager } from './interfaces/IServiceManager'
-import { DbCreatorFactory } from './factories/DbCreatorFactory'
-import { SecretManagerCreatorFactory } from './factories/SecretManagerCreatorFactory'
-import { type IDB } from './interfaces/IDb'
-import { WebServer } from './server/webserver'
-import { MPSServer } from './server/mpsserver'
+import { Environment } from './utils/Environment.js'
+import { MqttProvider } from './utils/MqttProvider.js'
+import { type ISecretManagerService } from './interfaces/ISecretManagerService.js'
+import { type IServiceManager } from './interfaces/IServiceManager.js'
+import { DbCreatorFactory } from './factories/DbCreatorFactory.js'
+import { SecretManagerCreatorFactory } from './factories/SecretManagerCreatorFactory.js'
+import { type IDB } from './interfaces/IDb.js'
+import { WebServer } from './server/webserver.js'
+import { MPSServer } from './server/mpsserver.js'
 import { backOff } from 'exponential-backoff'
-import { ConsulService } from './consul/consul'
+import { ConsulService } from './consul/consul.js'
 
 export async function main (): Promise<void> {
   try {
@@ -71,9 +71,9 @@ export async function setupServiceManager (config: configType): Promise<void> {
   if (config.consul_enabled) {
     const consul: IServiceManager = new ConsulService(config.consul_host, config.consul_port)
     try {
-      await svcMngr.waitForServiceManager(consul, 'consul')
+      await waitForServiceManager(consul, 'consul')
       // Store or update configs
-      await svcMngr.processServiceConfigs(consul, config)
+      await processServiceConfigs(consul, config)
     } catch (err) {
       logger.error(`Unable to reach consul: ${err}  -  Exiting process.`)
       process.exit(0)
@@ -161,7 +161,7 @@ export async function loadCertificates (secrets: ISecretManagerService): Promise
       certs = { mps_tls_config: Environment.Config.mps_tls_config, web_tls_config: Environment.Config.web_tls_config }
     } else { // else read the certs from files
       logger.debug('using cert from file')
-      certs = { mps_tls_config: tlsConfig.mps(), web_tls_config: tlsConfig.web() }
+      certs = { mps_tls_config: mps(), web_tls_config: web() }
     }
     logger.debug('Loaded existing certificates')
   } else {

@@ -3,16 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { deactivate } from './deactivate'
-import { messages } from '../../logging'
-import { createSpyObj } from '../../test/helper/jest'
+import { deactivate } from './deactivate.js'
+import { messages } from '../../logging/index.js'
+import { createSpyObj } from '../../test/helper/jest.js'
+import { type SpyInstance, spyOn } from 'jest-mock'
 
 describe('deactivate', () => {
   let resSpy: any
   let req: any
-  let deleteSpy: jest.SpyInstance
-  let deleteSecretAtPathSpy: jest.SpyInstance
-  let deprovisionDeviceSpy: jest.SpyInstance
+  let deleteSpy: SpyInstance<any>
+  let deleteSecretAtPathSpy: SpyInstance<any>
+  let deprovisionDeviceSpy: SpyInstance<any>
 
   beforeEach(() => {
     resSpy = createSpyObj('Response', ['status', 'json'])
@@ -35,9 +36,9 @@ describe('deactivate', () => {
     resSpy.status.mockReturnThis()
     resSpy.json.mockReturnThis()
 
-    deleteSpy = jest.spyOn(req.db.devices, 'delete').mockResolvedValue({})
-    deleteSecretAtPathSpy = jest.spyOn(req.secrets, 'deleteSecretAtPath').mockResolvedValue({})
-    deprovisionDeviceSpy = jest.spyOn(req.deviceAction, 'unprovisionDevice').mockResolvedValue({ Body: { Unprovision_OUTPUT: { ReturnValue: 0 } } })
+    deleteSpy = spyOn(req.db.devices, 'delete').mockResolvedValue({})
+    deleteSecretAtPathSpy = spyOn(req.secrets, 'deleteSecretAtPath').mockResolvedValue({})
+    deprovisionDeviceSpy = spyOn(req.deviceAction, 'unprovisionDevice').mockResolvedValue({ Body: { Unprovision_OUTPUT: { ReturnValue: 0 } } })
   })
 
   it('should successfully deactivate a device', async () => {
@@ -49,14 +50,14 @@ describe('deactivate', () => {
     expect(deprovisionDeviceSpy).toHaveBeenCalled()
   })
   it('should return 200, even if return value is not zero', async () => {
-    deprovisionDeviceSpy = jest.spyOn(req.deviceAction, 'unprovisionDevice').mockResolvedValue({ Body: { Unprovision_OUTPUT: { ReturnValue: 1 } } })
+    deprovisionDeviceSpy = spyOn(req.deviceAction, 'unprovisionDevice').mockResolvedValue({ Body: { Unprovision_OUTPUT: { ReturnValue: 1 } } })
     await deactivate(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(200)
     expect(resSpy.json).toHaveBeenCalledWith({ ReturnValue: 1 })
     expect(deprovisionDeviceSpy).toHaveBeenCalled()
   })
   it('should return 500, even if return value is not zero', async () => {
-    deprovisionDeviceSpy = jest.spyOn(req.deviceAction, 'unprovisionDevice').mockImplementation(() => {
+    deprovisionDeviceSpy = spyOn(req.deviceAction, 'unprovisionDevice').mockImplementation(() => {
       throw new Error()
     })
     await deactivate(req, resSpy)
