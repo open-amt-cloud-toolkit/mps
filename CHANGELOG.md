@@ -1,3 +1,10 @@
+## [2.13.10](https://github.com/open-amt-cloud-toolkit/mps/compare/v2.13.9...v2.13.10) (2024-02-02)
+
+
+### Bug Fixes
+
+* expose only 3000 and 4433, and update docker file ([#1310](https://github.com/open-amt-cloud-toolkit/mps/issues/1310)) ([278f7c9](https://github.com/open-amt-cloud-toolkit/mps/commit/278f7c96f68089272b74461823294aaacd1fc6fe))
+
 ## [2.13.9](https://github.com/open-amt-cloud-toolkit/mps/compare/v2.13.8...v2.13.9) (2024-01-22)
 
 
