@@ -1,0 +1,4 @@
+{
+    "main": "dist/bundle.js",
+    "output": "mps-prep.blob"
+}

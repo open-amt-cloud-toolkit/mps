@@ -65,14 +65,15 @@ export class WebServer {
 
       // Relay websocket. KVM, IDER & SOL use this websocket.
       this.relayWSS.on('connection', this.relayConnection.bind(this))
+      this.app.use('/api/v1', this.useAPIv1.bind(this), (req, res, next) => { (req as any).tenantId = ''; next() }, routes)
 
-      this.loadCustomMiddleware().then(customMiddleware => {
-        this.app.use('/api/v1', this.useAPIv1.bind(this), customMiddleware, routes)
-      }).catch(err => {
-        logger.error('Error loading custom middleware')
-        logger.error(err)
-        process.exit(0)
-      })
+      // this.loadCustomMiddleware().then(customMiddleware => {
+      //   this.app.use('/api/v1', this.useAPIv1.bind(this), customMiddleware, routes)
+      // }).catch(err => {
+      //   logger.error('Error loading custom middleware')
+      //   logger.error(err)
+      //   process.exit(0)
+      // })
 
       // Handle upgrade on websocket
       this.server.on('upgrade', this.handleUpgrade.bind(this))

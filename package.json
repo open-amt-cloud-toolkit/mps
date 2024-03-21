@@ -58,6 +58,11 @@
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
     "@types/body-parser": "^1.19.5",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
@@ -80,6 +85,7 @@
     "jest-junit": "^16.0.0",
     "jest-mock": "^29.7.0",
     "jest-transform-stub": "^2.0.0",
+    "rollup": "^2.79.1",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
