@@ -12,6 +12,7 @@ import { EventEmitter } from 'node:events'
 import { Environment } from '../utils/Environment.js'
 
 const KEEPALIVE_INTERVAL = 30 // 30 seconds is typical keepalive interval for AMT CIRA connection
+const TUNNEL_LIFETIME = 3600 // 3600 seconds (1 hour) will cause AMT to disconnect and reconnect.  This is a work around where AMT can get into a disconnected state and never attempt to reconnect.
 
 export enum APFProtocol {
   UNKNOWN = 0,
@@ -298,7 +299,7 @@ const APFProcessor = {
       APFProcessor.SendTcpForwardSuccessReply(socket, port)
       // 5900 port is the last TCP port on which connections for forwarding are to be cancelled. Ports order: 16993, 16992, 664, 623, 16995, 16994, 5900
       // Request keepalive interval time
-      if (port === 5900) { APFProcessor.SendKeepaliveOptionsRequest(socket, KEEPALIVE_INTERVAL, 0) }
+      if (port === 5900) { APFProcessor.SendKeepaliveOptionsRequest(socket, KEEPALIVE_INTERVAL, TUNNEL_LIFETIME) }
       return 14 + requestLen + addrLen
     }
 
