@@ -1,11 +1,12 @@
 # Management Presence Server
+![CodeQL](https://img.shields.io/github/actions/workflow/status/open-amt-cloud-toolkit/mps/codeql-analysis.yml?style=for-the-badge&label=CodeQL)
+![API Tests](https://img.shields.io/github/actions/workflow/status/open-amt-cloud-toolkit/mps/api-test.yml?style=for-the-badge&label=API%20Test)
+![Build](https://img.shields.io/github/actions/workflow/status/open-amt-cloud-toolkit/mps/node.js.yml?style=for-the-badge)
+![Codecov](https://img.shields.io/codecov/c/github/open-amt-cloud-toolkit/mps?style=for-the-badge)
+![OSSF-Scorecard Score](https://img.shields.io/ossf-scorecard/github.com/open-amt-cloud-toolkit/mps?style=for-the-badge&label=OSSF%20Score)
+![Discord](https://img.shields.io/discord/1063200098680582154?style=for-the-badge&label=Discord)
+![Docker Pulls](https://img.shields.io/docker/pulls/intel/oact-mps?style=for-the-badge)
 
-![CodeQL](https://github.com/open-amt-cloud-toolkit/mps/actions/workflows/codeql-analysis.yml/badge.svg?branch=main&event=push) 
-![Node.js CI](https://github.com/open-amt-cloud-toolkit/mps/workflows/Node.js%20CI/badge.svg) 
-![codecov.io](https://codecov.io/github/open-amt-cloud-toolkit/mps/coverage.svg?branch=main) 
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/open-amt-cloud-toolkit/mps/badge)](https://api.securityscorecards.dev/projects/github.com/open-amt-cloud-toolkit/mps) 
-[![Discord Shield](https://discordapp.com/api/guilds/1063200098680582154/widget.png?style=shield)](https://discord.gg/yrcMp2kDWh) 
-[![Docker Pulls](https://img.shields.io/docker/pulls/intel/oact-mps)](https://hub.docker.com/r/intel/oact-mps)
 
 
 > Disclaimer: Production viable releases are tagged and listed under 'Releases'.  All other check-ins should be considered 'in-development' and should not be used in production
