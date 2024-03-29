@@ -1,11 +1,11 @@
 # Management Presence Server
-![CodeQL](https://img.shields.io/github/actions/workflow/status/open-amt-cloud-toolkit/mps/codeql-analysis.yml?style=for-the-badge&label=CodeQL)
-![API Tests](https://img.shields.io/github/actions/workflow/status/open-amt-cloud-toolkit/mps/api-test.yml?style=for-the-badge&label=API%20Test)
-![Build](https://img.shields.io/github/actions/workflow/status/open-amt-cloud-toolkit/mps/node.js.yml?style=for-the-badge)
-![Codecov](https://img.shields.io/codecov/c/github/open-amt-cloud-toolkit/mps?style=for-the-badge)
-![OSSF-Scorecard Score](https://img.shields.io/ossf-scorecard/github.com/open-amt-cloud-toolkit/mps?style=for-the-badge&label=OSSF%20Score)
-![Discord](https://img.shields.io/discord/1063200098680582154?style=for-the-badge&label=Discord)
-![Docker Pulls](https://img.shields.io/docker/pulls/intel/oact-mps?style=for-the-badge)
+![CodeQL](https://img.shields.io/github/actions/workflow/status/open-amt-cloud-toolkit/mps/codeql-analysis.yml?style=for-the-badge&label=CodeQL&logo=github)
+![API Tests](https://img.shields.io/github/actions/workflow/status/open-amt-cloud-toolkit/mps/api-test.yml?style=for-the-badge&label=API%20Test&logo=postman)
+![Build](https://img.shields.io/github/actions/workflow/status/open-amt-cloud-toolkit/mps/node.js.yml?style=for-the-badge&logo=github)
+![Codecov](https://img.shields.io/codecov/c/github/open-amt-cloud-toolkit/mps?style=for-the-badge&logo=codecov)
+[![OSSF-Scorecard Score](https://img.shields.io/ossf-scorecard/github.com/open-amt-cloud-toolkit/mps?style=for-the-badge&label=OSSF%20Score)](https://api.securityscorecards.dev/projects/github.com/open-amt-cloud-toolkit/mps)
+[![Discord](https://img.shields.io/discord/1063200098680582154?style=for-the-badge&label=Discord&logo=discord&logoColor=white&labelColor=%235865F2&link=https%3A%2F%2Fdiscord.gg%2FqmTWWFyA)](https://discord.gg/qmTWWFyA)
+[![Docker Pulls](https://img.shields.io/docker/pulls/intel/oact-mps?style=for-the-badge&logo=docker)](https://hub.docker.com/r/intel/oact-mps)
 
 
 
