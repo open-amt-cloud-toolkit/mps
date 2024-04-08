@@ -87,6 +87,11 @@ jobs:
       with:
         template: report
         token: ${{ secrets.SECURITY_TOKEN }}
+    - name: Rename Report
+      shell: bash
+      run: |
+        DATE=$(date +"%Y-%m-%d")
+        mv "report.pdf" "mps-security-report-$DATE.pdf"
     - name: GitHub Upload Release Artifacts
       uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
       continue-on-error: true
