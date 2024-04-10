@@ -89,6 +89,7 @@ jobs:
         token: ${{ secrets.SECURITY_TOKEN }}
     - name: Rename Report
       shell: bash
+      continue-on-error: true
       run: |
         DATE=$(date +"%Y-%m-%d")
         mv "report.pdf" "mps-security-report-$DATE.pdf"
