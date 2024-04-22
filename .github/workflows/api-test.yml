@@ -29,7 +29,7 @@ jobs:
       if: failure()
       uses: jwalton/gh-docker-logs@2741064ab9d7af54b0b1ffb6076cf64c16f0220e # v2.2.2
     - name: Upload Postman Results
-      uses: actions/upload-artifact@1746f4ab65b179e0ea60a494b83293b640dd5bba # v4.3.2
+      uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
       with:
         name: mps-api
         path: /home/runner/work/mps/mps/src/test/results
