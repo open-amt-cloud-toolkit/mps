@@ -4,7 +4,7 @@
 ![Build](https://img.shields.io/github/actions/workflow/status/open-amt-cloud-toolkit/mps/node.js.yml?style=for-the-badge&logo=github)
 ![Codecov](https://img.shields.io/codecov/c/github/open-amt-cloud-toolkit/mps?style=for-the-badge&logo=codecov)
 [![OSSF-Scorecard Score](https://img.shields.io/ossf-scorecard/github.com/open-amt-cloud-toolkit/mps?style=for-the-badge&label=OSSF%20Score)](https://api.securityscorecards.dev/projects/github.com/open-amt-cloud-toolkit/mps)
-[![Discord](https://img.shields.io/discord/1063200098680582154?style=for-the-badge&label=Discord&logo=discord&logoColor=white&labelColor=%235865F2&link=https%3A%2F%2Fdiscord.gg%2FqmTWWFyA)](https://discord.gg/qmTWWFyA)
+[![Discord](https://img.shields.io/discord/1063200098680582154?style=for-the-badge&label=Discord&logo=discord&logoColor=white&labelColor=%235865F2&link=https%3A%2F%2Fdiscord.gg%2DKHeUNEWVH)](https://discord.gg/DKHeUNEWVH)
 [![Docker Pulls](https://img.shields.io/docker/pulls/intel/oact-mps?style=for-the-badge&logo=docker)](https://hub.docker.com/r/intel/oact-mps)
 
 
@@ -100,4 +100,4 @@ jwt_secrets:
 
 - Need additional support or want to get the latest news and events about Open AMT? Connect with the team directly through Discord.
 
-    [![Discord Banner 1](https://discordapp.com/api/guilds/1063200098680582154/widget.png?style=banner2)](https://discord.gg/yrcMp2kDWh)
+    [![Discord Banner 1](https://discordapp.com/api/guilds/1063200098680582154/widget.png?style=banner2)](https://discord.gg/DKHeUNEWVH)
