@@ -69,7 +69,7 @@
     "@typescript-eslint/parser": "^6.21.0",
     "eslint": "^8.57.0",
     "eslint-config-standard": "^17.1.0",
-    "eslint-config-love": "^43.0.1",
+    "eslint-config-love": "^51.0.1",
     "eslint-plugin-header": "^3.1.1",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-license-header": "^0.6.1",
