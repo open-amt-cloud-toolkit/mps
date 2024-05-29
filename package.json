@@ -44,7 +44,7 @@
     "exponential-backoff": "^3.1.1",
     "express": "^4.19.2",
     "express-validator": "^7.1.0",
-    "got": "^14.2.1",
+    "got": "^14.3.0",
     "http-z": "^7.0.0",
     "jws": "^4.0.0",
     "mongodb": "^6.6.2",
