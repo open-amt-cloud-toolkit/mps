@@ -8,7 +8,7 @@ import { ConsulService } from './consul.js'
 import { config } from './../test/helper/config.js'
 import { jest } from '@jest/globals'
 import { spyOn } from 'jest-mock'
-const consul: Consul = new ConsulService('consul', '8500')
+const consul: Consul = new ConsulService('localhost', '8500')
 let componentName: string
 let serviceName: string
 
