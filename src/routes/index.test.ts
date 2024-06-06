@@ -25,9 +25,7 @@ describe('Check index from routes', () => {
 
   it('should have routers', () => {
     routers.forEach((route) => {
-      const match = router.stack.find(
-        (s) => (s?.regexp as RegExp).exec(route.path)?.length > 0 && s.path == null
-      )
+      const match = router.stack.find((s) => s?.regexp?.exec(route.path)?.length > 0 && s.path == null)
       expect(match).toBeTruthy()
     })
   })
