@@ -1,6 +1,6 @@
 {
   "name": "@open-amt-cloud-toolkit/mps",
-  "version": "2.13.13",
+  "version": "2.13.14",
   "description": "Containerized MPS service for executing Intel&reg; AMT features",
   "homepage": "https://github.com/open-amt-cloud-toolkit/mps",
   "contributors": [
@@ -37,7 +37,7 @@
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js  --forceExit --coverage"
   },
   "dependencies": {
-    "@open-amt-cloud-toolkit/wsman-messages": "^5.6.6",
+    "@open-amt-cloud-toolkit/wsman-messages": "^5.6.7",
     "bottleneck": "^2.19.5",
     "consul": "^1.2.0",
     "cors": "^2.8.5",
