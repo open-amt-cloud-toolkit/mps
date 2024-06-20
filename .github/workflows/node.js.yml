@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@f086349bfa2bd1361f7909c78558e816508cdc10 # v2.8.0
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
         with:
           egress-policy: audit
 
@@ -48,7 +48,7 @@ jobs:
           path: junit.xml # Path to test results
           reporter: jest-junit # Format of test results
           fail-on-error: "false"
-      - uses: codecov/codecov-action@125fc84a9a348dbcf27191600683ec096ec9021c # v4.4.1
+      - uses: codecov/codecov-action@e28ff129e5465c2c0dcc6f003fc735cb6ae0c673 # v4.5.0
         name: Upload Coverage Results
         if: ${{ matrix.node-version == '20.x' }}
       - name: Rename test file
