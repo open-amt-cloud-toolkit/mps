@@ -59,7 +59,7 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
     if (isRedirectionChanged) {
       amtRedirectionResponse.AMT_RedirectionService.EnabledState = (32768 + ((ider ? 1 : 0) + (sol ? 2 : 0))) as AMT.Types.RedirectionService.EnabledState
       amtRedirectionResponse.AMT_RedirectionService.ListenerEnabled = redir
-      await setRedirectionService(req.deviceAction, amtRedirectionResponse, kvm, payload.guid as string)
+      await setRedirectionService(req.deviceAction, amtRedirectionResponse, kvm)
     }
 
     const optResponse = optServiceResponse.IPS_OptInService
@@ -67,7 +67,7 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
     const optInRequiredValue = UserConsentOptions[key]
     if (optResponse.OptInRequired !== optInRequiredValue) {
       optResponse.OptInRequired = optInRequiredValue
-      await setUserConsent(req.deviceAction, optServiceResponse, payload.guid as string)
+      await setUserConsent(req.deviceAction, optServiceResponse)
     }
 
     MqttProvider.publishEvent('success', ['AMT_SetFeatures'], messages.AMT_FEATURES_SET_SUCCESS, guid)
@@ -78,7 +78,7 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
     res.status(500).json(ErrorResponse(500, messages.AMT_FEATURES_SET_EXCEPTION)).end()
   }
 }
-export async function setRedirectionService (device: DeviceAction, amtRedirResponse: AMT.Models.RedirectionResponse, kvm: boolean, guid: string): Promise<void> {
+export async function setRedirectionService (device: DeviceAction, amtRedirResponse: AMT.Models.RedirectionResponse, kvm: boolean): Promise<void> {
   // TODO: check statuses
   // for SOL and IDER
   await device.setRedirectionService(amtRedirResponse.AMT_RedirectionService.EnabledState as AMT.Types.RedirectionService.RequestedState)
@@ -88,6 +88,6 @@ export async function setRedirectionService (device: DeviceAction, amtRedirRespo
   await device.putRedirectionService(amtRedirResponse.AMT_RedirectionService)
 }
 
-export async function setUserConsent (device: DeviceAction, optServiceRes: IPS.Models.OptInServiceResponse, guid: string): Promise<void> {
+export async function setUserConsent (device: DeviceAction, optServiceRes: IPS.Models.OptInServiceResponse): Promise<void> {
   await device.putIpsOptInService(optServiceRes)
 }

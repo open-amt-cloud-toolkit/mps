@@ -13,10 +13,6 @@ import { type AMT, type CIM } from '@open-amt-cloud-toolkit/wsman-messages'
 export async function powerAction (req: Request, res: Response): Promise<void> {
   try {
     const payload = req.body
-    const results = await req.deviceAction.getBootOptions()
-    const bootData = setBootData(payload.action as number, false, results.AMT_BootSettingData)
-    await req.deviceAction.setBootConfiguration(bootData)
-
     const powerAction = await req.deviceAction.sendPowerAction(payload.action as CIM.Types.PowerManagementService.PowerState)
     powerAction.Body.RequestPowerStateChange_OUTPUT.ReturnValueStr = AMTStatusToString(powerAction.Body.RequestPowerStateChange_OUTPUT.ReturnValue as number)
     powerAction.Body = powerAction.Body.RequestPowerStateChange_OUTPUT
@@ -33,28 +29,4 @@ function AMTStatusToString (code: number): string {
   if (AMTStatusCodes[code]) {
     return AMTStatusCodes[code]
   } else return 'UNKNOWN_ERROR'
-}
-
-export function setBootData (action: number, useSOL: boolean, r: AMT.Models.BootSettingData): AMT.Models.BootSettingData {
-  r.BIOSPause = false
-  r.BIOSSetup = false
-  r.BootMediaIndex = 0
-  r.ConfigurationDataReset = false
-  r.FirmwareVerbosity = 0
-  r.ForcedProgressEvents = false
-  r.IDERBootDevice = 0
-  r.LockKeyboard = false
-  r.LockPowerButton = false
-  r.LockResetButton = false
-  r.LockSleepButton = false
-  r.ReflashBIOS = false
-  r.UseIDER = false
-  r.UseSOL = useSOL
-  r.UseSafeMode = false
-  r.UserPasswordBypass = false
-  r.SecureErase = false
-  // if (r.SecureErase) {
-  //   r.SecureErase = action === 104 && amtPowerBootCapabilities.SecureErase === true
-  // }
-  return r
 }

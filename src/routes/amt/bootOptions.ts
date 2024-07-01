@@ -18,11 +18,10 @@ export async function bootOptions (req: Request, res: Response): Promise<void> {
     const bootData = setBootData(payload.action as number, payload.useSOL as boolean, results.AMT_BootSettingData)
     await device.setBootConfiguration(bootData)
     const forceBootSource = setBootSource(payload.action as number)
+    await device.forceBootMode()
     if (forceBootSource != null) { // only if
-      await device.forceBootMode()
       await device.changeBootOrder(forceBootSource)
     } else {
-      await device.forceBootMode()
       await device.changeBootOrder()
     }
     const newAction = determinePowerAction(payload.action as number)
