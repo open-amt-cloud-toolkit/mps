@@ -8,7 +8,7 @@ import { logger, messages } from '../../logging/index.js'
 import { MPSValidationError } from '../../utils/MPSValidationError.js'
 import { type Request, type Response } from 'express'
 
-export async function insertDevice (req: Request, res: Response): Promise<void> {
+export async function insertDevice(req: Request, res: Response): Promise<void> {
   let device: Device
   try {
     device = await req.db.devices.getById(req.body.guid as string, req.body.tenantId as string)

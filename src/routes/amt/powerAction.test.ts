@@ -34,7 +34,12 @@ describe('Power Capabilities', () => {
       },
       deviceAction: device
     }
-    resSpy = createSpyObj('Response', ['status', 'json', 'end', 'send'])
+    resSpy = createSpyObj('Response', [
+      'status',
+      'json',
+      'end',
+      'send'
+    ])
     resSpy.status.mockReturnThis()
     resSpy.json.mockReturnThis()
     resSpy.send.mockReturnThis()
@@ -67,7 +72,9 @@ describe('Power Capabilities', () => {
         ReturnValueStr: 'UNKNOWN_ERROR'
       }
     }
-    const powerActionErrorFromDevice: CIM.Models.PowerActionResponse = { Body: { RequestPowerStateChange_OUTPUT: { ReturnValue: -1 } } } as any
+    const powerActionErrorFromDevice: CIM.Models.PowerActionResponse = {
+      Body: { RequestPowerStateChange_OUTPUT: { ReturnValue: -1 } }
+    } as any
     spyOn(device, 'sendPowerAction').mockResolvedValue(powerActionErrorFromDevice)
 
     await powerAction(req as any, resSpy)

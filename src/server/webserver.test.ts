@@ -38,11 +38,11 @@ describe('webserver tests', () => {
 
     secrets = {
       getSecretFromKey: async (path: string, key: string) => 'P@ssw0rd',
-      getSecretAtPath: async (path: string) => ({} as any),
+      getSecretAtPath: async (path: string) => ({}) as any,
       getAMTCredentials: async (path: string) => ['admin', 'P@ssw0rd'],
-      getMPSCerts: async () => ({} as any),
+      getMPSCerts: async () => ({}) as any,
       writeSecretWithObject: async (path: string, data: any) => false,
-      deleteSecretAtPath: async (path: string) => { },
+      deleteSecretAtPath: async (path: string) => {},
       health: async () => ({})
     }
     certs = {
@@ -94,7 +94,8 @@ describe('webserver tests', () => {
         req: {
           url: '/relay/webrelay.ashx?p=2&host=4c4c4544-004d-4d10-8050-b3c04f325133&port=16994&tls=0&tls1only=0',
           headers: {
-            'sec-websocket-protocol': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJZCI6IiIsImlzcyI6IjlFbVJKVGJJaUliNGJJZVNzbWdjV0lqclI2SHlFVHFjIiwiZGV2aWNlSWQiOiI0YzRjNDU0NC0wMDRkLTRkMTAtODA1MC1iM2MwNGYzMjUxMzMiLCJleHAiOjE2OTY2MDk5NTN9.52h9jO1f8F4PmckqZeGyrpd3F5Wmq2d8041tO9cFrBc'
+            'sec-websocket-protocol':
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJZCI6IiIsImlzcyI6IjlFbVJKVGJJaUliNGJJZVNzbWdjV0lqclI2SHlFVHFjIiwiZGV2aWNlSWQiOiI0YzRjNDU0NC0wMDRkLTRkMTAtODA1MC1iM2MwNGYzMjUxMzMiLCJleHAiOjE2OTY2MDk5NTN9.52h9jO1f8F4PmckqZeGyrpd3F5Wmq2d8041tO9cFrBc'
           }
         }
       }
@@ -332,13 +333,12 @@ describe('webserver tests', () => {
         certs: null
       }
       const res: Express.Response = {
-        status (): any {
+        status(): any {
           return returnMock
         }
       }
       const returnMock = {
-        send (any): void {
-        }
+        send(any): void {}
       }
       const err = new SyntaxError()
       const appUseJsonParserSpy = spyOn(web, 'appUseJsonParser')
@@ -451,6 +451,5 @@ describe('webserver tests', () => {
     })
   })
 
-  afterAll(function () {
-  })
+  afterAll(function () {})
 })

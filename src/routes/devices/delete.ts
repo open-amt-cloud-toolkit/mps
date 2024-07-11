@@ -6,7 +6,7 @@
 import { type Request, type Response } from 'express'
 import { logger, messages } from '../../logging/index.js'
 
-export async function deleteDevice (req: Request, res: Response): Promise<void> {
+export async function deleteDevice(req: Request, res: Response): Promise<void> {
   try {
     let dbResults
     let vaultResults
@@ -17,14 +17,20 @@ export async function deleteDevice (req: Request, res: Response): Promise<void> 
 
     if (device == null && isSecretToBeDeleted === 'false') {
       // Not in db and ignore vault
-      res.status(404).json({ error: 'NOT FOUND', message: `Device ID ${guid} not found` }).end()
+      res
+        .status(404)
+        .json({ error: 'NOT FOUND', message: `Device ID ${guid} not found` })
+        .end()
     } else if (device == null && isSecretToBeDeleted === 'true') {
       // Device not in db but in vault
       vaultResults = await deleteSecrets(req, guid)
       if (vaultResults) {
         res.status(204).end()
       } else {
-        res.status(404).json({ error: 'NOT FOUND', message: `Device ID ${guid} not found` }).end()
+        res
+          .status(404)
+          .json({ error: 'NOT FOUND', message: `Device ID ${guid} not found` })
+          .end()
       }
     } else if (device != null && isSecretToBeDeleted === 'true') {
       // In db and delete vault
@@ -33,7 +39,10 @@ export async function deleteDevice (req: Request, res: Response): Promise<void> 
       if (dbResults && vaultResults) {
         res.status(204).end()
       } else {
-        res.status(404).json({ error: 'NOT FOUND', message: `Device ID ${guid} not found` }).end()
+        res
+          .status(404)
+          .json({ error: 'NOT FOUND', message: `Device ID ${guid} not found` })
+          .end()
       }
     } else if (device != null && isSecretToBeDeleted === 'false') {
       // In db and ignore vault
@@ -48,7 +57,7 @@ export async function deleteDevice (req: Request, res: Response): Promise<void> 
   }
 }
 
-export async function deleteSecrets (req: Request, guid: string): Promise<boolean> {
+export async function deleteSecrets(req: Request, guid: string): Promise<boolean> {
   const queryParams = req.query
   try {
     if (queryParams.isSecretToBeDeleted === 'true') {

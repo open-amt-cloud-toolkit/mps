@@ -10,10 +10,11 @@ import { jest } from '@jest/globals'
 import { spyOn } from 'jest-mock'
 let expressValidatorMockReturnValue = true
 jest.unstable_mockModule('express-validator', () => ({
-  validationResult: () => ({
-    isEmpty: jest.fn().mockReturnValue(expressValidatorMockReturnValue),
-    array: jest.fn().mockReturnValue([{ test: 'error' }])
-  } as any)
+  validationResult: () =>
+    ({
+      isEmpty: jest.fn().mockReturnValue(expressValidatorMockReturnValue),
+      array: jest.fn().mockReturnValue([{ test: 'error' }])
+    }) as any
 }))
 const login = await import('./login.js')
 
@@ -23,7 +24,12 @@ describe('Check login', () => {
 
   beforeEach(() => {
     expressValidatorMockReturnValue = true
-    resSpy = createSpyObj('Response', ['status', 'json', 'end', 'send'])
+    resSpy = createSpyObj('Response', [
+      'status',
+      'json',
+      'end',
+      'send'
+    ])
     req = {
       body: {
         username: 'admin',
@@ -90,7 +96,7 @@ describe('Check login', () => {
   it('should pass with expected expiration', async () => {
     Environment.Config.web_auth_enabled = true
     spyOn(global.Date, 'now').mockImplementation(() => new Date('2019-05-14T11:01:58.135Z').valueOf())
-    const expiration = Math.floor((Date.now() + (1000 * 60 * Environment.Config.jwt_expiration)) / 1000)
+    const expiration = Math.floor((Date.now() + 1000 * 60 * Environment.Config.jwt_expiration) / 1000)
     const expected = {
       payload: {
         exp: expiration

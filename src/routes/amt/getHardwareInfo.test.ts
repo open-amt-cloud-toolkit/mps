@@ -5,7 +5,18 @@
 
 import { hardwareInfo } from './getHardwareInfo.js'
 import { createSpyObj } from '../../test/helper/jest.js'
-import { biosElement, card, chassis, chip, computerSystemPackage, mediaAccessDevice, physicalMemory, physicalPackage, processor, systemPackaging } from '../../test/helper/wsmanResponses.js'
+import {
+  biosElement,
+  card,
+  chassis,
+  chip,
+  computerSystemPackage,
+  mediaAccessDevice,
+  physicalMemory,
+  physicalPackage,
+  processor,
+  systemPackaging
+} from '../../test/helper/wsmanResponses.js'
 import { type DeviceAction } from '../../amt/DeviceAction.js'
 // import { CIRAHandler } from '../../amt/CIRAHandler.js'
 // import { HttpHandler } from '../../amt/HttpHandler.js'
@@ -34,7 +45,12 @@ describe('Hardware information', () => {
       getChip: jest.fn()
     } as any
     // new DeviceAction(handler, null)
-    resSpy = createSpyObj('Response', ['status', 'json', 'end', 'send'])
+    resSpy = createSpyObj('Response', [
+      'status',
+      'json',
+      'end',
+      'send'
+    ])
     req = { params: { guid: '4c4c4544-004b-4210-8033-b6c04f504633' }, deviceAction: device }
     resSpy.status.mockReturnThis()
     resSpy.json.mockReturnThis()
@@ -82,12 +98,20 @@ describe('Hardware information', () => {
     ChipSpy.mockResolvedValueOnce(null)
     await hardwareInfo(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(400)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Incorrect URI or Bad Request', errorDescription: `${messages.HARDWARE_INFORMATION_REQUEST_FAILED} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.` })
+    expect(resSpy.json).toHaveBeenCalledWith({
+      error: 'Incorrect URI or Bad Request',
+      errorDescription: `${messages.HARDWARE_INFORMATION_REQUEST_FAILED} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.`
+    })
   })
   it('should handle error 500', async () => {
-    (device as any).getComputerSystemPackage = jest.fn<any>().mockRejectedValueOnce(new Error('Failed to get ComputerSystemPackage'))
+    ;(device as any).getComputerSystemPackage = jest
+      .fn<any>()
+      .mockRejectedValueOnce(new Error('Failed to get ComputerSystemPackage'))
     await hardwareInfo(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(500)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Internal Server Error', errorDescription: messages.HARDWARE_INFORMATION_EXCEPTION })
+    expect(resSpy.json).toHaveBeenCalledWith({
+      error: 'Internal Server Error',
+      errorDescription: messages.HARDWARE_INFORMATION_EXCEPTION
+    })
   })
 })

@@ -114,8 +114,9 @@ describe('Index', () => {
 
     it('Should fail with no jwt secret', () => {
       config.jwt_secret = ''
-      const mockExit = spyOn(process, 'exit')
-        .mockImplementation((number) => { throw new Error('process.exit: ' + number) })
+      const mockExit = spyOn(process, 'exit').mockImplementation((number) => {
+        throw new Error('process.exit: ' + number)
+      })
       expect(() => {
         indexFile.loadConfig(config)
       }).toThrow()
@@ -126,8 +127,9 @@ describe('Index', () => {
       config.web_admin_user = 'admin'
       config.web_admin_password = ''
       config.jwt_secret = 'secret'
-      const mockExit = spyOn(process, 'exit')
-        .mockImplementation((number) => { throw new Error('process.exit: ' + number) })
+      const mockExit = spyOn(process, 'exit').mockImplementation((number) => {
+        throw new Error('process.exit: ' + number)
+      })
       expect(() => {
         indexFile.loadConfig(config)
       }).toThrow()
@@ -194,9 +196,12 @@ describe('Index', () => {
       }
       Environment.Config = config
       secretManagerService = new VaultSecretManagerService(logger)
-      spyOn(secretManagerService.gotClient, 'get').mockImplementation(() => ({
-        json: jest.fn(() => null)
-      } as any))
+      spyOn(secretManagerService.gotClient, 'get').mockImplementation(
+        () =>
+          ({
+            json: jest.fn(() => null)
+          }) as any
+      )
     })
     it('should pass with config', async () => {
       const result = await indexFile.loadCertificates(secretManagerService)

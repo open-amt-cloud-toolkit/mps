@@ -10,15 +10,19 @@ import { MqttProvider } from '../../utils/MqttProvider.js'
 import { AMTStatusCodes } from '../../utils/constants.js'
 import { type AMT, type CIM } from '@open-amt-cloud-toolkit/wsman-messages'
 
-export async function powerAction (req: Request, res: Response): Promise<void> {
+export async function powerAction(req: Request, res: Response): Promise<void> {
   try {
     const payload = req.body
     const results = await req.deviceAction.getBootOptions()
     const bootData = setBootData(payload.action as number, false, results.AMT_BootSettingData)
     await req.deviceAction.setBootConfiguration(bootData)
 
-    const powerAction = await req.deviceAction.sendPowerAction(payload.action as CIM.Types.PowerManagementService.PowerState)
-    powerAction.Body.RequestPowerStateChange_OUTPUT.ReturnValueStr = AMTStatusToString(powerAction.Body.RequestPowerStateChange_OUTPUT.ReturnValue as number)
+    const powerAction = await req.deviceAction.sendPowerAction(
+      payload.action as CIM.Types.PowerManagementService.PowerState
+    )
+    powerAction.Body.RequestPowerStateChange_OUTPUT.ReturnValueStr = AMTStatusToString(
+      powerAction.Body.RequestPowerStateChange_OUTPUT.ReturnValue as number
+    )
     powerAction.Body = powerAction.Body.RequestPowerStateChange_OUTPUT
     MqttProvider.publishEvent('success', ['AMT_PowerAction'], messages.POWER_ACTION_REQUESTED)
     res.status(200).json(powerAction).end()
@@ -29,13 +33,17 @@ export async function powerAction (req: Request, res: Response): Promise<void> {
   }
 }
 
-function AMTStatusToString (code: number): string {
+function AMTStatusToString(code: number): string {
   if (AMTStatusCodes[code]) {
     return AMTStatusCodes[code]
   } else return 'UNKNOWN_ERROR'
 }
 
-export function setBootData (action: number, useSOL: boolean, r: AMT.Models.BootSettingData): AMT.Models.BootSettingData {
+export function setBootData(
+  action: number,
+  useSOL: boolean,
+  r: AMT.Models.BootSettingData
+): AMT.Models.BootSettingData {
   r.BIOSPause = false
   r.BIOSSetup = false
   r.BootMediaIndex = 0

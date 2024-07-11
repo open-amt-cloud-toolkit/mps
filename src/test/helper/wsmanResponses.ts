@@ -49,7 +49,11 @@ export const serviceAvailableToElement = {
       PullResponse: {
         Items: {
           CIM_AssociatedPowerManagementService: {
-            AvailableRequestedPowerStates: ['8', '2', '5'],
+            AvailableRequestedPowerStates: [
+              '8',
+              '2',
+              '5'
+            ],
             PowerState: '4',
             ServiceProvided: {
               Address: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
@@ -59,7 +63,8 @@ export const serviceAvailableToElement = {
                   Selector: [
                     'CIM_PowerManagementService',
                     'Intel(r) AMT Power Management Service',
-                    'CIM_ComputerSystem', 'Intel(r) AMT'
+                    'CIM_ComputerSystem',
+                    'Intel(r) AMT'
                   ]
                 }
               }
@@ -71,7 +76,8 @@ export const serviceAvailableToElement = {
                 SelectorSet: {
                   Selector: [
                     'CIM_ComputerSystem',
-                    'ManagedSystem']
+                    'ManagedSystem'
+                  ]
                 }
               }
             }
@@ -619,51 +625,63 @@ export const softwareIdentityResponse = {
     Body: {
       PullResponse: {
         Items: {
-          CIM_SoftwareIdentity: [{
-            InstanceID: 'Flash',
-            IsEntity: 'true',
-            VersionString: '15.0.23'
-          }, {
-            InstanceID: 'Netstack',
-            IsEntity: 'true',
-            VersionString: '15.0.23'
-          }, {
-            InstanceID: 'AMTApps',
-            IsEntity: 'true',
-            VersionString: '15.0.23'
-          }, {
-            InstanceID: 'AMT',
-            IsEntity: 'true',
-            VersionString: '15.0.23'
-          }, {
-            InstanceID: 'Sku',
-            IsEntity: 'true',
-            VersionString: '16392'
-          }, {
-            InstanceID: 'VendorID',
-            IsEntity: 'true',
-            VersionString: '8086'
-          }, {
-            InstanceID: 'Build Number',
-            IsEntity: 'true',
-            VersionString: '1706'
-          }, {
-            InstanceID: 'Recovery Version',
-            IsEntity: 'true',
-            VersionString: '15.0.23'
-          }, {
-            InstanceID: 'Recovery Build Num',
-            IsEntity: 'true',
-            VersionString: '1706'
-          }, {
-            InstanceID: 'Legacy Mode',
-            IsEntity: 'true',
-            VersionString: 'False'
-          }, {
-            InstanceID: 'AMT FW Core Version',
-            IsEntity: 'true',
-            VersionString: '15.0.23'
-          }]
+          CIM_SoftwareIdentity: [
+            {
+              InstanceID: 'Flash',
+              IsEntity: 'true',
+              VersionString: '15.0.23'
+            },
+            {
+              InstanceID: 'Netstack',
+              IsEntity: 'true',
+              VersionString: '15.0.23'
+            },
+            {
+              InstanceID: 'AMTApps',
+              IsEntity: 'true',
+              VersionString: '15.0.23'
+            },
+            {
+              InstanceID: 'AMT',
+              IsEntity: 'true',
+              VersionString: '15.0.23'
+            },
+            {
+              InstanceID: 'Sku',
+              IsEntity: 'true',
+              VersionString: '16392'
+            },
+            {
+              InstanceID: 'VendorID',
+              IsEntity: 'true',
+              VersionString: '8086'
+            },
+            {
+              InstanceID: 'Build Number',
+              IsEntity: 'true',
+              VersionString: '1706'
+            },
+            {
+              InstanceID: 'Recovery Version',
+              IsEntity: 'true',
+              VersionString: '15.0.23'
+            },
+            {
+              InstanceID: 'Recovery Build Num',
+              IsEntity: 'true',
+              VersionString: '1706'
+            },
+            {
+              InstanceID: 'Legacy Mode',
+              IsEntity: 'true',
+              VersionString: 'False'
+            },
+            {
+              InstanceID: 'AMT FW Core Version',
+              IsEntity: 'true',
+              VersionString: '15.0.23'
+            }
+          ]
         },
         EndOfSequence: ''
       }
@@ -701,51 +719,63 @@ export const setupAndConfigurationServiceResponse = {
 
 export const versionResponse = {
   CIM_SoftwareIdentity: {
-    responses: [{
-      InstanceID: 'Flash',
-      IsEntity: 'true',
-      VersionString: '15.0.23'
-    }, {
-      InstanceID: 'Netstack',
-      IsEntity: 'true',
-      VersionString: '15.0.23'
-    }, {
-      InstanceID: 'AMTApps',
-      IsEntity: 'true',
-      VersionString: '15.0.23'
-    }, {
-      InstanceID: 'AMT',
-      IsEntity: 'true',
-      VersionString: '15.0.23'
-    }, {
-      InstanceID: 'Sku',
-      IsEntity: 'true',
-      VersionString: '16392'
-    }, {
-      InstanceID: 'VendorID',
-      IsEntity: 'true',
-      VersionString: '8086'
-    }, {
-      InstanceID: 'Build Number',
-      IsEntity: 'true',
-      VersionString: '1706'
-    }, {
-      InstanceID: 'Recovery Version',
-      IsEntity: 'true',
-      VersionString: '15.0.23'
-    }, {
-      InstanceID: 'Recovery Build Num',
-      IsEntity: 'true',
-      VersionString: '1706'
-    }, {
-      InstanceID: 'Legacy Mode',
-      IsEntity: 'true',
-      VersionString: 'False'
-    }, {
-      InstanceID: 'AMT FW Core Version',
-      IsEntity: 'true',
-      VersionString: '15.0.23'
-    }],
+    responses: [
+      {
+        InstanceID: 'Flash',
+        IsEntity: 'true',
+        VersionString: '15.0.23'
+      },
+      {
+        InstanceID: 'Netstack',
+        IsEntity: 'true',
+        VersionString: '15.0.23'
+      },
+      {
+        InstanceID: 'AMTApps',
+        IsEntity: 'true',
+        VersionString: '15.0.23'
+      },
+      {
+        InstanceID: 'AMT',
+        IsEntity: 'true',
+        VersionString: '15.0.23'
+      },
+      {
+        InstanceID: 'Sku',
+        IsEntity: 'true',
+        VersionString: '16392'
+      },
+      {
+        InstanceID: 'VendorID',
+        IsEntity: 'true',
+        VersionString: '8086'
+      },
+      {
+        InstanceID: 'Build Number',
+        IsEntity: 'true',
+        VersionString: '1706'
+      },
+      {
+        InstanceID: 'Recovery Version',
+        IsEntity: 'true',
+        VersionString: '15.0.23'
+      },
+      {
+        InstanceID: 'Recovery Build Num',
+        IsEntity: 'true',
+        VersionString: '1706'
+      },
+      {
+        InstanceID: 'Legacy Mode',
+        IsEntity: 'true',
+        VersionString: 'False'
+      },
+      {
+        InstanceID: 'AMT FW Core Version',
+        IsEntity: 'true',
+        VersionString: '15.0.23'
+      }
+    ],
     status: 200
   },
   AMT_SetupAndConfigurationService: {
@@ -931,7 +961,7 @@ export const alarmClockNoOccurrences = {
     Body: {
       PullResponse: {
         EnumerationContext: '18000000-0000-0000-0000-000000000000',
-        Items: { },
+        Items: {},
         EndOfSequence: 'true'
       }
     }
@@ -1035,19 +1065,17 @@ export const addAlarmClockOccurrenceQuotaLimitResponse = {
           }
         },
         Reason: 'The service is busy servicing other requests.',
-        Detail: { }
+        Detail: {}
       }
     }
   }
 }
 
 export const deactivateResponse = {
-  success:
-  {
+  success: {
     status: 'SUCCESS'
   },
-  notFound:
-  {
+  notFound: {
     error: 'Device not found/connected. Please connect again using CIRA.',
     errorDescription: 'guid : 1'
   }

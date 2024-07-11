@@ -35,8 +35,36 @@ export const HTTPErrorTable = {
 // Power Actions supported as per Distributed Management Task Force standard.
 // ValueMap={2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}
 // Values={Power On, Sleep - Light, Sleep - Deep, Power Cycle (Off Soft), Power Off - Hard, Hibernate, Power Off - Soft, Power Cycle (Off Hard), Master Bus Reset, Diagnostic Interrupt (NMI), Power Off - Soft Graceful, Power Off - Hard Graceful, Master Bus Reset Graceful, Power Cycle (Off - Soft Graceful), Power Cycle (Off - Hard Graceful)}
-export const DMTFPowerStates = [2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17]
-export const DMTFPowerExtendedStates = [100, 101, 104, 200, 201, 202, 203, 300, 301, 400, 401]
+export const DMTFPowerStates = [
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17
+]
+export const DMTFPowerExtendedStates = [
+  100,
+  101,
+  104,
+  200,
+  201,
+  202,
+  203,
+  300,
+  301,
+  400,
+  401
+]
 
 export const UserConsentOptions = {
   none: 0,
@@ -55,12 +83,12 @@ export const AMTStatusCodes = {
   0x0007: 'UNSUPPORTED_ISVS_VERSION',
   0x0008: 'APPLICATION_NOT_REGISTERED',
   0x0009: 'INVALID_REGISTRATION_DATA',
-  0x000A: 'APPLICATION_DOES_NOT_EXIST',
-  0x000B: 'NOT_ENOUGH_STORAGE',
-  0x000C: 'INVALID_NAME',
-  0x000D: 'BLOCK_DOES_NOT_EXIST',
-  0x000E: 'INVALID_BYTE_OFFSET',
-  0x000F: 'INVALID_BYTE_COUNT',
+  0x000a: 'APPLICATION_DOES_NOT_EXIST',
+  0x000b: 'NOT_ENOUGH_STORAGE',
+  0x000c: 'INVALID_NAME',
+  0x000d: 'BLOCK_DOES_NOT_EXIST',
+  0x000e: 'INVALID_BYTE_OFFSET',
+  0x000f: 'INVALID_BYTE_COUNT',
   0x0010: 'NOT_PERMITTED',
   0x0011: 'NOT_OWNER',
   0x0012: 'BLOCK_LOCKED_BY_OTHER',
@@ -71,12 +99,12 @@ export const AMTStatusCodes = {
   0x0017: 'MAX_LIMIT_REACHED',
   0x0018: 'INVALID_AUTH_TYPE',
   0x0019: 'AUTHENTICATION_FAILED',
-  0x001A: 'INVALID_DHCP_MODE',
-  0x001B: 'INVALID_IP_ADDRESS',
-  0x001C: 'INVALID_DOMAIN_NAME',
-  0x001D: 'UNSUPPORTED_VERSION',
-  0x001E: 'REQUEST_UNEXPECTED',
-  0x001F: 'INVALID_TABLE_TYPE',
+  0x001a: 'INVALID_DHCP_MODE',
+  0x001b: 'INVALID_IP_ADDRESS',
+  0x001c: 'INVALID_DOMAIN_NAME',
+  0x001d: 'UNSUPPORTED_VERSION',
+  0x001e: 'REQUEST_UNEXPECTED',
+  0x001f: 'INVALID_TABLE_TYPE',
   0x0020: 'INVALID_PROVISIONING_STATE',
   0x0021: 'UNSUPPORTED_OBJECT',
   0x0022: 'INVALID_TIME',
@@ -87,12 +115,12 @@ export const AMTStatusCodes = {
   0x0027: 'INVALID_IMAGE_LENGTH',
   0x0028: 'INVALID_IMAGE_SIGNATURE',
   0x0029: 'PROPOSE_ANOTHER_VERSION',
-  0x002A: 'INVALID_PID_FORMAT',
-  0x002B: 'INVALID_PPS_FORMAT',
-  0x002C: 'BIST_COMMAND_BLOCKED',
-  0x002D: 'CONNECTION_FAILED',
-  0x002E: 'CONNECTION_TOO_MANY',
-  0x002F: 'RNG_GENERATION_IN_PROGRESS',
+  0x002a: 'INVALID_PID_FORMAT',
+  0x002b: 'INVALID_PPS_FORMAT',
+  0x002c: 'BIST_COMMAND_BLOCKED',
+  0x002d: 'CONNECTION_FAILED',
+  0x002e: 'CONNECTION_TOO_MANY',
+  0x002f: 'RNG_GENERATION_IN_PROGRESS',
   0x0030: 'RNG_NOT_READY',
   0x0031: 'CERTIFICATE_NOT_READY',
   0x0400: 'DISABLED_BY_POLICY',
@@ -106,12 +134,12 @@ export const AMTStatusCodes = {
   0x0807: 'INVALID_REALM',
   0x0808: 'STORAGE_ACL_ENTRY_IN_USE',
   0x0809: 'DATA_MISSING',
-  0x080A: 'DUPLICATE',
-  0x080B: 'EVENTLOG_FROZEN',
-  0x080C: 'PKI_MISSING_KEYS',
-  0x080D: 'PKI_GENERATING_KEYS',
-  0x080E: 'INVALID_KEY',
-  0x080F: 'INVALID_CERT',
+  0x080a: 'DUPLICATE',
+  0x080b: 'EVENTLOG_FROZEN',
+  0x080c: 'PKI_MISSING_KEYS',
+  0x080d: 'PKI_GENERATING_KEYS',
+  0x080e: 'INVALID_KEY',
+  0x080f: 'INVALID_CERT',
   0x0810: 'CERT_KEY_NOT_MATCH',
   0x0811: 'MAX_KERB_DOMAIN_REACHED',
   0x0812: 'UNSUPPORTED',
@@ -120,8 +148,8 @@ export const AMTStatusCodes = {
   0x0815: 'INVALID_CREDENTIALS',
   0x0816: 'INVALID_PASSPHRASE',
   0x0818: 'NO_ASSOCIATION',
-  0x081B: 'AUDIT_FAIL',
-  0x081C: 'BLOCKING_COMPONENT',
+  0x081b: 'AUDIT_FAIL',
+  0x081c: 'BLOCKING_COMPONENT',
   0x0821: 'USER_CONSENT_REQUIRED',
   0x1000: 'APP_INTERNAL_ERROR',
   0x1001: 'NOT_INITIALIZED',
@@ -133,7 +161,7 @@ export const AMTStatusCodes = {
   0x1007: 'NETWORK_ERROR',
   0x1008: 'PARAM_BUFFER_TOO_SHORT',
   0x1009: 'COM_NOT_INITIALIZED_IN_THREAD',
-  0x100A: 'URL_REQUIRED'
+  0x100a: 'URL_REQUIRED'
 }
 
 // Default top and skip for api pagination
@@ -367,7 +395,10 @@ export const AMTAuditStringTable = {
   3302: 'A user has modified a Watchdog to add, remove, or alter the Watchdog Action connected to it'
 }
 
-export const RealmNames = '||Redirection|PT Administration|Hardware Asset|Remote Control|Storage|Event Manager|Storage Admin|Agent Presence Local|Agent Presence Remote|Circuit Breaker|Network Time|General Information|Firmware Update|EIT|LocalUN|Endpoint Access Control|Endpoint Access Control Admin|Event Log Reader|Audit Log|ACL Realm|||Local System'.split('|')
+export const RealmNames =
+  '||Redirection|PT Administration|Hardware Asset|Remote Control|Storage|Event Manager|Storage Admin|Agent Presence Local|Agent Presence Remote|Circuit Breaker|Network Time|General Information|Firmware Update|EIT|LocalUN|Endpoint Access Control|Endpoint Access Control Admin|Event Log Reader|Audit Log|ACL Realm|||Local System'.split(
+    '|'
+  )
 
 export const VaultResponseCodes = (statusCode: any = null): string => {
   let vaultError: string

@@ -9,7 +9,7 @@ import { ErrorResponse } from '../../utils/amtHelper.js'
 import { MqttProvider } from '../../utils/MqttProvider.js'
 import { getVersion } from './getVersion.js'
 
-export async function powerCapabilities (req: Request, res: Response): Promise<void> {
+export async function powerCapabilities(req: Request, res: Response): Promise<void> {
   try {
     const guid: string = req.params.guid
 
@@ -27,7 +27,7 @@ export async function powerCapabilities (req: Request, res: Response): Promise<v
 }
 
 // Return Boot Capabilities
-function bootCapabilities (amtVersionData, response): any {
+function bootCapabilities(amtVersionData, response): any {
   const amtversion = parseVersionData(amtVersionData)
   const data: any = { 'Power up': 2, 'Power cycle': 5, 'Power down': 8, Reset: 10 }
   if (amtversion > 9) {
@@ -57,7 +57,7 @@ function bootCapabilities (amtVersionData, response): any {
 }
 
 // Parse Version Data
-function parseVersionData (amtVersionData): number {
+function parseVersionData(amtVersionData): number {
   const verList = amtVersionData.CIM_SoftwareIdentity.responses
   for (const i in verList) {
     if (verList[i].InstanceID === 'AMT') {

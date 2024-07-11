@@ -22,7 +22,7 @@ describe('CIRA Handler', () => {
   const cimCardResponse =
     '0220\r\n<?xml version="1.0" encoding="UTF-8"?><a:Envelope xmlns:a="http://www.w3.org/2003/05/soap-envelope" xmlns:b="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:c="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns:d="http://schemas.xmlsoap.org/ws/2005/02/trust" xmlns:e="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:f="http://schemas.dmtf.org/wbem/wsman/1/cimbinding.xsd" xmlns:g="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_Card" xmlns:h="http://schemas.dmtf.org/wbem/wscim/1/commo\r\n02FA\r\nn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a:Header><b:To>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</b:To><b:RelatesTo>2</b:RelatesTo><b:Action a:mustUnderstand="true">http://schemas.xmlsoap.org/ws/2004/09/transfer/GetResponse</b:Action><b:MessageID>uuid:00000000-8086-8086-8086-000000000003</b:MessageID><c:ResourceURI>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_Card</c:ResourceURI></a:Header><a:Body><g:CIM_Card><g:CanBeFRUed>true</g:CanBeFRUed><g:CreationClassName>CIM_Card</g:CreationClassName><g:ElementName>Managed System Base Board</g:ElementName><g:Manufacturer>Dell Inc.</g:Manufacturer><g:Model>0MVDNX</g:Model><g:OperationalStatus>0</g:OperationalStatus><g:PackageType>9</g:PackageType><g:SerialNumber>/\r\n007C\r\n6KB3PF3/CNPEC0017500BC/</g:SerialNumber><g:Tag>CIM_Card</g:Tag><g:Version>A00</g:Version></g:CIM_Card></a:Body></a:Envelope>\r\n0\r\n\r\n'
   const unauthorizedResponse =
-       'HTTP/1.1 401 Unauthorized\r\nWWW-Authenticate: Digest realm="Digest:34BF4B5A0561F95248F58509A406E046", nonce="bQali2IAAAAAAAAAn0xaWCOcxNsRcEHX",stale="false",qop="auth"\r\nContent-Type: text/html\r\nServer: Intel(R) Active Management Technology 15.0.23.1706\r\nContent-Length: 693\r\nConnection: close\r\n\r\n'
+    'HTTP/1.1 401 Unauthorized\r\nWWW-Authenticate: Digest realm="Digest:34BF4B5A0561F95248F58509A406E046", nonce="bQali2IAAAAAAAAAn0xaWCOcxNsRcEHX",stale="false",qop="auth"\r\nContent-Type: text/html\r\nServer: Intel(R) Active Management Technology 15.0.23.1706\r\nContent-Length: 693\r\nConnection: close\r\n\r\n'
   let sendSpy
   beforeEach(() => {
     ciraHandler = new CIRAHandler(new HttpHandler(), 'admin', 'P@ssw0rd')
@@ -109,13 +109,17 @@ describe('CIRA Handler', () => {
     expect(response).toBeDefined()
   })
   it('should throw error when empty data', () => {
-    expect(() => { ciraHandler.handleResult('') }).toThrowError('rawMessage has incorrect format')
+    expect(() => {
+      ciraHandler.handleResult('')
+    }).toThrowError('rawMessage has incorrect format')
   })
   it('should throw Unauthorized Error when 401 from ATM - digest challenge', () => {
     const handleAuthSpy = spyOn(ciraHandler, 'handleAuth')
     ciraHandler.httpHandler.authResolve = () => {}
     const authSpy = spyOn(ciraHandler.httpHandler, 'authResolve')
-    expect(() => { ciraHandler.handleResult(unauthorizedResponse) }).toThrowError('Unauthorized')
+    expect(() => {
+      ciraHandler.handleResult(unauthorizedResponse)
+    }).toThrowError('Unauthorized')
     expect(authSpy).toHaveBeenCalled()
     expect(handleAuthSpy).toHaveBeenCalled()
   })
@@ -155,7 +159,18 @@ describe('CIRA Handler', () => {
   })
   it('should set up a new CIRA channel', () => {
     const sendChannelSpy = spyOn(APFProcessor, 'SendChannelOpen').mockImplementation(() => {})
-    const socket: CIRASocket = { tag: { first: true, activetunnels: 0, boundPorts: [], host: null, nextchannelid: 4, channels: {}, nextsourceport: 0, nodeid: null } } as any
+    const socket: CIRASocket = {
+      tag: {
+        first: true,
+        activetunnels: 0,
+        boundPorts: [],
+        host: null,
+        nextchannelid: 4,
+        channels: {},
+        nextsourceport: 0,
+        nodeid: null
+      }
+    } as any
     const channel = ciraHandler.SetupCiraChannel(socket, 16692)
     expect(sendChannelSpy).toBeCalledTimes(1)
     expect(channel.state).toEqual(1)

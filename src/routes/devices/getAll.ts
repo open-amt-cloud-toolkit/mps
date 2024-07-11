@@ -8,7 +8,7 @@ import { logger, messages } from '../../logging/index.js'
 import { type DataWithCount } from '../../models/Config.js'
 import { type Request, type Response } from 'express'
 
-export async function getAllDevices (req: Request, res: Response): Promise<void> {
+export async function getAllDevices(req: Request, res: Response): Promise<void> {
   const count: boolean = req.query.$count as any // converted in validator
   try {
     let list: Device[] = []
@@ -19,14 +19,20 @@ export async function getAllDevices (req: Request, res: Response): Promise<void>
       list = await req.db.devices.getByFriendlyName(req.query.friendlyName as string, req.tenantId)
     } else if (req.query.tags != null) {
       const tags = (req.query.tags as string).split(',')
-      list = await req.db.devices.getByTags(tags, req.query.method as string, req.query.$top as string, req.query.$skip as string, req.tenantId)
+      list = await req.db.devices.getByTags(
+        tags,
+        req.query.method as string,
+        req.query.$top as string,
+        req.query.$skip as string,
+        req.tenantId
+      )
     } else {
       list = await req.db.devices.get(req.query.$top as string, req.query.$skip as string, req.tenantId)
     }
     if (req.query.status != null) {
-      list = list.filter(x => {
+      list = list.filter((x) => {
         const convertedStatus = x.connectionStatus ? 1 : 0
-        return convertedStatus === req.query.status as any
+        return convertedStatus === (req.query.status as any)
       })
     }
     if (count != null && count) {

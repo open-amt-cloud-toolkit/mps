@@ -14,7 +14,7 @@ import { VaultResponseCodes } from '../../utils/constants.js'
 import { type ISecretManagerService } from '../../interfaces/ISecretManagerService.js'
 import { type IDB } from '../../interfaces/IDb.js'
 
-export async function getHealthCheck (req: Request, res: Response): Promise<void> {
+export async function getHealthCheck(req: Request, res: Response): Promise<void> {
   try {
     const status: HealthCheck = {
       db: {
@@ -31,7 +31,11 @@ export async function getHealthCheck (req: Request, res: Response): Promise<void
     status.secretStore.status = await getSecretStoreHealth(req.secrets)
 
     res.status(200)
-    if (status.db.status !== 'OK' || status.secretStore.status.initialized !== true || status.secretStore.status.sealed !== false) {
+    if (
+      status.db.status !== 'OK' ||
+      status.secretStore.status.initialized !== true ||
+      status.secretStore.status.sealed !== false
+    ) {
       res.status(503)
     }
 
@@ -44,7 +48,7 @@ export async function getHealthCheck (req: Request, res: Response): Promise<void
   }
 }
 
-export async function getDBHealth (db: IDB): Promise<any> {
+export async function getDBHealth(db: IDB): Promise<any> {
   try {
     await db.query('SELECT 1')
     return 'OK'
@@ -57,7 +61,7 @@ export async function getDBHealth (db: IDB): Promise<any> {
   }
 }
 
-export async function getSecretStoreHealth (secretsManager: ISecretManagerService): Promise<any> {
+export async function getSecretStoreHealth(secretsManager: ISecretManagerService): Promise<any> {
   try {
     const secretProviderResponse = await secretsManager.health()
     return secretProviderResponse

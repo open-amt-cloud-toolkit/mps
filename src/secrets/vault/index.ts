@@ -14,7 +14,7 @@ import { messages } from '../../logging/index.js'
 export class VaultSecretManagerService implements ISecretManagerService {
   gotClient: Got
   logger: ILogger
-  constructor (logger: ILogger) {
+  constructor(logger: ILogger) {
     this.logger = logger
     this.gotClient = got.extend({
       prefixUrl: `${Environment.Config.vault_address}/v1/${Environment.Config.secrets_path}`,
@@ -24,7 +24,7 @@ export class VaultSecretManagerService implements ISecretManagerService {
     })
   }
 
-  async getSecretFromKey (path: string, key: string): Promise<string> {
+  async getSecretFromKey(path: string, key: string): Promise<string> {
     try {
       this.logger.verbose(`${messages.SECRET_MANAGER_GETTING_SECRET} ${path}`)
       const rspJson: any = await this.gotClient.get(path).json()
@@ -38,7 +38,7 @@ export class VaultSecretManagerService implements ISecretManagerService {
     return null
   }
 
-  async getSecretAtPath (path: string): Promise<any> {
+  async getSecretAtPath(path: string): Promise<any> {
     try {
       this.logger.verbose(`${messages.SECRET_MANAGER_GETTING_SECRET} ${path}`)
       const rspJson: any = await this.gotClient.get(path).json()
@@ -50,7 +50,7 @@ export class VaultSecretManagerService implements ISecretManagerService {
     }
   }
 
-  async writeSecretWithObject (path: string, data: any): Promise<boolean> {
+  async writeSecretWithObject(path: string, data: any): Promise<boolean> {
     try {
       this.logger.verbose(messages.SECRET_MANAGER_WRITING_DATA_TO_SECRET_STORE)
       await this.gotClient.post(path, { json: data })
@@ -62,7 +62,7 @@ export class VaultSecretManagerService implements ISecretManagerService {
     }
   }
 
-  async getAMTCredentials (path: string): Promise<string[]> {
+  async getAMTCredentials(path: string): Promise<string[]> {
     const user = 'admin'
     const secret: { data: DeviceSecrets } = await this.getSecretAtPath(`devices/${path}`)
     if (secret?.data?.AMT_PASSWORD == null) {
@@ -72,7 +72,7 @@ export class VaultSecretManagerService implements ISecretManagerService {
     return [user, amtpass]
   }
 
-  async getMPSCerts (): Promise<certificatesType> {
+  async getMPSCerts(): Promise<certificatesType> {
     const secret: { data: certificatesType } = await this.getSecretAtPath('MPSCerts')
     if (secret == null) {
       return null
@@ -81,20 +81,24 @@ export class VaultSecretManagerService implements ISecretManagerService {
     return certs
   }
 
-  async deleteSecretAtPath (path: string): Promise<void> {
+  async deleteSecretAtPath(path: string): Promise<void> {
     // to permanently delete the key, we use metadata path
     const basePath = Environment.Config.secrets_path.replace('/data/', '/metadata/')
     this.logger.verbose(`Deleting data from vault:${path}`)
-    await this.gotClient.delete(`${path}`, {
-      prefixUrl: `${Environment.Config.vault_address}/v1/${basePath}`
-    }).json()
+    await this.gotClient
+      .delete(`${path}`, {
+        prefixUrl: `${Environment.Config.vault_address}/v1/${basePath}`
+      })
+      .json()
     this.logger.debug(`Successfully Deleted data from vault: ${path}`)
   }
 
-  async health (): Promise<any> {
-    const rspJson: any = await this.gotClient.get('sys/health?standbyok=true', {
-      prefixUrl: `${Environment.Config.vault_address}/v1/`
-    }).json()
+  async health(): Promise<any> {
+    const rspJson: any = await this.gotClient
+      .get('sys/health?standbyok=true', {
+        prefixUrl: `${Environment.Config.vault_address}/v1/`
+      })
+      .json()
     return rspJson
   }
 }

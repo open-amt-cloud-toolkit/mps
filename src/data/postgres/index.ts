@@ -16,14 +16,14 @@ import { DeviceTable } from './tables/device.js'
 export class PostgresDb implements IDB {
   pool: pg.Pool
   devices: IDeviceTable
-  constructor (connectionString: string) {
+  constructor(connectionString: string) {
     this.pool = new pg.Pool({
       connectionString
     })
     this.devices = new DeviceTable(this)
   }
 
-  async query<T> (text: string, params?: any): Promise<pg.QueryResult<T>> {
+  async query<T>(text: string, params?: any): Promise<pg.QueryResult<T>> {
     const start = Date.now()
     const res = await this.pool.query(text, params)
     const duration = Date.now() - start

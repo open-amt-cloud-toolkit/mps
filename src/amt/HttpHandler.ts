@@ -19,7 +19,7 @@ export class connectionParams {
   digestChallenge?: DigestChallenge
 }
 
-function myParseNumbers (value: string, name: string): any {
+function myParseNumbers(value: string, name: string): any {
   if (name === 'ElementName' || name === 'InstanceID') {
     if (value.length > 1 && value.charAt(0) === '0') {
       return value
@@ -34,15 +34,21 @@ export class HttpHandler {
   isAuthInProgress: any
   // The purpose of this directive is to allow the server to detect request replays by maintaining its own copy of this count.
   // if the same nonceCounter-value is seen twice, then the request is a replay
-  nonceCounter: number = 1
+  nonceCounter = 1
   stripPrefix: any
   parser: any
-  constructor () {
+  constructor() {
     this.stripPrefix = xml2js.processors.stripPrefix
-    this.parser = new xml2js.Parser({ ignoreAttrs: true, mergeAttrs: false, explicitArray: false, tagNameProcessors: [this.stripPrefix], valueProcessors: [myParseNumbers, xml2js.processors.parseBooleans] })
+    this.parser = new xml2js.Parser({
+      ignoreAttrs: true,
+      mergeAttrs: false,
+      explicitArray: false,
+      tagNameProcessors: [this.stripPrefix],
+      valueProcessors: [myParseNumbers, xml2js.processors.parseBooleans]
+    })
   }
 
-  wrapIt (connectionParams: connectionParams, data: string): Buffer {
+  wrapIt(connectionParams: connectionParams, data: string): Buffer {
     try {
       const url = '/wsman'
       const action = 'POST'
@@ -56,9 +62,13 @@ export class HttpHandler {
         // console nonce should be a unique opaque quoted string
         connectionParams.consoleNonce = Math.random().toString(36).substring(7)
         const nc = ('00000000' + (this.nonceCounter++).toString(16)).slice(-8)
-        const HA1 = this.hashIt(`${connectionParams.username}:${connectionParams.digestChallenge.realm}:${connectionParams.password}`)
+        const HA1 = this.hashIt(
+          `${connectionParams.username}:${connectionParams.digestChallenge.realm}:${connectionParams.password}`
+        )
         const HA2 = this.hashIt(`${action}:${url}`)
-        responseDigest = this.hashIt(`${HA1}:${connectionParams.digestChallenge.nonce}:${nc}:${connectionParams.consoleNonce}:${connectionParams.digestChallenge.qop}:${HA2}`)
+        responseDigest = this.hashIt(
+          `${HA1}:${connectionParams.digestChallenge.nonce}:${nc}:${connectionParams.consoleNonce}:${connectionParams.digestChallenge.qop}:${HA2}`
+        )
         const authorizationRequestHeader = this.digestIt({
           username: connectionParams.username,
           realm: connectionParams.digestChallenge.realm,
@@ -88,7 +98,9 @@ export class HttpHandler {
       message += `Host: ${connectionParams.guid}:${connectionParams.port}\r\nContent-Length: ${dataBuffer.length}\r\n\r\n`
       const buffer = Buffer.concat([Buffer.from(message, 'utf8'), dataBuffer])
       if (dataBuffer.length !== data.length) {
-        logger.silly(`wrapIt data length mismatch: Buffer.length = ${dataBuffer.length}, string.length = ${data.length}`)
+        logger.silly(
+          `wrapIt data length mismatch: Buffer.length = ${dataBuffer.length}, string.length = ${data.length}`
+        )
         logger.silly(buffer.toString('utf8'))
       }
       return buffer
@@ -98,12 +110,12 @@ export class HttpHandler {
     }
   }
 
-  hashIt (data: string): string {
+  hashIt(data: string): string {
     return createHash('md5').update(data).digest('hex')
   }
 
   // Prepares Authorization Request Header
-  digestIt (params: object): string {
+  digestIt(params: object): string {
     const paramNames = []
     for (const i in params) {
       paramNames.push(i)
@@ -125,7 +137,7 @@ export class HttpHandler {
     return obj
   }
 
-  parseXML (xmlBody: string): any {
+  parseXML(xmlBody: string): any {
     let wsmanResponse: string
     const xmlDecoded: string = Buffer.from(xmlBody, 'binary').toString('utf8')
     this.parser.parseString(xmlDecoded, (err, result) => {

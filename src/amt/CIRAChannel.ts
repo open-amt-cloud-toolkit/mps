@@ -30,11 +30,15 @@ export class CIRAChannel {
   onStateChange?: EventEmitter // (state: number) => void
   onData?: any
   sendchannelclose?: any
-  rawChunkedData: string = ''
-  digestChallenge: string = ''
+  rawChunkedData = ''
+  digestChallenge = ''
   resolve: (data) => void
   messages = {}
-  constructor (private readonly httpHandler: HttpHandler, targetport: number, socket: CIRASocket) {
+  constructor(
+    private readonly httpHandler: HttpHandler,
+    targetport: number,
+    socket: CIRASocket
+  ) {
     this.targetport = targetport
     this.channelid = socket.tag.nextchannelid++
     this.socket = socket
@@ -70,7 +74,7 @@ export class CIRAChannel {
     }
   }
 
-  async writeData (data: string, params?: connectionParams): Promise<string> {
+  async writeData(data: string, params?: connectionParams): Promise<string> {
     let messageId
     return await new Promise((resolve, reject) => {
       if (data) {
@@ -87,9 +91,13 @@ export class CIRAChannel {
       } else {
         this.resolve = resolve
       }
-      if (this.state === 0) { reject(new Error('Closed')); return }// return false
+      if (this.state === 0) {
+        reject(new Error('Closed'))
+        return
+      } // return false
       let wsmanRequest: Buffer
-      if (params != null) { // this is an API Call
+      if (params != null) {
+        // this is an API Call
         wsmanRequest = this.httpHandler.wrapIt(params, data)
       } else {
         wsmanRequest = Buffer.from(data, 'binary')
@@ -108,7 +116,7 @@ export class CIRAChannel {
     })
   }
 
-  CloseChannel (): number {
+  CloseChannel(): number {
     if (this.state === 0 || this.closing === 1) return this.state
     if (this.state === 1) {
       this.closing = 1

@@ -157,7 +157,18 @@ describe('Device Action Tests', () => {
       expect(result).toBe(null)
     })
     it('should return null when pull call to software identity is null', async () => {
-      enumerateSpy.mockResolvedValueOnce({ Envelope: { Header: { To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous', RelatesTo: '0', Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/EnumerateResponse', MessageID: 'uuid:00000000-8086-8086-8086-000000000001', ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_SoftwareIdentity' }, Body: { EnumerateResponse: { EnumerationContext: '01000000-0000-0000-0000-000000000000' } } } })
+      enumerateSpy.mockResolvedValueOnce({
+        Envelope: {
+          Header: {
+            To: 'http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous',
+            RelatesTo: '0',
+            Action: 'http://schemas.xmlsoap.org/ws/2004/09/enumeration/EnumerateResponse',
+            MessageID: 'uuid:00000000-8086-8086-8086-000000000001',
+            ResourceURI: 'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_SoftwareIdentity'
+          },
+          Body: { EnumerateResponse: { EnumerationContext: '01000000-0000-0000-0000-000000000000' } }
+        }
+      })
       pullSpy.mockResolvedValue(softwareIdentityResponse)
       const result = await device.getSoftwareIdentity()
       expect(result).toBe(softwareIdentityResponse.Envelope.Body)

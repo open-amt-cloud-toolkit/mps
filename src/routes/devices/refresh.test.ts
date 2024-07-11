@@ -31,12 +31,12 @@ describe('refresh tests', () => {
       },
       secrets: {
         getSecretFromKey: async (path: string, key: string) => 'P@ssw0rd',
-        getSecretAtPath: async (path: string) => ({} as any),
+        getSecretAtPath: async (path: string) => ({}) as any,
         getAMTCredentials: async (path: string) => ['admin', 'P@ssw0rd'],
-        getMPSCerts: async () => ({} as any),
+        getMPSCerts: async () => ({}) as any,
         writeSecretWithObject: async (path: string, data: any) => false,
         health: async () => ({}),
-        deleteSecretAtPath: async (path: string) => { }
+        deleteSecretAtPath: async (path: string) => {}
       }
     } as any
     getCredsSpy = spyOn(req.secrets, 'getAMTCredentials')

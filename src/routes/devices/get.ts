@@ -6,11 +6,11 @@
 import { logger, messages } from '../../logging/index.js'
 import { type Request, type Response } from 'express'
 
-export async function getDevice (req: Request, res: Response): Promise<void> {
+export async function getDevice(req: Request, res: Response): Promise<void> {
   try {
     let tenantId = req.tenantId
     const tentantIdInQuery = req.query?.tenantId
-    if ((tenantId == null || tenantId === '') && (tentantIdInQuery != null && tentantIdInQuery !== '')) {
+    if ((tenantId == null || tenantId === '') && tentantIdInQuery != null && tentantIdInQuery !== '') {
       tenantId = tentantIdInQuery as string
     }
     const result = await req.db.devices.getById(req.params.guid)

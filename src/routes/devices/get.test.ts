@@ -61,7 +61,7 @@ beforeEach(() => {
   getByIdSpy = spyOn(req.db.devices, 'getById')
 })
 
-async function run200 (): Promise<void> {
+async function run200(): Promise<void> {
   getByIdSpy.mockResolvedValue(mockDevice)
   await getDevice(req, res)
   expect(getByIdSpy).toHaveBeenCalledWith(req.params.guid)
@@ -70,7 +70,7 @@ async function run200 (): Promise<void> {
   expect(endSpy).toHaveBeenCalled()
 }
 
-async function run204 (): Promise<void> {
+async function run204(): Promise<void> {
   getByIdSpy.mockResolvedValue(mockDevice)
   await getDevice(req, res)
   expect(getByIdSpy).toHaveBeenCalledWith(req.params.guid)

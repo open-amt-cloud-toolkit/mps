@@ -6,7 +6,7 @@
 import { type Request, type Response } from 'express'
 import { version } from '../../utils/version.js'
 
-export function getVersion (req: Request, res: Response): void {
+export function getVersion(req: Request, res: Response): void {
   const response = {
     serviceVersion: version
   }

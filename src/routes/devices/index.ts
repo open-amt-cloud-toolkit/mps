@@ -29,6 +29,12 @@ deviceRouter.get('/redirectstatus/:guid', param('guid').isUUID(), validateMiddle
 deviceRouter.post('/', validator(), validateMiddleware, insertDevice)
 deviceRouter.patch('/', validator(), validateMiddleware, updateDevice)
 deviceRouter.delete('/refresh/:guid', validator(), validateMiddleware, refreshDevice)
-deviceRouter.delete('/:guid', param('guid').isUUID(), query('isSecretToBeDeleted').optional().isBoolean(), validateMiddleware, deleteDevice)
+deviceRouter.delete(
+  '/:guid',
+  param('guid').isUUID(),
+  query('isSecretToBeDeleted').optional().isBoolean(),
+  validateMiddleware,
+  deleteDevice
+)
 deviceRouter.delete('/disconnect/:guid', param('guid').isUUID(), validateMiddleware, ciraMiddleware, disconnect)
 export default deviceRouter

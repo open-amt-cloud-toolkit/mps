@@ -20,7 +20,7 @@ export class MqttProvider {
 
   static instance: MqttProvider
 
-  constructor () {
+  constructor() {
     if (!Environment.Config.mqtt_address) {
       this.turnedOn = false
       logger.info(messages.MQTT_OFF)
@@ -38,7 +38,7 @@ export class MqttProvider {
     }
   }
 
-  connectBroker (): void {
+  connectBroker(): void {
     if (!this.turnedOn) return
 
     this.client = connect(this.baseUrl, this.options)
@@ -48,7 +48,7 @@ export class MqttProvider {
   // eslint-disable-next-line @typescript-eslint/promise-function-async
   // Return type is any to get around the linter - Rule : no-floating-promises
   // Publish event is meant to be fire and forget
-  static publishEvent (type: eventType, methods: string[], message: string, guid?: string): any {
+  static publishEvent(type: eventType, methods: string[], message: string, guid?: string): any {
     // Block message if mqtt option is off
     if (!MqttProvider.instance?.turnedOn) return
 
@@ -76,7 +76,7 @@ export class MqttProvider {
     })
   }
 
-  static endBroker (): void {
+  static endBroker(): void {
     if (!MqttProvider.instance?.turnedOn) return
 
     MqttProvider.instance.client = MqttProvider.instance.client.end()

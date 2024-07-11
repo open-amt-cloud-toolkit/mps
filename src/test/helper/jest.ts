@@ -8,8 +8,8 @@ import { jest } from '@jest/globals'
 export const createSpyObj = (baseName, methodNames): Record<string, jest.Mock<any>> => {
   const obj: any = {}
 
-  for (let i = 0; i < methodNames.length; i++) {
-    obj[methodNames[i]] = jest.fn()
+  for (const methodName of methodNames) {
+    obj[methodName] = jest.fn()
   }
 
   return obj

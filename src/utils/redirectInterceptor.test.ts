@@ -7,7 +7,13 @@ import { AmtMode, type Args, type Connection, ConnectionType } from '../models/m
 import { config } from '../test/helper/config.js'
 import Common from './common.js'
 import { Environment } from './Environment.js'
-import { AuthenticationStatus, AuthenticationType, RedirectCommands, RedirectInterceptor, StartRedirectionSessionReplyStatus } from './redirectInterceptor.js'
+import {
+  AuthenticationStatus,
+  AuthenticationType,
+  RedirectCommands,
+  RedirectInterceptor,
+  StartRedirectionSessionReplyStatus
+} from './redirectInterceptor.js'
 import { jest } from '@jest/globals'
 import { spyOn } from 'jest-mock'
 
@@ -276,7 +282,9 @@ test('handleStartRedirectionSessionReply test', () => {
   interceptor.amt = connection
 
   const result = interceptor.handleStartRedirectionSessionReply()
-  expect(result).toBe(`0${String.fromCharCode(StartRedirectionSessionReplyStatus.SUCCESS)}123456789A${String.fromCharCode(0)}`)
+  expect(result).toBe(
+    `0${String.fromCharCode(StartRedirectionSessionReplyStatus.SUCCESS)}123456789A${String.fromCharCode(0)}`
+  )
   expect(connection.acc).toBe('')
 })
 
@@ -350,8 +358,12 @@ test('handleAuthenticateSessionReply DIGEST auth FALIURE status', () => {
   spyOn(Common, 'ReadIntX').mockReturnValueOnce(0)
 
   const result = interceptor.handleAuthenticateSessionReply()
-  expect(result).toBe(`0${String.fromCharCode(AuthenticationStatus.FALIURE)}00${String.fromCharCode(AuthenticationType.DIGEST)}AAAA`)
-  expect(interceptor.amt.acc).toBe(`${String.fromCharCode(2)}AA${String.fromCharCode(5)}AAAAA${String.fromCharCode(4)}AAAAAAAAA`)
+  expect(result).toBe(
+    `0${String.fromCharCode(AuthenticationStatus.FALIURE)}00${String.fromCharCode(AuthenticationType.DIGEST)}AAAA`
+  )
+  expect(interceptor.amt.acc).toBe(
+    `${String.fromCharCode(2)}AA${String.fromCharCode(5)}AAAAA${String.fromCharCode(4)}AAAAAAAAA`
+  )
   expect(interceptor.amt.digestRealm).toBe('AA')
   expect(interceptor.amt.digestNonce).toBe('AAAAA')
   expect(interceptor.amt.digestQOP).toBe('AAAA')
@@ -380,8 +392,12 @@ test('handleAuthenticateSessionReply auth SUCCESS', () => {
 
   const result = interceptor.handleAuthenticateSessionReply()
 
-  expect(result).toBe(`0${String.fromCharCode(AuthenticationStatus.SUCCESS)}00${String.fromCharCode(AuthenticationType.DIGEST)}AAAA`)
-  expect(interceptor.amt.acc).toBe(`${String.fromCharCode(2)}AA${String.fromCharCode(5)}AAAAA${String.fromCharCode(4)}AAAAAAAAA`)
+  expect(result).toBe(
+    `0${String.fromCharCode(AuthenticationStatus.SUCCESS)}00${String.fromCharCode(AuthenticationType.DIGEST)}AAAA`
+  )
+  expect(interceptor.amt.acc).toBe(
+    `${String.fromCharCode(2)}AA${String.fromCharCode(5)}AAAAA${String.fromCharCode(4)}AAAAAAAAA`
+  )
   expect(interceptor.amt.direct).toBeTruthy()
   expect(interceptor.ws.direct).toBeTruthy()
 })
@@ -786,7 +802,17 @@ test('handleAuthenticateSession DIGEST with user, pass and digestRealm', () => {
   const digest = 'digest'
 
   let r = String.fromCharCode(0x13, 0x00, 0x00, 0x00, 0x04)
-  r += Common.IntToStrX(args.user.length + amt.digestRealm.length + amt.digestNonce.length + authurl.length + ws.authCNonce.length + ncs.length + digest.length + amt.digestQOP.length + 8)
+  r += Common.IntToStrX(
+    args.user.length +
+      amt.digestRealm.length +
+      amt.digestNonce.length +
+      authurl.length +
+      ws.authCNonce.length +
+      ncs.length +
+      digest.length +
+      amt.digestQOP.length +
+      8
+  )
   r += String.fromCharCode(args.user.length) // Username Length
   r += args.user // Username
   r += String.fromCharCode(amt.digestRealm.length) // Realm Length

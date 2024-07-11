@@ -19,7 +19,12 @@ describe('send user consent code', () => {
   beforeEach(() => {
     const handler = new CIRAHandler(new HttpHandler(), 'admin', 'P@ssw0rd')
     const device = new DeviceAction(handler, null)
-    resSpy = createSpyObj('Response', ['status', 'json', 'end', 'send'])
+    resSpy = createSpyObj('Response', [
+      'status',
+      'json',
+      'end',
+      'send'
+    ])
     req = {
       params: { guid: '4c4c4544-004b-4210-8033-b6c04f504633' },
       body: { consentCode: 985167 },
@@ -68,7 +73,10 @@ describe('send user consent code', () => {
     sendUserConsetCodeSpy.mockResolvedValueOnce(null)
     await send(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(400)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Incorrect URI or Bad Request', errorDescription: `${messages.USER_CONSENT_SENT_FAILED} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.` })
+    expect(resSpy.json).toHaveBeenCalledWith({
+      error: 'Incorrect URI or Bad Request',
+      errorDescription: `${messages.USER_CONSENT_SENT_FAILED} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.`
+    })
   })
   it('should get an error with status code 500 for an unexpected exception', async () => {
     sendUserConsetCodeSpy.mockImplementation(() => {
@@ -76,6 +84,9 @@ describe('send user consent code', () => {
     })
     await send(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(500)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Internal Server Error', errorDescription: messages.USER_CONSENT_SENT_EXCEPTION })
+    expect(resSpy.json).toHaveBeenCalledWith({
+      error: 'Internal Server Error',
+      errorDescription: messages.USER_CONSENT_SENT_EXCEPTION
+    })
   })
 })

@@ -10,10 +10,11 @@ import { Environment } from '../utils/Environment.js'
 export class SecretManagerCreatorFactory {
   private static instance: ISecretManagerService
 
-  async getSecretManager (logger: ILogger): Promise<ISecretManagerService> {
+  async getSecretManager(logger: ILogger): Promise<ISecretManagerService> {
     if (SecretManagerCreatorFactory.instance == null) {
-      const { default: Provider }: { default: new (logger: ILogger) => ISecretManagerService } =
-        await import(`../secrets/${Environment.Config.secrets_provider}/index.js`)
+      const { default: Provider }: { default: new (logger: ILogger) => ISecretManagerService } = await import(
+        `../secrets/${Environment.Config.secrets_provider}/index.js`
+      )
 
       SecretManagerCreatorFactory.instance = new Provider(logger)
     }

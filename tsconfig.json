@@ -1,21 +1,21 @@
 {
-    "compilerOptions": {
-        "strictNullChecks": false,
-        "baseUrl": "./src",
-        "outDir": "./dist",
-        "moduleResolution": "NodeNext",
-        "module": "NodeNext",
-        "allowJs": true,
-        "target": "ESNext",
-        "sourceMap": true,
-        "esModuleInterop": true,
-        // "paths": {
-        //     "#src/*": [
-        //         "./src/*"
-        //     ]
-        // }
-    },
-    "include": [
-        "./src/**/*"
-    ]
+  "compilerOptions": {
+    "strictNullChecks": false,
+    "baseUrl": "./src",
+    "outDir": "./dist",
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
+    "allowJs": true,
+    "target": "ESNext",
+    "sourceMap": true,
+    "esModuleInterop": true
+    // "paths": {
+    //     "#src/*": [
+    //         "./src/*"
+    //     ]
+    // }
+  },
+  "include": [
+    "./src/**/*"
+  ]
 }

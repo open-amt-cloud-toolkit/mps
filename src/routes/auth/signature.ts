@@ -6,8 +6,8 @@
 import { Environment } from '../../utils/Environment.js'
 import jws from 'jws'
 
-export function signature (expirationMinutes, device: string): any {
-  const expiration = Math.floor((Date.now() + (1000 * 60 * expirationMinutes)) / 1000)
+export function signature(expirationMinutes, device: string): any {
+  const expiration = Math.floor((Date.now() + 1000 * 60 * expirationMinutes) / 1000)
   const signature = jws.sign({
     header: { alg: 'HS256', typ: 'JWT' },
     payload: {

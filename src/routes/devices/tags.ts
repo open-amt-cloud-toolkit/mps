@@ -6,7 +6,7 @@
 import { logger, messages } from '../../logging/index.js'
 import { type Request, type Response } from 'express'
 
-export async function getDistinctTags (req: Request, res: Response): Promise<void> {
+export async function getDistinctTags(req: Request, res: Response): Promise<void> {
   try {
     const results = await req.db.devices.getDistinctTags(req.tenantId)
     if (results != null) {

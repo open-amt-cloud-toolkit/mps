@@ -1,11 +1,10 @@
 name: MPS API Tests
 
-
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
@@ -14,22 +13,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Harden Runner
-      uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
-      with:
-        egress-policy: audit
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
 
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
-    - run: docker build -f Dockerfile -t mps:${GITHUB_SHA} .
-    - run: docker compose up -d
-    - run: sleep 30
-    - run: docker run --network=host -v  /home/runner/work/mps/mps/src/test/collections/:/collections -v /home/runner/work/mps/mps/src/test/results/:/results postman/newman run /collections/MPS.postman_collection.json -e /collections/MPS.postman_environment.json --insecure --reporters cli,json,junit --reporter-json-export /results/mps_api_results.json --reporter-junit-export /results/mps_api_results_junit.xml
-    - run: docker run --network=host -v  /home/runner/work/mps/mps/src/test/collections/:/collections -v /home/runner/work/mps/mps/src/test/results/:/results postman/newman run /collections/mps_security_api_test_postman_collection.json -e /collections/MPS.postman_environment.json -d /collections/data/mps_security_api_test_data.json --insecure --reporters cli,json,junit --reporter-json-export /results/mps_api_security_results.json --reporter-junit-export /results/mps_api_security_results_junit.xml
-    - name: Dump docker logs on
-      if: failure()
-      uses: jwalton/gh-docker-logs@2741064ab9d7af54b0b1ffb6076cf64c16f0220e # v2.2.2
-    - name: Upload Postman Results
-      uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
-      with:
-        name: mps-api
-        path: /home/runner/work/mps/mps/src/test/results
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      - run: docker build -f Dockerfile -t mps:${GITHUB_SHA} .
+      - run: docker compose up -d
+      - run: sleep 30
+      - run: docker run --network=host -v  /home/runner/work/mps/mps/src/test/collections/:/collections -v /home/runner/work/mps/mps/src/test/results/:/results postman/newman run /collections/MPS.postman_collection.json -e /collections/MPS.postman_environment.json --insecure --reporters cli,json,junit --reporter-json-export /results/mps_api_results.json --reporter-junit-export /results/mps_api_results_junit.xml
+      - run: docker run --network=host -v  /home/runner/work/mps/mps/src/test/collections/:/collections -v /home/runner/work/mps/mps/src/test/results/:/results postman/newman run /collections/mps_security_api_test_postman_collection.json -e /collections/MPS.postman_environment.json -d /collections/data/mps_security_api_test_data.json --insecure --reporters cli,json,junit --reporter-json-export /results/mps_api_security_results.json --reporter-junit-export /results/mps_api_security_results_junit.xml
+      - name: Dump docker logs on
+        if: failure()
+        uses: jwalton/gh-docker-logs@2741064ab9d7af54b0b1ffb6076cf64c16f0220e # v2.2.2
+      - name: Upload Postman Results
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
+        with:
+          name: mps-api
+          path: /home/runner/work/mps/mps/src/test/results

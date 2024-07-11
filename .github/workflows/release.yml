@@ -9,7 +9,7 @@ name: Semantic-Release CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 permissions:
   contents: read
@@ -17,77 +17,77 @@ permissions:
 jobs:
   release:
     permissions:
-      contents: write  # for Git to git push
+      contents: write # for Git to git push
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Harden Runner
-      uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
-      with:
-        egress-policy: audit
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
 
-    - name: Checkout
-      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
-      with:
-        persist-credentials: false
-    - name: Use Node.js 20.x
-      uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
-      with:
-        node-version: "20.x"
-    - run: npm ci
-    - run: npm run build-ext --if-present
-    - run: rsync -a package.json README.md ./dist/
-    - name: Docker Login
-      uses: docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446 # v3.2.0
-      with:
-        registry: vprodemo.azurecr.io
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-        logout: true
-    - name: Semantic Release
-      uses: cycjimmy/semantic-release-action@cb425203a562475bca039ba4dbf90c7f9ac790f4 # v4.1.0
-      with:
-        semantic_version: 19.0.5  # It is recommended to specify a version range
-                                # for semantic-release when using
-                                # semantic-release-action lower than @v3
-        extra_plugins: |
-          @semantic-release/exec@6.0.3
-      env:
-        GITHUB_TOKEN: ${{ secrets.ROSIE_TOKEN }}
+      - name: Checkout
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+        with:
+          persist-credentials: false
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        with:
+          node-version: '20.x'
+      - run: npm ci
+      - run: npm run build-ext --if-present
+      - run: rsync -a package.json README.md ./dist/
+      - name: Docker Login
+        uses: docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446 # v3.2.0
+        with:
+          registry: vprodemo.azurecr.io
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          logout: true
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@cb425203a562475bca039ba4dbf90c7f9ac790f4 # v4.1.0
+        with:
+          semantic_version:
+            19.0.5 # It is recommended to specify a version range
+            # for semantic-release when using
+            # semantic-release-action lower than @v3
+          extra_plugins: |
+            @semantic-release/exec@6.0.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.ROSIE_TOKEN }}
 
-    - name: Get Next Version
-      id: version
-      run: |
-        if [ -f .nextVersion ]; then
-          echo "next=$(cat .nextVersion)" >> "$GITHUB_OUTPUT"
-        else
-          echo "next=none" >> "$GITHUB_OUTPUT"
-        fi
-  
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      if: ${{ steps.version.outputs.next != 'none' }}
-      with:
-        repository: open-amt-cloud-toolkit/e2e-testing
-        ref: docker-release
-        clean: true
-        token: ${{ secrets.ROSIE_TOKEN }}
-  
-    - name: Create docker-release @ ${{ steps.version.outputs.next }}
-      if: ${{ steps.version.outputs.next != 'none' }}
-      env:
-        RELEASE_YAML: release/mps.yml
-        NEXT_VERSION: ${{ steps.version.outputs.next }}
-      run: |
-        echo "Releasing ${{ github.repository }}@$NEXT_VERSION"
-        if [ "$NEXT_VERSION" != "" ]; then
-          CURRENT_VERSION=$(sed -nre 's/(.*):v[0-9]*(([0-9]+\\.)*[0-9]+).*/v\\2/p' $RELEASE_YAML)
-          sed -i "s/$CURRENT_VERSION/$NEXT_VERSION/g" $RELEASE_YAML
-          echo "========================="
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git status
-          git add .
-          git commit -m "release(mps): automated release of $NEXT_VERSION @ ${GITHUB_SHA::7}"
-          git push origin docker-release
-        fi
-  
+      - name: Get Next Version
+        id: version
+        run: |
+          if [ -f .nextVersion ]; then
+            echo "next=$(cat .nextVersion)" >> "$GITHUB_OUTPUT"
+          else
+            echo "next=none" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        if: ${{ steps.version.outputs.next != 'none' }}
+        with:
+          repository: open-amt-cloud-toolkit/e2e-testing
+          ref: docker-release
+          clean: true
+          token: ${{ secrets.ROSIE_TOKEN }}
+
+      - name: Create docker-release @ ${{ steps.version.outputs.next }}
+        if: ${{ steps.version.outputs.next != 'none' }}
+        env:
+          RELEASE_YAML: release/mps.yml
+          NEXT_VERSION: ${{ steps.version.outputs.next }}
+        run: |
+          echo "Releasing ${{ github.repository }}@$NEXT_VERSION"
+          if [ "$NEXT_VERSION" != "" ]; then
+            CURRENT_VERSION=$(sed -nre 's/(.*):v[0-9]*(([0-9]+\\.)*[0-9]+).*/v\\2/p' $RELEASE_YAML)
+            sed -i "s/$CURRENT_VERSION/$NEXT_VERSION/g" $RELEASE_YAML
+            echo "========================="
+            git config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
+            git status
+            git add .
+            git commit -m "release(mps): automated release of $NEXT_VERSION @ ${GITHUB_SHA::7}"
+            git push origin docker-release
+          fi

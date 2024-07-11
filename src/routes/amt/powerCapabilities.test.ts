@@ -6,7 +6,11 @@
 import { ErrorResponse } from '../../utils/amtHelper.js'
 import { MqttProvider } from '../../utils/MqttProvider.js'
 import { powerCapabilities } from './powerCapabilities.js'
-import { setupAndConfigurationServiceResponse, softwareIdentityResponse, versionResponse } from '../../test/helper/wsmanResponses.js'
+import {
+  setupAndConfigurationServiceResponse,
+  softwareIdentityResponse,
+  versionResponse
+} from '../../test/helper/wsmanResponses.js'
 import { createSpyObj } from '../../test/helper/jest.js'
 import { DeviceAction } from '../../amt/DeviceAction.js'
 import { CIRAHandler } from '../../amt/CIRAHandler.js'
@@ -31,7 +35,12 @@ describe('Power Capabilities', () => {
       },
       deviceAction: device
     }
-    resSpy = createSpyObj('Response', ['status', 'json', 'end', 'send'])
+    resSpy = createSpyObj('Response', [
+      'status',
+      'json',
+      'end',
+      'send'
+    ])
     resSpy.status.mockReturnThis()
     resSpy.json.mockReturnThis()
     resSpy.send.mockReturnThis()
@@ -86,8 +95,7 @@ describe('Power Capabilities', () => {
       'Power on to PXE': 401
     }
     versionResponse.CIM_SoftwareIdentity.responses = [
-      { InstanceID: 'AMT', IsEntity: 'true', VersionString: '9.0.0' }
-    ]
+      { InstanceID: 'AMT', IsEntity: 'true', VersionString: '9.0.0' }]
     spyOn(device, 'getPowerCapabilities').mockResolvedValue(powerCaps)
     swIdentitySpy.mockResolvedValue(softwareIdentityResponse.Envelope.Body)
     setupAndConfigSpy.mockResolvedValue(setupAndConfigurationServiceResponse.Envelope)

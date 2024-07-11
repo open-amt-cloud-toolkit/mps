@@ -14,10 +14,10 @@
 */
 
 /**
-* @description Intel AMT MPS server object
-* @author Ylian Saint-Hilaire
-* @version v0.2.0c
-*/
+ * @description Intel AMT MPS server object
+ * @author Ylian Saint-Hilaire
+ * @version v0.2.0c
+ */
 
 import { logger, messages } from '../logging/index.js'
 import { Environment } from '../utils/Environment.js'
@@ -44,7 +44,7 @@ export class MPSServer {
   events: EventEmitter
   db: IDB
   secrets: ISecretManagerService
-  constructor (certs: certificatesType, db: IDB, secrets: ISecretManagerService) {
+  constructor(certs: certificatesType, db: IDB, secrets: ISecretManagerService) {
     this.certs = certs
     this.db = db
     this.secrets = secrets
@@ -64,24 +64,26 @@ export class MPSServer {
     })
   }
 
-  listen (): void {
+  listen(): void {
     this.server.listen(Environment.Config.port, this.listeningListener)
   }
 
-  listeningListener (): void {
+  listeningListener(): void {
     logger.info(`${messages.SERVER_RUNNING_ON} ${Environment.Config.common_name}:${Environment.Config.port}.`)
   }
 
   onAPFDisconnected = async (nodeId: string): Promise<void> => {
     try {
       await this.handleDeviceDisconnect(nodeId)
-    } catch (e) { }
+    } catch (e) {
+      logger.error(e)
+    }
     this.events.emit('disconnected', nodeId)
   }
 
   onAPFProtocolVersion = async (socket: CIRASocket): Promise<void> => {
     // Check if the device exits in db
-    if (await this.db.devices.getById(socket.tag.SystemId) != null) {
+    if ((await this.db.devices.getById(socket.tag.SystemId)) != null) {
       socket.tag.nodeid = socket.tag.SystemId
       // if (socket.tag.certauth) { // is this even used?
       //   devices[socket.tag.nodeid] = socket
@@ -91,14 +93,18 @@ export class MPSServer {
       try {
         logger.warn(`${messages.MPS_DEVICE_NOT_ALLOWED} : ${socket.tag.nodeid}`)
         socket.end()
-      } catch (e) { }
+      } catch (e) {
+        logger.error(e)
+      }
     }
   }
 
   onAPFKeepAliveRequest = async (nodeId: string): Promise<void> => {
     try {
       await this.handleLastSeenUpdate(nodeId)
-    } catch (e) { }
+    } catch (e) {
+      logger.error(e)
+    }
   }
 
   onVerifyUserAuth = async (socket: CIRASocket, username: string, password: string): Promise<void> => {
@@ -108,7 +114,9 @@ export class MPSServer {
       const pwd = await this.secrets.getSecretFromKey(`devices/${socket.tag.SystemId}`, 'MPS_PASSWORD')
       if (username === device?.mpsusername && password === pwd) {
         if (devices[socket.tag.SystemId]) {
-          logger.silly(`${messages.MPS_CIRA_CLOSE_OLD_CONNECTION} for ${socket.tag.SystemId} with socketid ${socket.tag.id}`)
+          logger.silly(
+            `${messages.MPS_CIRA_CLOSE_OLD_CONNECTION} for ${socket.tag.SystemId} with socketid ${socket.tag.id}`
+          )
           devices[socket.tag.SystemId].ciraSocket.end() // close old connection before adding new connection
           await this.handleDeviceDisconnect(socket.tag.SystemId) // delete and disconnect
         }
@@ -130,12 +138,25 @@ export class MPSServer {
   }
 
   onTLSConnection = (socket: TLSSocket): void => {
-    logger.debug(messages.MPS_NEW_TLS_CONNECTION); // New TLS connection detected
-    (socket as CIRASocket).tag = { id: randomBytes(16).toString('hex'), first: true, clientCert: socket.getPeerCertificate(true), accumulator: '', activetunnels: 0, boundPorts: [], socket, host: null, nextchannelid: 4, channels: {}, nextsourceport: 0, nodeid: null }
+    logger.debug(messages.MPS_NEW_TLS_CONNECTION) // New TLS connection detected
+    ;(socket as CIRASocket).tag = {
+      id: randomBytes(16).toString('hex'),
+      first: true,
+      clientCert: socket.getPeerCertificate(true),
+      accumulator: '',
+      activetunnels: 0,
+      boundPorts: [],
+      socket,
+      host: null,
+      nextchannelid: 4,
+      channels: {},
+      nextsourceport: 0,
+      nodeid: null
+    }
     this.addHandlers(socket as CIRASocket)
   }
 
-  addHandlers (socket: CIRASocket): void {
+  addHandlers(socket: CIRASocket): void {
     socket.setEncoding('binary')
     socket.setTimeout(MAX_IDLE) // Setup the CIRA keep alive timer
     socket.on('timeout', this.onTimeout.bind(this, socket))
@@ -166,7 +187,9 @@ export class MPSServer {
       if (socket.tag.accumulator.length < 3) return
       if (socket.tag.accumulator.substring(0, 3) === 'GET') {
         logger.debug(`${messages.MPS_HTTP_GET_CONNECTION}: ${socket.remoteAddress}`)
-        socket.write('HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: close\r\n\r\n<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>Intel Management Presence Server (MPS).<br />Intel&reg; AMT computers must connect here using CIRA.</body></html>')
+        socket.write(
+          'HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: close\r\n\r\n<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>Intel Management Presence Server (MPS).<br />Intel&reg; AMT computers must connect here using CIRA.</body></html>'
+        )
         socket.end()
         return
       }
@@ -193,7 +216,8 @@ export class MPSServer {
 
   onClose = async (socket: CIRASocket): Promise<void> => {
     try {
-      if (socket.tag.nodeid) { // If this is a CIRA connection
+      if (socket.tag.nodeid) {
+        // If this is a CIRA connection
         if (devices[socket.tag.nodeid]?.ciraSocket?.tag.id === socket?.tag.id) {
           // Make sure we only delete/update device connection if socket id's match
           logger.debug(`${messages.MPS_CIRA_CONNECTION_CLOSED} for ${socket.tag.nodeid} with socketid ${socket.tag.id}`)
@@ -201,7 +225,9 @@ export class MPSServer {
         } else {
           // This is an old/inactive connection which we've already ended
           // There might already be a new CIRA connection active so no action needed
-          logger.silly(`${messages.MPS_CIRA_CONNECTION_CLOSED} for ${socket.tag.nodeid} with socketid ${socket.tag.id}, connection status was already updated`)
+          logger.silly(
+            `${messages.MPS_CIRA_CONNECTION_CLOSED} for ${socket.tag.nodeid} with socketid ${socket.tag.id}, connection status was already updated`
+          )
         }
       } else {
         // This is called when user makes HTTP GET request
@@ -215,11 +241,13 @@ export class MPSServer {
   onError = (socket: CIRASocket, error: NodeJS.ErrnoException): void => {
     // error "ECONNRESET" means the other side of the TCP conversation abruptly closed its end of the connection.
     if (error.code !== 'ECONNRESET') {
-      logger.error(`${messages.SOCKET_ERROR} ${socket.tag.SystemId},  ${socket.remoteAddress}: ${JSON.stringify(error)}`)
+      logger.error(
+        `${messages.SOCKET_ERROR} ${socket.tag.SystemId},  ${socket.remoteAddress}: ${JSON.stringify(error)}`
+      )
     }
   }
 
-  async handleDeviceDisconnect (guid: string): Promise<void> {
+  async handleDeviceDisconnect(guid: string): Promise<void> {
     if (devices[guid]) {
       delete devices[guid]
       const device: Device = await this.db.devices.getById(guid)
@@ -237,7 +265,7 @@ export class MPSServer {
     }
   }
 
-  async handleDeviceConnect (guid: string): Promise<void> {
+  async handleDeviceConnect(guid: string): Promise<void> {
     const device: Device = await this.db.devices.getById(guid)
     device.connectionStatus = true
     device.mpsInstance = Environment.Config.instance_name
@@ -252,7 +280,7 @@ export class MPSServer {
     }
   }
 
-  async handleLastSeenUpdate (guid: string): Promise<void> {
+  async handleLastSeenUpdate(guid: string): Promise<void> {
     if (devices[guid] != null) {
       const device: Device = await this.db.devices.getById(guid)
       if (device != null) {

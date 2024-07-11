@@ -7,10 +7,6 @@ import { check } from 'express-validator'
 import { DMTFPowerExtendedStates } from '../../utils/constants.js'
 
 export const bootOptionsValidator = (): any => [
-  check('action')
-    .isIn(DMTFPowerExtendedStates)
-    .isNumeric(),
-  check('useSOL')
-    .isBoolean()
-    .toBoolean()
+  check('action').isIn(DMTFPowerExtendedStates).isNumeric(),
+  check('useSOL').isBoolean().toBoolean()
 ]

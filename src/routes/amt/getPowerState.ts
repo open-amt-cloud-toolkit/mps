@@ -8,7 +8,7 @@ import { logger, messages } from '../../logging/index.js'
 import { ErrorResponse } from '../../utils/amtHelper.js'
 import { MqttProvider } from '../../utils/MqttProvider.js'
 
-export async function powerState (req: Request, res: Response): Promise<void> {
+export async function powerState(req: Request, res: Response): Promise<void> {
   try {
     const guid: string = req.params.guid
     MqttProvider.publishEvent('request', ['AMT_PowerState'], messages.POWER_STATE_GET_REQUESTED, guid)

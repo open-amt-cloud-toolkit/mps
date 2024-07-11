@@ -51,7 +51,7 @@ describe('consul', () => {
     })
 
     it('process Consul', () => {
-      const consulValues: Array<{ Key: string, Value: string }> = [
+      const consulValues: { Key: string; Value: string }[] = [
         {
           Key: componentName + '/config',
           Value: '{"web_port": 8081, "delay_timer": 12}'
