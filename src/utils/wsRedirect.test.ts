@@ -30,11 +30,11 @@ describe('WsRedirect tests', () => {
   beforeEach(() => {
     const secretManagerService = {
       getSecretFromKey: async (path: string, key: string) => 'P@ssw0rd',
-      getSecretAtPath: async (path: string) => ({} as any),
+      getSecretAtPath: async (path: string) => ({}) as any,
       getAMTCredentials: async (path: string) => ['admin', 'P@ssw0rd'],
-      getMPSCerts: async () => ({} as any),
+      getMPSCerts: async () => ({}) as any,
       writeSecretWithObject: async (path: string, data: any) => false,
-      deleteSecretAtPath: async (path: string) => { },
+      deleteSecretAtPath: async (path: string) => {},
       health: async () => ({})
     }
     resumeSpy = spyOn(mockWebSocket._socket, 'resume').mockReturnValue(null)
@@ -44,8 +44,8 @@ describe('WsRedirect tests', () => {
 
   describe('handleConnection tests', () => {
     it('should handle connection with TCP socket', async () => {
-      const mockSocket = new Socket();
-      (mockSocket as any).connect = jest.fn()
+      const mockSocket = new Socket()
+      ;(mockSocket as any).connect = jest.fn()
 
       const mockIncomingMessage = {
         url: `https://iotg.com?tls=0&host=${fakeGuid}`
@@ -161,7 +161,11 @@ describe('WsRedirect tests', () => {
       const paramsWithPof2 = {
         p: 2
       }
-      const credentials = ['test1', 'test2', 'test3']
+      const credentials = [
+        'test1',
+        'test2',
+        'test3'
+      ]
 
       wsRedirect.createCredential(paramsWithPof2 as any, credentials)
       expect(wsRedirect.interceptor).toBeFalsy()

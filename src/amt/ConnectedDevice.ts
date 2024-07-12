@@ -17,19 +17,19 @@ export class ConnectedDevice {
   tenantId: string
   lastKeepAlive: Date
 
-  constructor (
+  constructor(
     ciraSocket: CIRASocket,
     readonly username: string,
     readonly password: string,
     tenantId: string,
     httpHandler: HttpHandler = new HttpHandler(),
-    kvmConnect: boolean = false,
+    kvmConnect = false,
     limiter: Bottleneck = new Bottleneck({
       maxConcurrent: 3,
       minTime: 250
     }),
-    solConnect: boolean = false,
-    iderConnect: boolean = false
+    solConnect = false,
+    iderConnect = false
   ) {
     this.ciraSocket = ciraSocket
     this.httpHandler = httpHandler

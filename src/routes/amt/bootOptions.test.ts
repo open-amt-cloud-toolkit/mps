@@ -23,7 +23,11 @@ describe('Boot Options', () => {
   beforeEach(() => {
     const handler = new CIRAHandler(new HttpHandler(), 'admin', 'P@ssw0rd')
     const device = new DeviceAction(handler, null)
-    resSpy = createSpyObj('Response', ['status', 'json', 'send'])
+    resSpy = createSpyObj('Response', [
+      'status',
+      'json',
+      'send'
+    ])
     req = {
       params: { guid: '4c4c4544-004b-4210-8033-b6c04f504633' },
       body: { action: 400, useSOL: false },

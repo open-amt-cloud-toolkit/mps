@@ -7,7 +7,5 @@ import { check } from 'express-validator'
 import { DMTFPowerStates } from '../../utils/constants.js'
 
 export const powerActionValidator = (): any => [
-  check('action')
-    .isIn(DMTFPowerStates)
-    .isNumeric()
+  check('action').isIn(DMTFPowerStates).isNumeric()
 ]

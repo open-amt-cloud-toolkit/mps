@@ -34,7 +34,7 @@ export enum APFProtocol {
   KEEPALIVE_REQUEST = 208,
   KEEPALIVE_REPLY = 209,
   KEEPALIVE_OPTIONS_REQUEST = 210,
-  KEEPALIVE_OPTIONS_REPLY = 211,
+  KEEPALIVE_OPTIONS_REPLY = 211
 }
 
 export enum APFDisconnectCode {
@@ -55,21 +55,21 @@ export enum APFDisconnectCode {
   INVALID_CREDENTIALS = 15,
   CONNECTION_TIMED_OUT = 16,
   BY_POLICY = 17,
-  TEMPORARILY_UNAVAILABLE = 18,
+  TEMPORARILY_UNAVAILABLE = 18
 }
 
 export enum APFChannelOpenFailCodes {
   ADMINISTRATIVELY_PROHIBITED = 1,
   CONNECT_FAILED = 2,
   UNKNOWN_CHANNEL_TYPE = 3,
-  RESOURCE_SHORTAGE = 4,
+  RESOURCE_SHORTAGE = 4
 }
 
 export enum APFChannelOpenFailureReasonCode {
   AdministrativelyProhibited = 1,
   ConnectFailed = 2,
   UnknownChannelType = 3,
-  ResourceShortage = 4,
+  ResourceShortage = 4
 }
 
 const APFProcessor = {
@@ -140,7 +140,9 @@ const APFProcessor = {
       return 9 + LengthOfData
     }
     cirachannel.amtpendingcredits += LengthOfData
-    if (cirachannel.onData) { cirachannel.onData(data.substring(9, 9 + LengthOfData)) }
+    if (cirachannel.onData) {
+      cirachannel.onData(data.substring(9, 9 + LengthOfData))
+    }
     if (cirachannel.amtpendingcredits > cirachannel.ciraWindow / 2) {
       APFProcessor.SendChannelWindowAdjust(cirachannel.socket, cirachannel.amtchannelid, cirachannel.amtpendingcredits) // Adjust the buffer window
       cirachannel.amtpendingcredits = 0
@@ -158,7 +160,9 @@ const APFProcessor = {
       return 9
     }
     cirachannel.sendcredits += ByteToAdd
-    logger.silly(`${messages.MPS_WINDOW_ADJUST}, ${RecipientChannel.toString()}, ${ByteToAdd.toString()}, ${cirachannel.sendcredits}`)
+    logger.silly(
+      `${messages.MPS_WINDOW_ADJUST}, ${RecipientChannel.toString()}, ${ByteToAdd.toString()}, ${cirachannel.sendcredits}`
+    )
     if (cirachannel.state === 2) {
       APFProcessor.SendPendingData(cirachannel)
     }
@@ -218,7 +222,9 @@ const APFProcessor = {
     }
     cirachannel.amtchannelid = senderChannel
     cirachannel.sendcredits = cirachannel.amtCiraWindow = windowSize
-    logger.silly(`${messages.MPS_CHANNEL_OPEN_CONFIRMATION}, ${recipientChannel.toString()}, ${senderChannel.toString()}, ${windowSize.toString()}`)
+    logger.silly(
+      `${messages.MPS_CHANNEL_OPEN_CONFIRMATION}, ${recipientChannel.toString()}, ${senderChannel.toString()}, ${windowSize.toString()}`
+    )
     if (cirachannel.closing === 1) {
       // Close this channel
       APFProcessor.SendChannelClose(cirachannel)
@@ -256,10 +262,15 @@ const APFProcessor = {
     const SourceLen: number = Common.ReadInt(data, 25 + ChannelTypeLength + TargetLen)
     if (SourceLen > 2048) return -1
     if (length < 33 + ChannelTypeLength + TargetLen + SourceLen) return 0
-    const Source: string = data.substring(29 + ChannelTypeLength + TargetLen, 29 + ChannelTypeLength + TargetLen + SourceLen)
+    const Source: string = data.substring(
+      29 + ChannelTypeLength + TargetLen,
+      29 + ChannelTypeLength + TargetLen + SourceLen
+    )
     const SourcePort: number = Common.ReadInt(data, 29 + ChannelTypeLength + TargetLen + SourceLen)
 
-    logger.silly(`${messages.MPS_CHANNEL_OPEN}, ${ChannelType}, ${SenderChannel.toString()}, ${WindowSize.toString()}, ${Target}:${TargetPort}, ${Source}:${SourcePort}`)
+    logger.silly(
+      `${messages.MPS_CHANNEL_OPEN}, ${ChannelType}, ${SenderChannel.toString()}, ${WindowSize.toString()}, ${Target}:${TargetPort}, ${Source}:${SourcePort}`
+    )
 
     // Check if we understand this channel type
     // if (ChannelType.toLowerCase() == "direct-tcpip")
@@ -298,7 +309,9 @@ const APFProcessor = {
       APFProcessor.SendTcpForwardSuccessReply(socket, port)
       // 5900 port is the last TCP port on which connections for forwarding are to be cancelled. Ports order: 16993, 16992, 664, 623, 16995, 16994, 5900
       // Request keepalive interval time
-      if (port === 5900) { APFProcessor.SendKeepaliveOptionsRequest(socket, KEEPALIVE_INTERVAL, 0) }
+      if (port === 5900) {
+        APFProcessor.SendKeepaliveOptionsRequest(socket, KEEPALIVE_INTERVAL, 0)
+      }
       return 14 + requestLen + addrLen
     }
 
@@ -327,7 +340,9 @@ const APFProcessor = {
       const oport = Common.ReadInt(data, 18 + requestLen + addrLen + oaddrLen)
       const datalen = Common.ReadInt(data, 22 + requestLen + addrLen + oaddrLen)
       if (length < 26 + requestLen + addrLen + oaddrLen + datalen) return 0
-      logger.silly(`${messages.MPS_GLOBAL_REQUEST}, ${request}, ${addr}:${port}, ${oaddr}:${oport}, ${datalen.toString()}`)
+      logger.silly(
+        `${messages.MPS_GLOBAL_REQUEST}, ${request}, ${addr}:${port}, ${oaddr}:${oport}, ${datalen.toString()}`
+      )
       // TODO
       return 26 + requestLen + addrLen + oaddrLen + datalen
     }
@@ -354,19 +369,13 @@ const APFProcessor = {
   userAuthRequest: (socket: CIRASocket, length: number, data: string): number => {
     if (length < 13) return 0
     const usernameLen: number = Common.ReadInt(data, 1)
-    if ((usernameLen > 2048) || (length < (5 + usernameLen))) return -1
+    if (usernameLen > 2048 || length < 5 + usernameLen) return -1
     const username: string = data.substring(5, 5 + usernameLen)
     const serviceNameLen: number = Common.ReadInt(data, 5 + usernameLen)
-    if ((serviceNameLen > 2048) || (length < (9 + usernameLen + serviceNameLen))) return -1
-    const serviceName: string = data.substring(
-      9 + usernameLen,
-      9 + usernameLen + serviceNameLen
-    )
-    const methodNameLen: number = Common.ReadInt(
-      data,
-      9 + usernameLen + serviceNameLen
-    )
-    if ((methodNameLen > 2048) || (length < (13 + usernameLen + serviceNameLen + methodNameLen))) return -1
+    if (serviceNameLen > 2048 || length < 9 + usernameLen + serviceNameLen) return -1
+    const serviceName: string = data.substring(9 + usernameLen, 9 + usernameLen + serviceNameLen)
+    const methodNameLen: number = Common.ReadInt(data, 9 + usernameLen + serviceNameLen)
+    if (methodNameLen > 2048 || length < 13 + usernameLen + serviceNameLen + methodNameLen) return -1
     const methodName: string = data.substring(
       13 + usernameLen + serviceNameLen,
       13 + usernameLen + serviceNameLen + methodNameLen
@@ -375,10 +384,15 @@ const APFProcessor = {
     let password: string = null
     if (methodName === 'password') {
       passwordLen = Common.ReadInt(data, 14 + usernameLen + serviceNameLen + methodNameLen)
-      if ((passwordLen > 2048) || (length < (18 + usernameLen + serviceNameLen + methodNameLen + passwordLen))) return -1
-      password = data.substring(18 + usernameLen + serviceNameLen + methodNameLen, 18 + usernameLen + serviceNameLen + methodNameLen + passwordLen)
+      if (passwordLen > 2048 || length < 18 + usernameLen + serviceNameLen + methodNameLen + passwordLen) return -1
+      password = data.substring(
+        18 + usernameLen + serviceNameLen + methodNameLen,
+        18 + usernameLen + serviceNameLen + methodNameLen + passwordLen
+      )
     }
-    logger.silly(`${messages.MPS_USER_AUTH_REQUEST} usernameLen=${usernameLen} serviceNameLen=${serviceNameLen} methodNameLen=${methodNameLen}`)
+    logger.silly(
+      `${messages.MPS_USER_AUTH_REQUEST} usernameLen=${usernameLen} serviceNameLen=${serviceNameLen} methodNameLen=${methodNameLen}`
+    )
     logger.silly(`${messages.MPS_USER_AUTH_REQUEST} user=${username} service=${serviceName} method=${methodName}`)
 
     // Emit event to determine if user is authorized
@@ -392,9 +406,7 @@ const APFProcessor = {
     if (length < 93) return 0
     socket.tag.MajorVersion = Common.ReadInt(data, 1)
     socket.tag.MinorVersion = Common.ReadInt(data, 5)
-    socket.tag.SystemId = APFProcessor.guidToStr(
-      Common.Rstr2hex(data.substring(13, 29))
-    ).toLowerCase()
+    socket.tag.SystemId = APFProcessor.guidToStr(Common.Rstr2hex(data.substring(13, 29))).toLowerCase()
     logger.silly(
       `${messages.MPS_PROTOCOL_VERSION}, ${socket.tag.MajorVersion}, ${socket.tag.MinorVersion}, ${socket.tag.SystemId}`
     )
@@ -437,8 +449,8 @@ const APFProcessor = {
     APFProcessor.Write(
       socket,
       String.fromCharCode(APFProtocol.KEEPALIVE_OPTIONS_REQUEST) +
-      Common.IntToStr(keepaliveTime) +
-      Common.IntToStr(timeout)
+        Common.IntToStr(keepaliveTime) +
+        Common.IntToStr(timeout)
     )
   },
 
@@ -449,7 +461,10 @@ const APFProcessor = {
 
   SendServiceAccept: (socket: CIRASocket, service: string): void => {
     logger.silly(messages.MPS_SEND_SERVICE_ACCEPT)
-    APFProcessor.Write(socket, String.fromCharCode(APFProtocol.SERVICE_ACCEPT) + Common.IntToStr(service.length) + service)
+    APFProcessor.Write(
+      socket,
+      String.fromCharCode(APFProtocol.SERVICE_ACCEPT) + Common.IntToStr(service.length) + service
+    )
   },
 
   SendTcpForwardSuccessReply: (socket: CIRASocket, port: number): void => {
@@ -479,7 +494,12 @@ const APFProcessor = {
     )
   },
 
-  SendChannelOpenConfirmation: (socket: CIRASocket, recipientChannelId: number, senderChannelId: number, initialWindowSize: number): void => {
+  SendChannelOpenConfirmation: (
+    socket: CIRASocket,
+    recipientChannelId: number,
+    senderChannelId: number,
+    initialWindowSize: number
+  ): void => {
     logger.silly(messages.MPS_SEND_CHANNEL_OPEN_CONFIRMATION)
     APFProcessor.Write(
       socket,
@@ -491,7 +511,15 @@ const APFProcessor = {
     )
   },
 
-  SendChannelOpen: (socket: CIRASocket, direct: boolean, channelid: number, windowSize: number, target: string, targetPort: number, source: string, sourcePort: number
+  SendChannelOpen: (
+    socket: CIRASocket,
+    direct: boolean,
+    channelid: number,
+    windowSize: number,
+    target: string,
+    targetPort: number,
+    source: string,
+    sourcePort: number
   ): void => {
     logger.silly(messages.MPS_SEND_CHANNEL_OPEN)
     const connectionType = direct ? 'direct-tcpip' : 'forwarded-tcpip'
@@ -534,7 +562,11 @@ const APFProcessor = {
         delete cirachannel.sendBuffer
       } else {
         // Send a part of the pending buffer
-        APFProcessor.SendChannelData(cirachannel.socket, cirachannel.amtchannelid, cirachannel.sendBuffer.subarray(0, cirachannel.sendcredits))
+        APFProcessor.SendChannelData(
+          cirachannel.socket,
+          cirachannel.amtchannelid,
+          cirachannel.sendBuffer.subarray(0, cirachannel.sendcredits)
+        )
         cirachannel.sendBuffer = cirachannel.sendBuffer.subarray(cirachannel.sendcredits)
         cirachannel.sendcredits = 0
       }
@@ -564,9 +596,7 @@ const APFProcessor = {
     logger.silly(`${messages.MPS_SEND_CHANNEL_WINDOW_ADJUST}, ${channelid}, ${bytestoadd}`)
     APFProcessor.Write(
       socket,
-      String.fromCharCode(APFProtocol.CHANNEL_WINDOW_ADJUST) +
-        Common.IntToStr(channelid) +
-        Common.IntToStr(bytestoadd)
+      String.fromCharCode(APFProtocol.CHANNEL_WINDOW_ADJUST) + Common.IntToStr(channelid) + Common.IntToStr(bytestoadd)
     )
   },
 
@@ -574,9 +604,7 @@ const APFProcessor = {
     logger.silly(`${messages.MPS_SEND_CHANNEL_DISCONNECT}, ${reasonCode}`)
     APFProcessor.Write(
       socket,
-      String.fromCharCode(APFProtocol.DISCONNECT) +
-        Common.IntToStr(reasonCode) +
-        Common.ShortToStr(0)
+      String.fromCharCode(APFProtocol.DISCONNECT) + Common.IntToStr(reasonCode) + Common.ShortToStr(0)
     )
   },
 
@@ -584,10 +612,7 @@ const APFProcessor = {
     logger.silly(messages.MPS_SEND_USER_AUTH_FAIL)
     APFProcessor.Write(
       socket,
-      String.fromCharCode(APFProtocol.USERAUTH_FAILURE) +
-        Common.IntToStr(8) +
-        'password' +
-        Common.ShortToStr(0)
+      String.fromCharCode(APFProtocol.USERAUTH_FAILURE) + Common.IntToStr(8) + 'password' + Common.ShortToStr(0)
     )
   },
 
@@ -600,22 +625,21 @@ const APFProcessor = {
     socket.write(Buffer.from(data, 'binary'))
   },
 
-  guidToStr: (g): string => (
+  guidToStr: (g): string =>
     g.substring(6, 8) +
-      g.substring(4, 6) +
-      g.substring(2, 4) +
-      g.substring(0, 2) +
-      '-' +
-      g.substring(10, 12) +
-      g.substring(8, 10) +
-      '-' +
-      g.substring(14, 16) +
-      g.substring(12, 14) +
-      '-' +
-      g.substring(16, 20) +
-      '-' +
-      g.substring(20)
-  )
+    g.substring(4, 6) +
+    g.substring(2, 4) +
+    g.substring(0, 2) +
+    '-' +
+    g.substring(10, 12) +
+    g.substring(8, 10) +
+    '-' +
+    g.substring(14, 16) +
+    g.substring(12, 14) +
+    '-' +
+    g.substring(16, 20) +
+    '-' +
+    g.substring(20)
 }
 
 export default APFProcessor

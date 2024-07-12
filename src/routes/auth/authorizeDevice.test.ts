@@ -9,19 +9,25 @@ import { jest } from '@jest/globals'
 import { spyOn } from 'jest-mock'
 
 jest.unstable_mockModule('express-validator', () => ({
-  validationResult: () => ({
-    isEmpty: jest.fn().mockReturnValue(true),
-    array: jest.fn().mockReturnValue([{ test: 'error' }])
-  } as any)
+  validationResult: () =>
+    ({
+      isEmpty: jest.fn().mockReturnValue(true),
+      array: jest.fn().mockReturnValue([{ test: 'error' }])
+    }) as any
 }))
-const auth = await import ('./authorizeDevice.js')
+const auth = await import('./authorizeDevice.js')
 
 describe('Check login', () => {
   let resSpy
   let req
 
   beforeEach(() => {
-    resSpy = createSpyObj('Response', ['status', 'json', 'end', 'send'])
+    resSpy = createSpyObj('Response', [
+      'status',
+      'json',
+      'end',
+      'send'
+    ])
     req = {
       params: {
         guid: '4c4c4544-004b-4210-8033-b6c04f504633'

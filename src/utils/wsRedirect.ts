@@ -20,7 +20,7 @@ export class WsRedirect {
   websocketFromWeb: WebSocket
   websocketFromDevice: CIRAChannel // | Socket
   ciraHandler: CIRAHandler
-  constructor (ws: WebSocket, secrets: ISecretManagerService) {
+  constructor(ws: WebSocket, secrets: ISecretManagerService) {
     this.secrets = secrets
     this.websocketFromWeb = ws
   }
@@ -34,9 +34,9 @@ export class WsRedirect {
       tls: Number(reqQueryURL.searchParams.get('tls')),
       tls1only: Number(reqQueryURL.searchParams.get('tls1only')),
       mode: reqQueryURL.searchParams.get('mode')
-    };
+    }
 
-    (this.websocketFromWeb as any)._socket.pause()
+    ;(this.websocketFromWeb as any)._socket.pause()
     // When data is received from the web socket, forward the data into the associated TCP connection.
     // If the TCP connection is pending, buffer up the data until it connects.
     this.websocketFromWeb.onmessage = this.handleMessage.bind(this)
@@ -63,7 +63,7 @@ export class WsRedirect {
     }
   }
 
-  async handleMessage (msg: WebSocket.MessageEvent): Promise<void> {
+  async handleMessage(msg: WebSocket.MessageEvent): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/no-base-to-string
     let msgStr = msg.data.toString('binary')
 
@@ -73,7 +73,7 @@ export class WsRedirect {
     await this.websocketFromDevice.writeData(msgStr) // Forward data to the associated TCP connection.
   }
 
-  handleClose (params: queryParams, CloseEvent: WebSocket.CloseEvent): void {
+  handleClose(params: queryParams, CloseEvent: WebSocket.CloseEvent): void {
     logger.debug(`${messages.REDIRECT_CLOSING_WEB_SOCKET} to ${params.host}: ${params.port}.`)
     if (this.websocketFromDevice) {
       switch (params.mode) {
@@ -93,7 +93,7 @@ export class WsRedirect {
     }
   }
 
-  createCredential (params: queryParams, credentials: string[]): void {
+  createCredential(params: queryParams, credentials: string[]): void {
     if (credentials?.length === 2 && credentials[0] != null && credentials[1] != null) {
       logger.debug(messages.REDIRECT_CREATING_CREDENTIAL)
       if (params.p === 2) {
@@ -105,7 +105,7 @@ export class WsRedirect {
     }
   }
 
-  setNormalTCP (params: queryParams): void {
+  setNormalTCP(params: queryParams): void {
     // If this is TCP (without TLS) set a normal TCP socket
     // check if this is MPS connection
 
@@ -135,8 +135,7 @@ export class WsRedirect {
           logger.error(`${messages.REDIRECT_CLOSING_WEBSOCKET_EXCEPTION}: ${e}`)
         }
       }
-    });
-
-    (this.websocketFromWeb as any)._socket.resume()
+    })
+    ;(this.websocketFromWeb as any)._socket.resume()
   }
 }

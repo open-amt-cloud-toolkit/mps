@@ -7,12 +7,15 @@ import { logger, messages } from '../../logging/index.js'
 import { MPSValidationError } from '../../utils/MPSValidationError.js'
 import { type Request, type Response } from 'express'
 
-export async function updateDevice (req: Request, res: Response): Promise<void> {
+export async function updateDevice(req: Request, res: Response): Promise<void> {
   const guid: string = req.body.guid
   try {
     let device = await req.db.devices.getById(guid, req.tenantId)
     if (device == null) {
-      res.status(404).json({ error: 'NOT FOUND', message: `Device ID ${guid} not found` }).end()
+      res
+        .status(404)
+        .json({ error: 'NOT FOUND', message: `Device ID ${guid} not found` })
+        .end()
     } else {
       device = { ...device, ...req.body }
       const results = await req.db.devices.update(device)

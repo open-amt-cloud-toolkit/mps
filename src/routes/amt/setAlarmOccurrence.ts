@@ -10,7 +10,7 @@ import { MqttProvider } from '../../utils/MqttProvider.js'
 import { type DeviceAction } from '../../amt/DeviceAction.js'
 import { type IPS } from '@open-amt-cloud-toolkit/wsman-messages'
 
-export async function setAlarmOccurrence (req: Request, res: Response): Promise<void> {
+export async function setAlarmOccurrence(req: Request, res: Response): Promise<void> {
   try {
     const payload = req.body
     const guid: string = req.params.guid
@@ -40,7 +40,9 @@ export async function setAlarmOccurrence (req: Request, res: Response): Promise<
         MqttProvider.publishEvent('fail', ['AMT_AddAlarm'], messages.ALARM_ADD_REQUEST_FAILED, guid)
         res.status(400).json(ErrorResponse(400, `${messages.ALARM_ADD_REQUEST_FAILED} for guid : ${guid}.`))
       } else {
-        if (response.Header.Action === 'http://intel.com/wbem/wscim/1/amt-schema/1/AMT_AlarmClockService/AddAlarmResponse') {
+        if (
+          response.Header.Action === 'http://intel.com/wbem/wscim/1/amt-schema/1/AMT_AlarmClockService/AddAlarmResponse'
+        ) {
           MqttProvider.publishEvent('success', ['AMT_AddAlarm'], messages.ALARM_OCCURRENCES_GET_SUCCESS, guid)
           logger.info(JSON.stringify(response, null, '\t'))
           res.status(200).json({ status: 'SUCCESS', ReturnValue: response.Body.AddAlarm_OUTPUT.ReturnValue })
@@ -64,6 +66,10 @@ export async function setAlarmOccurrence (req: Request, res: Response): Promise<
   }
 }
 
-export async function setAlarm (device: DeviceAction, alarm: IPS.Models.AlarmClockOccurrence, guid: string): Promise<any> {
+export async function setAlarm(
+  device: DeviceAction,
+  alarm: IPS.Models.AlarmClockOccurrence,
+  guid: string
+): Promise<any> {
   return await device.addAlarmClockOccurrence(alarm)
 }

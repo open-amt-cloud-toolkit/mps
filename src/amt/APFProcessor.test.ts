@@ -141,7 +141,7 @@ describe('APFProcessor Tests', () => {
   describe('disconnect() tests', () => {
     it('should disconnect and return 0 when len is < 7', () => {
       const fakeCiraSocket: CIRASocket = null
-      const len: number = 6
+      const len = 6
       const data: string = null
       const result = APFProcessor.disconnect(fakeCiraSocket, len, data)
       const expectedResult = 0
@@ -154,8 +154,8 @@ describe('APFProcessor Tests', () => {
           nodeid: jest.fn().mockReturnValue('fakeNodeid')
         }
       }
-      const len: number = 66666
-      const data: string = 'data'
+      const len = 66666
+      const data = 'data'
       const emitSpy = spyOn(APFProcessor.APFEvents, 'emit')
       const result = APFProcessor.disconnect(fakeCiraSocket as any, len, data)
       const expectedResult = 7
@@ -167,7 +167,7 @@ describe('APFProcessor Tests', () => {
   describe('channelData() tests', () => {
     it('should return 0 if len < 9', () => {
       const fakeCiraSocket: any = null
-      const len: number = 8
+      const len = 8
       const data: string = null
       const result = APFProcessor.channelData(fakeCiraSocket, len, data)
       const expectedResult = 0
@@ -178,9 +178,7 @@ describe('APFProcessor Tests', () => {
       const fakeCiraSocket: any = null
       const len: number = 9 + 1048577
       const data: string = null
-      const readIntSpy = spyOn(Common, 'ReadInt')
-        .mockReturnValueOnce(1)
-        .mockReturnValueOnce(1048577)
+      const readIntSpy = spyOn(Common, 'ReadInt').mockReturnValueOnce(1).mockReturnValueOnce(1048577)
       const result = APFProcessor.channelData(fakeCiraSocket, len, data)
       const expectedResult = -1
       expect(result).toEqual(expectedResult)
@@ -189,7 +187,7 @@ describe('APFProcessor Tests', () => {
 
     it('should return 0 if len < 9 + LengthOfData', () => {
       const fakeCiraSocket: CIRASocket = null
-      const len: number = 9
+      const len = 9
       const data: string = null
       spyOn(Common, 'ReadInt').mockReturnValue(1)
       const result = APFProcessor.channelData(fakeCiraSocket, len, data)
@@ -204,7 +202,7 @@ describe('APFProcessor Tests', () => {
           channels: []
         }
       } as any
-      const len: number = 100
+      const len = 100
       const data: string = null
       const lengthOfData = 1
       const readIntSpy = spyOn(Common, 'ReadInt').mockReturnValue(lengthOfData)
@@ -231,7 +229,7 @@ describe('APFProcessor Tests', () => {
           channels: [null, fakeCiraChannel]
         }
       } as any
-      const len: number = 100
+      const len = 100
       const data: string = Common.IntToStr(100)
       const lengthOfData = 1
       const readIntSpy = spyOn(Common, 'ReadInt').mockReturnValue(lengthOfData)
@@ -279,9 +277,7 @@ describe('APFProcessor Tests', () => {
           channels: [fakeCiraChannel]
         }
       } as any
-      const readIntSpy = spyOn(Common, 'ReadInt')
-        .mockReturnValueOnce(0)
-        .mockReturnValueOnce(0)
+      const readIntSpy = spyOn(Common, 'ReadInt').mockReturnValueOnce(0).mockReturnValueOnce(0)
       const data = ''
       const len = 9
       const sendChannelDataSpy = spyOn(APFProcessor, 'SendChannelData')
@@ -309,9 +305,7 @@ describe('APFProcessor Tests', () => {
       } as any
       const data = ''
       const len = 9
-      const readIntSpy = spyOn(Common, 'ReadInt')
-        .mockReturnValueOnce(0)
-        .mockReturnValueOnce(0)
+      const readIntSpy = spyOn(Common, 'ReadInt').mockReturnValueOnce(0).mockReturnValueOnce(0)
       const sendChannelDataSpy = spyOn(APFProcessor, 'SendChannelData')
       const result = APFProcessor.channelWindowAdjust(fakeCiraSocket, len, data)
       expect(result).toEqual(9)
@@ -516,8 +510,7 @@ describe('APFProcessor Tests', () => {
     it('should return -1 if ChannelTypeLength > 2048', () => {
       const length = 33
       const data = ''
-      const readIntSpy = spyOn(Common, 'ReadInt')
-        .mockReturnValueOnce(2049)
+      const readIntSpy = spyOn(Common, 'ReadInt').mockReturnValueOnce(2049)
       const result = APFProcessor.channelOpen(fakeCiraSocket, length, data)
       expect(result).toEqual(-1)
       expect(readIntSpy).toHaveBeenCalled()
@@ -526,8 +519,7 @@ describe('APFProcessor Tests', () => {
     it('should return 0 if length < 33 + ChannelTypeLength', () => {
       const length = 33
       const data = ''
-      const readIntSpy = spyOn(Common, 'ReadInt')
-        .mockReturnValueOnce(1)
+      const readIntSpy = spyOn(Common, 'ReadInt').mockReturnValueOnce(1)
       const result = APFProcessor.channelOpen(fakeCiraSocket, length, data)
       expect(result).toEqual(0)
       expect(readIntSpy).toHaveBeenCalled()
@@ -622,8 +614,7 @@ describe('APFProcessor Tests', () => {
     it('should return -1 if requestLen > 2048', () => {
       const length = 14
       const data = ''
-      const readIntSpy = spyOn(Common, 'ReadInt')
-        .mockReturnValueOnce(2049)
+      const readIntSpy = spyOn(Common, 'ReadInt').mockReturnValueOnce(2049)
       const result = APFProcessor.globalRequest(fakeCiraSocket, length, data)
       expect(result).toEqual(-1)
       expect(readIntSpy).toHaveBeenCalled()
@@ -747,8 +738,7 @@ describe('APFProcessor Tests', () => {
       const fakeCiraSocket = null
       const length = 13
       const data = ''
-      const readIntSpy = spyOn(Common, 'ReadInt')
-        .mockReturnValueOnce(2049)
+      const readIntSpy = spyOn(Common, 'ReadInt').mockReturnValueOnce(2049)
       const result = APFProcessor.serviceRequest(fakeCiraSocket, length, data)
       expect(result).toEqual(-1)
       expect(readIntSpy).toHaveBeenCalled()
@@ -804,8 +794,7 @@ describe('APFProcessor Tests', () => {
       const fakeCiraSocket = null
       const length = 13
       const data = ''
-      const readIntSpy = spyOn(Common, 'ReadInt')
-        .mockReturnValueOnce(2049)
+      const readIntSpy = spyOn(Common, 'ReadInt').mockReturnValueOnce(2049)
       const result = APFProcessor.userAuthRequest(fakeCiraSocket, length, data)
       expect(result).toEqual(-1)
       expect(readIntSpy).toHaveBeenCalled()
@@ -815,8 +804,7 @@ describe('APFProcessor Tests', () => {
       const fakeCiraSocket = null
       const length = 5 + 10 - 1
       const data = ''
-      const readIntSpy = spyOn(Common, 'ReadInt')
-        .mockReturnValueOnce(10)
+      const readIntSpy = spyOn(Common, 'ReadInt').mockReturnValueOnce(10)
       const result = APFProcessor.userAuthRequest(fakeCiraSocket, length, data)
       expect(result).toEqual(-1)
       expect(readIntSpy).toHaveBeenCalled()
@@ -826,9 +814,7 @@ describe('APFProcessor Tests', () => {
       const fakeCiraSocket = null
       const length = 13
       const data = ''
-      const readIntSpy = spyOn(Common, 'ReadInt')
-        .mockReturnValueOnce(10)
-        .mockReturnValueOnce(2049)
+      const readIntSpy = spyOn(Common, 'ReadInt').mockReturnValueOnce(10).mockReturnValueOnce(2049)
       const result = APFProcessor.userAuthRequest(fakeCiraSocket, length, data)
       expect(result).toEqual(-1)
       expect(readIntSpy).toHaveBeenCalled()
@@ -838,9 +824,7 @@ describe('APFProcessor Tests', () => {
       const fakeCiraSocket = null
       const length = 9 + 10 + 10 - 1
       const data = ''
-      const readIntSpy = spyOn(Common, 'ReadInt')
-        .mockReturnValueOnce(10)
-        .mockReturnValueOnce(10)
+      const readIntSpy = spyOn(Common, 'ReadInt').mockReturnValueOnce(10).mockReturnValueOnce(10)
       const result = APFProcessor.userAuthRequest(fakeCiraSocket, length, data)
       expect(result).toEqual(-1)
       expect(readIntSpy).toHaveBeenCalled()
@@ -1125,7 +1109,10 @@ describe('APFProcessor Tests', () => {
 
     it('should SendKeepaliveOptionsRequest', () => {
       APFProcessor.SendKeepaliveOptionsRequest(fakeCiraSocket, keepaliveTime, timeout)
-      const dataExpected = String.fromCharCode(APFProtocol.KEEPALIVE_OPTIONS_REQUEST) + Common.IntToStr(keepaliveTime) + Common.IntToStr(timeout)
+      const dataExpected =
+        String.fromCharCode(APFProtocol.KEEPALIVE_OPTIONS_REQUEST) +
+        Common.IntToStr(keepaliveTime) +
+        Common.IntToStr(timeout)
       expect(writeSpy).toHaveBeenCalledWith(fakeCiraSocket, dataExpected)
     })
 
@@ -1178,7 +1165,16 @@ describe('APFProcessor Tests', () => {
 
     it('should SendChannelOpen with direct-tcpip', () => {
       const direct = true
-      APFProcessor.SendChannelOpen(fakeCiraSocket, direct, channelid, windowSize, target, targetPort, source, sourcePort)
+      APFProcessor.SendChannelOpen(
+        fakeCiraSocket,
+        direct,
+        channelid,
+        windowSize,
+        target,
+        targetPort,
+        source,
+        sourcePort
+      )
       const connectionType = direct ? 'direct-tcpip' : 'forwarded-tcpip'
       const dataExpected =
         String.fromCharCode(APFProtocol.CHANNEL_OPEN) +
@@ -1198,7 +1194,16 @@ describe('APFProcessor Tests', () => {
 
     it('should SendChannelOpen with forwarded-tcpip', () => {
       const direct = false
-      APFProcessor.SendChannelOpen(fakeCiraSocket, direct, channelid, windowSize, target, targetPort, source, sourcePort)
+      APFProcessor.SendChannelOpen(
+        fakeCiraSocket,
+        direct,
+        channelid,
+        windowSize,
+        target,
+        targetPort,
+        source,
+        sourcePort
+      )
       const connectionType = direct ? 'direct-tcpip' : 'forwarded-tcpip'
       const dataExpected =
         String.fromCharCode(APFProtocol.CHANNEL_OPEN) +
@@ -1251,19 +1256,14 @@ describe('APFProcessor Tests', () => {
     it('should SendDisconnect', () => {
       APFProcessor.SendDisconnect(fakeCiraSocket, reasonCode)
       const dataExpected =
-        String.fromCharCode(APFProtocol.DISCONNECT) +
-        Common.IntToStr(reasonCode) +
-        Common.ShortToStr(0)
+        String.fromCharCode(APFProtocol.DISCONNECT) + Common.IntToStr(reasonCode) + Common.ShortToStr(0)
       expect(writeSpy).toHaveBeenCalledWith(fakeCiraSocket, dataExpected)
     })
 
     it('should SendUserAuthFail', () => {
       APFProcessor.SendUserAuthFail(fakeCiraSocket)
       const dataExpected =
-        String.fromCharCode(APFProtocol.USERAUTH_FAILURE) +
-        Common.IntToStr(8) +
-        'password' +
-        Common.ShortToStr(0)
+        String.fromCharCode(APFProtocol.USERAUTH_FAILURE) + Common.IntToStr(8) + 'password' + Common.ShortToStr(0)
       expect(writeSpy).toHaveBeenCalledWith(fakeCiraSocket, dataExpected)
     })
 

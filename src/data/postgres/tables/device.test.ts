@@ -28,10 +28,13 @@ describe('device tests', () => {
     const count: number = await deviceTable.getCount()
     expect(count).toBe(0)
     expect(querySpy).toBeCalledTimes(1)
-    expect(querySpy).toBeCalledWith(`
+    expect(querySpy).toBeCalledWith(
+      `
     SELECT count(*) OVER() AS total_count 
     FROM devices
-    WHERE tenantid = $1`, [''])
+    WHERE tenantid = $1`,
+      ['']
+    )
   })
 
   test('should get a count of one when tenantId and device exist', async () => {
@@ -39,10 +42,13 @@ describe('device tests', () => {
     const count: number = await deviceTable.getCount('tenantId')
     expect(count).toBe(1)
     expect(querySpy).toBeCalledTimes(1)
-    expect(querySpy).toBeCalledWith(`
+    expect(querySpy).toBeCalledWith(
+      `
     SELECT count(*) OVER() AS total_count 
     FROM devices
-    WHERE tenantid = $1`, ['tenantId'])
+    WHERE tenantid = $1`,
+      ['tenantId']
+    )
   })
 
   test('should get an empty array when no devices', async () => {
@@ -50,7 +56,8 @@ describe('device tests', () => {
     const device: Device[] = await deviceTable.get()
     expect(device.length).toBe(0)
     expect(querySpy).toBeCalledTimes(1)
-    expect(querySpy).toBeCalledWith(`
+    expect(querySpy).toBeCalledWith(
+      `
     SELECT 
       guid as "guid",
       hostname as "hostname",
@@ -65,7 +72,13 @@ describe('device tests', () => {
     FROM devices
     WHERE tenantid = $3 
     ORDER BY guid 
-    LIMIT $1 OFFSET $2`, [25, 0, ''])
+    LIMIT $1 OFFSET $2`,
+      [
+        25,
+        0,
+        ''
+      ]
+    )
   })
 
   test('Should get an array of one when a device exist', async () => {
@@ -81,7 +94,8 @@ describe('device tests', () => {
     querySpy.mockResolvedValueOnce({ rows: [device], command: '', fields: null, rowCount: 0, oid: 0 })
     const devices: Device[] = await deviceTable.get(25, 0, 'tenantId')
     expect(querySpy).toBeCalledTimes(1)
-    expect(querySpy).toBeCalledWith(`
+    expect(querySpy).toBeCalledWith(
+      `
     SELECT 
       guid as "guid",
       hostname as "hostname",
@@ -96,7 +110,13 @@ describe('device tests', () => {
     FROM devices
     WHERE tenantid = $3 
     ORDER BY guid 
-    LIMIT $1 OFFSET $2`, [25, 0, 'tenantId'])
+    LIMIT $1 OFFSET $2`,
+      [
+        25,
+        0,
+        'tenantId'
+      ]
+    )
     expect(devices.length).toBe(1)
     expect(devices[0]).toBe(device)
   })
@@ -106,7 +126,8 @@ describe('device tests', () => {
     const device: Device = await deviceTable.getById('4c4c4544-004b-4210-8033-b6c04f504633')
     expect(device).toBe(null)
     expect(querySpy).toBeCalledTimes(1)
-    expect(querySpy).toBeCalledWith(`SELECT
+    expect(querySpy).toBeCalledWith(
+      `SELECT
       guid as "guid",
       hostname as "hostname",
       tags as "tags",
@@ -121,16 +142,21 @@ describe('device tests', () => {
       lastdisconnected as "lastDisconnected",
       deviceinfo as "deviceInfo"
       FROM devices 
-      WHERE guid = $1`, ['4c4c4544-004b-4210-8033-b6c04f504633'])
+      WHERE guid = $1`,
+      ['4c4c4544-004b-4210-8033-b6c04f504633']
+    )
   })
 
   test('should get count of connected devices when exists', async () => {
     querySpy.mockResolvedValueOnce({ rows: [{ connected_count: 10 }], command: '', fields: null, rowCount: 0, oid: 0 })
     const connectedCount = await deviceTable.getConnectedDevices()
-    expect(querySpy).toBeCalledWith(`
+    expect(querySpy).toBeCalledWith(
+      `
       SELECT count(*) OVER() AS connected_count 
       FROM devices
-      WHERE tenantid = $1 and connectionstatus = true`, [''])
+      WHERE tenantid = $1 and connectionstatus = true`,
+      ['']
+    )
     expect(querySpy).toBeCalledTimes(1)
     expect(connectedCount).toBe(10)
   })
@@ -138,10 +164,13 @@ describe('device tests', () => {
   test('should get ZERO connected devices when non connected', async () => {
     querySpy.mockResolvedValueOnce({ rows: [], command: '', fields: null, rowCount: 0, oid: 0 })
     const connectedCount = await deviceTable.getConnectedDevices()
-    expect(querySpy).toBeCalledWith(`
+    expect(querySpy).toBeCalledWith(
+      `
       SELECT count(*) OVER() AS connected_count 
       FROM devices
-      WHERE tenantid = $1 and connectionstatus = true`, [''])
+      WHERE tenantid = $1 and connectionstatus = true`,
+      ['']
+    )
     expect(querySpy).toBeCalledTimes(1)
     expect(connectedCount).toBe(0)
   })
@@ -160,7 +189,8 @@ describe('device tests', () => {
     const result: Device = await deviceTable.getById('4c4c4544-004b-4210-8033-b6c04f504633', 'tenantId')
     expect(result).toBe(device)
     expect(querySpy).toBeCalledTimes(1)
-    expect(querySpy).toBeCalledWith(`SELECT
+    expect(querySpy).toBeCalledWith(
+      `SELECT
     guid as "guid",
     hostname as "hostname",
     tags as "tags",
@@ -175,7 +205,9 @@ describe('device tests', () => {
     lastdisconnected as "lastDisconnected",
     deviceinfo as "deviceInfo"
     FROM devices 
-    WHERE guid = $1 and tenantid = $2`, ['4c4c4544-004b-4210-8033-b6c04f504633', 'tenantId'])
+    WHERE guid = $1 and tenantid = $2`,
+      ['4c4c4544-004b-4210-8033-b6c04f504633', 'tenantId']
+    )
   })
 
   test('should get a device by hostname when exist', async () => {
@@ -192,7 +224,8 @@ describe('device tests', () => {
     const result: Device[] = await deviceTable.getByHostname('hostname', 'tenantId')
     expect(result[0]).toBe(device)
     expect(querySpy).toBeCalledTimes(1)
-    expect(querySpy).toBeCalledWith(`
+    expect(querySpy).toBeCalledWith(
+      `
     SELECT
       guid as "guid",
       hostname as "hostname",
@@ -205,7 +238,9 @@ describe('device tests', () => {
       dnssuffix as "dnsSuffix",
       deviceinfo as "deviceInfo"
     FROM devices 
-    WHERE hostname = $1 and tenantid = $2`, ['hostname', 'tenantId'])
+    WHERE hostname = $1 and tenantid = $2`,
+      ['hostname', 'tenantId']
+    )
   })
 
   test('Should get null when called with hostname and no device exist', async () => {
@@ -213,7 +248,8 @@ describe('device tests', () => {
     const devices: Device[] = await deviceTable.getByHostname('hostname')
     expect(devices.length).toBe(0)
     expect(querySpy).toBeCalledTimes(1)
-    expect(querySpy).toBeCalledWith(`
+    expect(querySpy).toBeCalledWith(
+      `
     SELECT
       guid as "guid",
       hostname as "hostname",
@@ -226,7 +262,9 @@ describe('device tests', () => {
       dnssuffix as "dnsSuffix",
       deviceinfo as "deviceInfo"
     FROM devices 
-    WHERE hostname = $1 and tenantid = $2`, ['hostname', ''])
+    WHERE hostname = $1 and tenantid = $2`,
+      ['hostname', '']
+    )
   })
 
   test('should get a device by friendlyName when exist', async () => {
@@ -268,7 +306,8 @@ describe('device tests', () => {
     const devices: Device[] = await deviceTable.getByTags(['acm', 'ccm'], 'AND')
     expect(devices.length).toBe(0)
     expect(querySpy).toBeCalledTimes(1)
-    expect(querySpy).toBeCalledWith(`
+    expect(querySpy).toBeCalledWith(
+      `
       SELECT 
         guid as "guid",
         hostname as "hostname",
@@ -283,7 +322,14 @@ describe('device tests', () => {
       FROM devices 
       WHERE tags @> $1 and tenantId = $4
       ORDER BY guid 
-      LIMIT $2 OFFSET $3`, [['acm', 'ccm'], 25, 0, ''])
+      LIMIT $2 OFFSET $3`,
+      [
+        ['acm', 'ccm'],
+        25,
+        0,
+        ''
+      ]
+    )
   })
 
   test('should get a device when tenantId, skip, top, OR method, device guid matches', async () => {
@@ -300,7 +346,8 @@ describe('device tests', () => {
     const devices: Device[] = await deviceTable.getByTags(['acm', 'ccm'], 'OR', 25, 0, 'tenantId')
     expect(devices.length).toBe(1)
     expect(querySpy).toBeCalledTimes(1)
-    expect(querySpy).toBeCalledWith(`
+    expect(querySpy).toBeCalledWith(
+      `
       SELECT 
         guid as "guid",
         hostname as "hostname",
@@ -315,17 +362,27 @@ describe('device tests', () => {
       FROM devices 
       WHERE tags && $1 and tenantId = $4
       ORDER BY guid 
-      LIMIT $2 OFFSET $3`, [['acm', 'ccm'], 25, 0, 'tenantId'])
+      LIMIT $2 OFFSET $3`,
+      [
+        ['acm', 'ccm'],
+        25,
+        0,
+        'tenantId'
+      ]
+    )
   })
 
   test('should get an array of tag names when tags exist ', async () => {
     querySpy.mockResolvedValueOnce({ rows: ['acm', 'ccm'], command: '', fields: null, rowCount: 1, oid: 0 })
     const tag = await deviceTable.getDistinctTags('4')
     expect(querySpy).toBeCalledTimes(1)
-    expect(querySpy).toBeCalledWith(`
+    expect(querySpy).toBeCalledWith(
+      `
     SELECT DISTINCT unnest(tags) as tag 
     FROM Devices
-    WHERE tenantid = $1`, ['4'])
+    WHERE tenantid = $1`,
+      ['4']
+    )
     expect(tag.length).toBe(2)
   })
 
@@ -333,10 +390,13 @@ describe('device tests', () => {
     querySpy.mockResolvedValueOnce({ rows: [], command: '', fields: null, rowCount: 0, oid: 0 })
     const tag = await deviceTable.getDistinctTags()
     expect(querySpy).toBeCalledTimes(1)
-    expect(querySpy).toBeCalledWith(`
+    expect(querySpy).toBeCalledWith(
+      `
     SELECT DISTINCT unnest(tags) as tag 
     FROM Devices
-    WHERE tenantid = $1`, [''])
+    WHERE tenantid = $1`,
+      ['']
+    )
     expect(tag.length).toBe(0)
     expect(tag).toEqual([])
   })
@@ -365,21 +425,22 @@ describe('device tests', () => {
     getById.mockResolvedValueOnce(device)
     const result = await deviceTable.insert(device)
     expect(querySpy).toHaveBeenCalledTimes(1)
-    expect(querySpy).toHaveBeenCalledWith(`
+    expect(querySpy).toHaveBeenCalledWith(
+      `
       INSERT INTO devices(guid, hostname, tags, mpsinstance, connectionstatus, mpsusername, tenantid, friendlyname, dnssuffix, deviceinfo)
       values($1, $2, ARRAY(SELECT json_array_elements_text($3)), $4, $5, $6, $7, $8, $9, $10)`,
-    [
-      device.guid,
-      device.hostname,
-      JSON.stringify(device.tags),
-      device.mpsInstance,
-      device.connectionStatus,
-      device.mpsusername,
-      device.tenantId,
-      device.friendlyName,
-      device.dnsSuffix,
-      JSON.stringify(device.deviceInfo)
-    ])
+      [
+        device.guid,
+        device.hostname,
+        JSON.stringify(device.tags),
+        device.mpsInstance,
+        device.connectionStatus,
+        device.mpsusername,
+        device.tenantId,
+        device.friendlyName,
+        device.dnsSuffix,
+        JSON.stringify(device.deviceInfo)]
+    )
     expect(getById).toHaveBeenCalledTimes(1)
     expect(result).toBe(device)
   })
@@ -401,21 +462,22 @@ describe('device tests', () => {
     getById.mockResolvedValueOnce(device)
     const result = await deviceTable.insert(device)
     expect(querySpy).toHaveBeenCalledTimes(1)
-    expect(querySpy).toHaveBeenCalledWith(`
+    expect(querySpy).toHaveBeenCalledWith(
+      `
       INSERT INTO devices(guid, hostname, tags, mpsinstance, connectionstatus, mpsusername, tenantid, friendlyname, dnssuffix, deviceinfo)
       values($1, $2, ARRAY(SELECT json_array_elements_text($3)), $4, $5, $6, $7, $8, $9, $10)`,
-    [
-      device.guid,
-      device.hostname,
-      JSON.stringify(device.tags),
-      device.mpsInstance,
-      device.connectionStatus,
-      device.mpsusername,
-      device.tenantId,
-      device.friendlyName,
-      device.dnsSuffix,
-      JSON.stringify(device.deviceInfo)
-    ])
+      [
+        device.guid,
+        device.hostname,
+        JSON.stringify(device.tags),
+        device.mpsInstance,
+        device.connectionStatus,
+        device.mpsusername,
+        device.tenantId,
+        device.friendlyName,
+        device.dnsSuffix,
+        JSON.stringify(device.deviceInfo)]
+    )
     expect(getById).toHaveBeenCalledTimes(1)
     expect(result).toBe(device)
   })
@@ -613,16 +675,18 @@ describe('device tests', () => {
     const result = await deviceTable.clearInstanceStatus('localhost', '4')
     expect(result).toBe(true)
     expect(querySpy).toBeCalledTimes(1)
-    expect(querySpy).toBeCalledWith(`
+    expect(querySpy).toBeCalledWith(
+      `
       UPDATE devices 
       SET mpsinstance=$2, connectionstatus=$3 
       WHERE mpsinstance=$1 and tenantId = $4`,
-    [
-      'localhost',
-      null,
-      false,
-      '4'
-    ])
+      [
+        'localhost',
+        null,
+        false,
+        '4'
+      ]
+    )
   })
 
   test('should get false when update to connection status fails', async () => {
@@ -631,16 +695,18 @@ describe('device tests', () => {
     })
     const result = await deviceTable.clearInstanceStatus('localhost')
     expect(querySpy).toBeCalledTimes(1)
-    expect(querySpy).toBeCalledWith(`
+    expect(querySpy).toBeCalledWith(
+      `
       UPDATE devices 
       SET mpsinstance=$2, connectionstatus=$3 
       WHERE mpsinstance=$1 and tenantId = $4`,
-    [
-      'localhost',
-      null,
-      false,
-      ''
-    ])
+      [
+        'localhost',
+        null,
+        false,
+        ''
+      ]
+    )
     expect(result).toBe(false)
   })
 
@@ -649,9 +715,12 @@ describe('device tests', () => {
     const isDeleted: boolean = await deviceTable.delete('4c4c4544-004b-4210-8033-b6c04f504633')
     expect(isDeleted).toBe(false)
     expect(querySpy).toBeCalledTimes(1)
-    expect(querySpy).toBeCalledWith(`
+    expect(querySpy).toBeCalledWith(
+      `
     DELETE FROM devices 
-    WHERE guid = $1 and tenantid = $2`, ['4c4c4544-004b-4210-8033-b6c04f504633', ''])
+    WHERE guid = $1 and tenantid = $2`,
+      ['4c4c4544-004b-4210-8033-b6c04f504633', '']
+    )
   })
 
   test('Should get true when device deleted', async () => {
@@ -659,8 +728,11 @@ describe('device tests', () => {
     const isDeleted: boolean = await deviceTable.delete('4c4c4544-004b-4210-8033-b6c04f504633', '4')
     expect(isDeleted).toBe(true)
     expect(querySpy).toBeCalledTimes(1)
-    expect(querySpy).toBeCalledWith(`
+    expect(querySpy).toBeCalledWith(
+      `
     DELETE FROM devices 
-    WHERE guid = $1 and tenantid = $2`, ['4c4c4544-004b-4210-8033-b6c04f504633', '4'])
+    WHERE guid = $1 and tenantid = $2`,
+      ['4c4c4544-004b-4210-8033-b6c04f504633', '4']
+    )
   })
 })

@@ -62,7 +62,7 @@ describe('Index', () => {
     expect(consul.seed).toHaveBeenCalledWith(config.consul_key_prefix, config)
   })
   it('should pass processServiceConfigs seeded Consul', async () => {
-    const consulValues: Array<{ Key: string, Value: string }> = [
+    const consulValues: { Key: string; Value: string }[] = [
       {
         Key: componentName + '/config',
         Value: '{"web_port": 8081, "delay_timer": 12}'

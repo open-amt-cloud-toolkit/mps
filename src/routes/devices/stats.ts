@@ -7,7 +7,7 @@ import { type Request, type Response } from 'express'
 import { logger } from '../../logging/index.js'
 import { messages } from '../../logging/messages.js'
 
-export async function stats (req: Request, res: Response): Promise<void> {
+export async function stats(req: Request, res: Response): Promise<void> {
   try {
     const connectedCount = await req.db.devices.getConnectedDevices(req.tenantId)
     const totalCount = await req.db.devices.getCount(req.tenantId)

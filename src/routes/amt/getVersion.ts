@@ -8,7 +8,7 @@ import { logger, messages } from '../../logging/index.js'
 import { ErrorResponse } from '../../utils/amtHelper.js'
 import { MqttProvider } from '../../utils/MqttProvider.js'
 
-export async function version (req: Request, res: Response): Promise<void> {
+export async function version(req: Request, res: Response): Promise<void> {
   try {
     const guid: string = req.params.guid
     MqttProvider.publishEvent('request', ['AMT_Version'], messages.POWER_STATE_GET_REQUESTED, guid)
@@ -26,11 +26,11 @@ export async function version (req: Request, res: Response): Promise<void> {
 }
 
 // matches version 2.x API for Open AMT
-export async function getVersion (guid: string, req: Request): Promise<any> {
+export async function getVersion(guid: string, req: Request): Promise<any> {
   const response: Record<string, any> = {}
   response.CIM_SoftwareIdentity = await req.deviceAction.getSoftwareIdentity()
   response.AMT_SetupAndConfigurationService = await req.deviceAction.getSetupAndConfigurationService()
-  if (Object.values(response).some(item => item == null)) {
+  if (Object.values(response).some((item) => item == null)) {
     return null
   } else {
     return {

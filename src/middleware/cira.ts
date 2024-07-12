@@ -28,7 +28,10 @@ const ciraMiddleware = async (req: Request, res: Response, next): Promise<void> 
     next()
   } else {
     MqttProvider.publishEvent('fail', ['CIRA_Connection'], 'Device Not Found', guid)
-    res.status(404).json(ErrorResponse(404, `guid : ${guid}`, 'device')).end()
+    res
+      .status(404)
+      .json(ErrorResponse(404, `guid : ${guid}`, 'device'))
+      .end()
   }
 }
 

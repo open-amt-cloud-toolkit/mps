@@ -13,7 +13,12 @@ describe('Check index', () => {
   let req
 
   beforeEach(() => {
-    resSpy = createSpyObj('Response', ['status', 'json', 'end', 'send'])
+    resSpy = createSpyObj('Response', [
+      'status',
+      'json',
+      'end',
+      'send'
+    ])
     resSpy.status.mockReturnThis()
     resSpy.json.mockReturnThis()
     resSpy.send.mockReturnThis()

@@ -5,43 +5,40 @@
 
 name: Docker Image CI
 
-on:  
+on:
   workflow_dispatch:
     inputs:
       docker_registry:
-            description: 'Registry URL'     
-            required: true
-            default: 'docker.io/username'
+        description: 'Registry URL'
+        required: true
+        default: 'docker.io/username'
       docker_tag_name:
-            description: 'Tag you wish to use on the docker image'     
-            required: true
-            default: 'mps:v1'
+        description: 'Tag you wish to use on the docker image'
+        required: true
+        default: 'mps:v1'
 permissions:
   contents: read
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - name: Harden Runner
-      uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
-      with:
-        egress-policy: audit
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
 
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
-    - name: Build the Docker image
-      
-      run: docker build . --file Dockerfile --tag ${{ github.event.inputs.docker_registry }}/${{ github.event.inputs.docker_tag_name }}
-    - name: Docker Login
-      uses: docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446 # v3.2.0
-      with:
-        registry: ${{ github.event.inputs.docker_registry }}
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-        logout: true
-    - name: Push the Docker image to the registry
-      run: docker push ${{ github.event.inputs.docker_registry }}/${{ github.event.inputs.docker_tag_name }}
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      - name: Build the Docker image
 
+        run: docker build . --file Dockerfile --tag ${{ github.event.inputs.docker_registry }}/${{ github.event.inputs.docker_tag_name }}
+      - name: Docker Login
+        uses: docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446 # v3.2.0
+        with:
+          registry: ${{ github.event.inputs.docker_registry }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          logout: true
+      - name: Push the Docker image to the registry
+        run: docker push ${{ github.event.inputs.docker_registry }}/${{ github.event.inputs.docker_tag_name }}

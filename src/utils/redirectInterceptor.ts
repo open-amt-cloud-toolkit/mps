@@ -18,7 +18,7 @@ export enum StartRedirectionSessionReplyStatus {
   TYPE_UNKNOWN = 1,
   BUSY = 2,
   UNSUPPORTED = 3,
-  ERROR = 0xFF
+  ERROR = 0xff
 }
 export enum AuthenticationStatus {
   SUCCESS = 0,
@@ -38,23 +38,35 @@ export class RedirectInterceptor {
   amt: Connection
   ws: Connection
 
-  constructor (args: Args) {
+  constructor(args: Args) {
     this.args = args
     this.amt = { acc: '', mode: 0, count: 0, error: false, direct: false, type: ConnectionType.AMT }
-    this.ws = { acc: '', mode: 0, count: 0, error: false, direct: false, authCNonce: Common.RandomValueHex(10), authCNonceCount: 1, type: ConnectionType.WS }
+    this.ws = {
+      acc: '',
+      mode: 0,
+      count: 0,
+      error: false,
+      direct: false,
+      authCNonce: Common.RandomValueHex(10),
+      authCNonceCount: 1,
+      type: ConnectionType.WS
+    }
   }
 
   // Process data coming from Intel AMT
-  processAmtData (data): string {
+  processAmtData(data): string {
     this.amt.acc += data // Add data to accumulator
     data = ''
     let datalen = 0
-    do { datalen = data.length; data += this.processAmtDataEx() } while (datalen !== data.length) // Process as much data as possible
+    do {
+      datalen = data.length
+      data += this.processAmtDataEx()
+    } while (datalen !== data.length) // Process as much data as possible
     return data
   }
 
   // Process data coming from AMT in the accumulator
-  processAmtDataEx (): string {
+  processAmtDataEx(): string {
     if (this.amt.acc.length === 0) return ''
     if (this.amt.direct) {
       const data = this.amt.acc
@@ -76,7 +88,7 @@ export class RedirectInterceptor {
     }
   }
 
-  handleStartRedirectionSessionReply (): string {
+  handleStartRedirectionSessionReply(): string {
     if (this.amt.acc.length < 4) return ''
     if (this.amt.acc.charCodeAt(1) === StartRedirectionSessionReplyStatus.SUCCESS) {
       if (this.amt.acc.length < 13) return ''
@@ -88,7 +100,7 @@ export class RedirectInterceptor {
     }
   }
 
-  handleAuthenticateSessionReply (): string {
+  handleAuthenticateSessionReply(): string {
     if (this.amt.acc.length < 9) return ''
     const l = Common.ReadIntX(this.amt.acc, 5)
     if (this.amt.acc.length < 9 + l) return ''
@@ -114,7 +126,7 @@ export class RedirectInterceptor {
     return r
   }
 
-  processBrowserData (data): string {
+  processBrowserData(data): string {
     this.ws.acc += data // Add data to accumulator
     data = ''
     let datalen = 0
@@ -126,7 +138,7 @@ export class RedirectInterceptor {
   }
 
   // Process data coming from the Browser in the accumulator
-  processBrowserDataEx (): string {
+  processBrowserDataEx(): string {
     if (this.ws.acc.length === 0) return ''
     if (this.ws.direct) {
       const data = this.ws.acc
@@ -151,21 +163,21 @@ export class RedirectInterceptor {
     }
   }
 
-  handleStartRedirectionSession (): string {
+  handleStartRedirectionSession(): string {
     if (this.ws.acc.length < 8) return ''
     const r = this.ws.acc.substring(0, 8)
     this.ws.acc = this.ws.acc.substring(8)
     return r
   }
 
-  handleEndRedirectionSession (): string {
+  handleEndRedirectionSession(): string {
     if (this.ws.acc.length < 4) return ''
     const r = this.ws.acc.substring(0, 4)
     this.ws.acc = this.ws.acc.substring(4)
     return r
   }
 
-  handleAuthenticateSession (): string {
+  handleAuthenticateSession(): string {
     if (this.ws.acc.length < 9) return ''
     const l = Common.ReadIntX(this.ws.acc, 5)
     if (this.ws.acc.length < 9 + l) return ''
@@ -179,12 +191,32 @@ export class RedirectInterceptor {
         const nc = this.ws.authCNonceCount
         this.ws.authCNonceCount++
         const nonceCount = nc.toString(16).padStart(8, '0')
-        const digest = Common.ComputeDigesthash(this.args.user, this.args.pass, this.amt.digestRealm, 'POST', authurl, this.amt.digestQOP, this.amt.digestNonce, nonceCount, this.ws.authCNonce)
+        const digest = Common.ComputeDigesthash(
+          this.args.user,
+          this.args.pass,
+          this.amt.digestRealm,
+          'POST',
+          authurl,
+          this.amt.digestQOP,
+          this.amt.digestNonce,
+          nonceCount,
+          this.ws.authCNonce
+        )
 
         // Replace this authentication digest with a server created one
         // We have everything we need to authenticate
         let r = String.fromCharCode(0x13, 0x00, 0x00, 0x00, 0x04)
-        r += Common.IntToStrX(this.args.user.length + this.amt.digestRealm.length + this.amt.digestNonce.length + authurl.length + this.ws.authCNonce.length + nonceCount.length + digest.length + this.amt.digestQOP.length + 8)
+        r += Common.IntToStrX(
+          this.args.user.length +
+            this.amt.digestRealm.length +
+            this.amt.digestNonce.length +
+            authurl.length +
+            this.ws.authCNonce.length +
+            nonceCount.length +
+            digest.length +
+            this.amt.digestQOP.length +
+            8
+        )
         r += String.fromCharCode(this.args.user.length) // Username Length
         r += this.args.user // Username
         r += String.fromCharCode(this.amt.digestRealm.length) // Realm Length

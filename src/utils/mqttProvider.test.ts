@@ -9,7 +9,7 @@ import { config } from '../test/helper/config.js'
 import { jest } from '@jest/globals'
 import { spyOn } from 'jest-mock'
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-jest.unstable_mockModule('mqtt', () => ({ ...jest.requireActual('mqtt') as object }))
+jest.unstable_mockModule('mqtt', () => ({ ...(jest.requireActual('mqtt') as object) }))
 describe('MQTT Turned ON Tests', () => {
   beforeEach(() => {
     config.mqtt_address = 'mqtt://127.0.0.1:8883'
@@ -38,7 +38,7 @@ describe('MQTT Turned ON Tests', () => {
   // })
 
   it('Should send an event message when turned on', async () => {
-    MqttProvider.instance.client = { publish: (_topic, _message, _opts, callback) => ({} as any) } as any
+    MqttProvider.instance.client = { publish: (_topic, _message, _opts, callback) => ({}) as any } as any
     const spy = spyOn(MqttProvider.instance.client, 'publish').mockImplementation((topic, message, opts, callback) => {
       callback(null)
       return {} as any
@@ -48,12 +48,12 @@ describe('MQTT Turned ON Tests', () => {
       MqttProvider.publishEvent('success', ['testMethod'], 'Test Message')
       expect(spy).toHaveBeenCalled()
     } catch (err) {
-
+      expect(err).toBeUndefined()
     }
   })
 
   it('Should throw error when event message publish fails', async () => {
-    MqttProvider.instance.client = { publish: (topic, message, opts, callback) => ({} as any) } as any
+    MqttProvider.instance.client = { publish: (topic, message, opts, callback) => ({}) as any } as any
     const spy = spyOn(MqttProvider.instance.client, 'publish').mockImplementation((topic, message, opts, callback) => {
       callback(new Error())
       return {} as any
@@ -72,11 +72,14 @@ describe('MQTT Turned ON Tests', () => {
       connected: true
     } as any
     MqttProvider.instance.client = {
-      end: () => ({} as any)
+      end: () => ({}) as any
     } as any
-    const spy = spyOn(MqttProvider.instance.client, 'end').mockImplementation(() => ({
-      connected: false
-    } as any))
+    const spy = spyOn(MqttProvider.instance.client, 'end').mockImplementation(
+      () =>
+        ({
+          connected: false
+        }) as any
+    )
     MqttProvider.instance.turnedOn = true
 
     MqttProvider.endBroker()
@@ -92,9 +95,11 @@ describe('MQTT Turned OFF Tests', () => {
 
   it('Should NOT Send an event message when turned off', async () => {
     MqttProvider.instance.client = {
-      publish: (topic, message, callback) => ({} as any)
+      publish: (topic, message, callback) => ({}) as any
     } as any
-    const spy = spyOn(MqttProvider.instance.client, 'publish').mockImplementation((topic, message, callback) => ({} as any))
+    const spy = spyOn(MqttProvider.instance.client, 'publish').mockImplementation(
+      (topic, message, callback) => ({}) as any
+    )
     MqttProvider.instance.turnedOn = false
     MqttProvider.publishEvent('success', ['testMethod'], 'Test Message')
     expect(spy).not.toHaveBeenCalled()

@@ -51,18 +51,16 @@ describe('MPS Server', function () {
 
     db = {
       devices: devicesMock,
-      query: async (text, params): Promise<any> => {
-
-      }
+      query: async (text, params): Promise<any> => {}
     }
     secrets = {
       getSecretFromKey: async (path: string, key: string) => 'P@ssw0rd',
-      getSecretAtPath: async (path: string) => ({} as any),
+      getSecretAtPath: async (path: string) => ({}) as any,
       getAMTCredentials: async (path: string) => ['admin', 'P@ssw0rd'],
-      getMPSCerts: async () => ({} as any),
+      getMPSCerts: async () => ({}) as any,
       writeSecretWithObject: async (path: string, data: any) => false,
       health: async () => ({}),
-      deleteSecretAtPath: async (path: string) => { }
+      deleteSecretAtPath: async (path: string) => {}
     }
     certs = {
       mps_tls_config: {} as any,
@@ -165,7 +163,11 @@ describe('MPS Server', function () {
     devices['123'] = { ciraSocket: { tag: { SystemId: '123', id: 'MNO123XYZ', nodeid: '123' }, end: jest.fn() } } as any
     await mps.handleLastSeenUpdate('123')
     expect(deviceSpy).toHaveBeenCalledWith('123')
-    expect(deviceUpdateSpy).toHaveBeenCalledWith({ connectionStatus: true, mpsInstance: 'mpsInstance', lastSeen: testDevice.lastSeen })
+    expect(deviceUpdateSpy).toHaveBeenCalledWith({
+      connectionStatus: true,
+      mpsInstance: 'mpsInstance',
+      lastSeen: testDevice.lastSeen
+    })
     expect(debugSpy).toHaveBeenCalledWith('Device last seen status updated in db : 123')
   })
   it('should NOT verify user auth when NOT valid', async () => {
@@ -309,7 +311,12 @@ describe('MPS Server', function () {
     expect(testDevice.lastDisconnected.getDay()).toBe(roughDateTest.getDay())
     expect(testDevice.lastDisconnected.getMonth()).toBe(roughDateTest.getMonth())
     expect(testDevice.lastDisconnected.getFullYear()).toBe(roughDateTest.getFullYear())
-    expect(deviceUpdateSpy).toHaveBeenCalledWith({ connectionStatus: false, mpsInstance: null, mpsusername: 'admin', lastDisconnected: testDevice.lastDisconnected })
+    expect(deviceUpdateSpy).toHaveBeenCalledWith({
+      connectionStatus: false,
+      mpsInstance: null,
+      mpsusername: 'admin',
+      lastDisconnected: testDevice.lastDisconnected
+    })
     expect(emitSpy).toHaveBeenCalledWith('disconnected', '123')
   })
   it('should handle device connect', async () => {
@@ -320,6 +327,11 @@ describe('MPS Server', function () {
     expect(testDevice.lastConnected.getDay()).toBe(roughDateTest.getDay())
     expect(testDevice.lastConnected.getMonth()).toBe(roughDateTest.getMonth())
     expect(testDevice.lastConnected.getFullYear()).toBe(roughDateTest.getFullYear())
-    expect(deviceUpdateSpy).toHaveBeenCalledWith({ connectionStatus: true, mpsInstance: 'mpsInstance', mpsusername: 'admin', lastConnected: testDevice.lastConnected })
+    expect(deviceUpdateSpy).toHaveBeenCalledWith({
+      connectionStatus: true,
+      mpsInstance: 'mpsInstance',
+      mpsusername: 'admin',
+      lastConnected: testDevice.lastConnected
+    })
   })
 })

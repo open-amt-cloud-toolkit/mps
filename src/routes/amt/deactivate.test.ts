@@ -38,7 +38,9 @@ describe('deactivate', () => {
 
     deleteSpy = spyOn(req.db.devices, 'delete').mockResolvedValue({})
     deleteSecretAtPathSpy = spyOn(req.secrets, 'deleteSecretAtPath').mockResolvedValue({})
-    deprovisionDeviceSpy = spyOn(req.deviceAction, 'unprovisionDevice').mockResolvedValue({ Body: { Unprovision_OUTPUT: { ReturnValue: 0 } } })
+    deprovisionDeviceSpy = spyOn(req.deviceAction, 'unprovisionDevice').mockResolvedValue({
+      Body: { Unprovision_OUTPUT: { ReturnValue: 0 } }
+    })
   })
 
   it('should successfully deactivate a device', async () => {
@@ -50,7 +52,9 @@ describe('deactivate', () => {
     expect(deprovisionDeviceSpy).toHaveBeenCalled()
   })
   it('should return 200, even if return value is not zero', async () => {
-    deprovisionDeviceSpy = spyOn(req.deviceAction, 'unprovisionDevice').mockResolvedValue({ Body: { Unprovision_OUTPUT: { ReturnValue: 1 } } })
+    deprovisionDeviceSpy = spyOn(req.deviceAction, 'unprovisionDevice').mockResolvedValue({
+      Body: { Unprovision_OUTPUT: { ReturnValue: 1 } }
+    })
     await deactivate(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(200)
     expect(resSpy.json).toHaveBeenCalledWith({ ReturnValue: 1 })
@@ -62,6 +66,9 @@ describe('deactivate', () => {
     })
     await deactivate(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(500)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Internal Server Error', errorDescription: messages.UNPROVISION_EXCEPTION })
+    expect(resSpy.json).toHaveBeenCalledWith({
+      error: 'Internal Server Error',
+      errorDescription: messages.UNPROVISION_EXCEPTION
+    })
   })
 })

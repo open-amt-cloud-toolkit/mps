@@ -28,7 +28,12 @@ describe('get amt features', () => {
   beforeEach(() => {
     const handler = new CIRAHandler(new HttpHandler(), 'admin', 'P@ssw0rd')
     const device = new DeviceAction(handler, null)
-    resSpy = createSpyObj('Response', ['status', 'json', 'end', 'send'])
+    resSpy = createSpyObj('Response', [
+      'status',
+      'json',
+      'end',
+      'send'
+    ])
     req = {
       params: { guid: '4c4c4544-004b-4210-8033-b6c04f504633' },
       deviceAction: device

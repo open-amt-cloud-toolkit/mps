@@ -9,7 +9,7 @@ import { ErrorResponse } from '../../utils/amtHelper.js'
 import { MqttProvider } from '../../utils/MqttProvider.js'
 import { type DeviceAction } from '../../amt/DeviceAction.js'
 
-export async function getAlarmOccurrences (req: Request, res: Response): Promise<void> {
+export async function getAlarmOccurrences(req: Request, res: Response): Promise<void> {
   try {
     const guid: string = req.params.guid
 
@@ -37,6 +37,6 @@ export async function getAlarmOccurrences (req: Request, res: Response): Promise
 }
 
 // device.getAlarmClockOccurrences() is separated out for the tests with the side effect of casting the result to any
-export async function get (device: DeviceAction, guid: string): Promise<any> {
+export async function get(device: DeviceAction, guid: string): Promise<any> {
   return await device.getAlarmClockOccurrences()
 }

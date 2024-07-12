@@ -11,7 +11,7 @@ import Common from '../../utils/common.js'
 import { AMTAuditStringTable, RealmNames } from '../../utils/constants.js'
 import { type Common as WsmanMessagesCommon } from '@open-amt-cloud-toolkit/wsman-messages'
 
-export async function auditLog (req: Request, res: Response): Promise<void> {
+export async function auditLog(req: Request, res: Response): Promise<void> {
   try {
     const queryParams = req.query
     const guid: string = req.params.guid
@@ -49,7 +49,9 @@ export async function auditLog (req: Request, res: Response): Promise<void> {
   }
 }
 
-export function convertToAuditLogResult (readRecordsOutput: WsmanMessagesCommon.Models.AuditLogReadRecordsOutput): WsmanMessagesCommon.Models.AuditLogResult {
+export function convertToAuditLogResult(
+  readRecordsOutput: WsmanMessagesCommon.Models.AuditLogReadRecordsOutput
+): WsmanMessagesCommon.Models.AuditLogResult {
   const auditLogResult: WsmanMessagesCommon.Models.AuditLogResult = {
     totalCnt: 0,
     records: []
@@ -57,7 +59,7 @@ export function convertToAuditLogResult (readRecordsOutput: WsmanMessagesCommon.
 
   auditLogResult.totalCnt = Number(readRecordsOutput.TotalRecordCount)
 
-  const recordsReturned: number = Number(readRecordsOutput.RecordsReturned)
+  const recordsReturned = Number(readRecordsOutput.RecordsReturned)
   if (recordsReturned <= 0) {
     return auditLogResult
   }
@@ -83,30 +85,39 @@ export function convertToAuditLogResult (readRecordsOutput: WsmanMessagesCommon.
     auditLogRecord.EventID = Common.ReadShort(decodedEventRecord, 2)
     auditLogRecord.AuditApp = AMTAuditStringTable[auditLogRecord.AuditAppID]
     auditLogRecord.InitiatorType = decodedEventRecord.charCodeAt(4)
-    auditLogRecord.Event = AMTAuditStringTable[(auditLogRecord.AuditAppID * 100) + auditLogRecord.EventID]
+    auditLogRecord.Event = AMTAuditStringTable[auditLogRecord.AuditAppID * 100 + auditLogRecord.EventID]
 
     if (!auditLogRecord.Event) auditLogRecord.Event = '#' + auditLogRecord.EventID
 
-    const [initiatorType, initiator, pointer] = getInitiatorInfo(decodedEventRecord)
+    const [
+      initiatorType,
+      initiator,
+      pointer
+    ] = getInitiatorInfo(decodedEventRecord)
     auditLogRecord.InitiatorType = initiatorType
     auditLogRecord.Initiator = initiator
     ptr = pointer
 
     // Read timestamp
     const timeStamp = Common.ReadInt(decodedEventRecord, ptr)
-    auditLogRecord.Time = new Date((timeStamp + (new Date().getTimezoneOffset() * 60)) * 1000)
+    auditLogRecord.Time = new Date((timeStamp + new Date().getTimezoneOffset() * 60) * 1000)
     ptr += 4
 
     // Read network access
     auditLogRecord.MCLocationType = decodedEventRecord.charCodeAt(ptr++)
     const netlen = decodedEventRecord.charCodeAt(ptr++)
-    auditLogRecord.NetAddress = decodedEventRecord.substring(ptr, ptr + netlen).replace('0000:0000:0000:0000:0000:0000:0000:0001', '::1')
+    auditLogRecord.NetAddress = decodedEventRecord
+      .substring(ptr, ptr + netlen)
+      .replace('0000:0000:0000:0000:0000:0000:0000:0001', '::1')
 
     // Read extended data
     ptr += netlen
     const exlen = decodedEventRecord.charCodeAt(ptr++)
     auditLogRecord.Ex = decodedEventRecord.substring(ptr, ptr + exlen)
-    auditLogRecord.ExStr = GetAuditLogExtendedDataString((auditLogRecord.AuditAppID * 100) + auditLogRecord.EventID, auditLogRecord.Ex)
+    auditLogRecord.ExStr = GetAuditLogExtendedDataString(
+      auditLogRecord.AuditAppID * 100 + auditLogRecord.EventID,
+      auditLogRecord.Ex
+    )
 
     auditLogResult.records.unshift(auditLogRecord)
   }
@@ -132,7 +143,7 @@ export enum AuditEventId {
 // Return human readable extended audit log data
 // TODO: Just put some of them here, but many more still need to be added, helpful link here:
 // https://software.intel.com/sites/manageability/AMT_Implementation_and_Reference_Guide/default.htm?turl=WordDocuments%2Fsecurityadminevents.htm
-export function GetAuditLogExtendedDataString (auditEventId: number, data: string): string {
+export function GetAuditLogExtendedDataString(auditEventId: number, data: string): string {
   let extendedDataString: string
 
   switch (auditEventId) {
@@ -159,25 +170,67 @@ export function GetAuditLogExtendedDataString (auditEventId: number, data: strin
       break
     }
     case AuditEventId.TlsStateChanged:
-      extendedDataString = 'Remote ' + ['NoAuth', 'ServerAuth', 'MutualAuth'][data.charCodeAt(0)] + ', Local ' + ['NoAuth', 'ServerAuth', 'MutualAuth'][data.charCodeAt(1)]
+      extendedDataString = 'Remote ' + [
+          'NoAuth',
+          'ServerAuth',
+          'MutualAuth'
+        ][data.charCodeAt(0)] + ', Local ' + [
+          'NoAuth',
+          'ServerAuth',
+          'MutualAuth'
+        ][data.charCodeAt(1)]
       break
     case AuditEventId.SetRealmAuthenticationMode:
-      extendedDataString = RealmNames[Common.ReadInt(data, 0)] + ', ' + ['NoAuth', 'Auth', 'Disabled'][data.charCodeAt(4)]
+      extendedDataString = RealmNames[Common.ReadInt(data, 0)] + ', ' + [
+          'NoAuth',
+          'Auth',
+          'Disabled'
+        ][data.charCodeAt(4)]
       break
     case AuditEventId.AmtUnprovisioningStarted:
-      extendedDataString = ['BIOS', 'MEBx', 'Local MEI', 'Local WSMAN', 'Remote WSMAN'][data.charCodeAt(0)]
+      extendedDataString = [
+        'BIOS',
+        'MEBx',
+        'Local MEI',
+        'Local WSMAN',
+        'Remote WSMAN'
+      ][data.charCodeAt(0)]
       break
     case AuditEventId.FirmwareUpdate:
-      extendedDataString = 'From ' + Common.ReadShort(data, 0) + '.' + Common.ReadShort(data, 2) + '.' + Common.ReadShort(data, 4) + '.' + Common.ReadShort(data, 6) + ' to ' + Common.ReadShort(data, 8) + '.' + Common.ReadShort(data, 10) + '.' + Common.ReadShort(data, 12) + '.' + Common.ReadShort(data, 14)
+      extendedDataString =
+        'From ' +
+        Common.ReadShort(data, 0) +
+        '.' +
+        Common.ReadShort(data, 2) +
+        '.' +
+        Common.ReadShort(data, 4) +
+        '.' +
+        Common.ReadShort(data, 6) +
+        ' to ' +
+        Common.ReadShort(data, 8) +
+        '.' +
+        Common.ReadShort(data, 10) +
+        '.' +
+        Common.ReadShort(data, 12) +
+        '.' +
+        Common.ReadShort(data, 14)
       break
     case AuditEventId.AmtTimeSet: {
       const t4 = new Date()
-      t4.setTime(Common.ReadInt(data, 0) * 1000 + (new Date().getTimezoneOffset() * 60000))
+      t4.setTime(Common.ReadInt(data, 0) * 1000 + new Date().getTimezoneOffset() * 60000)
       extendedDataString = t4.toLocaleString()
       break
     }
     case AuditEventId.OptInPolicyChange:
-      extendedDataString = 'From ' + ['None', 'KVM', 'All'][data.charCodeAt(0)] + ' to ' + ['None', 'KVM', 'All'][data.charCodeAt(1)]
+      extendedDataString = 'From ' + [
+          'None',
+          'KVM',
+          'All'
+        ][data.charCodeAt(0)] + ' to ' + [
+          'None',
+          'KVM',
+          'All'
+        ][data.charCodeAt(1)]
       break
     case AuditEventId.SendConsentCode:
       extendedDataString = ['Success', 'Failed 3 times'][data.charCodeAt(0)]
@@ -192,10 +245,10 @@ export enum InitiatorType {
   HttpDigest = 0,
   Kerberos = 1,
   Local = 2,
-  KvmDefaultPort = 3,
+  KvmDefaultPort = 3
 }
 
-export function getInitiatorInfo (decodedEventRecord: string): [initiatorType: number, initiator: string, ptr: number] {
+export function getInitiatorInfo(decodedEventRecord: string): [initiatorType: number, initiator: string, ptr: number] {
   let initiator: string
   let userlen: number
   let ptr: number
@@ -225,5 +278,9 @@ export function getInitiatorInfo (decodedEventRecord: string): [initiatorType: n
       ptr = 0
   }
 
-  return [initiatorType, initiator, ptr]
+  return [
+    initiatorType,
+    initiator,
+    ptr
+  ]
 }

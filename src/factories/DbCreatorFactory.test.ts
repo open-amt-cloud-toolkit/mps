@@ -18,8 +18,7 @@ describe('DB Creator Factory', () => {
     expect(db1).not.toBeNull()
     const db2 = await factory.getDb()
     expect(db2).not.toBeNull()
-    const { default: Provider }: { default: new () => IDB } =
-      await import(`../data/${Environment.Config.db_provider}`)
+    const { default: Provider }: { default: new () => IDB } = await import(`../data/${Environment.Config.db_provider}`)
     const db3 = new Provider()
     expect(db3).not.toBeNull()
     expect(db1).toEqual(db2)

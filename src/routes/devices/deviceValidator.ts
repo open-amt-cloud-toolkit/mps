@@ -6,37 +6,19 @@
 import { check, query } from 'express-validator'
 
 export const validator = (): any => [
-  check('guid')
-    .isUUID()
-    .isString(),
-  check('friendlyName')
-    .optional({ nullable: true })
-    .isString(),
+  check('guid').isUUID().isString(),
+  check('friendlyName').optional({ nullable: true }).isString(),
   check('hostname')
     .optional({ nullable: true })
     .isString()
     .isLength({ max: 255 })
     .withMessage('Hostname must be less than 256 characters'),
-  check('mpsusername')
-    .optional({ nullable: true })
-    .isString(),
-  check('connect')
-    .optional({ nullable: true })
-    .isISO8601().toDate(),
-  check('disconnect')
-    .optional({ nullable: true })
-    .isISO8601().toDate(),
-  check('tags')
-    .optional()
-    .isArray().withMessage('tags should be an array of strings'),
-  check('tags.*')
-    .optional()
-    .isString().withMessage('tags should be an array of strings'),
-  check('deviceInfo')
-    .optional({ nullable: true })
-    .isObject()
-    .withMessage('deviceInfo should be an object if provided')
-]
+  check('mpsusername').optional({ nullable: true }).isString(),
+  check('connect').optional({ nullable: true }).isISO8601().toDate(),
+  check('disconnect').optional({ nullable: true }).isISO8601().toDate(),
+  check('tags').optional().isArray().withMessage('tags should be an array of strings'),
+  check('tags.*').optional().isString().withMessage('tags should be an array of strings'),
+  check('deviceInfo').optional({ nullable: true }).isObject().withMessage('deviceInfo should be an object if provided')]
 
 export const odataValidator = (): any => [
   query('$top')
@@ -57,20 +39,8 @@ export const odataValidator = (): any => [
 ]
 
 export const metadataQueryValidator = (): any => [
-  check('tags')
-    .optional()
-    .isString(),
-  check('hostname')
-    .optional()
-    .isLength({ min: 0, max: 256 })
-    .isString(),
-  check('status')
-    .optional()
-    .isNumeric()
-    .isIn([0, 1])
-    .toInt(),
-  check('method')
-    .optional()
-    .isIn(['AND', 'OR'])
-    .isString()
+  check('tags').optional().isString(),
+  check('hostname').optional().isLength({ min: 0, max: 256 }).isString(),
+  check('status').optional().isNumeric().isIn([0, 1]).toInt(),
+  check('method').optional().isIn(['AND', 'OR']).isString()
 ]

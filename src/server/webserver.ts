@@ -4,10 +4,10 @@
  **********************************************************************/
 
 /**
-* @description Intel AMT Web server object
-* @author Ylian Saint-Hilaire
-* @version v0.2.0c
-*/
+ * @description Intel AMT Web server object
+ * @author Ylian Saint-Hilaire
+ * @version v0.2.0c
+ */
 
 import { type Socket } from 'node:net'
 
@@ -39,7 +39,7 @@ export class WebServer {
   jws: jws = jws
   __filename: string
   __dirname: string
-  constructor (secrets: ISecretManagerService, certs: certificatesType) {
+  constructor(secrets: ISecretManagerService, certs: certificatesType) {
     try {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       this.__filename = fileURLToPath(import.meta.url)
@@ -66,13 +66,15 @@ export class WebServer {
       // Relay websocket. KVM, IDER & SOL use this websocket.
       this.relayWSS.on('connection', this.relayConnection.bind(this))
 
-      this.loadCustomMiddleware().then(customMiddleware => {
-        this.app.use('/api/v1', this.useAPIv1.bind(this), customMiddleware, routes)
-      }).catch(err => {
-        logger.error('Error loading custom middleware')
-        logger.error(err)
-        process.exit(0)
-      })
+      this.loadCustomMiddleware()
+        .then((customMiddleware) => {
+          this.app.use('/api/v1', this.useAPIv1.bind(this), customMiddleware, routes)
+        })
+        .catch((err) => {
+          logger.error('Error loading custom middleware')
+          logger.error(err)
+          process.exit(0)
+        })
 
       // Handle upgrade on websocket
       this.server.on('upgrade', this.handleUpgrade.bind(this))
@@ -82,7 +84,7 @@ export class WebServer {
     }
   }
 
-  appUseJsonParser (err: any, req: Request, res: Response, next: () => void): Response {
+  appUseJsonParser(err: any, req: Request, res: Response, next: () => void): Response {
     if (err instanceof SyntaxError) {
       return res.status(400).send(ErrorResponse(400))
     } else {
@@ -91,7 +93,7 @@ export class WebServer {
     next()
   }
 
-  async loadCustomMiddleware (): Promise<RequestHandler[]> {
+  async loadCustomMiddleware(): Promise<RequestHandler[]> {
     const pathToCustomMiddleware = path.join(this.__dirname, '../middleware/custom')
     const middleware: RequestHandler[] = []
     const doesExist = existsSync(pathToCustomMiddleware)
@@ -115,19 +117,19 @@ export class WebServer {
     return middleware
   }
 
-  appUseCall (req: Request, res: Response, next: NextFunction): void {
+  appUseCall(req: Request, res: Response, next: NextFunction): void {
     res.on('finish', this.afterResponse.bind(this, req, res))
     res.on('close', this.afterResponse.bind(this, req, res))
     req.on('aborted', this.onAborted.bind(this, req, res))
     next()
   }
 
-  onAborted (req: Request, res: Response): void {
+  onAborted(req: Request, res: Response): void {
     logger.debug(`Request aborted: ${req.url ?? 'undefined'}`)
     this.afterResponse(req, res)
   }
 
-  afterResponse (req: Request, res: Response): void {
+  afterResponse(req: Request, res: Response): void {
     if (req.deviceAction?.ciraHandler?.channel) {
       logger.debug(messages.EOR_CLOSING_CHANNEL)
       req.deviceAction.ciraHandler.channel.CloseChannel()
@@ -138,7 +140,7 @@ export class WebServer {
     // actions after response
   }
 
-  async relayConnection (ws: WebSocket, req: IncomingMessage): Promise<void> {
+  async relayConnection(ws: WebSocket, req: IncomingMessage): Promise<void> {
     try {
       const wsRedirect = new WsRedirect(ws, this.secrets)
       await wsRedirect.handleConnection(req)
@@ -147,7 +149,7 @@ export class WebServer {
     }
   }
 
-  async useAPIv1 (req: Request, res: Response, next: NextFunction): Promise<void> {
+  async useAPIv1(req: Request, res: Response, next: NextFunction): Promise<void> {
     const newDB = new DbCreatorFactory()
 
     req.db = await newDB.getDb()
@@ -156,7 +158,7 @@ export class WebServer {
     next()
   }
 
-  listen (): void {
+  listen(): void {
     // Validate port number
     let port = 3000
     if (Environment.Config.web_port != null) {
@@ -165,33 +167,36 @@ export class WebServer {
       logger.debug(messages.WEB_PORT_NULL)
     }
 
-    this.server.listen(port, () => {
-      logger.info(`${messages.MPS_RUNNING_ON} ${Environment.Config.common_name}:${port}.`)
-    }).on('error', function (err: NodeJS.ErrnoException) {
-      if (err.code === 'EADDRINUSE' || err.code === 'EACCES') {
-        logger.error(messages.WEB_PORT_INVALID)
-      } else {
-        logger.error(JSON.stringify(err))
-      }
-      process.exit(0)
-    })
+    this.server
+      .listen(port, () => {
+        logger.info(`${messages.MPS_RUNNING_ON} ${Environment.Config.common_name}:${port}.`)
+      })
+      .on('error', function (err: NodeJS.ErrnoException) {
+        if (err.code === 'EADDRINUSE' || err.code === 'EACCES') {
+          logger.error(messages.WEB_PORT_INVALID)
+        } else {
+          logger.error(JSON.stringify(err))
+        }
+        process.exit(0)
+      })
   }
 
   // Handle Upgrade - WebSocket
-  handleUpgrade (request: IncomingMessage, socket: Socket, head: Buffer): void {
-    const pathname = (new URL(request.url, 'http://dummy.com')).pathname
+  handleUpgrade(request: IncomingMessage, socket: Socket, head: Buffer): void {
+    const pathname = new URL(request.url, 'http://dummy.com').pathname
     if (pathname === '/relay/webrelay.ashx') {
       this.relayWSS.handleUpgrade(request, socket, head, (ws) => {
         this.relayWSS.emit('connection', ws, request)
       })
-    } else { // Invalid endpoint
+    } else {
+      // Invalid endpoint
       logger.debug(messages.ROUTE_DOES_NOT_EXIST)
       socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
       socket.destroy()
     }
   }
 
-  updateDeviceConnection (guid: string, connectionType: string): boolean {
+  updateDeviceConnection(guid: string, connectionType: string): boolean {
     const connectionProperty = `${connectionType}Connect`
     if (devices[guid]?.[connectionProperty]) {
       return false
@@ -203,7 +208,7 @@ export class WebServer {
     }
   }
 
-  verifyClientToken (info): boolean {
+  verifyClientToken(info): boolean {
     const reqParams: Record<string, any> = {}
     // verify JWT
     try {
@@ -218,7 +223,11 @@ export class WebServer {
         reqParams[key] = value
       })
 
-      if (!valid || !(decodedToken.payload.exp && decodedToken.payload.exp > currentTimestamp) || !(deviceId === reqParams.host)) {
+      if (
+        !valid ||
+        !(decodedToken.payload.exp && decodedToken.payload.exp > currentTimestamp) ||
+        !(deviceId === reqParams.host)
+      ) {
         logger.error('Redirection token invalid')
         return false // reject connection if problem with verify
       }
@@ -228,7 +237,11 @@ export class WebServer {
 
     const guid = reqParams.host as string
     const mode = reqParams.mode as string
-    const modes = ['kvm', 'sol', 'ider']
+    const modes = [
+      'kvm',
+      'sol',
+      'ider'
+    ]
 
     // Check for backward compatibility
     if (!modes.includes(mode)) {

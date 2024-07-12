@@ -11,18 +11,18 @@ services:
     ports:
       - 3000:3000
     depends_on:
-      - "vault"
-      - "db"
+      - 'vault'
+      - 'db'
     build:
       context: .
       dockerfile: ./Dockerfile
     environment:
-      MPS_CONNECTION_STRING: "postgresql://postgresadmin:admin123@db:5432/mpsdb"
-      MPS_VAULT_ADDRESS: "http://vault:8200"
-      MPS_WEB_AUTH_ENABLED: "true"
-      MPS_WEB_ADMIN_USER: "standalone"
-      MPS_WEB_ADMIN_PASSWORD: "G@ppm0ym"
-      MPS_JWT_SECRET: "mpssecret"
+      MPS_CONNECTION_STRING: 'postgresql://postgresadmin:admin123@db:5432/mpsdb'
+      MPS_VAULT_ADDRESS: 'http://vault:8200'
+      MPS_WEB_AUTH_ENABLED: 'true'
+      MPS_WEB_ADMIN_USER: 'standalone'
+      MPS_WEB_ADMIN_PASSWORD: 'G@ppm0ym'
+      MPS_JWT_SECRET: 'mpssecret'
   db:
     image: postgres
     networks:
@@ -33,26 +33,26 @@ services:
     environment:
       POSTGRES_USER: postgresadmin
       POSTGRES_PASSWORD: admin123
-    volumes: 
+    volumes:
       - ./data:/docker-entrypoint-initdb.d
   vault:
     image: hashicorp/vault
     networks:
       - openamtnetwork
-    ports: 
-      - "8200:8200"
-    environment: 
+    ports:
+      - '8200:8200'
+    environment:
       VAULT_DEV_ROOT_TOKEN_ID: myroot
       VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
-    cap_add: 
+    cap_add:
       - IPC_LOCK
   consul:
     restart: always
     image: hashicorp/consul
     networks:
       - openamtnetwork
-    ports: 
-      - 8500:8500      
-networks: 
+    ports:
+      - 8500:8500
+networks:
   openamtnetwork:
-    driver: "bridge"
+    driver: 'bridge'

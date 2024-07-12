@@ -11,7 +11,7 @@ import { UserConsentOptions } from '../../utils/constants.js'
 import { type AMT, type IPS, Common } from '@open-amt-cloud-toolkit/wsman-messages'
 import { type DeviceAction } from '../../amt/DeviceAction.js'
 
-export async function setAMTFeatures (req: Request, res: Response): Promise<void> {
+export async function setAMTFeatures(req: Request, res: Response): Promise<void> {
   try {
     const payload = req.body
     const guid: string = req.params.guid
@@ -25,11 +25,20 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
 
     let isRedirectionChanged = false
     let redir = amtRedirectionResponse.AMT_RedirectionService.ListenerEnabled
-    let sol = (amtRedirectionResponse.AMT_RedirectionService.EnabledState & Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled) !== 0
-    let ider = (amtRedirectionResponse.AMT_RedirectionService.EnabledState & Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Other) !== 0
-    let kvm = (kvmRedirectionResponse.CIM_KVMRedirectionSAP != null &&
-      (kvmRedirectionResponse.CIM_KVMRedirectionSAP.EnabledState === Common.Models.CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.Enabled ||
-       kvmRedirectionResponse.CIM_KVMRedirectionSAP.EnabledState === Common.Models.CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.EnabledButOffline))
+    let sol =
+      (amtRedirectionResponse.AMT_RedirectionService.EnabledState &
+        Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled) !==
+      0
+    let ider =
+      (amtRedirectionResponse.AMT_RedirectionService.EnabledState &
+        Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Other) !==
+      0
+    let kvm =
+      kvmRedirectionResponse.CIM_KVMRedirectionSAP != null &&
+      (kvmRedirectionResponse.CIM_KVMRedirectionSAP.EnabledState ===
+        Common.Models.CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.Enabled ||
+        kvmRedirectionResponse.CIM_KVMRedirectionSAP.EnabledState ===
+          Common.Models.CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.EnabledButOffline)
 
     if (payload.enableSOL !== sol) {
       sol = payload.enableSOL
@@ -57,7 +66,8 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
     }
 
     if (isRedirectionChanged) {
-      amtRedirectionResponse.AMT_RedirectionService.EnabledState = (32768 + ((ider ? 1 : 0) + (sol ? 2 : 0))) as AMT.Types.RedirectionService.EnabledState
+      amtRedirectionResponse.AMT_RedirectionService.EnabledState = (32768 +
+        ((ider ? 1 : 0) + (sol ? 2 : 0))) as AMT.Types.RedirectionService.EnabledState
       amtRedirectionResponse.AMT_RedirectionService.ListenerEnabled = redir
       await setRedirectionService(req.deviceAction, amtRedirectionResponse, kvm, payload.guid as string)
     }
@@ -78,16 +88,31 @@ export async function setAMTFeatures (req: Request, res: Response): Promise<void
     res.status(500).json(ErrorResponse(500, messages.AMT_FEATURES_SET_EXCEPTION)).end()
   }
 }
-export async function setRedirectionService (device: DeviceAction, amtRedirResponse: AMT.Models.RedirectionResponse, kvm: boolean, guid: string): Promise<void> {
+export async function setRedirectionService(
+  device: DeviceAction,
+  amtRedirResponse: AMT.Models.RedirectionResponse,
+  kvm: boolean,
+  guid: string
+): Promise<void> {
   // TODO: check statuses
   // for SOL and IDER
-  await device.setRedirectionService(amtRedirResponse.AMT_RedirectionService.EnabledState as AMT.Types.RedirectionService.RequestedState)
+  await device.setRedirectionService(
+    amtRedirResponse.AMT_RedirectionService.EnabledState as AMT.Types.RedirectionService.RequestedState
+  )
   // for kvm
-  await device.setKvmRedirectionSap(kvm ? Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled : Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Disabled)
+  await device.setKvmRedirectionSap(
+    kvm
+      ? Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled
+      : Common.Models.AMT_REDIRECTION_SERVICE_ENABLE_STATE.Disabled
+  )
 
   await device.putRedirectionService(amtRedirResponse.AMT_RedirectionService)
 }
 
-export async function setUserConsent (device: DeviceAction, optServiceRes: IPS.Models.OptInServiceResponse, guid: string): Promise<void> {
+export async function setUserConsent(
+  device: DeviceAction,
+  optServiceRes: IPS.Models.OptInServiceResponse,
+  guid: string
+): Promise<void> {
   await device.putIpsOptInService(optServiceRes)
 }

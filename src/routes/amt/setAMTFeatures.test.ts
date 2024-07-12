@@ -27,7 +27,12 @@ describe('set amt features', () => {
   beforeEach(() => {
     const handler = new CIRAHandler(new HttpHandler(), 'admin', 'P@ssw0rd')
     const device = new DeviceAction(handler, null)
-    resSpy = createSpyObj('Response', ['status', 'json', 'end', 'send'])
+    resSpy = createSpyObj('Response', [
+      'status',
+      'json',
+      'end',
+      'send'
+    ])
     req = {
       params: {
         guid: '4c4c4544-004b-4210-8033-b6c04f504633'
@@ -54,7 +59,9 @@ describe('set amt features', () => {
 
     mqttSpy = spyOn(MqttProvider, 'publishEvent')
 
-    redirectionSpy.mockResolvedValue({ AMT_RedirectionService: { EnabledState: AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled, ListenerEnabled: 'true' } })
+    redirectionSpy.mockResolvedValue({
+      AMT_RedirectionService: { EnabledState: AMT_REDIRECTION_SERVICE_ENABLE_STATE.Enabled, ListenerEnabled: 'true' }
+    })
     optInServiceSpy.mockResolvedValue({ IPS_OptInService: { OptInRequired: 4294967295 } })
     kvmRedirectionSpy.mockResolvedValue({
       CIM_KVMRedirectionSAP: {
@@ -125,7 +132,9 @@ describe('set amt features', () => {
     expect(putIpsOptInServiceSpy).not.toHaveBeenCalled()
   })
   it('should set amt features - disable IDER', async () => {
-    redirectionSpy.mockResolvedValue({ AMT_RedirectionService: { EnabledState: AMT_REDIRECTION_SERVICE_ENABLE_STATE.Other, ListenerEnabled: 'false' } })
+    redirectionSpy.mockResolvedValue({
+      AMT_RedirectionService: { EnabledState: AMT_REDIRECTION_SERVICE_ENABLE_STATE.Other, ListenerEnabled: 'false' }
+    })
 
     await setAMTFeatures(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(200)
@@ -137,7 +146,9 @@ describe('set amt features', () => {
     expect(putIpsOptInServiceSpy).not.toHaveBeenCalled()
   })
   it('should set amt features - disable all', async () => {
-    redirectionSpy.mockResolvedValue({ AMT_RedirectionService: { EnabledState: AMT_REDIRECTION_SERVICE_ENABLE_STATE.Disabled, ListenerEnabled: 'false' } })
+    redirectionSpy.mockResolvedValue({
+      AMT_RedirectionService: { EnabledState: AMT_REDIRECTION_SERVICE_ENABLE_STATE.Disabled, ListenerEnabled: 'false' }
+    })
 
     req.body.enableIDER = false
     req.body.enableSOL = false

@@ -7,11 +7,16 @@ import { type Response, type Request } from 'express'
 import { logger, messages } from '../../logging/index.js'
 import { ErrorResponse } from '../../utils/amtHelper.js'
 import { MqttProvider } from '../../utils/MqttProvider.js'
-import { SystemEntityTypes, SystemFirmwareError, SystemFirmwareProgress, WatchdogCurrentStates } from '../../utils/constants.js'
+import {
+  SystemEntityTypes,
+  SystemFirmwareError,
+  SystemFirmwareProgress,
+  WatchdogCurrentStates
+} from '../../utils/constants.js'
 import Common from '../../utils/common.js'
 import { type AMT } from '@open-amt-cloud-toolkit/wsman-messages'
 
-export async function eventLog (req: Request, res: Response): Promise<void> {
+export async function eventLog(req: Request, res: Response): Promise<void> {
   try {
     const guid: string = req.params.guid
 
@@ -39,10 +44,10 @@ interface EventLog extends AMT.Models.EVENT_DATA {
   Desc?: string
 }
 
-export function GetEventDetailStr (eventSensorType: number, eventOffset: number, eventDataField: number[]): string {
+export function GetEventDetailStr(eventSensorType: number, eventOffset: number, eventDataField: number[]): string {
   switch (eventSensorType) {
     case 6:
-      return `Authentication failed ${(eventDataField[1] + (eventDataField[2] << 8))} times. The system may be under attack.`
+      return `Authentication failed ${eventDataField[1] + (eventDataField[2] << 8)} times. The system may be under attack.`
     case 15: {
       if (eventDataField[0] === 235) return 'Invalid Data'
       if (eventOffset === 0) {
@@ -69,7 +74,7 @@ export function GetEventDetailStr (eventSensorType: number, eventOffset: number,
   }
 }
 
-function parseEventLogs (response: any): EventLog[] {
+function parseEventLogs(response: any): EventLog[] {
   const recordArray: EventLog[] = []
   if (typeof response.Body.GetRecords_OUTPUT.RecordArray === 'string') {
     response.Body.GetRecords_OUTPUT.RecordArray = [response.Body.GetRecords_OUTPUT.RecordArray]
@@ -79,7 +84,7 @@ function parseEventLogs (response: any): EventLog[] {
     if (eventRecord != null) {
       const log: EventLog = {}
       const TimeStamp = Common.ReadBufferIntX(eventRecord, 0)
-      if ((TimeStamp > 0) && (TimeStamp < 0xFFFFFFFF)) {
+      if (TimeStamp > 0 && TimeStamp < 0xffffffff) {
         const t = new Date()
         log.DeviceAddress = eventRecord[4]
         log.EventSensorType = eventRecord[5]
@@ -91,7 +96,7 @@ function parseEventLogs (response: any): EventLog[] {
         log.Entity = eventRecord[11]
         log.EntityInstance = eventRecord[12]
         log.EventData = []
-        log.TimeStamp = new Date((TimeStamp + (t.getTimezoneOffset() * 60)) * 1000)
+        log.TimeStamp = new Date((TimeStamp + t.getTimezoneOffset() * 60) * 1000)
       }
       for (let j = 13; j < 21; j++) {
         log.EventData.push(eventRecord[j])

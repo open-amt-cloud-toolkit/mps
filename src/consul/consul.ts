@@ -11,7 +11,7 @@ import { Environment } from './../utils/Environment.js'
 
 export class ConsulService implements IServiceManager {
   consul: Consul.Consul
-  constructor (host: string, port: string) {
+  constructor(host: string, port: string) {
     this.consul = new Consul({
       host,
       port,
@@ -19,11 +19,11 @@ export class ConsulService implements IServiceManager {
     })
   }
 
-  async health (serviceName: string): Promise<any> {
+  async health(serviceName: string): Promise<any> {
     return this.consul.health.service({ service: serviceName, passing: true })
   }
 
-  async seed (prefix: string, config: configType): Promise<boolean> {
+  async seed(prefix: string, config: configType): Promise<boolean> {
     try {
       await this.consul.kv.set(`${prefix}/config`, JSON.stringify(config, null, 2))
       logger.info('Wrote configuration settings to Consul.')
@@ -33,11 +33,11 @@ export class ConsulService implements IServiceManager {
     }
   }
 
-  async get (prefix: string): Promise<any> {
+  async get(prefix: string): Promise<any> {
     return this.consul.kv.get({ key: prefix + '/', recurse: true })
   }
 
-  process (consulValues: object): string {
+  process(consulValues: object): string {
     let value: string
     for (const consulKey in consulValues) {
       value = consulValues[consulKey].Value

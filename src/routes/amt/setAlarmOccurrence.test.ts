@@ -5,7 +5,11 @@
 
 import { setAlarmOccurrence } from './setAlarmOccurrence.js'
 import { createSpyObj } from '../../test/helper/jest.js'
-import { addAlarmClockOccurrenceResponse, addAlarmClockOccurrenceQuotaLimitResponse, addAlarmClockOccurrenceDuplicateResponse } from '../../test/helper/wsmanResponses.js'
+import {
+  addAlarmClockOccurrenceResponse,
+  addAlarmClockOccurrenceQuotaLimitResponse,
+  addAlarmClockOccurrenceDuplicateResponse
+} from '../../test/helper/wsmanResponses.js'
 import { DeviceAction } from '../../amt/DeviceAction.js'
 import { CIRAHandler } from '../../amt/CIRAHandler.js'
 import { HttpHandler } from '../../amt/HttpHandler.js'
@@ -23,7 +27,12 @@ describe('ADD Alarm Clock Occurrence', () => {
   beforeEach(() => {
     const handler = new CIRAHandler(new HttpHandler(), 'admin', 'P@ssw0rd')
     const device = new DeviceAction(handler, null)
-    resSpy = createSpyObj('Response', ['status', 'json', 'end', 'send'])
+    resSpy = createSpyObj('Response', [
+      'status',
+      'json',
+      'end',
+      'send'
+    ])
     req = {
       params: { guid: '4c4c4544-004b-4210-8033-b6c04f504633' },
       body: {
@@ -51,14 +60,20 @@ describe('ADD Alarm Clock Occurrence', () => {
 
     await setAlarmOccurrence(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(400)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Incorrect URI or Bad Request', errorDescription: `${messages.ALARM_ADD_REQUEST_FAILED} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.` })
+    expect(resSpy.json).toHaveBeenCalledWith({
+      error: 'Incorrect URI or Bad Request',
+      errorDescription: `${messages.ALARM_ADD_REQUEST_FAILED} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.`
+    })
   })
   it('should require a body in the request', async () => {
     AlarmClockOccurrenceSpy.mockResolvedValueOnce(null)
 
     await setAlarmOccurrence(badReq, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(400)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Incorrect URI or Bad Request', errorDescription: `${messages.ALARM_ADD_INVALID_PARAMETERS} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.` })
+    expect(resSpy.json).toHaveBeenCalledWith({
+      error: 'Incorrect URI or Bad Request',
+      errorDescription: `${messages.ALARM_ADD_INVALID_PARAMETERS} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.`
+    })
   })
   it('should require ElementName in the request', async () => {
     AlarmClockOccurrenceSpy.mockResolvedValueOnce(null)
@@ -66,7 +81,10 @@ describe('ADD Alarm Clock Occurrence', () => {
     badReq.body = { ElementName: 'Alarm Instance Name' }
     await setAlarmOccurrence(badReq, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(400)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Incorrect URI or Bad Request', errorDescription: `${messages.ALARM_ADD_INVALID_PARAMETERS} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.` })
+    expect(resSpy.json).toHaveBeenCalledWith({
+      error: 'Incorrect URI or Bad Request',
+      errorDescription: `${messages.ALARM_ADD_INVALID_PARAMETERS} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.`
+    })
   })
   it('should require StartTime in the request', async () => {
     AlarmClockOccurrenceSpy.mockResolvedValueOnce(null)
@@ -74,21 +92,30 @@ describe('ADD Alarm Clock Occurrence', () => {
     badReq.body = { StartTime: '2022-12-31T23:59:00Z' }
     await setAlarmOccurrence(badReq, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(400)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Incorrect URI or Bad Request', errorDescription: `${messages.ALARM_ADD_INVALID_PARAMETERS} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.` })
+    expect(resSpy.json).toHaveBeenCalledWith({
+      error: 'Incorrect URI or Bad Request',
+      errorDescription: `${messages.ALARM_ADD_INVALID_PARAMETERS} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.`
+    })
   })
   it('should fail if the alarm is already present', async () => {
     AlarmClockOccurrenceSpy.mockResolvedValueOnce(addAlarmClockOccurrenceDuplicateResponse.Envelope)
 
     await setAlarmOccurrence(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(400)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Incorrect URI or Bad Request', errorDescription: `${messages.ALARM_ADD_INVALID_PARAMETERS} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.` })
+    expect(resSpy.json).toHaveBeenCalledWith({
+      error: 'Incorrect URI or Bad Request',
+      errorDescription: `${messages.ALARM_ADD_INVALID_PARAMETERS} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.`
+    })
   })
   it('should fail if there are too many alarms', async () => {
     AlarmClockOccurrenceSpy.mockResolvedValueOnce(addAlarmClockOccurrenceQuotaLimitResponse.Envelope)
 
     await setAlarmOccurrence(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(400)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Incorrect URI or Bad Request', errorDescription: `${messages.ALARM_ADD_QUOTA_LIMIT} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.` })
+    expect(resSpy.json).toHaveBeenCalledWith({
+      error: 'Incorrect URI or Bad Request',
+      errorDescription: `${messages.ALARM_ADD_QUOTA_LIMIT} for guid : 4c4c4544-004b-4210-8033-b6c04f504633.`
+    })
   })
   it('should handle error 500', async () => {
     // setSpy.mockImplementation(() => {
@@ -96,7 +123,10 @@ describe('ADD Alarm Clock Occurrence', () => {
     // })
     await setAlarmOccurrence(req, resSpy)
     expect(resSpy.status).toHaveBeenCalledWith(500)
-    expect(resSpy.json).toHaveBeenCalledWith({ error: 'Internal Server Error', errorDescription: messages.ALARM_OCCURRENCES_EXCEPTION })
+    expect(resSpy.json).toHaveBeenCalledWith({
+      error: 'Internal Server Error',
+      errorDescription: messages.ALARM_OCCURRENCES_EXCEPTION
+    })
   })
   it('should add an alarm clock occurrence (using defaults)', async () => {
     AlarmClockOccurrenceSpy.mockResolvedValueOnce(addAlarmClockOccurrenceResponse.Envelope)

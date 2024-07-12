@@ -24,20 +24,34 @@ export class CIRAHandler {
   username: string
   password: string
   channel: CIRAChannel
-  channelState: number = 0
-  connectAttempts: number = 0
+  channelState = 0
+  connectAttempts = 0
   socket: CIRASocket
-  constructor (httpHandler: HttpHandler, username: string, password: string, public limiter: Bottleneck = new Bottleneck()) {
+  constructor(
+    httpHandler: HttpHandler,
+    username: string,
+    password: string,
+    public limiter: Bottleneck = new Bottleneck()
+  ) {
     this.username = username
     this.password = password
     this.httpHandler = httpHandler
   }
 
   // Setup CIRA Channel
-  SetupCiraChannel (socket: CIRASocket, targetPort: number): CIRAChannel {
+  SetupCiraChannel(socket: CIRASocket, targetPort: number): CIRAChannel {
     const sourcePort = (socket.tag.nextsourceport++ % 30000) + 1024
     const channel = new CIRAChannel(this.httpHandler, targetPort, socket)
-    APFProcessor.SendChannelOpen(channel.socket, false, channel.channelid, channel.ciraWindow, channel.socket.tag.host, channel.targetport, '1.2.3.4', sourcePort)
+    APFProcessor.SendChannelOpen(
+      channel.socket,
+      false,
+      channel.channelid,
+      channel.ciraWindow,
+      channel.socket.tag.host,
+      channel.targetport,
+      '1.2.3.4',
+      sourcePort
+    )
     channel.write = async (rawXML: string): Promise<any> => {
       const params: connectionParams = {
         guid: this.channel.socket.tag.nodeid,
@@ -52,7 +66,7 @@ export class CIRAHandler {
     return channel
   }
 
-  async Connect (): Promise<number> {
+  async Connect(): Promise<number> {
     return await new Promise((resolve, reject) => {
       this.channel = this.SetupCiraChannel(this.socket, AMTPort)
       this.channel.onStateChange.on('stateChange', (state: number) => {
@@ -62,11 +76,11 @@ export class CIRAHandler {
     })
   }
 
-  async Delete<T> (socket: CIRASocket, rawXml: string): Promise<Common.Models.Response<T>> {
+  async Delete<T>(socket: CIRASocket, rawXml: string): Promise<Common.Models.Response<T>> {
     return await this.Send(socket, rawXml)
   }
 
-  async Enumerate (socket: CIRASocket, rawXml: string): Promise<Common.Models.Response<Common.Models.Enumerate>> {
+  async Enumerate(socket: CIRASocket, rawXml: string): Promise<Common.Models.Response<Common.Models.Enumerate>> {
     return await this.Send(socket, rawXml)
   }
 
@@ -78,12 +92,12 @@ export class CIRAHandler {
     return await this.Send(socket, rawXml)
   }
 
-  async Send (socket: CIRASocket, rawXml: string): Promise<any> {
+  async Send(socket: CIRASocket, rawXml: string): Promise<any> {
     this.socket = socket
     return await this.limiter.schedule(async () => await this.ExecRequest(rawXml))
   }
 
-  async ExecRequest (xml: string): Promise<any> {
+  async ExecRequest(xml: string): Promise<any> {
     if (this.channelState === 0) {
       this.channelState = await this.Connect()
     }
@@ -112,15 +126,15 @@ export class CIRAHandler {
     return null
   }
 
-  handleAuth (message: HttpZResponseModel): Common.Models.DigestChallenge {
-    const found = message.headers.find(item => item.name === 'Www-Authenticate')
+  handleAuth(message: HttpZResponseModel): Common.Models.DigestChallenge {
+    const found = message.headers.find((item) => item.name === 'Www-Authenticate')
     if (found != null) {
       return this.httpHandler.parseAuthenticateResponseHeader(found.value)
     }
     return null
   }
 
-  handleResult (data: string): any {
+  handleResult(data: string): any {
     const message = httpZ.parse(data) as HttpZResponseModel
     if (message.statusCode === 401) {
       this.connectAttempts++
@@ -128,7 +142,7 @@ export class CIRAHandler {
         this.httpHandler.digestChallenge = this.handleAuth(message)
         this.httpHandler.authResolve()
         if (this.httpHandler.digestChallenge != null) {
-        // Executing the failed request once again
+          // Executing the failed request once again
           throw new Error('Unauthorized') // could be better
         }
       } else {

@@ -9,7 +9,7 @@ import { backOff } from 'exponential-backoff'
 import { type configType } from './../models/Config.js'
 import { type IServiceManager } from './../interfaces/IServiceManager.js'
 
-export async function waitForServiceManager (service: IServiceManager, serviceName: string): Promise<void> {
+export async function waitForServiceManager(service: IServiceManager, serviceName: string): Promise<void> {
   await backOff(async () => await service.health(serviceName), {
     retry: (e: any, attemptNumber: number) => {
       logger.info(`waiting for consul[${attemptNumber}] ${e.code || e.message || e}`)
@@ -18,7 +18,7 @@ export async function waitForServiceManager (service: IServiceManager, serviceNa
   })
 }
 
-export async function processServiceConfigs (consul: IServiceManager, config: configType): Promise<boolean> {
+export async function processServiceConfigs(consul: IServiceManager, config: configType): Promise<boolean> {
   const prefix = Environment.Config.consul_key_prefix
   const consulValues = await consul.get(prefix)
   if (consulValues == null) {

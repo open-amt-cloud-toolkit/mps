@@ -46,21 +46,12 @@ const web = (): webConfigType => {
 
     // Load SSL Cert and key
     if (webConfig.key && webConfig.cert) {
-      if (
-        !fs.existsSync(join(__dirname, webConfig.key)) &&
-          !fs.existsSync(join(__dirname, webConfig.cert))
-      ) {
+      if (!fs.existsSync(join(__dirname, webConfig.key)) && !fs.existsSync(join(__dirname, webConfig.cert))) {
         logger.error(messages.TLS_CONFIGURATION_TLS_CERTIFICATE_OR_KEY_DOES_NOT_EXIST)
         return process.exit()
       } else {
-        webConfig.key = fs.readFileSync(
-          join(__dirname, webConfig.key),
-          'utf8'
-        )
-        webConfig.cert = fs.readFileSync(
-          join(__dirname, webConfig.cert),
-          'utf8'
-        )
+        webConfig.key = fs.readFileSync(join(__dirname, webConfig.key), 'utf8')
+        webConfig.cert = fs.readFileSync(join(__dirname, webConfig.cert), 'utf8')
       }
     } else {
       logger.error(messages.TLS_CONFIGURATION_CERTIFICATE_OR_KEY_DOES_NOT_EXIST)
@@ -71,14 +62,9 @@ const web = (): webConfigType => {
     if (webConfig.ca) {
       const caCertLocationArr = webConfig.ca
       const caCertArr: string[] = []
-      for (let i: number = 0; i < caCertLocationArr.length; i++) {
-        if (!fs.existsSync(join(__dirname, caCertLocationArr[i]))) {
-          caCertArr.push(
-            fs.readFileSync(
-              join(__dirname, caCertLocationArr[i]),
-              'utf8'
-            )
-          )
+      for (const certLocation of caCertLocationArr) {
+        if (!fs.existsSync(join(__dirname, certLocation))) {
+          caCertArr.push(fs.readFileSync(join(__dirname, certLocation), 'utf8'))
         }
       }
       webConfig.ca = caCertArr
@@ -96,7 +82,7 @@ const web = (): webConfigType => {
       } else {
         const optionArr = webConfig.secureOptions
         let secoption: any = constants[optionArr[0]] | constants[optionArr[1]]
-        for (let i: number = 2; i < optionArr.length; i++) {
+        for (let i = 2; i < optionArr.length; i++) {
           secoption = secoption | constants[optionArr[i]]
         }
         webConfig.secureOptions = secoption
@@ -147,21 +133,12 @@ const mps = (): mpsConfigType => {
 
     // Load SSL Cert and key
     if (mpsConfig.key && mpsConfig.cert) {
-      if (
-        !fs.existsSync(join(__dirname, mpsConfig.key)) ||
-          !fs.existsSync(join(__dirname, mpsConfig.cert))
-      ) {
+      if (!fs.existsSync(join(__dirname, mpsConfig.key)) || !fs.existsSync(join(__dirname, mpsConfig.cert))) {
         logger.error(messages.TLS_CONFIGURATION_TLS_CERTIFICATE_OR_KEY_DOES_NOT_EXIST)
         return process.exit()
       } else {
-        mpsConfig.key = fs.readFileSync(
-          join(__dirname, mpsConfig.key),
-          'utf8'
-        )
-        mpsConfig.cert = fs.readFileSync(
-          join(__dirname, mpsConfig.cert),
-          'utf8'
-        )
+        mpsConfig.key = fs.readFileSync(join(__dirname, mpsConfig.key), 'utf8')
+        mpsConfig.cert = fs.readFileSync(join(__dirname, mpsConfig.cert), 'utf8')
       }
     } else {
       logger.error(messages.TLS_CONFIGURATION_CERTIFICATE_OR_KEY_DOES_NOT_EXIST)
@@ -176,9 +153,8 @@ const mps = (): mpsConfigType => {
         mpsConfig.secureOptions = mpsConfig.secureOptions[0]
       } else {
         const optionArr = mpsConfig.secureOptions
-        let secoption: any =
-            constants[optionArr[0]] | constants[optionArr[1]]
-        for (let i: number = 2; i < optionArr.length; i++) {
+        let secoption: any = constants[optionArr[0]] | constants[optionArr[1]]
+        for (let i = 2; i < optionArr.length; i++) {
           secoption = secoption | constants[optionArr[i]]
         }
         mpsConfig.secureOptions = secoption

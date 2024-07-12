@@ -8,7 +8,7 @@ import { logger } from '../../logging/index.js'
 import { Environment } from '../../utils/Environment.js'
 import { signature } from './signature.js'
 
-export async function authorizeDevice (req: Request, res: Response): Promise<void> {
+export async function authorizeDevice(req: Request, res: Response): Promise<void> {
   const guid: string = req.params.guid
   const device = await req.db.devices.getById(guid)
   if (device) {

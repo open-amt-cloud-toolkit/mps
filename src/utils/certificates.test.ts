@@ -215,7 +215,15 @@ describe('IssueWebServerCertificate', () => {
       serverAuth: true
     }
     const strong = true
-    const result = certificates.IssueWebServerCertificate(rootcert, addThumbPrintToName, commonName, country, organization, extKeyUsage, strong)
+    const result = certificates.IssueWebServerCertificate(
+      rootcert,
+      addThumbPrintToName,
+      commonName,
+      country,
+      organization,
+      extKeyUsage,
+      strong
+    )
     expect(result.cert).toBeTruthy()
     expect(result.key).toBeTruthy()
   })
@@ -249,7 +257,15 @@ describe('IssueWebServerCertificate', () => {
     const organization = 'rhbe'
     const extKeyUsage = null
     const strong = false
-    const result = certificates.IssueWebServerCertificate(rootcert, addThumbPrintToName, commonName, country, organization, extKeyUsage, strong)
+    const result = certificates.IssueWebServerCertificate(
+      rootcert,
+      addThumbPrintToName,
+      commonName,
+      country,
+      organization,
+      extKeyUsage,
+      strong
+    )
     expect(result.cert).toBeTruthy()
     expect(result.key).toBeTruthy()
   })

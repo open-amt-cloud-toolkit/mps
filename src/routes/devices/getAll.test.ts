@@ -82,7 +82,7 @@ beforeEach(() => {
   jsonSpy = spyOn(res, 'json')
 })
 
-async function run200WithCount (expected: DataWithCount): Promise<void> {
+async function run200WithCount(expected: DataWithCount): Promise<void> {
   req.query.$count = true
   await getAllDevices(req, res)
   expect(getSpy).toHaveBeenCalledWith(req.query.$top, req.query.$skip, req.tenantId)
@@ -92,7 +92,7 @@ async function run200WithCount (expected: DataWithCount): Promise<void> {
   expect(endSpy).toHaveBeenCalled()
 }
 
-async function run200WithoutCount (expected: Device[]): Promise<void> {
+async function run200WithoutCount(expected: Device[]): Promise<void> {
   await getAllDevices(req, res)
   expect(getCountSpy).not.toHaveBeenCalled()
   expect(statusSpy).toHaveBeenCalledWith(200)
@@ -111,7 +111,7 @@ describe('getAll', () => {
   it('should return 200 with connected devices and count', async () => {
     req.query.status = 1
     const expected = {
-      data: allDevices.filter(d => d.connectionStatus),
+      data: allDevices.filter((d) => d.connectionStatus),
       totalCount: allDevices.length
     }
     await run200WithCount(expected)
@@ -119,7 +119,7 @@ describe('getAll', () => {
   it('should return 200 with disconnected devices and count', async () => {
     req.query.status = 0
     const expected = {
-      data: allDevices.filter(d => !d.connectionStatus),
+      data: allDevices.filter((d) => !d.connectionStatus),
       totalCount: allDevices.length
     }
     await run200WithCount(expected)
@@ -151,7 +151,11 @@ describe('getAll', () => {
     expect(spy).toHaveBeenCalledWith(mockDevice.friendlyName, req.tenantId)
   })
   it('should get by friendlyName', async () => {
-    const tags = ['tag1', 'tag2', 'tag3']
+    const tags = [
+      'tag1',
+      'tag2',
+      'tag3'
+    ]
     const method = 'AND'
     req.query.tags = tags.join(',')
     req.query.method = method

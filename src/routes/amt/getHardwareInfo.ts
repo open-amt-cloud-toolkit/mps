@@ -9,13 +9,13 @@ import { ErrorResponse } from '../../utils/amtHelper.js'
 import { MqttProvider } from '../../utils/MqttProvider.js'
 import { type DeviceAction } from '../../amt/DeviceAction.js'
 
-export async function hardwareInfo (req: Request, res: Response): Promise<void> {
+export async function hardwareInfo(req: Request, res: Response): Promise<void> {
   try {
     const guid: string = req.params.guid
 
     MqttProvider.publishEvent('request', ['AMT_HardwareInfo'], messages.HARDWARE_INFORMATION_GET_REQUESTED, guid)
     const response = await get(req.deviceAction, guid)
-    if (Object.values(response).some(item => item == null)) {
+    if (Object.values(response).some((item) => item == null)) {
       logger.error(`${messages.HARDWARE_INFORMATION_REQUEST_FAILED} for guid : ${guid}.`)
       MqttProvider.publishEvent('fail', ['AMT_HardwareInfo'], messages.HARDWARE_INFORMATION_REQUEST_FAILED, guid)
       res.status(400).json(ErrorResponse(400, `${messages.HARDWARE_INFORMATION_REQUEST_FAILED} for guid : ${guid}.`))
@@ -31,7 +31,7 @@ export async function hardwareInfo (req: Request, res: Response): Promise<void> 
   }
 }
 
-export async function get (device: DeviceAction, guid: string): Promise<Record<string, any>> {
+export async function get(device: DeviceAction, guid: string): Promise<Record<string, any>> {
   const response: Record<string, any> = {}
   response.CIM_ComputerSystemPackage = await device.getComputerSystemPackage()
   response.CIM_Chassis = await device.getChassis()
@@ -49,11 +49,13 @@ export async function get (device: DeviceAction, guid: string): Promise<Record<s
 
 // matches version 2.x API for Open AMT
 // To do: CIM_ComputerSystemPackage and CIM_SystemPackaging returns same data, similarly CIM_Card and CIM_PhysicalPackage
-export function formatResponse (response: any): any {
+export function formatResponse(response: any): any {
   return {
     CIM_ComputerSystemPackage: {
       response: response.CIM_ComputerSystemPackage?.Body?.CIM_ComputerSystemPackage,
-      responses: Array.isArray(response.CIM_ComputerSystemPackage) ? response.CIM_ComputerSystemPackage : [response.CIM_ComputerSystemPackage],
+      responses: Array.isArray(response.CIM_ComputerSystemPackage)
+        ? response.CIM_ComputerSystemPackage
+        : [response.CIM_ComputerSystemPackage],
       status: response.CIM_ComputerSystemPackage?.Body?.CIM_ComputerSystemPackage ? 200 : 400
     },
     CIM_SystemPackaging: {
@@ -76,7 +78,9 @@ export function formatResponse (response: any): any {
     },
     CIM_BIOSElement: {
       response: response.CIM_BIOSElement?.Body?.CIM_BIOSElement,
-      responses: Array.isArray(response.CIM_BIOSElement?.Body?.CIM_BIOSElement) ? response.CIM_BIOSElement : [response.CIM_BIOSElement],
+      responses: Array.isArray(response.CIM_BIOSElement?.Body?.CIM_BIOSElement)
+        ? response.CIM_BIOSElement
+        : [response.CIM_BIOSElement],
       status: response.CIM_BIOSElement?.Body ? 200 : 400
     },
     CIM_Processor: {
@@ -84,11 +88,15 @@ export function formatResponse (response: any): any {
       status: response.CIM_Processor?.Body?.PullResponse?.Items?.CIM_Processor ? 200 : 400
     },
     CIM_PhysicalMemory: {
-      responses: Array.isArray(response.CIM_PhysicalMemory?.Body?.PullResponse?.Items?.CIM_PhysicalMemory) ? response.CIM_PhysicalMemory?.Body?.PullResponse?.Items?.CIM_PhysicalMemory : [response.CIM_PhysicalMemory?.Body?.PullResponse?.Items?.CIM_PhysicalMemory],
+      responses: Array.isArray(response.CIM_PhysicalMemory?.Body?.PullResponse?.Items?.CIM_PhysicalMemory)
+        ? response.CIM_PhysicalMemory?.Body?.PullResponse?.Items?.CIM_PhysicalMemory
+        : [response.CIM_PhysicalMemory?.Body?.PullResponse?.Items?.CIM_PhysicalMemory],
       status: response.CIM_PhysicalMemory?.Body?.PullResponse?.Items?.CIM_PhysicalMemory ? 200 : 400
     },
     CIM_MediaAccessDevice: {
-      responses: Array.isArray(response.CIM_MediaAccessDevice?.Body?.PullResponse?.Items?.CIM_MediaAccessDevice) ? response.CIM_MediaAccessDevice?.Body?.PullResponse?.Items?.CIM_MediaAccessDevice : [response.CIM_MediaAccessDevice?.Body?.PullResponse?.Items?.CIM_MediaAccessDevice],
+      responses: Array.isArray(response.CIM_MediaAccessDevice?.Body?.PullResponse?.Items?.CIM_MediaAccessDevice)
+        ? response.CIM_MediaAccessDevice?.Body?.PullResponse?.Items?.CIM_MediaAccessDevice
+        : [response.CIM_MediaAccessDevice?.Body?.PullResponse?.Items?.CIM_MediaAccessDevice],
       status: response.CIM_MediaAccessDevice?.Body?.PullResponse?.Items?.CIM_MediaAccessDevice ? 200 : 400
     },
     CIM_PhysicalPackage: {

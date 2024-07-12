@@ -37,7 +37,11 @@ describe('web', () => {
       ca: 'abc',
       cert: 'cert',
       key: 'key',
-      secureOptions: [constants.SSL_OP_NO_SSLv2, constants.SSL_OP_NO_SSLv3, constants.SSL_OP_NO_TLSv1],
+      secureOptions: [
+        constants.SSL_OP_NO_SSLv2,
+        constants.SSL_OP_NO_SSLv3,
+        constants.SSL_OP_NO_TLSv1
+      ],
       null: null
     }
     readFileSyncSpy.mockImplementation(() => {})
@@ -171,7 +175,11 @@ describe('mps', () => {
       cert: 'cert',
       key: 'key',
       minVersion: '',
-      secureOptions: [constants.SSL_OP_NO_SSLv2, constants.SSL_OP_NO_SSLv3, constants.SSL_OP_NO_TLSv1],
+      secureOptions: [
+        constants.SSL_OP_NO_SSLv2,
+        constants.SSL_OP_NO_SSLv3,
+        constants.SSL_OP_NO_TLSv1
+      ],
       requestCert: true,
       rejectUnauthorized: true,
       null: null

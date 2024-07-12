@@ -33,8 +33,7 @@ const req = {
     guid: '00000000-0000-0000-0000-000000000000'
   },
   db: {
-    devices: {
-    }
+    devices: {}
   }
 } as any
 
@@ -48,7 +47,10 @@ describe('disconnect', () => {
     } as any
     await disconnect(req, res as any)
     expect(devices[guid].ciraSocket.destroy).toHaveBeenCalled()
-    expect(jsonSpy).toHaveBeenCalledWith({ success: 200, description: `${messages.DEVICE_DISCONNECTED_SUCCESS} : ${guid}` })
+    expect(jsonSpy).toHaveBeenCalledWith({
+      success: 200,
+      description: `${messages.DEVICE_DISCONNECTED_SUCCESS} : ${guid}`
+    })
   })
 
   it('should set status to 500 if error occurs when calling destroy on socket of connected device', async () => {

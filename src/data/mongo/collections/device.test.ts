@@ -132,9 +132,7 @@ describe('MongoDeviceTable', () => {
     const result = await mongoDeviceTable.getByTags(mockTags, 'AND', '5', '10', 'someTenantId')
 
     expect(result).toEqual(mockData)
-    expect(collection.find).toHaveBeenCalledWith(
-      { tags: { $all: mockTags }, tenantId: 'someTenantId' }
-    )
+    expect(collection.find).toHaveBeenCalledWith({ tags: { $all: mockTags }, tenantId: 'someTenantId' })
   })
 
   it('should fetch documents by friendly name', async () => {
