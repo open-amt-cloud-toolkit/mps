@@ -22,7 +22,7 @@ COPY .mpsrc ./
 RUN npm run build
 RUN npm prune --production
 
-FROM alpine:latest@sha256:635b0946b3e7026ee435820c93e8af32065a69fa9fa0fe7e0872b0156f38c8d9
+FROM alpine:latest@sha256:0a4eaa0eecf5f8c050e5bba433f58c052be7587ee8af3e8b3910ef9ab5fbe9f5
 LABEL license='SPDX-License-Identifier: Apache-2.0' \
       copyright='Copyright (c) Intel Corporation 2021'
 
