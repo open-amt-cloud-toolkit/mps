@@ -80,7 +80,7 @@
     "ts-jest": "^29.2.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4",
-    "typescript-eslint": "8.0.0-alpha.54"
+    "typescript-eslint": "8.0.0-alpha.60"
   },
   "optionalDependencies": {
     "fsevents": "^2.3.3"
