@@ -1,3 +1,10 @@
+## [2.13.17](https://github.com/open-amt-cloud-toolkit/mps/compare/v2.13.16...v2.13.17) (2024-09-10)
+
+
+### Bug Fixes
+
+* Override OpenSSL security level to allow TLSv1 connections ([a5f6b06](https://github.com/open-amt-cloud-toolkit/mps/commit/a5f6b0672062d9ce039d9a8a2d7892cb61e664c5))
+
 ## [2.13.16](https://github.com/open-amt-cloud-toolkit/mps/compare/v2.13.15...v2.13.16) (2024-08-12)
 
 ## [2.13.15](https://github.com/open-amt-cloud-toolkit/mps/compare/v2.13.14...v2.13.15) (2024-07-15)
