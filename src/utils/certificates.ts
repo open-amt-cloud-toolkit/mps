@@ -67,7 +67,7 @@ export class Certificates {
       'TLS_AES_256_GCM_SHA384',
       'TLS_AES_128_GCM_SHA256'
     ].join(':')
-    const legacySupportCiphers = 'HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA'
+    const legacySupportCiphers = 'HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA:@SECLEVEL=0'
     let mpsConfig: mpsConfigType
     if (this.config.mps_tls_config.minVersion === 'TLSv1.2' || this.config.mps_tls_config.minVersion === 'TLSv1.3') {
       mpsConfig = {
