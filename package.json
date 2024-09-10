@@ -35,8 +35,8 @@
     "lint": "eslint .",
     "start": "npm run build && node ./dist/index.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js  --forceExit --coverage",
-    "prettify": "npx prettier --write .",
-    "ci-prettify": "npx prettier --check ."
+    "prettify": "npx prettier --write '**/*.{ts,js,yaml,css,scss,json}'",
+    "ci-prettify": "npx prettier --check '**/*.{ts,js,yaml,css,scss,json}'"
   },
   "dependencies": {
     "@open-amt-cloud-toolkit/wsman-messages": "^5.6.9",
@@ -44,7 +44,7 @@
     "consul": "^1.2.0",
     "cors": "^2.8.5",
     "exponential-backoff": "^3.1.1",
-    "express": "^4.19.2",
+    "express": "^4.20.0",
     "express-validator": "^7.2.0",
     "got": "^14.4.2",
     "http-z": "^7.0.0",
