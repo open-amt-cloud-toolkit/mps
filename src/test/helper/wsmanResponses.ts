@@ -902,6 +902,9 @@ export const alarmClockOccurrences = {
             InstanceID: 'Instance',
             StartTime: {
               Datetime: '2022-12-31T23:59:00Z'
+            },
+            Interval: {
+              Interval: 'PT5M'
             }
           }
         },
