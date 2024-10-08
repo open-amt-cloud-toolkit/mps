@@ -1,3 +1,10 @@
+## [2.13.18](https://github.com/open-amt-cloud-toolkit/mps/compare/v2.13.17...v2.13.18) (2024-10-08)
+
+
+### Bug Fixes
+
+* **api:** get alarm occurrence ([#1656](https://github.com/open-amt-cloud-toolkit/mps/issues/1656)) ([27d2064](https://github.com/open-amt-cloud-toolkit/mps/commit/27d20644ebc427a6ce3ea1e437bbeb27f579bb59))
+
 ## [2.13.17](https://github.com/open-amt-cloud-toolkit/mps/compare/v2.13.16...v2.13.17) (2024-09-10)
 
 
