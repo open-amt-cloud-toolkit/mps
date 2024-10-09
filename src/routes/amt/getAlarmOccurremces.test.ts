@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { getAlarmOccurrences } from './getAlarmOccurrences.js'
+import { getAlarmOccurrences, parseInterval } from './getAlarmOccurrences.js'
 import { createSpyObj } from '../../test/helper/jest.js'
 import {
   alarmClockOccurrences,
@@ -82,5 +82,31 @@ describe('Alarm Clock Occurrences', () => {
       error: 'Internal Server Error',
       errorDescription: messages.ALARM_OCCURRENCES_EXCEPTION
     })
+  })
+})
+
+describe('parseInterval function', () => {
+  it('should return 0 for empty string', () => {
+    expect(parseInterval('')).toBe(0)
+  })
+
+  it('should parse days correctly', () => {
+    expect(parseInterval('P2D')).toBe(2880)
+  })
+
+  it('should parse hours correctly', () => {
+    expect(parseInterval('PT3H')).toBe(180)
+  })
+
+  it('should parse minutes correctly', () => {
+    expect(parseInterval('PT30M')).toBe(30)
+  })
+
+  it('should parse complex duration correctly', () => {
+    expect(parseInterval('P1DT2H30M45S')).toBe(1590)
+  })
+
+  it('should handle fractional seconds', () => {
+    expect(parseInterval('PT1M30.5S')).toBe(1)
   })
 })
