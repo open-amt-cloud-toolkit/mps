@@ -1,3 +1,5 @@
+## [2.13.19](https://github.com/open-amt-cloud-toolkit/mps/compare/v2.13.18...v2.13.19) (2024-11-08)
+
 ## [2.13.18](https://github.com/open-amt-cloud-toolkit/mps/compare/v2.13.17...v2.13.18) (2024-10-08)
 
 
