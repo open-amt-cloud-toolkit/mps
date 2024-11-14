@@ -1,3 +1,10 @@
+## [2.13.21](https://github.com/open-amt-cloud-toolkit/mps/compare/v2.13.20...v2.13.21) (2024-11-14)
+
+
+### Bug Fixes
+
+* browser data when cira channel is closed ([#1707](https://github.com/open-amt-cloud-toolkit/mps/issues/1707)) ([c72949a](https://github.com/open-amt-cloud-toolkit/mps/commit/c72949a228a8f6954c19219bb1ebda0f993a7b51))
+
 ## [2.13.20](https://github.com/open-amt-cloud-toolkit/mps/compare/v2.13.19...v2.13.20) (2024-11-13)
 
 ## [2.13.19](https://github.com/open-amt-cloud-toolkit/mps/compare/v2.13.18...v2.13.19) (2024-11-08)
