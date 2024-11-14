@@ -66,7 +66,11 @@ describe('WsRedirect tests', () => {
     const message: any = { data: 'hello' }
 
     wsRedirect.websocketFromDevice = {
-      writeData: jest.fn()
+      writeData: jest.fn(),
+      state: 1
+    } as any
+    wsRedirect.websocketFromWeb = {
+      close: jest.fn()
     } as any
     wsRedirect.interceptor = {
       processBrowserData: jest.fn()
@@ -74,9 +78,32 @@ describe('WsRedirect tests', () => {
     const interceptorSpy = spyOn(wsRedirect.interceptor, 'processBrowserData').mockReturnValue('binaryData')
     const writeSpy = spyOn(wsRedirect.websocketFromDevice, 'writeData')
     void wsRedirect.handleMessage(message)
+    const closeSpy = spyOn(wsRedirect.websocketFromWeb, 'close')
 
     expect(interceptorSpy).toBeCalledWith(message.data)
     expect(writeSpy).toBeCalledWith('binaryData')
+  })
+
+  it('should close websocket conn to browser if cira channel is closed', () => {
+    const message: any = { data: 'hello' }
+
+    wsRedirect.websocketFromDevice = {
+      writeData: jest.fn(),
+      state: 0
+    } as any
+    wsRedirect.websocketFromWeb = {
+      close: jest.fn()
+    } as any
+    wsRedirect.interceptor = {
+      processBrowserData: jest.fn()
+    } as any
+    const interceptorSpy = spyOn(wsRedirect.interceptor, 'processBrowserData').mockReturnValue('binaryData')
+    const writeSpy = spyOn(wsRedirect.websocketFromDevice, 'writeData')
+    void wsRedirect.handleMessage(message)
+    const closeSpy = spyOn(wsRedirect.websocketFromWeb, 'close')
+
+    expect(interceptorSpy).toBeCalledWith(message.data)
+    expect(closeSpy).toBeCalled()
   })
 
   describe('handleClose tests', () => {
