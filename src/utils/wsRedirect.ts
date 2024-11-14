@@ -70,7 +70,13 @@ export class WsRedirect {
     if (this.interceptor) {
       msgStr = this.interceptor.processBrowserData(msgStr)
     } // Run data thru interceptor
-    await this.websocketFromDevice.writeData(msgStr) // Forward data to the associated TCP connection.
+
+    if (this.websocketFromDevice && this.websocketFromDevice.state > 0) {
+      await this.websocketFromDevice.writeData(msgStr) // Forward data to the associated TCP connection.
+    } else {
+      logger.error('Attempted to write to a closed CIRA Channel.')
+      this.websocketFromWeb.close()
+    }
   }
 
   handleClose(params: queryParams, CloseEvent: WebSocket.CloseEvent): void {
