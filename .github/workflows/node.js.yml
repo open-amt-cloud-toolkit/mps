@@ -52,7 +52,7 @@ jobs:
           path: junit.xml # Path to test results
           reporter: jest-junit # Format of test results
           fail-on-error: 'false'
-      - uses: codecov/codecov-action@968872560f81e7bdde9272853e65f2507c0eca7c # v5.0.0
+      - uses: codecov/codecov-action@d168679d447a7d9f9917d4b26caf2cfbf080cfb4 # v5.0.6
         name: Upload Coverage Results
         if: ${{ matrix.node-version == '20.x' }}
       - name: Rename test file
