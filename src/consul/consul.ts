@@ -10,8 +10,8 @@ import type { IServiceManager } from './../interfaces/IServiceManager.js'
 import { Environment } from './../utils/Environment.js'
 
 export class ConsulService implements IServiceManager {
-  consul: Consul.Consul
-  constructor(host: string, port: string) {
+  consul: Consul
+  constructor(host: string, port: number) {
     this.consul = new Consul({
       host,
       port,
