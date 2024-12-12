@@ -19,7 +19,7 @@ import { type certificatesType } from '../models/Config.js'
 import { ErrorResponse } from '../utils/amtHelper.js'
 import { logger, messages } from '../logging/index.js'
 import routes from '../routes/index.js'
-import WebSocket from 'ws'
+import { WebSocketServer, ServerOptions, WebSocket } from 'ws'
 import { URL, fileURLToPath, pathToFileURL } from 'node:url'
 import cors from 'cors'
 import { lstatSync, existsSync, readdirSync } from 'node:fs'
@@ -32,7 +32,7 @@ import path from 'node:path'
 export class WebServer {
   app: express.Express
   server: Server = null
-  relayWSS: WebSocket.Server = null
+  relayWSS: WebSocketServer = null
   secrets: ISecretManagerService
   certs: certificatesType
   // to unit test code
@@ -49,11 +49,11 @@ export class WebServer {
       this.certs = certs
       this.app = express()
 
-      const options: WebSocket.ServerOptions = {
+      const options: ServerOptions = {
         noServer: true,
         verifyClient: (info) => this.verifyClientToken(info)
       }
-      this.relayWSS = new WebSocket.Server(options)
+      this.relayWSS = new WebSocketServer(options)
 
       // Create Server
       this.server = createServer(this.app)
