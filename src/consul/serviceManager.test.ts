@@ -15,7 +15,7 @@ jest.unstable_mockModule('exponential-backoff', () => ({
 
 const svcMngr = await import('./serviceManager.js')
 
-const consul: IServiceManager = new ConsulService('consul', '8500')
+const consul: IServiceManager = new ConsulService('consul', 8500)
 let componentName: string
 let config: any
 
