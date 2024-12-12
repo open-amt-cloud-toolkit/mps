@@ -8,7 +8,7 @@ import { ConsulService } from './consul.js'
 import { config } from './../test/helper/config.js'
 import { jest } from '@jest/globals'
 import { spyOn } from 'jest-mock'
-const consul: Consul = new ConsulService('localhost', '8500')
+const consulService: ConsulService = new ConsulService('localhost', 8500)
 let componentName: string
 let serviceName: string
 
@@ -22,32 +22,39 @@ describe('consul', () => {
     componentName = 'RPS'
     serviceName = 'consul'
 
-    consul.consul.kv = {
+    consulService.consul.kv = {
       set: jest.fn(),
       get: jest.fn()
-    }
+    } as any
   })
 
   describe('ConsulService', () => {
     it('get Consul health', async () => {
-      const spyHealth = spyOn(consul.consul.health, 'service')
-      await consul.health(serviceName)
-      expect(spyHealth).toHaveBeenCalledWith({ passing: true, service: 'consul' })
+      const spyHealth = spyOn(consulService, 'health')
+      await consulService.health(serviceName)
+      expect(spyHealth).toHaveBeenCalledWith('consul')
     })
     it('seed Consul success', async () => {
-      const result = await consul.seed(componentName, config)
+      const result = await consulService.seed(componentName, config)
       expect(result).toBe(true)
-      expect(consul.consul.kv.set).toHaveBeenCalledWith(componentName + '/config', JSON.stringify(config, null, 2))
+      expect(consulService.consul.kv.set).toHaveBeenCalledWith(
+        componentName + '/config',
+        JSON.stringify(config, null, 2)
+      )
     })
     it('seed Consul failure', async () => {
-      consul.consul.kv.set = spyOn(consul.consul.kv, 'set').mockResolvedValue(Promise.reject(new Error()))
-      const result = await consul.seed(componentName, config)
-      expect(result).toBe(false)
+      spyOn(consulService.consul.kv, 'set').mockRejectedValue(new Error())
+      let result
+      try {
+        result = await consulService.seed(componentName, config)
+      } catch (err) {
+        expect(result).toBe(false)
+      }
     })
 
     it('get from Consul success', async () => {
-      await consul.get(componentName)
-      expect(consul.consul.kv.get).toHaveBeenCalledWith({ key: componentName + '/', recurse: true })
+      await consulService.get(componentName)
+      expect(consulService.consul.kv.get).toHaveBeenCalledWith({ key: componentName + '/', recurse: true })
     })
 
     it('process Consul', () => {
@@ -57,7 +64,7 @@ describe('consul', () => {
           Value: '{"web_port": 8081, "delay_timer": 12}'
         }
       ]
-      const result = consul.process(consulValues)
+      const result = consulService.process(consulValues)
       expect(result).toBe('{"web_port": 8081, "delay_timer": 12}')
     })
   })

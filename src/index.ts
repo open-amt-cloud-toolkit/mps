@@ -68,7 +68,7 @@ export async function main(): Promise<void> {
 
 export async function setupServiceManager(config: configType): Promise<void> {
   if (config.consul_enabled) {
-    const consul: IServiceManager = new ConsulService(config.consul_host, config.consul_port)
+    const consul: IServiceManager = new ConsulService(config.consul_host, parseInt(config.consul_port, 10))
     try {
       await waitForServiceManager(consul, 'consul')
       // Store or update configs
