@@ -4,7 +4,7 @@
 #*********************************************************************/
 #Multistage docker layer to isolate the git credentials
 #First stage copy and install dependencies
-FROM node:23-bullseye-slim@sha256:72e898f022a42571193505ded35bbb954d53f6ff630043dcf4bc4c0f45ee9b89 as builder
+FROM node:23-bullseye-slim@sha256:18379ee656cbc1d4d740ecd9da1c81c0609ce58d48fbe771e103bf6ad0028605 as builder
 
 WORKDIR /mps
 
