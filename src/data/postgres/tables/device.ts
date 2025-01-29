@@ -252,7 +252,8 @@ export class DeviceTable implements IDeviceTable {
           device.tenantId,
           device.friendlyName,
           device.dnsSuffix,
-          JSON.stringify(device.deviceInfo)]
+          JSON.stringify(device.deviceInfo)
+        ]
       )
       if (results.rowCount > 0) {
         return await this.getById(device.guid)
@@ -293,7 +294,8 @@ export class DeviceTable implements IDeviceTable {
           device.lastConnected,
           device.lastSeen,
           device.lastDisconnected,
-          JSON.stringify(device.deviceInfo)]
+          JSON.stringify(device.deviceInfo)
+        ]
       )
       if (results.rowCount > 0) {
         return await this.getById(device.guid)

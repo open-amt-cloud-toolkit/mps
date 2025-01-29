@@ -439,7 +439,8 @@ describe('device tests', () => {
         device.tenantId,
         device.friendlyName,
         device.dnsSuffix,
-        JSON.stringify(device.deviceInfo)]
+        JSON.stringify(device.deviceInfo)
+      ]
     )
     expect(getById).toHaveBeenCalledTimes(1)
     expect(result).toBe(device)
@@ -476,7 +477,8 @@ describe('device tests', () => {
         device.tenantId,
         device.friendlyName,
         device.dnsSuffix,
-        JSON.stringify(device.deviceInfo)]
+        JSON.stringify(device.deviceInfo)
+      ]
     )
     expect(getById).toHaveBeenCalledTimes(1)
     expect(result).toBe(device)
