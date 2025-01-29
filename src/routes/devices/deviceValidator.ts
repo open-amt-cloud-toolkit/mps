@@ -18,7 +18,8 @@ export const validator = (): any => [
   check('disconnect').optional({ nullable: true }).isISO8601().toDate(),
   check('tags').optional().isArray().withMessage('tags should be an array of strings'),
   check('tags.*').optional().isString().withMessage('tags should be an array of strings'),
-  check('deviceInfo').optional({ nullable: true }).isObject().withMessage('deviceInfo should be an object if provided')]
+  check('deviceInfo').optional({ nullable: true }).isObject().withMessage('deviceInfo should be an object if provided')
+]
 
 export const odataValidator = (): any => [
   query('$top')
