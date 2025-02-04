@@ -20,5 +20,6 @@
         "publishCmd": "docker push vprodemo.azurecr.io/rpc-go:v${nextRelease.version}"
       }
     ]
+
   ]
 }
