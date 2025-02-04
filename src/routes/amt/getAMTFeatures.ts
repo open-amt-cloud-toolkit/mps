@@ -21,12 +21,15 @@ export async function getAMTFeatures(req: Request, res: Response): Promise<void>
     MqttProvider.publishEvent('request', ['AMT_GetFeatures'], messages.AMT_FEATURES_GET_REQUESTED, guid)
 
     const { redir, sol, ider } = processAmtRedirectionResponse(amtRedirectionResponse.AMT_RedirectionService)
-    const kvm = processKvmRedirectionResponse(kvmRedirectionResponse.CIM_KVMRedirectionSAP)
+    const { kvm, kvmAvailable } = processKvmRedirectionResponse(kvmRedirectionResponse.CIM_KVMRedirectionSAP)
     const { value, optInState } = processOptServiceResponse(optServiceResponse.IPS_OptInService)
     const userConsent = Object.keys(UserConsentOptions).find((key) => UserConsentOptions[key] === value)
 
     MqttProvider.publishEvent('success', ['AMT_GetFeatures'], messages.AMT_FEATURES_GET_SUCCESS, guid)
-    res.status(200).json({ userConsent, redirection: redir, KVM: kvm, SOL: sol, IDER: ider, optInState }).end()
+    res
+      .status(200)
+      .json({ userConsent, redirection: redir, KVM: kvm, SOL: sol, IDER: ider, optInState, kvmAvailable })
+      .end()
   } catch (error) {
     logger.error(`${messages.AMT_FEATURES_EXCEPTION}: ${error}`)
     if (error instanceof MPSValidationError) {
@@ -49,12 +52,15 @@ export function processAmtRedirectionResponse(amtRedirection: AMT.Models.Redirec
   return { redir, sol, ider }
 }
 
-export function processKvmRedirectionResponse(kvmRedirection: CIM.Models.KVMRedirectionSAP): boolean {
-  if (kvmRedirection == null) return false
+export function processKvmRedirectionResponse(kvmRedirection: CIM.Models.KVMRedirectionSAP): {
+  kvm: boolean
+  kvmAvailable: boolean
+} {
+  if (kvmRedirection == null) return { kvm: false, kvmAvailable: false }
   const kvm =
     kvmRedirection.EnabledState === Common.Models.CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.Enabled ||
     kvmRedirection.EnabledState === Common.Models.CIM_KVM_REDIRECTION_SAP_ENABLED_STATE.EnabledButOffline
-  return kvm
+  return { kvm, kvmAvailable: true }
 }
 
 export function processOptServiceResponse(optService: IPS.Models.OptInService): { value: number; optInState: number } {
