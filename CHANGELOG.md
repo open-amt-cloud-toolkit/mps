@@ -1,3 +1,10 @@
+## [2.13.22](https://github.com/open-amt-cloud-toolkit/mps/compare/v2.13.21...v2.13.22) (2025-02-07)
+
+
+### Bug Fixes
+
+* **api:** add kvmAvailable to get AMT features ([#1803](https://github.com/open-amt-cloud-toolkit/mps/issues/1803)) ([c6596cc](https://github.com/open-amt-cloud-toolkit/mps/commit/c6596ccfbdc213ad6467e1ae41063f418a6bd0ac))
+
 ## [2.13.21](https://github.com/open-amt-cloud-toolkit/mps/compare/v2.13.20...v2.13.21) (2024-11-14)
 
 
