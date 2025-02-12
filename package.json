@@ -2,7 +2,7 @@
   "name": "@open-amt-cloud-toolkit/mps",
   "version": "2.13.22",
   "description": "Containerized MPS service for executing Intel&reg; AMT features",
-  "homepage": "https://github.com/open-amt-cloud-toolkit/mps",
+  "homepage": "https://github.com/device-management-toolkit/mps",
   "contributors": [
     {
       "name": "Matt C. Primrose",
@@ -19,7 +19,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/open-amt-cloud-toolkit/mps.git"
+    "url": "https://github.com/device-management-toolkit/mps.git"
   },
   "type": "module",
   "license": "Apache-2.0",

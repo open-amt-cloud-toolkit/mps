@@ -13,4 +13,4 @@
 
 ## Anything the reviewer should know when reviewing this PR?
 
-### If the there are associated PRs in other repositories, please link them here (i.e. open-amt-cloud-toolkit/repo#365 )
+### If the there are associated PRs in other repositories, please link them here (i.e. device-management-toolkit/repo#365 )
