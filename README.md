@@ -14,7 +14,7 @@ The Management Presence Server (MPS) enables remote edge management of Intel vPr
 
 <br><br>
 
-**For detailed documentation** about Getting Started or other features of the Open AMT Cloud Toolkit, see the [docs](https://open-amt-cloud-toolkit.github.io/docs).
+**For detailed documentation** about Getting Started or other features of the Device Management Toolkit, see the [docs](https://device-management-toolkit.github.io/docs).
 
 <br>
 
@@ -32,7 +32,7 @@ To deploy the MPS on a local development system:
 1. Clone the repo and switch to the `mps` directory.
 
    ```
-   git clone https://github.com/open-amt-cloud-toolkit/mps.git && cd mps
+   git clone https://github.com/device-management-toolkit/mps.git && cd mps
    ```
 
 2. Open the `.mpsrc` file to edit.
@@ -95,11 +95,11 @@ jwt_secrets:
 
 ## Additional Resources
 
-- For detailed documentation and Getting Started, [visit the docs site](https://open-amt-cloud-toolkit.github.io/docs).
+- For detailed documentation and Getting Started, [visit the docs site](https://device-management-toolkit.github.io/docs).
 
 - Looking to contribute? [Find more information here about contribution guidelines and practices](.\CONTRIBUTING.md).
 
-- Find a bug? Or have ideas for new features? [Open a new Issue](https://github.com/open-amt-cloud-toolkit/mps/issues).
+- Find a bug? Or have ideas for new features? [Open a new Issue](https://github.com/device-management-toolkit/mps/issues).
 
 - Need additional support or want to get the latest news and events about Open AMT? Connect with the team directly through Discord.
 
